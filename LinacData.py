@@ -75,7 +75,7 @@ EXPECTED_UPDATE_TIME = PLC_MAX_UPDATE_PERIOD#s or less
 class release:
     author = 'Lothar Krause <lkrause@cells.es> &'\
              ' Sergi Blanch-Torne <sblanch@cells.es>'
-    hexversion = 0x020106
+    hexversion = 0x020108
     __str__ = lambda self: hex(hexversion)
 
 if False:
@@ -586,7 +586,7 @@ class AttrList(object):
         COMM_STATUS = {0:'unlocked',1:'local',2:'remote'}
         COMM_QUALITIES = {0:PyTango.AttrQuality.ATTR_ALARM,
                           1:PyTango.AttrQuality.ATTR_VALID,
-                          2:PyTango.AttrQuality.ATTR_VALID}
+                          2:PyTango.AttrQuality.ATTR_WARNING}
         plc_name = self.impl.get_name().split('/')[-1]
         desc = 'lock status %s' % plc_name
         #---- This attr was a number but for the user what shows the 

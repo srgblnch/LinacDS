@@ -638,17 +638,15 @@ Attr('TB_KA2_Delay',
      PyTango.DevShort,150,66,#RW
      l='timer klystron amplifier 2 delay',
      d='timer klystron amplifier 2 delay (step 32 ns)',
-     min=2720,max=4064,unit='ns',
-     #specs say min=544,max=4096, user explicitly reduces it
+     min=544,max=4096,unit='ns',
      events={})
 
 #---- R152 W068 @TB_RF2D
 Attr('TB_RF2_Delay',
-     PyTango.DevShort,152,#68,#RW
+     PyTango.DevShort,152,68,#RW
      l='timer RF2 delay',
      d='timer RF2 delay (step 8 ns)',
      min=512,max=1920,unit='ns',
-     #user has explicitly request to be ReadOnly
      events={})
 
 #---- R154 W070 @TB_EGD
