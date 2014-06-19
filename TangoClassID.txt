@@ -1,0 +1,11 @@
+/**
+ * Device Class Identification:
+ * 
+ * Class Name   :	LinacData
+ * Contact      :	sblanch@cells.es
+ * Class Family :	Miscellaneous
+ * Platform     :	Unix Like
+ * Bus          :	Ethernet
+ * Manufacturer :	Thales
+ * Reference    :	Alba-linac
+ */

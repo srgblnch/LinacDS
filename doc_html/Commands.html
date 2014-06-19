@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> LinacData Tango Class Commands </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=5> <font size=+1> <center><b> LinacData Class Commands </b></font></center></td>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+		<td> <center><b> Name </b></center> </td>
+		<td> <center><b> Input type </b></center> </td>
+		<td> <center><b> Output type </b></center> </td>
+		<td> <center><b> Level </b></center> </td>
+		<td> <center><b> Description </b></center> </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdState.html"> State </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STATE </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device state (stored in its device_state data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdStatus.html"> Status </a> </td>
+		<td> DEV_VOID </td>
+		<td> CONST_DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device status (stored in its device_status data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReloadAttrFile.html"> ReloadAttrFile </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdExec.html"> Exec </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_STRING </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetBit.html"> GetBit </a> </td>
+		<td> DEVVAR_SHORTARRAY </td>
+		<td> DEV_BOOLEAN </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetByte.html"> GetByte </a> </td>
+		<td> DEV_SHORT </td>
+		<td> DEV_SHORT </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetShort.html"> GetShort </a> </td>
+		<td> DEV_SHORT </td>
+		<td> DEV_SHORT </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetFloat.html"> GetFloat </a> </td>
+		<td> DEV_SHORT </td>
+		<td> DEV_FLOAT </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdHexDump.html"> HexDump </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdHex.html"> Hex </a> </td>
+		<td> DEV_SHORT </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdDumpTo.html"> DumpTo </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteBit.html"> WriteBit </a> </td>
+		<td> DEVVAR_SHORTARRAY </td>
+		<td> DEV_VOID </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteByte.html"> WriteByte </a> </td>
+		<td> DEVVAR_SHORTARRAY </td>
+		<td> DEV_VOID </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteShort.html"> WriteShort </a> </td>
+		<td> DEVVAR_SHORTARRAY </td>
+		<td> DEV_VOID </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdWriteFloat.html"> WriteFloat </a> </td>
+		<td> DEVVAR_FLOATARRAY </td>
+		<td> DEV_VOID </td>
+		<td> EXPERT </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdResetState.html"> ResetState </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdUpdate.html"> Update </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+</table>
+</body>
+</html>
