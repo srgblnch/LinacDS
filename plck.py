@@ -209,8 +209,12 @@ AttrBit('HVPS_ONC',
         events={},
         #rampingAttr='HVPS_V_setpoint',
         formula={'read':'VALUE and '\
-                 'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 9 and '\
-                 'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 8'},
+                       'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 9 and '\
+                       'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 8',
+                 'write':'VALUE and '\
+                       'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 8 and '\
+                       'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 7'
+                },
         )
 
 #AttrPLC(HeartBeat,Lock_ST,rLockingAddr,rLockingBit,wLockingAddr,wLockingBit)
