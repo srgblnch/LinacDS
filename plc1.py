@@ -567,8 +567,9 @@ Attr('GUN_HV_V_setpoint',# voltage (set) is 90 kV fixed
      PyTango.DevFloat,100,16,#RW
      l='HV PS Voltage Setpoint',
      d='high voltage PS voltage',
-     format='%4.1f',min=-100,max=0,unit='kV',
+     format='%4.1f',min=-90,max=0,unit='kV',
      events={'Threshold':0.01})
+     #User request (back) to limit the device setpoint to avoid below -90kV.
 
 #---- R104 W020 @TB_GPA
 Attr('TB_GPA',
