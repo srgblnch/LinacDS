@@ -593,7 +593,8 @@ class AttrList(object):
         #     information is an string
         self.impl.lock_ST = read_addr
         if hasattr(self.impl,'read_db') and self.impl.read_db != None:
-            self.impl.read_db.setCheckAddr(self.impl.lock_ST)
+            self.impl.read_db.setChecker(self.impl.lock_ST,
+                                         ['\x00','\x01','\x02'])
         LockAttrs = self.add_AttrAddr('Lock_ST',PyTango.DevUChar,read_addr,
                                      l=desc,d=desc+john(COMM_STATUS),
                                      meanings=COMM_STATUS,
@@ -613,8 +614,14 @@ class AttrList(object):
         locking_attr.set_write_value(False)
         self.impl.locking_raddr = read_addr
         self.impl.locking_rbit = read_bit
+        if hasattr(self.impl,'read_db') and self.impl.read_db != None:
+            self.impl.read_db.setChecker(self.impl.locking_raddr,
+                                         ['\x00','\x01'])
         self.impl.locking_waddr = write_addr
         self.impl.locking_wbit = write_bit
+        if hasattr(self.impl,'read_db') and self.impl.read_db != None:
+            self.impl.read_db.setChecker(self.impl.locking_waddr,
+                                         ['\x00','\x01'])
         self.impl.set_change_event('Locking', True, False)
         return new_attr
 

@@ -53,7 +53,7 @@ class Datablock(object):
         self.debug_stream = debug
         self.warn_stream = warn
         self.error_stream = error
-        self._checkAddr = checkAddr
+        self._checks = {}
         self._recv = ''
         self.readall()
 
@@ -61,17 +61,7 @@ class Datablock(object):
         if len(reading) != self.read_size:
             self.debug_stream("checking block %d!=%d"%(len(reading),self.read_size))
             return False
-        if self._checkAddr == None:
-            self.debug_stream("checking block: no addr to check")
-            return True
-        try:
-            self.debug_stream("Lock_ST is %s"%(repr(reading[self._checkAddr])))
-            if reading[self._checkAddr] in ['\x00','\x01','\x02']:
-                return True
-        except Exception,e:
-            self.error_stream("Datablock.isGoodBlock() Exception: %s"%(e))
-            traceback.print_exc()
-        return False
+        return self.doChecks(reading)
 
     def isBlockInverted(self,reading):
         aux = self.invertBlock(reading)
@@ -80,10 +70,33 @@ class Datablock(object):
     def invertBlock(self,reading):
         return reading[-self.read_size:] + reading[:self.write_size]
 
-    def getCheckAddr(self):
-        return self._checkAddr
-    def setCheckAddr(self,addr):
-        self._checkAddr = addr
+    def setChecker(self,addr,values):
+        '''Set up a list of valid values for a given address, to be used to 
+           decide is a given block is valid or not.
+        '''
+        if isinstance(addr,int) and isinstance(values,list):
+            self.info_stream("Adding a checker for address %d with values %s"
+                              %(addr,values))
+            self._checks[addr] = values
+            return True
+        return False
+    def getChecker(self,addr):
+        if isinstance(addr,int) and addr in self._checks.keys():
+            return self._checks[addr]
+        return []
+    def getCheckersAddresses(self):
+        return self._checks.keys()
+    
+    def doChecks(self,block):
+        for addr in self.getCheckersAddresses():
+            values = self.getChecker(addr)
+            self.debug_stream("Checking addr %d for values %s (%s)"
+                              %(addr,values,repr(block[addr])))
+            if not block[addr] in values:
+                self.warn_stream("Check fail for address %d (%s)"
+                                 %(addr,repr(block[addr])))
+                return False
+        return True
 
     def readall(self):
         E = ()#FIXME: what does it means?
