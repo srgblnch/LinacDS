@@ -166,6 +166,7 @@ for magnet in ['SL1','SL2','SL3','SL4','BC1','BC2','GL']:
               d='%s current state'%(magnet),
               l='%s current state'%(magnet),
               events={},
+              operator='or',
               inverted=True)
 
 for magnet in ['AS1','AS2']:
@@ -183,6 +184,7 @@ for magnet in ['AS1','AS2']:
               d='%s current state'%(magnet),
               l='%s current state'%(magnet),
               events={},
+              operator='or',
               inverted=True)
 
 AttrLogic('QT_cooling',
@@ -200,6 +202,7 @@ AttrLogic('QT_current_ok',
           d='QT current state',
           l='QT current state',
           events={},
+          operator='or',
           inverted=True)
 
 #AttrPLC(HeartBeat,Lock_ST,rLockingAddr,rLockingBit,wLockingAddr,wLockingBit)

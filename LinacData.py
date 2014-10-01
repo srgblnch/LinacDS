@@ -504,7 +504,8 @@ class AttrList(object):
         newInternalAttr = self.add_Attr(name,PyTango.DevBoolean,
                                         rfun,wfun,**kwargs)
 
-    def add_AttrLogic(self,name,logic,l,d,events=None,inverted=False):
+    def add_AttrLogic(self,name,logic,l,d,events=None,
+                      operator='and',inverted=False):
         '''Internal type of attribute made to evaluate a logical formula with 
            other attributes owned by the device with a boolean result.
         '''
@@ -514,6 +515,7 @@ class AttrList(object):
         self.__prepareInternalAttribute(name,PyTango.DevBoolean)
         self.__prepareEvents(name,events)
         self.impl._internalAttrs[name]['logic']=logic
+        self.impl._internalAttrs[name]['operator']=operator
         self.impl._internalAttrs[name]['inverted']=inverted
         return self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,l)
 
@@ -1122,11 +1124,10 @@ class LinacData(PyTango.Device_4Impl):
             '''
             '''
             logic = self._internalAttrs[attrName]['logic']
-            ret = True
-            #print("%s"%(logic.keys()))
+            #ret = True
+            values = []
             for key in logic.keys():
                 attrStruct = self._getAttrStruct(attrName)
-                #print("%s"%(key))
                 try:
                     value = self.__getAttrReadValue(key)#attrStruct['read_value']
                 except Exception,e:
@@ -1136,9 +1137,12 @@ class LinacData(PyTango.Device_4Impl):
                                       %(attrName,key,e))
                     attrStruct['read_t'] = time.time()
                     return False
-                #print("%s = %d [%s]"%(key,value,str(logic[key])))
-                if ret == True and not value in logic[key]:
-                    ret = False
+                values.append(value in logic[key])
+            #self.debug_stream("%s logical values %s"%(attrName,values))
+            if attrStruct['operator'] == 'or':
+                ret = any(values)
+            elif attrStruct['operator'] == 'and':
+                ret = all(values)
             attrStruct['read_t'] = time.time()
             #print("time= %s"%(str(self._internalAttrs[attrName]['read_t'])))
             if attrStruct['inverted']:
