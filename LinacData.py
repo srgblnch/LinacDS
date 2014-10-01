@@ -616,14 +616,16 @@ class AttrList(object):
         locking_attr.set_write_value(False)
         self.impl.locking_raddr = read_addr
         self.impl.locking_rbit = read_bit
-        if hasattr(self.impl,'read_db') and self.impl.read_db != None:
-            self.impl.read_db.setChecker(self.impl.locking_raddr,
-                                         ['\x00','\x01'])
+        #TODO: adding this checker, it works worst
+        #if hasattr(self.impl,'read_db') and self.impl.read_db != None:
+        #    self.impl.read_db.setChecker(self.impl.locking_raddr,
+        #                                 ['\x00','\x01'])
         self.impl.locking_waddr = write_addr
         self.impl.locking_wbit = write_bit
-        if hasattr(self.impl,'read_db') and self.impl.read_db != None:
-            self.impl.read_db.setChecker(self.impl.locking_waddr,
-                                         ['\x00','\x01'])
+        #TODO: adding this checker, it works worst
+        #if hasattr(self.impl,'read_db') and self.impl.read_db != None:
+        #    self.impl.read_db.setChecker(self.impl.locking_waddr,
+        #                                 ['\x00','\x01'])
         self.impl.set_change_event('Locking', True, False)
         return new_attr
 
