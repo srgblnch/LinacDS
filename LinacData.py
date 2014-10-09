@@ -373,6 +373,7 @@ class AttrList(object):
         if not eventConfig == None:
             attrStruct = self.impl._getAttrStruct(attrName)
             attrStruct['events'] = eventConfig
+            attrStruct['lastEventQuality'] = PyTango.AttrQuality.ATTR_VALID
             
     def __prepareAttrWithMeaning(self,attrName,attrType,meanings,qualities,
                                  rfun,wfun,**kwargs):
@@ -1071,7 +1072,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_attr(self, attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             attrStruct = self._getAttrStruct(name)
@@ -1081,16 +1083,6 @@ class LinacData(PyTango.Device_4Impl):
                 read_bit = attrStruct['read_bit']
             else:
                 read_bit = None
-            #FIXME: Not used, to be remove
-#            if attrStruct.has_key('write_addr'):
-#                write_addr = attrStruct['write_addr']
-#                if attrStruct.has_key('write_bit'):
-#                    write_bit = attrStruct['write_bit']
-#                else:
-#                    write_bit = None
-#            else:
-#                write_addr = None
-#                write_bit = None
             try:
                 if read_bit:
                     read_value = self.read_db.bit(read_addr, read_bit)
@@ -1113,7 +1105,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_logical_attr(self,attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
             if self._internalAttrs.has_key(attrName):
@@ -1131,7 +1124,7 @@ class LinacData(PyTango.Device_4Impl):
             for key in logic.keys():
                 attrStruct = self._getAttrStruct(attrName)
                 try:
-                    value = self.__getAttrReadValue(key)#attrStruct['read_value']
+                    value = self.__getAttrReadValue(key)
                 except Exception,e:
                     #That should never happen, perhaps better raise exception
                     self.error_stream("cannot eval logic attr %s with "\
@@ -1158,7 +1151,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_attr_bit(self, attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             attrType = PyTango.DevBoolean
@@ -1190,7 +1184,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_attrGrpBit(self,attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
             if self._internalAttrs.has_key(attrName):
@@ -1229,7 +1224,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_lock(self):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             rbyte = self.read_db.b(self.locking_raddr)
             locker = bool(rbyte & (1 << self.locking_rbit))
@@ -1241,7 +1237,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_Locking(self, attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             '''The read of this attribute is a boolean to represent if the 
                control of the plc has been take by tango. This doesn't look
@@ -1257,7 +1254,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_Lock_ST(self,attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
             #self.debug_stream('reading %s'%(attrName))
@@ -1297,7 +1295,8 @@ class LinacData(PyTango.Device_4Impl):
                     elif self._deviceIsInRemote:
                         tag = "%s (Labview)"%(meanings[self.read_lock_ST_attr])
                 elif self.read_lock_ST_attr == 2 and self._deviceIsInRemote:
-                    tag = "%s (Tango Read Only)"%(meanings[self.read_lock_ST_attr])
+                    tag = "%s (Tango Read Only)"\
+                          %(meanings[self.read_lock_ST_attr])
                 else:
                     tag = "%s"%(meanings[self.read_lock_ST_attr])
                 lock_String = "%d:%s"%(self.read_lock_ST_attr,tag)
@@ -1331,7 +1330,8 @@ class LinacData(PyTango.Device_4Impl):
             '''this is referencing to a device attribute that doesn't
                 have plc representation
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             try:
                 attrName = attr.get_name()
@@ -1374,7 +1374,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_attr(self, attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
 #            self.debug_stream("write_attr[%s]"%(name))
@@ -1393,7 +1394,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_attr_bit(self, attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
 #            self.debug_stream("write_attr_bit[%s]"%(name))
@@ -1455,7 +1457,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_attrGrpBit(self,attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
             if self._internalAttrs.has_key(attrName):
@@ -1488,7 +1491,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_lock(self, value):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             rbyte = self.read_db.b(self.locking_raddr)
             wbyte = self.write_db.b(self.locking_waddr)
@@ -1514,7 +1518,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_Locking(self, attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             #self.warn_stream('writing locking')
             try:
@@ -1534,7 +1539,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_attr_with_ramp(self, attr):
             '''
             '''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
             self.info_stream("write_attr_with_ramp[%s]"%(attrName))
@@ -1596,8 +1602,10 @@ class LinacData(PyTango.Device_4Impl):
             '''
             if self._plcAttrs.has_key(attrName):
                 attribute = self._plcAttrs[attrName]
-                ret = abs(attribute['read_value'] - attribute['ramp_dest']) < 0.01
-                self.info_stream("%s ramp is %sdone"%(attrName,"" if ret else "not "))
+                ret = abs(attribute['read_value'] - attribute['ramp_dest']) \
+                                                                         < 0.01
+                self.info_stream("%s ramp is %sdone"
+                                 %(attrName,"" if ret else "not "))
                 return ret
             return True
         
@@ -1622,7 +1630,7 @@ class LinacData(PyTango.Device_4Impl):
                 if abs(attribute['ramp_dest']) < abs(attribute['read_value']):
                     self.info_stream("%s ramp direction negative"%(attrName))
                     return -1 #negative direction
-                elif abs(attribute['ramp_dest']) > abs(attribute['read_value']):
+                elif abs(attribute['ramp_dest'])>abs(attribute['read_value']):
                     self.info_stream("%s ramp direction positive"%(attrName))
                     return +1 #positive direction
                 else:
@@ -1668,7 +1676,8 @@ class LinacData(PyTango.Device_4Impl):
                 attribute = self._plcAttrs[attrName]
                 step = self._internalAttrs[stepAttrName]
                 #destination-position = pending
-                pendingDistance = attribute['ramp_dest']-attribute['read_value']
+                pendingDistance = attribute['ramp_dest']-\
+                                                        attribute['read_value']
                 if self.__isBelowThreshold(attrName,'read_value'):
                     self.__moveToThreshold(attrName)
                 elif pendingDistance > step['read_value']:
@@ -1737,7 +1746,8 @@ class LinacData(PyTango.Device_4Impl):
             '''
             '''this is referencing to a device attribute that doesn't
                have plc representation'''
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
             self.debug_stream('write_internal_attr(%s)'%(attrName))
@@ -1755,17 +1765,20 @@ class LinacData(PyTango.Device_4Impl):
                     elif attrDescr['type'] in [PyTango.DevBoolean]:
                         attrValue = bool(data[0])
                     attrDescr['read_value'] = attrValue
-                    attrQuality = self.__buildAttrQuality(attrName,attrDescr['read_value'])
+                    attrQuality = self.__buildAttrQuality(attrName,
+                                                       attrDescr['read_value'])
                     self.storeDynMemozized(attr)
                     if attrDescr.has_key('events'):
-                        self.fireEventsList([attrName,attrValue,attrQuality],log=True)
+                        self.fireEventsList([attrName,attrValue,
+                                             attrQuality],log=True)
 
         @AttrExc
         def read_lastUpdateStatus(self,attr):
             '''
             '''
 #            self.debug_stream('read_lastUpdateStatus(%s)'%(attr.get_name()))
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attr.set_value(self.read_lastUpdateStatus_attr)
 
@@ -1774,7 +1787,8 @@ class LinacData(PyTango.Device_4Impl):
             '''
             '''
 #            self.debug_stream('read_lastUpdate(%s)'%(attr.get_name()))
-            if self.get_state()==PyTango.DevState.FAULT or (not self.has_data_available()):
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attr.set_value(self.read_lastUpdate_attr)
             
@@ -1802,8 +1816,8 @@ class LinacData(PyTango.Device_4Impl):
                 attrDescr = self._internalAttrs[attrName]
                 if self._internalAttrs[attrName].has_key('type'):
                     attrType = self._internalAttrs[attrName]['type']
-                    #once this is clear, data can be recovered from the database
-                    #and casted properly
+                    #once this is clear, data can be recovered from the
+                    #database and casted properly
                     db = PyTango.Database()
                     prop_names = db.get_device_property_list(self.get_name(),
                                                              "*")
@@ -1956,7 +1970,8 @@ class LinacData(PyTango.Device_4Impl):
                 if self.Port == None:
                     self.debug_stream("The PLC ip port must be set")
                     self.set_state(PyTango.DevState.FAULT)
-                    self.set_status("Please set the plc ip port",important=True)
+                    self.set_status("Please set the plc ip port",
+                                    important=True)
                     return
 
                 # end the region to setup the network communication parameters
@@ -2416,6 +2431,57 @@ class LinacData(PyTango.Device_4Impl):
                     self.error_stream("In eventGeneratorThread() "\
                                       "exception: %s"%(e))
 
+        def __lastEventHasChangingQuality(self,attrName):
+            attrStruct = self._getAttrStruct(attrName)
+            if attrStruct.has_key('lastEventQuality'):
+                if attrStruct['lastEventQuality'] == \
+                                             PyTango.AttrQuality.ATTR_CHANGING:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+            
+        def __attrValueHasThreshold(self,attrName):
+            if self._getAttrStruct(attrName).has_key('events') and \
+               self._getAttrStruct(attrName)['events'].has_key('Threshold'):
+                return True
+            else:
+                return False
+
+        def __isRstAttr(self,attrName):
+            if self._getAttrStruct(attrName).has_key('isRst'):
+                return self._getAttrStruct(attrName)['isRst']
+            else:
+                return False
+
+        def __checkAttrEmissionParams(self,attrName,newValue):
+            if not self.__attrHasEvents(attrName):
+                self.warn_stream("No events for the attribute %s"%(attrName))
+                return False
+            lastValue = self.__getAttrReadValue(attrName)
+            if lastValue == None:
+                #If there is no previous read, it has to be emitted
+                return True
+            if newValue == lastValue:
+                if self.__lastEventHasChangingQuality(attrName):
+                    return True
+            #after that we know the values are different
+            if self.__attrValueHasThreshold(attrName):
+                diff = abs(lastValue - newValue)
+                threshold = self._getAttrStruct(attrName)['events']['Threshold']
+                if diff > threshold:
+                    return True
+                elif self.__lastEventHasChangingQuality(attrName):
+                    return True
+                else:
+                    return False
+            if self.__isRstAttr(attrName):
+                if self._getAttrStruct(attrName)['rst_t'] != None:
+                    return True
+            #when non case before, no event
+            return False
+
         def plcGeneralAttrEvents(self):
             '''This method is used to periodically loop to review the list of
                attribute (above the basics) and check if they need event 
@@ -2437,11 +2503,12 @@ class LinacData(PyTango.Device_4Impl):
             for attrName in attributeList:
                 self.checkResetAttr(attrName)
             for attrName in attributeList:
+                #First check if for this element, it's prepared for events
                 if self.__attrHasEvents(attrName):
                     try:
                         attrStruct = self._getAttrStruct(attrName)
                         attrType = attrStruct['type']
-                        lastValue = self.__getAttrReadValue(attrName)
+                        #lastValue = self.__getAttrReadValue(attrName)
                         last_read_t = attrStruct['read_t']
                         if attrStruct.has_key('read_addr'):
                             read_addr = attrStruct['read_addr']
@@ -2457,71 +2524,33 @@ class LinacData(PyTango.Device_4Impl):
                                 newValue = self.__solveFormula(attrName,
                                                                newValue,
                                                  attrStruct['formula']['read'])
-                        emit = False#always suppose it will not be emited
-                        #now we can check if the attribute has changed
-                        if not (newValue == lastValue):
-                            #Event if they are different, check other
-                            #conditions to emit events:
-                            if lastValue == None:#no read before
-                                emit = True
-                            elif attrStruct['events'].has_key('Threshold'):
-                                diff = abs(lastValue - newValue)
-                                threshold = attrStruct['events']['Threshold']
-                                if diff > (threshold):
-                                    emit = True
-                            elif attrStruct.has_key('isRst') and \
-                                 attrStruct['isRst'] == True:
-                                #This is a hackish to avoid intermediate event
-                                # emission when between the clean of the reset 
-                                # flag and when the PLC collate it.
-                                if newValue and attrStruct['rst_t'] != None or \
-                                   not newValue and attrStruct['rst_t'] == None:
-                                    emit = True
+                        if self.__checkAttrEmissionParams(attrName,newValue):
+                            self.__applyReadValue(attrName,newValue,
+                                                  self.last_update_time)
+                            if attrStruct.has_key('meanings'):
+                                attrValue = self.__buildAttrMeaning(\
+                                                             attrName,newValue)
+                                attrQuality = self.__buildAttrQuality(\
+                                                             attrName,newValue)
+                            elif attrStruct.has_key('qualities'):
+                                attrValue = newValue
+                                attrQuality = self.__buildAttrQuality(\
+                                                            attrName,attrValue)
                             else:
-                                emit = True
-                        elif (last_read_t == None):# or \
-                             #((now -last_read_t) > PERIODIC_EVENT):
-                            emit = True
+                                attrValue = newValue
+                                attrQuality = PyTango.AttrQuality.ATTR_VALID
+                            #store the current quality to know an end of 
+                            #a movement: quality from changing to valid
+                            attrStruct['lastEventQuality'] = attrQuality
+                            #collect to launch fire event
+                            attr2Event.append([attrName,
+                                                attrValue,
+                                                attrQuality])
                     except Exception,e:
-                        self.debug_stream("In plcGeneralAttrEvents(), exception "\
-                                          "reading attribute %s: %s"%(attrName,e))
-                        #traceback.print_exc()
-                    else:
-                        try:
-                            if emit:
-                                self.debug_stream("In plcGeneralAttrEvents() "\
-                                                  "prepare to emit %s"
-                                                  %(attrName))
-                                #only when the new value will be emited as event
-                                #store it as the read_value (or small drifts could
-                                #change a lot the last emited than the reading).
-                                self.__applyReadValue(attrName,
-                                                      newValue,
-                                                      self.last_update_time)
-                                if attrStruct.has_key('meanings'):
-                                    attrValue = self.__buildAttrMeaning(attrName,
-                                                                        newValue)
-                                    attrQuality = self.__buildAttrQuality(attrName,
-                                                                          newValue)
-                                elif attrStruct.has_key('qualities'):
-                                    attrValue = newValue
-                                    attrQuality = self.__buildAttrQuality(attrName,
-                                                                         attrValue)
-                                else:
-                                    attrValue = newValue
-                                    attrQuality = PyTango.AttrQuality.ATTR_VALID
-                                attr2Event.append([attrName,attrValue,attrQuality])
-                        except Exception,e:
-                            self.debug_stream("In plcGeneralAttrEvents(), exception "\
-                                              "on emit attribute %s: %s"%(attrName,e))
-                            #traceback.print_exc()
+                        self.warn_stream("In plcGeneralAttrEvents(), "\
+                                          "exception in attribute %s: %s"
+                                          %(attrName,e))
             if len(attr2Event) > 0:
-#                #FIXME: that's a test
-#                bar = []
-#                for i in range(len(attr2Event)):
-#                    bar.append(attr2Event[i][0])
-#                #self.info_stream("In plcGeneralAttrEvents(): %s"%(str(bar)))
-#                self.info_stream("In plcGeneralAttrEvents(): %s events"%(len(bar)))
                 self.fireEventsList(attr2Event,log=True)
             return len(attr2Event)
 
@@ -2543,10 +2572,12 @@ class LinacData(PyTango.Device_4Impl):
                         lastValue = self.__getAttrReadValue(attrName)
                         last_read_t = attrStruct['read_t']
                         if attrStruct.has_key('logic'):
-                            #self.info_stream("Attribute %s is from logical type"%(attrName))
+                            #self.info_stream("Attribute %s is from logical "\
+                            #                 "type"%(attrName))
                             newValue = self._evalLogical(attrName)
                         elif attrStruct.has_key('read_set'):
-                            #self.info_stream("Attribute %s is from group type"%(attrName))
+                            #self.info_stream("Attribute %s is from group type"
+                            #                 %(attrName))
                             newValue = self.__getGrpBitValue(attrName,
                                                        attrStruct['read_set'],
                                                        self.read_db)
@@ -2557,16 +2588,25 @@ class LinacData(PyTango.Device_4Impl):
                             newValue = lastValue
                         emit = False
                         if newValue != lastValue:
-                            #self.info_stream("Emit because %s!=%s"%(str(newValue),str(lastValue)))
+                            #self.info_stream("Emit because %s!=%s"
+                            #                 %(str(newValue),str(lastValue)))
                             emit = True
                         elif (last_read_t == None):
-                            #self.info_stream("Emit new value because it wasn't read before")
+                            #self.info_stream("Emit new value because it "\
+                            #                 "wasn't read before")
                             emit = True
                         else:
-                            pass#self.info_stream("No event to emit (lastValue %s (%s), newValue %s)"%(str(lastValue),str(last_read_t),str(newValue)))
+                            pass
+                            #self.info_stream("No event to emit "\
+                            #                 "(lastValue %s (%s), "\
+                            #                 "newValue %s)"
+                            #                 %(str(lastValue),
+                            #                   str(last_read_t),
+                            #                   str(newValue)))
                     except Exception,e:
-                        self.error_stream("In internalAttrEvents(), exception "\
-                                        "reading attribute %s: %s"%(attrName,e))
+                        self.error_stream("In internalAttrEvents(), "\
+                                          "exception reading attribute %s: %s"
+                                          %(attrName,e))
                     else:
                         #prepare to emit
                         try:
@@ -2575,28 +2615,23 @@ class LinacData(PyTango.Device_4Impl):
                                                       newValue,
                                                       self.last_update_time)
                                 if attrStruct.has_key('meanings'):
-                                    attrValue = self.__buildAttrMeaning(attrName,
-                                                                        newValue)
-                                    attrQuality = self.__buildAttrQuality(attrName,
-                                                                          newValue)
+                                    attrValue = self.__buildAttrMeaning(\
+                                                             attrName,newValue)
+                                    attrQuality = self.__buildAttrQuality(\
+                                                             attrName,newValue)
                                 elif attrStruct.has_key('qualities'):
                                     attrValue = newValue
-                                    attrQuality = self.__buildAttrQuality(attrName,
-                                                                         attrValue)
+                                    attrQuality = self.__buildAttrQuality(\
+                                                            attrName,attrValue)
                                 else:
                                     attrValue = newValue
-                                    attrQuality = PyTango.AttrQuality.ATTR_VALID
+                                    attrQuality=PyTango.AttrQuality.ATTR_VALID
                                 attr2Event.append([attrName,attrValue])
                         except Exception,e:
-                            self.error_stream("In internalAttrEvents(), exception "\
-                                              "on emit attribute %s: %s"%(attrName,e))
+                            self.error_stream("In internalAttrEvents(), "\
+                                              "exception on emit attribute "\
+                                              "%s: %s"%(attrName,e))
             if len(attr2Event) > 0:
-#                #FIXME: that's a test
-#                bar = []
-#                for i in range(len(attr2Event)):
-#                    bar.append(attr2Event[i][0])
-#                #self.info_stream("In internalAttrEvents(): %s"%(str(bar)))
-#                self.info_stream("In internalAttrEvents(): %s events"%(len(bar)))
                 self.fireEventsList(attr2Event,log=True)
             return len(attr2Event)
 
@@ -2613,7 +2648,8 @@ class LinacData(PyTango.Device_4Impl):
                 writeAddr = self._plcAttrs[attrName]['write_addr']
                 writeBit = self._plcAttrs[attrName]['write_bit']
                 writeValue = False
-                self.__writeBit(attrName,readAddr,writeAddr,writeBit,writeValue)
+                self.__writeBit(attrName,readAddr,
+                                writeAddr,writeBit,writeValue)
                 self._plcAttrs[attrName]['write_value'] = writeValue
                 #self._plcAttrs[attrName]['read_value'] = False
                 #self.fireEvent([attrName,False],time.time())
@@ -2671,18 +2707,20 @@ class LinacData(PyTango.Device_4Impl):
                             if self._plcUpdatePeriod < PLC_MAX_UPDATE_PERIOD:
                                 self.warn_stream("plcUpdaterThread() "\
                                                  "it has take %3.6f seconds, "\
-                                                 "more than expected, increase "\
-                                                 "period (%3.3f + %3.3f seconds)"
+                                                 "more than expected, "\
+                                                 "increase period (%3.3f + "\
+                                                 "%3.3f seconds)"
                                                  %(diff_t,
                                                    self._plcUpdatePeriod,
                                                    10*PLC_STEP_UPDATE_PERIOD))
-                                self._plcUpdatePeriod += 10*PLC_STEP_UPDATE_PERIOD
+                                self._plcUpdatePeriod += \
+                                                      10*PLC_STEP_UPDATE_PERIOD
                             else:
                                 self.error_stream("plcUpdaterThread() "\
-                                                  "it has take %3.6f seconds, "\
-                                                  "more than expected and "\
-                                                  "period cannot be increased "\
-                                                  "(%3.3f seconds)"
+                                                  "it has take %3.6f seconds,"\
+                                                  " more than expected and "\
+                                                  "period cannot be increased"\
+                                                  " (%3.3f seconds)"
                                                   %(diff_t,
                                                     self._plcUpdatePeriod))
                         elif diff_t > self._plcUpdatePeriod:
@@ -2690,7 +2728,8 @@ class LinacData(PyTango.Device_4Impl):
                                              "too much time (%3.3f seconds)"
                                              %(diff_t))
                             if self._plcUpdatePeriod < PLC_MAX_UPDATE_PERIOD:
-                                self._plcUpdatePeriod += 10*PLC_STEP_UPDATE_PERIOD
+                                self._plcUpdatePeriod += \
+                                                      10*PLC_STEP_UPDATE_PERIOD
                         else:
                             self.debug_stream("plcUpdaterThread() "\
                                               "it has take %3.6f seconds, "\
@@ -2731,8 +2770,9 @@ class LinacData(PyTango.Device_4Impl):
             # INIT states mean something is going is on that interferes with
             #      updating, such as connecting
             start_update_time = time.time()
-            if (self.get_state()==PyTango.DevState.FAULT) or (not self.is_connected()):
-                if start_update_time-self.last_update_time < self.ReconnectWait:
+            if (self.get_state()==PyTango.DevState.FAULT) or \
+                                                     (not self.is_connected()):
+                if start_update_time-self.last_update_time<self.ReconnectWait:
                     return
                 else:
                     if self.connect():
@@ -2772,7 +2812,8 @@ class LinacData(PyTango.Device_4Impl):
                 attr2Event = [['lastUpdate',self.read_lastUpdate_attr],
                           ['lastUpdateStatus',self.read_lastUpdateStatus_attr]]
                 self.fireEventsList(attr2Event)
-#                self.info_stream("Update() it has take %3.6f seconds"%(diff_t))
+#                self.info_stream("Update() it has take %3.6f seconds"
+#                                 %(diff_t))
                 #---- when an update goes fine, the period is reduced one step
                 #     until the minumum
                 if self._plcUpdatePeriod > PLC_MIN_UPDATE_PERIOD:
