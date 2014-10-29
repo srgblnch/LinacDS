@@ -57,7 +57,7 @@
 Attr('HVPS_V_setpoint',
      PyTango.DevFloat,46,0,#RW
      l='High voltage PS voltage setpoint',
-     unit='kV',min=0,max=33,format='%4.1f',#switch='HVPS_ONC',
+     unit='kV',min=0,max=33,format='%4.2f',#switch='HVPS_ONC',
      events={'Threshold':0.01})
 Attr('Heat_I',
      PyTango.DevFloat,4,
@@ -72,7 +72,7 @@ Attr('Heat_V',
 Attr('HVPS_V',
      PyTango.DevFloat,12,#RO
      l='High voltage PS voltage',
-     unit='kV',min=0,max=40,format='%4.1f',
+     unit='kV',min=0,max=40,format='%4.2f',
      events={'Threshold':0.001})
 Attr('HVPS_I',
      PyTango.DevFloat,16,
