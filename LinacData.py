@@ -66,7 +66,7 @@ import fcntl
 #constants
 
 EVENT_THREAD_PERIOD = 0.320#s
-RESET_TIME = EVENT_THREAD_PERIOD*2#s
+ACTIVE_RESET_T = EVENT_THREAD_PERIOD*3#s
 PLC_MIN_UPDATE_PERIOD = EVENT_THREAD_PERIOD/2#s
 PLC_MAX_UPDATE_PERIOD = EVENT_THREAD_PERIOD*2#s
 PLC_STEP_UPDATE_PERIOD = EVENT_THREAD_PERIOD/10#s
@@ -75,7 +75,7 @@ EXPECTED_UPDATE_TIME = PLC_MAX_UPDATE_PERIOD#s or less
 class release:
     author = 'Lothar Krause <lkrause@cells.es> &'\
              ' Sergi Blanch-Torne <sblanch@cells.es>'
-    hexversion = 0x020108
+    hexversion = 0x020203
     __str__ = lambda self: hex(hexversion)
 
 if False:
@@ -855,8 +855,9 @@ class LinacData(PyTango.Device_4Impl):
             '''
             if timestamp == None:
                 timestamp = time.time()
-            #self.debug_stream("In fireEvent() attribute %s"
-            #                  %(attrEventStruct[0]))
+            if self.__isRstAttr(attrEventStruct[0]):
+                self.info_stream("In fireEvent() attribute %s = %s"
+                                  %(attrEventStruct[0],attrEventStruct[1]))
             if len(attrEventStruct) == 3: #the quality is specified
                 self.push_change_event(attrEventStruct[0],attrEventStruct[1],
                                        timestamp,
@@ -1012,6 +1013,8 @@ class LinacData(PyTango.Device_4Impl):
         def __setAttrValue(self,attr,attrName,attrType,attrValue,timestamp):
             '''
             '''
+            self.debug_stream("__setAttrvalue(%s,%s,%s,%s)"
+                              %(attrName,attrType,attrValue,timestamp))
             attrStruct = self._getAttrStruct(attrName)
             self.__applyReadValue(attrName,attrValue,timestamp)
             if attrStruct.has_key('meanings'):
@@ -1051,9 +1054,9 @@ class LinacData(PyTango.Device_4Impl):
                 self.__applyWriteValue(attrName,writeValue)
                 try:
                     attr.set_write_value(writeValue)
-                except PyTango.DevFailed:
-                    self.tainted = self.get_name()+'/'+attrName+\
-                                  ': failed to set point '+str(writeValue)
+                except PyTango.DevFailed,e:
+                    self.tainted = "%s/%s: failed to set point %s (%s)"\
+                                  %(self.get_name(),attrName,writeValue,e)
                     self.error_stream(self.tainted)
             elif attrStruct.has_key('write_value'):
                 try:
@@ -1410,8 +1413,8 @@ class LinacData(PyTango.Device_4Impl):
                                                 attrStruct['formula']['write'])
             self.__writeBit(name,read_addr,write_addr,write_bit, write_value)
             attrStruct['write_value'] = write_value
-            if attrStruct.has_key('isRst') and \
-               attrStruct['isRst'] == True:
+            if self.__isRstAttr(name) and write_value == True:
+                self.info_stream("Received a reset for %s (%s)"%(name,write_value))
                 attrStruct['rst_t'] = time.time()
             if attrStruct.has_key('rampingAttr'):
                 rampeableAttr = attrStruct['rampingAttr']
@@ -2433,6 +2436,9 @@ class LinacData(PyTango.Device_4Impl):
 
         def __lastEventHasChangingQuality(self,attrName):
             attrStruct = self._getAttrStruct(attrName)
+            if attrStruct.has_key('meanings') or attrStruct.has_key('isRst'):
+                #To these attributes this doesn't apply
+                return False
             if attrStruct.has_key('lastEventQuality'):
                 if attrStruct['lastEventQuality'] == \
                                              PyTango.AttrQuality.ATTR_CHANGING:
@@ -2450,6 +2456,8 @@ class LinacData(PyTango.Device_4Impl):
                 return False
 
         def __isRstAttr(self,attrName):
+            if attrName.startswith('lastUpdate'):
+                return False
             if self._getAttrStruct(attrName).has_key('isRst'):
                 return self._getAttrStruct(attrName)['isRst']
             else:
@@ -2460,25 +2468,35 @@ class LinacData(PyTango.Device_4Impl):
                 self.warn_stream("No events for the attribute %s"%(attrName))
                 return False
             lastValue = self.__getAttrReadValue(attrName)
+#            self.debug_stream("Attribute '%s' last value '%s' new value '%s'"
+#                              %(attrName,str(lastValue),str(newValue)))
             if lastValue == None:
                 #If there is no previous read, it has to be emitted
                 return True
-            if newValue == lastValue:
-                if self.__lastEventHasChangingQuality(attrName):
-                    return True
             #after that we know the values are different
+            if self.__isRstAttr(attrName):
+                writeValue = self._getAttrStruct(attrName)['write_value']
+                rst_t = self._getAttrStruct(attrName)['rst_t']
+                if newValue == True and lastValue == False and\
+                   writeValue == True and rst_t != None:
+                    return True
+                elif newValue == False and lastValue == True and\
+                   writeValue == False and rst_t == None:
+                    return True
+                else:
+                    return False
             if self.__attrValueHasThreshold(attrName):
                 diff = abs(lastValue - newValue)
                 threshold = self._getAttrStruct(attrName)['events']['Threshold']
                 if diff > threshold:
                     return True
                 elif self.__lastEventHasChangingQuality(attrName):
+                    #below the threshold and last quality changing is an 
+                    #indicative that a movement has finish, then it's time
+                    #to emit an event with a quality valid.
                     return True
                 else:
                     return False
-            if self.__isRstAttr(attrName):
-                if self._getAttrStruct(attrName)['rst_t'] != None:
-                    return True
             #when non case before, no event
             return False
 
@@ -2502,7 +2520,6 @@ class LinacData(PyTango.Device_4Impl):
             attr2Event = []
             for attrName in attributeList:
                 self.checkResetAttr(attrName)
-            for attrName in attributeList:
                 #First check if for this element, it's prepared for events
                 if self.__attrHasEvents(attrName):
                     try:
@@ -2546,6 +2563,8 @@ class LinacData(PyTango.Device_4Impl):
                             attr2Event.append([attrName,
                                                 attrValue,
                                                 attrQuality])
+#                        else:
+#                            self.debug_stream("No event for %s"%(attrName))
                     except Exception,e:
                         self.warn_stream("In plcGeneralAttrEvents(), "\
                                           "exception in attribute %s: %s"
@@ -2638,12 +2657,13 @@ class LinacData(PyTango.Device_4Impl):
         def checkResetAttr(self,attrName):
             '''
             '''
+            if not self.__isRstAttr(attrName):
+                return
             #FIXME: if this is moved to a new thread separated to the event 
             #       emission, the system must be changed to be pasive waiting
             #       (that it Threading.Event())
             if self.__isCleanResetNeed(attrName):
                 self._plcAttrs[attrName]['rst_t'] = None
-                self.info_stream("Set back to 0 a RST attr %s"%(attrName))
                 readAddr = self._plcAttrs[attrName]['read_addr']
                 writeAddr = self._plcAttrs[attrName]['write_addr']
                 writeBit = self._plcAttrs[attrName]['write_bit']
@@ -2651,6 +2671,7 @@ class LinacData(PyTango.Device_4Impl):
                 self.__writeBit(attrName,readAddr,
                                 writeAddr,writeBit,writeValue)
                 self._plcAttrs[attrName]['write_value'] = writeValue
+                self.info_stream("Set back to 0 a RST attr %s"%(attrName))
                 #self._plcAttrs[attrName]['read_value'] = False
                 #self.fireEvent([attrName,False],time.time())
 
@@ -2666,7 +2687,7 @@ class LinacData(PyTango.Device_4Impl):
                     if self._plcAttrs[attrName].has_key('activeRst_t'):
                         activeRst_t = self._plcAttrs[attrName]['activeRst_t']
                     else:
-                        activeRst_t = RESET_TIME
+                        activeRst_t = ACTIVE_RESET_T
                     if activeRst_t-diff_t < 0:
                         self.info_stream("Attribute %s needs clean reset"
                                          %(attrName))
@@ -3010,7 +3031,8 @@ class LinacDataClass(PyTango.DeviceClass):
                 'Update':
                         [[PyTango.DevVoid, ""],
                         [PyTango.DevVoid, ""],
-                        { 'polling period' : 50 } ],
+                        #{ 'polling period' : 50 }
+                        ],
                 }
 
         #    Attribute definitions
