@@ -1409,16 +1409,29 @@ class LinacData(PyTango.Device_4Impl):
             write_value = self.prepare_write(attr)
             if attrStruct.has_key('formula') and \
                attrStruct['formula'].has_key('write'):
-                write_value = self.__solveFormula(name,write_value,
+                formula_value = self.__solveFormula(name,write_value,
                                                 attrStruct['formula']['write'])
+                self.info_stream("%s received %s formula eval(\"%s\") = %s"
+                                 %(name,write_value,
+                                   attrStruct['formula']['write'],
+                                   formula_value))
+                if formula_value != write_value:
+                    reason = "Write %s not allowed"%write_value
+                    description = attrStruct['formula']['write_not_allowed']
+                    PyTango.Except.throw_exception(reason,
+                                                   description,
+                                                   name,
+                                                   PyTango.ErrSeverity.WARN)
+                else:
+                    write_value = formula_value
             self.__writeBit(name,read_addr,write_addr,write_bit, write_value)
             attrStruct['write_value'] = write_value
+            self.info_stream("Received write %s (%s)"%(name,write_value))
             if self.__isRstAttr(name) and write_value == True:
-                self.info_stream("Received a reset for %s (%s)"%(name,write_value))
                 attrStruct['rst_t'] = time.time()
             if attrStruct.has_key('rampingAttr'):
                 rampeableAttr = attrStruct['rampingAttr']
-                self.__moveToThreshold(rampeableAttr)
+                #self.__moveToThreshold(rampeableAttr)
                 self.createRampThread(rampeableAttr)
             #TODO: this has been splitted to a separated method
 #            rbyte = self.read_db.b(read_addr)
@@ -2497,6 +2510,10 @@ class LinacData(PyTango.Device_4Impl):
                     return True
                 else:
                     return False
+            #At this point any special case has been treated, only avoid
+            #to emit if value doesn't change
+            if newValue != lastValue:
+                return True
             #when non case before, no event
             return False
 

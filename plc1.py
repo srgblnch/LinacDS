@@ -719,9 +719,18 @@ AttrBit('GUN_LV_ONC',
                   1:'on'},
         qualities={'warning':[0]},
         events={},
-        formula={'read':'VALUE and '\
-                 'self._internalAttrs[\'Gun_ready\'][\'read_value\'] == True'},
+        formula={'read':
+                  'VALUE and '\
+                  'self._internalAttrs[\'Gun_ready\'][\'read_value\'] == True',
+                 'write':
+                  'VALUE ^ self._plcAttrs[\'GUN_HV_ONC\'][\'read_value\']',
+                 'write_not_allowed':'Gun LV not available when Gun HV ON.'},
         )
+        #formula['write'] condition: avoid LV on/off when HV is on
+        #that is: allow to turn LV off when HV is off => 0 xor 0: 0
+        #         avoid to turn LV off when HV is on  => 0 xor 1: 1
+        #         allow to turn LV on  when HV is off => 1 xor 0: 1
+        #         avoid to turn LV on  when HV is on  => 1 xor 1: 0
 
 #---- R163 W079 @DO_8to15
 scm_dc_desc = 'screen monitor %d; 0:up, 1:down'
