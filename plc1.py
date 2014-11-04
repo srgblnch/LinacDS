@@ -96,9 +96,10 @@ Attr('GUN_HV_I',
      PyTango.DevFloat,36,#RO
      l='High voltage PS current',
      d='high voltage PS current (leakage current)',
-     format='%4.1f',min=0,max=600,unit='μA',
+     format='%4.1f',min=-600,max=1,unit='μA',
      events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'above':100.0}}})
+     qualities={'warning':{'abs':{'above':1.0,
+                                  'below':-20.0}}})
 
 #---- R040 @PHS1_PM
 Attr('PHS1_Phase',
@@ -724,7 +725,7 @@ AttrBit('GUN_LV_ONC',
                   'self._internalAttrs[\'Gun_ready\'][\'read_value\'] == True',
                  'write':
                   'VALUE ^ self._plcAttrs[\'GUN_HV_ONC\'][\'read_value\']',
-                 'write_not_allowed':'Gun LV not available when Gun HV ON.'},
+                 'write_not_allowed':'Gun LV not modifiable when Gun HV ON.'},
         )
         #formula['write'] condition: avoid LV on/off when HV is on
         #that is: allow to turn LV off when HV is off => 0 xor 0: 0
