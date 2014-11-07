@@ -714,6 +714,8 @@ AttrBit('GUN_HV_ONC',#HVS_OC
         events={},
         formula={'read':'VALUE and '\
                  'self._plcAttrs[\'Gun_HV_ST\'][\'read_value\'] == 4'},
+        switchDescriptor={WHENOFF:{ATTR2RAMP:'GUN_HV_V_setpoint',
+                                   RAMPDEST:0}}
         )
 AttrBit('Interlock_RC',#IU_RST
         162,3,78,#RW

@@ -440,8 +440,51 @@ class AttrList(object):
     def add_AttrAddrBit(self,name,read_addr=None,read_bit=0,write_addr=None,
                           write_bit=None,meanings=None,qualities=None,
                           events=None,isRst=False,activeRst_t=None,
-                          rampingAttr=None,
-                          formula=None,**kwargs):
+                          formula=None,switchDescriptor=None,**kwargs):
+        '''This method is a builder of a boolean dynamic attribute, even for RO
+           than for RW. There are many optional parameters.
+           
+           With the meanings argument, moreover the DevBoolean a DevString
+           attribute will be also generated (suffixed *_Status) with the same 
+           event and qualities configuration if they are, and will have a 
+           human readable message from the concatenation of the value and its
+           meaning.
+           
+           There are also boolean attributes with a reset feature, those are
+           attributes that can be triggered and after some short period of time
+           they are automatically set back. The time with this reset active
+           can be generic (and uses ACTIVE_RESET_T from the constants) or can
+           be specified for a particular attribute using the activeRst_t.
+           
+           Another feature implemented for this type of attributes is the 
+           formula. That requires a dictionary with keys:
+           + 'read' | 'write': they contain an string to be evaluated when 
+             value changes like a filter or to avoid an action based on some
+             condition.
+           For example, this is used to avoid to power up klystrons if there 
+           is an interlock, or to switch of the led when an interlock occurs.
+           {'read':'VALUE and '\
+                       'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 9 and '\
+                       'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 8',
+                 'write':'VALUE and '\
+                       'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 8 and '\
+                       'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 7'
+                },
+           
+           The latest feature implemented has relation with the rampeable 
+           attributes and this is a secondary configuration for the 
+           AttrRampeable DevDouble attributes, but in this case the feature 
+           to complain is to manage ramping on the booleans that power on and 
+           off those elements.
+           The ramp itself shall be defined in the DevDouble attribute, the 
+           switch attribute only needs to know where to send this when state
+           changes.
+           The switchDescriptor is a dictionary with keys:
+           + WHENON | WHENOFF: keys to differentiate actions between the two
+             possible state changes.
+             + ATTR2RAMP: the name of the attribute to be modified.
+             - RAMPDEST: Value to write in the ATTR2RAMP when state changes.
+        '''
 
         if write_bit is None:
             write_bit = read_bit
@@ -464,8 +507,9 @@ class AttrList(object):
             self.impl._plcAttrs[name][RESETTIME] = None
             if activeRst_t != None:
                 self.impl._plcAttrs[name][RESETACTIVE] = activeRst_t
-#        if not rampingAttr == None:
-#            self.impl._plcAttrs[name]['rampingAttr'] = rampingAttr
+        if type(switchDescriptor) == dict:
+            self.impl._plcAttrs[name][SWITCHDESCRIPTOR] = switchDescriptor
+            self.impl._plcAttrs[name][SWITCHDEST] = None
         self.__prepareEvents(name,events)
         if not meanings == None:
             return self.__prepareAttrWithMeaning(name, PyTango.DevBoolean,
@@ -521,7 +565,7 @@ class AttrList(object):
            build a RW attribute that looks like the other RWs but it includes 
            ramping features.
            - rampsDescriptor is a dictionary with two main keys:
-             - ASCENDING & DESCENDING: Each of these keys contain a 
+             + ASCENDING | DESCENDING: Each of these keys contain a 
                dictionary in side describing the behaviour of the ramp 
                ('+' mandatory keys, '-' optional keys):
                + STEP: value added/subtracted on each step.
@@ -542,26 +586,26 @@ class AttrList(object):
                                     THRESHOLD:20,#kV
                                     SWITCH:'HVPS_ONC'
                                    }}
-        '''
-#FIXME: take the 'when OFF' request to the switcher it self
-#           Another request for the Filament voltage is a descending ramp in
-#           similar characteristics than klystrons, but also: once commanded a 
-#           power off, delay it doing a ramps to 0. And this ramp would be 
-#           different than the initial.
-#           Example:
-#           - rampsDescriptor = {DESCENDING:
-#                                   {STEP:1,#kV
-#                                    STEPTIME:1,#s
-#                                    THRESHOLD:-50,#kV
-#                                    SWITCH:'GUN_HV_ONC'
-#                                   },
-#                                ASCENDING:
-#                                   {STEP:5,#kV
-#                                    STEPTIME:0.5,#s
-#                                    THRESHOLD:-90,#kV
-#                                    SWITCH:'GUN_HV_ONC'
-#                                   }}
 
+           Another request for the Filament voltage is a descending ramp in
+           similar characteristics than klystrons, but also: once commanded a 
+           power off, delay it doing a ramps to 0. This second request will
+           be managed from the boolean that does this on/off transition using
+           AttrAddrBit() builder together with a switchDescriptor dictionary.
+           Example:
+           - rampsDescriptor = {DESCENDING:
+                                   {STEP:1,#kV
+                                    STEPTIME:1,#s
+                                    THRESHOLD:-50,#kV
+                                    SWITCH:'GUN_HV_ONC'
+                                   },
+                                ASCENDING:
+                                   {STEP:5,#kV
+                                    STEPTIME:0.5,#s
+                                    THRESHOLD:-90,#kV
+                                    SWITCH:'GUN_HV_ONC'
+                                   }}
+        '''
         rfun = self.__getAttrMethod('read',name)
         wfun = self.__getAttrMethod('write',name,rampeable=True)
         self.__traceAttrAddr(name,T,readAddr=read_addr,writeAddr=write_addr)
@@ -619,7 +663,6 @@ class AttrList(object):
 #                                rampAttributes.append(newAttr)
         rampAttributes.insert(0,rampeableAttr)
         return tuple(rampAttributes)
-
 
     def _buildInternalAttr4Ramping(self,baseName,suffix,baseLabel,unit,
                                    defaultValue):
@@ -799,6 +842,7 @@ class LinacData(PyTango.Device_4Impl):
         read_db = None
         _important_logs = []
         _rampThreads = {}
+        _switchThreads = {}
         
         _prevMemDump = None
         _prevLockSt = None
@@ -1500,15 +1544,22 @@ class LinacData(PyTango.Device_4Impl):
                                                    PyTango.ErrSeverity.WARN)
                 else:
                     write_value = formula_value
+            if attrStruct.has_key(SWITCHDESCRIPTOR):
+                #Depending to the on or off transition keys, this will launch 
+                #a thread who will modify the ATTR2RAMP, and when that 
+                #finishes the write will be set.
+                if self.__stateTransitionNeeded(write_value,
+                                                attrStruct[SWITCHDESCRIPTOR]):
+                    attrStruct[SWITCHDEST] = write_value
+                    self.createSwitchStateThread(name)
+                    return
+                #The returns are necessary to avoid the write that is set later
+                #on this method. But in the final else case it has to continue.
             self.__writeBit(name,read_addr,write_addr,write_bit, write_value)
             attrStruct[WRITEVALUE] = write_value
             self.info_stream("Received write %s (%s)"%(name,write_value))
             if self.__isRstAttr(name) and write_value == True:
                 attrStruct[RESETTIME] = time.time()
-#            if attrStruct.has_key('rampingAttr'):
-#                rampeableAttr = attrStruct['rampingAttr']
-#                #self.__moveToThreshold(rampeableAttr)
-#                self.createRampThread(rampeableAttr)
             #TODO: this has been splitted to a separated method
 #            rbyte = self.read_db.b(read_addr)
 #            if write_value:
@@ -1525,6 +1576,22 @@ class LinacData(PyTango.Device_4Impl):
 #                             "%s; write %s; now %s"
 #                             %(name,write_value,write_addr,write_bit,
 #                               bin(rbyte),bin(toWrite),bin(reRead)))
+
+        def __stateTransitionNeeded(self,value,descriptor):
+            if self.__stateTransitionToOn(value,descriptor):
+                return True
+            elif self.__stateTransitionToOff(value,descriptor):
+                return True
+            return False
+        
+        def __stateTransitionToOn(self,value,descriptor):
+            if value == True and descriptor.has_key(WHENON):
+                return True
+            return False
+        def __stateTransitionToOff(self,value,descriptor):
+            if value == False and descriptor.has_key(WHENOFF):
+                return True
+            return False
 
         def __writeBit(self,name,read_addr,write_addr,write_bit,write_value):
             '''
@@ -1644,20 +1711,24 @@ class LinacData(PyTango.Device_4Impl):
             self.info_stream("write_attr_with_ramp(%s: %g)"
                              %(attrName,ramp_dest))
             if self.__isRampingAttr(attrName):
-                self._plcAttrs[attrName][RAMPDEST] = ramp_dest
-                # check if the ramping is active for this attribute before
-                # create a thread for it, because if it's inactive this 
-                # is like a non-ramping attribute and only requires to 
-                # write in WRITEVALUE and send to the plc.
-                #  * This is necessary because, in case that thread 
-                #  * creation cause problems, this can be disabled and 
-                #  * operate normally.
-                if self.__isRampEnabled(attrName):
-                    self.createRampThread(attrName)
-                else: 
-                    self.__moveToValue(attrName,ramp_dest)
-                #FIXME: this doesn't support the formula feature for ramping 
-                #       attributes.
+                self._launchRamp(attrName, ramp_dest)
+
+        def _launchRamp(self,attrName,ramp_dest):
+            attrStruct = self._getAttrStruct(attrName)
+            attrStruct[RAMPDEST] = ramp_dest
+            # check if the ramping is active for this attribute before
+            # create a thread for it, because if it's inactive this 
+            # is like a non-ramping attribute and only requires to 
+            # write in WRITEVALUE and send to the plc.
+            #  * This is necessary because, in case that thread 
+            #  * creation cause problems, this can be disabled and 
+            #  * operate normally.
+            if self.__isRampEnabled(attrName):
+                self.createRampThread(attrName)
+            else: 
+                self.__moveToValue(attrName,ramp_dest)
+            #FIXME: this doesn't support the formula feature for ramping 
+            #       attributes.
 
         def __isRampingAttr(self,attrName):
             attrStruct = self._getAttrStruct(attrName)
@@ -1667,7 +1738,7 @@ class LinacData(PyTango.Device_4Impl):
             return False
 
         def createRampThread(self,attrName):
-            '''This creates a thread, is not exist yet, to manage the ramping 
+            '''This creates a thread, if not exist yet, to manage the ramping 
                procedure, returning the asap to the write action.
             '''
             thread = self.__getRampThread(attrName)
@@ -1690,7 +1761,7 @@ class LinacData(PyTango.Device_4Impl):
                 if not hasattr(self,'_rampThreads'):
                     self._rampThreads = {}
                 if self._rampThreads.has_key(attrName) and \
-                   self._rampThreads[attrName].isAlive():
+                                         self._rampThreads[attrName].isAlive():
                     return self._rampThreads[attrName]
             except Exception,e:
                 self.error_stream("Cannot know the ramp threading state for "\
@@ -1760,6 +1831,7 @@ class LinacData(PyTango.Device_4Impl):
                     self.__moveWithoutRamp(attrName)
             self.info_stream("Ending the ramping thread for attribute %s."
                              %(attrName))
+            self._getAttrStruct(attrName)[RAMPDEST] = None
 
         def __isRampDone(self,attrName):
             '''Evaluate if, for a given attribute name, its ramping prodecure
@@ -1767,6 +1839,9 @@ class LinacData(PyTango.Device_4Impl):
                ramp is already the written value.
             '''
             attrStruct = self._getAttrStruct(attrName)
+            if attrStruct[RAMPDEST] == None:
+                #Never have run a ramp
+                return True
             if attrStruct != None:
                 return attrStruct[RAMPDEST] == attrStruct[WRITEVALUE]
                 #FIXME: perhaps could be more interesting to compare with 
@@ -1917,6 +1992,107 @@ class LinacData(PyTango.Device_4Impl):
             elif direction == DESCENDING and currentValue < threshold:
                 return True
             return False
+
+        def createSwitchStateThread(self,attrName):
+            '''This creates a thread, if not exist yet, to manage the switch
+               state change procedure.
+            '''
+            thread = self.__getSwitchThread(attrName)
+            if thread == None:
+                if self.__buildSwitchThread(attrName) == None:
+                    reason = "Threading %s not available"%write_value
+                    description = "We have encountered problems with the "\
+                                  "switch procedure. Please call controls, "\
+                                  "but you may work disabling this feature."
+                    PyTango.Except.throw_exception(reason,
+                                                   description,
+                                                   attrName,
+                                                   PyTango.ErrSeverity.ERR)
+
+        def __getSwitchThread(self,attrName):
+            '''If there is already a thread doing the switch procedure return
+               it, or create it to do it.
+            '''
+            try:
+                if not hasattr(self,'_switchThreads'):
+                    self._switchThreads = {}
+                if self._switchThreads.has_key(attrName) and \
+                                      self._switchThreads[attrName].isAlive():
+                    return self._switchThreads[attrName]
+            except Exception,e:
+                self.error_stream("Cannot know the switch threading state for"\
+                                  " attribute %s due to: %s"%(attrName,e))
+            return None
+
+        def __buildSwitchThread(self,attrName):
+            '''Build the auxiliar thread who will take care of the procedure
+               to do the switch state in the boolean.
+            '''
+            try:
+                if not self._switchThreads.has_key(attrName):
+                    self._switchThreads[attrName] = None
+                self._switchThreads[attrName] = threading.Thread(
+                                     target=self.startSwitch,args=([attrName]))
+                self.info_stream("In createSwitchStateThread(%s): Thread "\
+                                 "created."%(attrName))
+                self._switchThreads[attrName].start()
+                return self._switchThreads[attrName]
+            except Exception,e:
+                self.error_stream("The switch thread for attribute %s "\
+                                  "cannot be launched due to: %s"%(attrname,e))
+            return None
+
+        def startSwitch(self,attrName):
+            '''This method starts a ramping procedure in order to safely do
+               a state transition before apply the modification.
+            '''
+            self.info_stream("Thread for attribute %s switch start."
+                             %(attrName))
+            attrStruct = self._getAttrStruct(attrName)
+            currentState = attrStruct[READVALUE]
+            destinationState = attrStruct[SWITCHDEST]
+            while currentState != destinationState:
+                destinationValue = attrStruct[SWITCHDEST]
+                if self.__stateTransitionToOn(attrStruct[SWITCHDEST],
+                                              attrStruct[SWITCHDESCRIPTOR]):
+                    when = WHENON
+                elif self.__stateTransitionToOff(attrStruct[SWITCHDEST],
+                                              attrStruct[SWITCHDESCRIPTOR]):
+                    when = WHENOFF
+                rampAttr = attrStruct[SWITCHDESCRIPTOR][when][ATTR2RAMP]
+                self._launchRamp(rampAttr, destinationValue)
+                self.__wait4ramp(rampAttr)
+                if destinationValue == \
+                                     self._getAttrStruct(rampAttr)[WRITEVALUE]:
+                    self._applyWriteBit(attrName,destinationState)
+            self.info_stream("Ending the switch thread for attribute %s."
+                             %(attrName))
+            self._getAttrStruct(attrName)[SWITCHDEST] = None
+
+        def __wait4ramp(self,attrName):
+            attrStruct = self._getAttrStruct(attrName)
+            direction,rampStruct = self.__getRampStruct(attrName)
+            if rampStruct == None:
+                return#ramp done
+            currentValue = attrStruct[WRITEVALUE]
+            destinationValue = attrStruct[RAMPDEST]
+            if destinationValue == None:
+                return#ramp done
+            stepsDelta = rampStruct[STEP]
+            guestSteps = abs(currentValue-destinationValue)/stepsDelta
+            waitTime = rampStruct[STEPTIME]*guestSteps
+            self.info_stream("Launched the ramp, waiting %d steps (that "\
+                             "would be about %g seconds until it should "\
+                             "have ended..."%(guestSteps,waitTime))
+            time.sleep(waitTime)
+
+        def _applyWriteBit(self,attrName,value):
+            attrStruct = self._getAttrStruct(attrName)
+            read_addr = attrStruct[READADDR]
+            write_addr = attrStruct[WRITEADDR]
+            write_bit = attrStruct[WRITEBIT]
+            self.__writeBit(attrName,read_addr,write_addr,write_bit,value)
+            attrStruct[WRITEVALUE] = value
 
         #---- done Ramp area
 
