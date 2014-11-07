@@ -65,7 +65,7 @@ for i in range(9):
          l='ion pump %d pressure monitor'%(number),
          format='%2.1e',min=1e-11,max=1e0,unit='mbar',
          events={},
-         qualities={'warning':{'abs':{'above':1e-7}}})
+         qualities={WARNING:{ABSOLUTE:{ABOVE:1e-7}}})
 
 #---- R036 @HG1_PM
 #---- R040 @HG2_PM
@@ -79,7 +79,7 @@ for i in range(5):
          l='high vacuum gauge %d pressure monitor'%(number),
          format='%2.1e',min=1e-11,max=1,unit='mbar',
          events={},
-         qualities={'warning':{'abs':{'above':1e-7}}})
+         qualities={WARNING:{ABSOLUTE:{ABOVE:1e-7}}})
 
 #---- R056 @CL1_TM
 #---- R060 @CL2_TM
@@ -90,7 +90,7 @@ for i in range(3):
          PyTango.DevFloat,56+4*i,
          l='cooling loop %d temperature monitor'%(number),
          format='%4.2f',min=0,max=50,unit='⁰C',
-         events={'Threshold':0.001})
+         events={THRESHOLD:0.001})
 
 #---- R068 @CL1_PWDM
 #---- R072 @CL2_PWDM
@@ -101,9 +101,9 @@ for i in range(3):
          PyTango.DevFloat,68+4*i,
          l='cooling loop %d power drive monitor'%(number),unit='%',
          format='%4.1f',min=0,max=100,
-         events={'Threshold':0.1},
-         qualities={'warning':{'abs':{'below':15,
-                                      'above':80}}})
+         events={THRESHOLD:0.1},
+         qualities={WARNING:{ABSOLUTE:{BELOW:15,
+                                      ABOVE:80}}})
 
 #---- R080 @spare: was CL4_TM
 
@@ -115,7 +115,7 @@ for i in range(8):
             l='ion pump %d status'%(number),
             meanings={0:'off',
                       1:'on'},
-            qualities={'warning':[0]},
+            qualities={WARNING:[0]},
             events={})
 
 #---- R085 @DI_8to15
@@ -124,14 +124,14 @@ AttrBit('IP9_ST',
         l='ion pump 9 status',
         meanings={0:'off',
                   1:'on'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('VC_OK',#LI_VOK
         85,1,#RO
         l='linac vacuum okay',
         meanings={0:'bad vacuum',
                   1:'good vacuum'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 for i in range(5):
     number = i+1
@@ -141,7 +141,7 @@ for i in range(5):
             d='high vacuum gauge %d interlock; False:fault, True:ready'%(number),
             meanings={0:'fault',
                       1:'ready'},
-            qualities={'warning':[0]},
+            qualities={WARNING:[0]},
             events={})
 AttrBit('IP1_IS',
         85,7,#RO
@@ -149,7 +149,7 @@ AttrBit('IP1_IS',
         d='ion pump 1 interlock; False:fault, True:ready',
         meanings={0:'fault',
                   1:'ready'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 
 #---- R086 @DI_Spare
@@ -161,7 +161,7 @@ for i in range(8):
             d='ion pump %d interlock; False:fault, True:ready'%(number),
             meanings={0:'fault',
                       1:'ready'},
-            qualities={'warning':[0]},
+            qualities={WARNING:[0]},
             events={})
 
 #---- R087 @CV_ST
@@ -170,9 +170,9 @@ VALVE_STATUS = {0:'undefined',
                 2:'opened',
                 3:'closed',
                 4:'fault'}
-VALVE_QUALITIES={'alarm':[0],
-                 'warning':[3,4],
-                 'changing':[1]}
+VALVE_QUALITIES={ALARM:[0],
+                 WARNING:[3,4],
+                 CHANGING:[1]}
 Attr('VCV_ST',
      PyTango.DevUChar,87,#RO
      l='collimator valve state',
@@ -209,8 +209,8 @@ cl1_meaning = {0:'primary underflow',
                5:'buncher underflow',
                6:'running',
                7:'cooling down (5 min)'}
-cl1_qualities = {'warning':[0,1,2,3,4,5],
-                 'changing':[5,7]}
+cl1_qualities = {WARNING:[0,1,2,3,4,5],
+                 CHANGING:[5,7]}
 Attr('CL1_ST',
      PyTango.DevUChar,96,#RO
      l='cooling loop 1 status',
@@ -232,9 +232,9 @@ cl2_meaning = {0:'primary underflow',
                3:'accelerating section 1 underflow',
                4:'running',
                5:'cooling down (5 min)'}
-cl2_qualities = {'alarm':[2],
-                 'warning':[0,1,3],
-                 'changing':[5]}
+cl2_qualities = {ALARM:[2],
+                 WARNING:[0,1,3],
+                 CHANGING:[5]}
 Attr('CL2_ST',
      PyTango.DevUChar,97,#RO
      l='cooling loop 2 status',
@@ -256,9 +256,9 @@ cl3_meaning = {0:'primary underflow',
                3:'accelerating section 2 underflow',
                4:'running',
                5:'cooling down (5 minutes)'}
-cl3_qualities = {'alarm':[2],
-                 'warning':[0,1,3],
-                 'changing':[5]}
+cl3_qualities = {ALARM:[2],
+                 WARNING:[0,1,3],
+                 CHANGING:[5]}
 Attr('CL3_ST',
      PyTango.DevUChar,98,#RO
      l='cooling loop 3 status',
@@ -282,7 +282,7 @@ AttrBit('AC_IS',
         l='compressed air interlock state',
         meanings={0:'fault',
                   1:'good'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 
 #---- ## Read/Write attributes
@@ -296,10 +296,10 @@ for i in range(3):
          PyTango.DevFloat,100+4*i,4*i,
          l='cooling loop %d temperature setpoint'%(number),
          format='%4.2f',unit='⁰C',min=0,max=50,
-         events={'Threshold':0.01},
-         qualities={'changing':{'rel':0.5},
-                    'warning':{'abs':{'above':40,'below':20}},
-                    'alarm':{'abs':{'above':45,'below':15}}})
+         events={THRESHOLD:0.01},
+         qualities={CHANGING:{RELATIVE:0.5},
+                    WARNING:{ABSOLUTE:{ABOVE:40,BELOW:20}},
+                    ALARM:{ABSOLUTE:{ABOVE:45,BELOW:15}}})
 
 #---- R112 W012 @AO_03: spare
 
@@ -309,7 +309,7 @@ AttrBit('VCV_ONC',
         l='collimator valve open',
         meanings={0:'close',
                   1:'open'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={},
         formula={'read':'VALUE and '\
                'not self._plcAttrs[\'VCV_ST\'][\'read_value\'] == 4'}
@@ -321,7 +321,7 @@ for i in range(7):
             l='vacuum valve %d open'%(number),
             meanings={0:'close',
                        1:'open'},
-            qualities={'warning':[0]},
+            qualities={WARNING:[0]},
             events={},
             formula={'read':'VALUE and '\
                'not self._plcAttrs[\'VV%d_ST\'][\'read_value\'] == 4'%(number)},
@@ -333,7 +333,7 @@ GrpBit('VVall_OC',
        l='all vacuum valves open',
        meanings={0:'close',
                  1:'open'},
-       qualities={'warning':[0]},
+       qualities={WARNING:[0]},
        events={},
        )
 
@@ -360,7 +360,7 @@ for i in range(3):
             l='cooling loop %d on'%(number),
             meanings={0:'off',
                       1:'on'},
-            qualities={'warning':[0]},
+            qualities={WARNING:[0]},
             events={},
             formula={'read':'VALUE and '\
                      'self._internalAttrs[\'cl%d_ready\'][\'read_value\'] '\

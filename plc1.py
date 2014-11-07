@@ -50,33 +50,33 @@ Attr('GUN_Filament_V',
      PyTango.DevFloat,0,#RO
      l='e-gun filament voltage monitor',
      format='%4.1f',min=0,max=10,unit='V',
-     events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'below':0.0}}})
+     events={THRESHOLD:0.01},
+     qualities={WARNING:{ABSOLUTE:{BELOW:0.0}}})
 
 #---- R004 @EG_FCM
 Attr('GUN_Filament_I',
      PyTango.DevFloat,4,#RO
      l='e-gun filament current',
      format='%4.1f',min=0,max=5,unit='A',
-     events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'below':0.0}}})
+     events={THRESHOLD:0.01},
+     qualities={WARNING:{ABSOLUTE:{BELOW:0.0}}})
 
 #---- R008 @EG_KVM
 Attr('GUN_Kathode_V',
      PyTango.DevFloat,8,#RO
      l='e-gun cathode voltage monitor',
      format='%4.1f',min=0,max=50,unit='V',
-     events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'below':0.0}}})
+     events={THRESHOLD:0.01},
+     qualities={WARNING:{ABSOLUTE:{BELOW:0.0}}})
 
 #---- R012 @EG_KTM
 Attr('GUN_Kathode_T',
      PyTango.DevFloat,12,#RO
      l='e-gun cathode temperature',
      format='%4.1f',min=0,max=50,unit='⁰C',
-     events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'below':25.0,
-                                  'above':32.0}}})
+     events={THRESHOLD:0.01},
+     qualities={WARNING:{ABSOLUTE:{BELOW:25.0,
+                                  ABOVE:32.0}}})
 
 #---- R016 @AI_04: free
 #---- R020 @AI_05: free
@@ -89,7 +89,7 @@ Attr('GUN_HV_V',
      l='HV PS Voltage',
      d='high voltage PS voltage',
      format='%4.1f',min=-100,max=0,unit='kV',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R036 @HVS_CM
 Attr('GUN_HV_I',
@@ -97,16 +97,16 @@ Attr('GUN_HV_I',
      l='High voltage PS current',
      d='high voltage PS current (leakage current)',
      format='%4.1f',min=-600,max=1,unit='μA',
-     events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'above':1.0,
-                                  'below':-20.0}}})
+     events={THRESHOLD:0.01},
+     qualities={WARNING:{ABSOLUTE:{ABOVE:1.0,
+                                   BELOW:-20.0}}})
 
 #---- R040 @PHS1_PM
 Attr('PHS1_Phase',
      PyTango.DevFloat,40,#RO
      l='Phase shifter 1 phase monitor',
      format='%4.1f',min=0,max=160,unit='⁰',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R044 @Spare_1: CH3 spare
 
@@ -115,25 +115,25 @@ Attr('SF6_P1',
      PyTango.DevFloat,48,#RO
      l='SF6 pressure 1',
      format='%4.2f',min=-1,max=5,unit='bar',
-     events={'Threshold':0.001},
-     qualities={'warning':{'abs':{'below':2.9,
-                                  'above':3.0}}})
+     events={THRESHOLD:0.001},
+     qualities={WARNING:{ABSOLUTE:{BELOW:2.9,
+                                  ABOVE:3.0}}})
 
 #---- R052 @SF6P2M
 Attr('SF6_P2',
      PyTango.DevFloat,52,#RO
      l='SF6 pressure 2',
      format='%4.2f',min=-1,max=5,unit='bar',
-     events={'Threshold':0.001},
-     qualities={'warning':{'abs':{'below':2.9,
-                                  'above':3.0}}})
+     events={THRESHOLD:0.001},
+     qualities={WARNING:{ABSOLUTE:{BELOW:2.9,
+                                  ABOVE:3.0}}})
 
 #---- R056 @PHS2_PM
 Attr('PHS2_Phase',
      PyTango.DevFloat,56,#RO
      l='Phase shifter 2 phase monitor',
      format='%4.1f',min=0,max=380,unit='⁰',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R060 @ATT2_PM
 Attr('ATT2_P',
@@ -141,7 +141,7 @@ Attr('ATT2_P',
      l='Attenuator 2 monitor',
      d='Attenuator 2 monitor attenuation (PB2)',
      format='%4.1f',min=-10,max=10,unit='dB',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R064 @AI_15: free
 
@@ -151,21 +151,21 @@ AttrBit('TB_ST',
         l='Timer Status State',
         meanings={0:'off',
                   1:'ready'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('A0_ST',
         68,4,#RO
         l='500MHz amplifier status',
         meanings={0:'off',
                   1:'ready'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('RFS_ST',
         68,5,#RO
         l='RF source Status',
         meanings={0:'off',
                   1:'ready'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 
 #---- R069 @DI_8to15
@@ -176,42 +176,42 @@ AttrBit('EG_ENB',
         l='Electron gun enabled (PSS)',
         meanings={0:'disabled',
                   1:'enabled'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('KA_ENB',
         70,1,#RO
         l='Klystron amplifier enabled (PSS)',
         meanings={0:'disabled',
                   1:'enabled'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('TL_VOK',
         70,2,#RO
         l='Transfer line vacuum OK (PSS)',
         meanings={0:'bad vacuum',
                   1:'good vacuum'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('IU_RDY',
         70,5,#RO
         l='Interlock unit ready',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('W1_UF',
         70,6,#RO
         l='Window 1 underflow state',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('W2_UF',
         70,7,#RO
         l='Window 2 underflow state',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 
 #---- R71 @DI_24to31
@@ -220,56 +220,56 @@ AttrBit('W3_UF',
         l='Window 3 underflow state',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('RL1_UF',
         71,1,#RO
         l='Resistor load 1 underflow state',
         meanings={0:'underflow',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('RL2_UF',
         71,2,#RO
         l='Resistor load 2 underflow state',
         meanings={0:'underflow',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('RL3_UF',
         71,3,#RO
         l='Resistor load 3 underflow state',
         meanings={0:'underflow',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('UT_IS',
         71,4,#RO
         l='Utilities Interlock state',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('MG_IS',
         71,5,#RO
         l='Magnet Interlock state',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('GM_DI',
         71,6,#RO
         l='Gun Modulator door interlock',
         meanings={0:'door open',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('LI_VOK',
         71,7,#RO
         l='Linac Vacuum OK',
         meanings={0:'bad vacuum',
                   1:'good vacuum'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 
 #---- R072 @DI_Comm
@@ -281,14 +281,14 @@ AttrBit('PLC1_PR',
         l='PLC1 profibus receive status',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('PLC1_PS',
         72,4,#RO
         l='PLC1 profibus send status',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 
 #---- R073 @DI_ITLK_K
@@ -297,14 +297,14 @@ AttrBit('SF6_P1_ST',
         l='SF6 pressure 1 state',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('SF6_P2_ST',
         73,1,#RO
         l='SF6 pressure 2 state',
         meanings={0:'fault',
                   1:'normal'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={})
 AttrBit('KA1_OK',#KA1_EN
         73,2,#RO
@@ -339,8 +339,8 @@ Attr('Gun_HV_ST',
                3:'fault',
                4:'ready',
                5:'unlocked'},
-     qualities={'alarm':[0,3,5],
-                'warning':[1,2,5]},
+     qualities={ALARM:[0,3,5],
+                WARNING:[1,2,5]},
      events={})
 
 #---- R075 @E_GUN_ST
@@ -366,9 +366,9 @@ Attr('Gun_ST',
                6:'filament voltage fault',
                7:'cathode over temperature',
                8:'ready'},
-     qualities={'alarm':[0],
-                'warning':[1,2,3,5,6,7],
-                'changing':[4]},
+     qualities={ALARM:[0],
+                WARNING:[1,2,3,5,6,7],
+                CHANGING:[4]},
      events={})
 
 AttrLogic('Gun_ready',
@@ -392,9 +392,9 @@ Attr('SCM1_ST',
                2:'up',
                3:'down',
                4:'fault'},
-     qualities={'alarm':[0],
-                'warning':[3,4],
-                'changing':[1]},
+     qualities={ALARM:[0],
+                WARNING:[3,4],
+                CHANGING:[1]},
      events={})
 
 AttrLogic('SCM1_alert',
@@ -419,9 +419,9 @@ Attr('SCM2_ST',
                2:'up',
                3:'down',
                4:'fault'},
-     qualities={'alarm':[0],
-                'warning':[3,4],
-                'changing':[1]},
+     qualities={ALARM:[0],
+                WARNING:[3,4],
+                CHANGING:[1]},
      events={})
 
 AttrLogic('SCM2_alert',
@@ -445,9 +445,9 @@ Attr('SCM3_ST',
                2:'up',
                3:'down',
                4:'fault'},
-     qualities={'alarm':[0],
-                'warning':[3,4],
-                'changing':[1]},
+     qualities={ALARM:[0],
+                WARNING:[3,4],
+                CHANGING:[1]},
      events={})
 
 AttrLogic('SCM3_alert',
@@ -473,8 +473,8 @@ Attr('PHS1_ST',
                3:'in limit fault',
                4:'out limit fault',
                5:'timeout fault'},
-     qualities={'alarm':[0],
-                'warning':[1,3,4,5]},
+     qualities={ALARM:[0],
+                WARNING:[1,3,4,5]},
      events={})
 
 AttrLogic('phs1_ready',
@@ -500,8 +500,8 @@ Attr('PHS2_ST',
                3:'in limit fault',
                4:'out limit fault',
                5:'timeout fault'},
-     qualities={'alarm':[0],
-                'warning':[1,3,4,5]},
+     qualities={ALARM:[0],
+                WARNING:[1,3,4,5]},
      events={})
 
 AttrLogic('phs2_ready',
@@ -527,8 +527,8 @@ Attr('ATT2_ST',
                 3:'in limit fault',
                 4:'out limit fault',
                 5:'timeout fault'},
-     qualities={'alarm':[0],
-                'warning':[1,3,4,5]},
+     qualities={ALARM:[0],
+                WARNING:[1,3,4,5]},
      events={})
 
 AttrLogic('att2_ready',
@@ -549,16 +549,16 @@ Attr('GUN_Filament_V_setpoint',
      PyTango.DevFloat,84,0,#RW
      l='e-gun filament voltage setpoint',
      format='%4.1f',min=0,max=10,unit='V',
-     events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'below':0}}})
+     events={THRESHOLD:0.01},
+     qualities={WARNING:{ABSOLUTE:{BELOW:0}}})
 
 #---- R088 W004 @EG_KVS
 Attr('GUN_Kathode_V_setpoint',
      PyTango.DevFloat,88,4,#RW
      l='e-gun cathode voltage setpoint',
      format='%4.1f',min=0,max=50,unit='V',
-     events={'Threshold':0.01},
-     qualities={'warning':{'abs':{'below':0}}})
+     events={THRESHOLD:0.01},
+     qualities={WARNING:{ABSOLUTE:{BELOW:0}}})
 
 #---- R092 W008 #AO_02: free
 #---- R096 W012 #AO_03: free
@@ -569,7 +569,7 @@ Attr('GUN_HV_V_setpoint',# voltage (set) is 90 kV fixed
      l='HV PS Voltage Setpoint',
      d='high voltage PS voltage',
      format='%4.1f',min=-90,max=0,unit='kV',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
      #User request (back) to limit the device setpoint to avoid below -90kV.
 
 #---- R104 W020 @TB_GPA
@@ -577,14 +577,14 @@ Attr('TB_GPA',
      PyTango.DevFloat,104,20,#RW
      l='timer gun pulses attenuation',
      format='%4.1f',min=-40,max=0,unit='dB',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R108 W024 @PHS1_PS
 Attr('PHS1_Phase_setpoint',
      PyTango.DevFloat,108,24,#RW
      l='Phase shifter 1 phase setpoint',
      format='%3.0f',min=0,max=160,unit='⁰',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R112 W028 @A0_OP
 Attr('A0_OP',
@@ -592,7 +592,7 @@ Attr('A0_OP',
      l='A0 output power',
      format='%3.0f',min=75,max=760,unit='W',
      #specs say max=840, user explicitly reduces it
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R116 W032 @TPS0_P
 #---- R120 W036 @TPS1_P
@@ -608,7 +608,7 @@ for idx,x in enumerate((0,1,2,'X')):
          116+4*idx,32+4*idx,#RW
          l='time phase shifter %s phase'%(x),
          format=format,min=0,max=380,unit='⁰',
-         events={'Threshold':0.01})
+         events={THRESHOLD:0.01})
 
 #---- R132 W048 @AO_12
 #---- R136 W052 @AO_13
@@ -618,7 +618,7 @@ Attr('PHS2_Phase_setpoint',
      PyTango.DevFloat,140,56,#RW
      l='Phase shifter 2 phase setpoint',
      format='%3.0f',min=0,max=380,unit='⁰',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #--- R144 W060 @ATT2_PS
 Attr('ATT2_P_setpoint',
@@ -626,7 +626,7 @@ Attr('ATT2_P_setpoint',
      l='Attenuator 2',
      d='Attenuator 2 attenuation (PB2)',
      format='%3.1f',min=-10,max=0,unit='dB',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01})
 
 #---- R148 W064 @TB_KAD1
 Attr('TB_KA1_Delay',
@@ -718,7 +718,7 @@ AttrBit('GUN_LV_ONC',
         d='gun low voltage: False:OFF, True:ON',
         meanings={0:'off',
                   1:'on'},
-        qualities={'warning':[0]},
+        qualities={WARNING:[0]},
         events={},
         formula={'read':
                   'VALUE and '\

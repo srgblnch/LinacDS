@@ -54,16 +54,16 @@ FOCUS_STATUS = {0:'undefined',
                 3:'underflow',
                 4:'overtemp',
                 5:'ready'}
-FOCUS_QUALITIES={'alarm':[0],
-                 'warning':[1,2,3,4]}
+FOCUS_QUALITIES={ALARM:[0],
+                 WARNING:[1,2,3,4]}
 HV_STATUS = {0:'undefined',
              1:'off',
              2:'bad current',
              3:'undefined',
              4:'undefined',
              5:'ready'}
-HV_QUALITIES={'alarm':[0,3,4],
-              'warning':[1,2]}
+HV_QUALITIES={ALARM:[0,3,4],
+              WARNING:[1,2]}
 
 # used by PS
 Iread_addr = 0
@@ -106,25 +106,25 @@ def PS(name, types, rng):
         Status_addr += 1
 
 
-PS('SL1',F, {'min':  0.0,'max':  1.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('SL2',F, {'min':  0.0,'max':  1.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('SL3',F, {'min':  0.0,'max':  1.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('SL4',F, {'min':  0.0,'max':  1.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('BC1',F, {'min':  0.0,'max':200.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('BC2',F, {'min':  0.0,'max':200.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('GL', F, {'min':  0.0,'max':130.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('QT1',F, {'min':  0.0,'max':  6.0,'format':'%4.3f','events':{'Threshold':0.0001},'qualities':{'changing':{'rel':0.1}}})
-PS('QT2',F, {'min':  0.0,'max':  6.0,'format':'%4.3f','events':{'Threshold':0.0001},'qualities':{'changing':{'rel':0.1}}})
-PS('SL1',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('SL2',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('SL3',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('SL4',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('BC1',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('BC2',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('GL', HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('AS1',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('QT1',HV,{'min':-16.0,'max': 16.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
-PS('AS2',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f','events':{'Threshold':0.001 },'qualities':{'changing':{'rel':0.1}}})
+PS('SL1',F, {'min':  0.0,'max':  1.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('SL2',F, {'min':  0.0,'max':  1.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('SL3',F, {'min':  0.0,'max':  1.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('SL4',F, {'min':  0.0,'max':  1.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('BC1',F, {'min':  0.0,'max':200.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('BC2',F, {'min':  0.0,'max':200.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('GL', F, {'min':  0.0,'max':130.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('QT1',F, {'min':  0.0,'max':  6.0,'format':'%4.3f',EVENTS:{THRESHOLD:0.0001},QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('QT2',F, {'min':  0.0,'max':  6.0,'format':'%4.3f',EVENTS:{THRESHOLD:0.0001},QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('SL1',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('SL2',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('SL3',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('SL4',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('BC1',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('BC2',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('GL', HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('AS1',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('QT1',HV,{'min':-16.0,'max': 16.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
+PS('AS2',HV,{'min': -2.0,'max':  2.0,'format':'%4.2f',EVENTS:{THRESHOLD:0.001 },QUALITIES:{CHANGING:{RELATIVE:0.1}}})
 
 onc_desc = lambda x: x+' on/off\nFalse:off\nTrue:on'
 AttrBit('MA_Interlock_RC',  289, 0, 128, d='magnets interlock reset, rising edge:reset',events={},isRst=True)
@@ -147,7 +147,7 @@ GrpBit('all_onc',
        l='all magnet on',
        meanings={0:'close',
                  1:'open'},
-       qualities={'warning':[0]},
+       qualities={WARNING:[0]},
        events={},
        )
 

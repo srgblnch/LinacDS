@@ -53,42 +53,53 @@
 #          That is from 0 to this threashold is set directly, and above to 
 #          the maximum must follow some steps and some time on each step.
 #          This two ramp parameters must be also dynattrs.
-#AttrRampeable('HVPS_V_setpoint',
-Attr('HVPS_V_setpoint',
+AttrRampeable('HVPS_V_setpoint',
+#Attr('HVPS_V_setpoint',
      PyTango.DevFloat,46,0,#RW
      l='High voltage PS voltage setpoint',
      unit='kV',min=0,max=33,format='%4.2f',#switch='HVPS_ONC',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.005},
+     qualities={CHANGING:{'rel':0.1}},
+     rampsDescriptor = {ASCENDING:{STEP:0.5,#kV
+                                   STEPTIME:1,#s
+                                   THRESHOLD:20,#kV
+                                   SWITCH:'HVPS_ONC'}})
 Attr('Heat_I',
      PyTango.DevFloat,4,
      l='Heating current monitor',
      unit='A',min=0,max=30,format='%4.1f',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01},
+     qualities={CHANGING:{'rel':0.1}})
 Attr('Heat_V',
      PyTango.DevFloat,8,
      l='Heating voltage monitor',
      unit='V',min=0,max=30,format='%4.1f',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01},
+     qualities={CHANGING:{'rel':0.1}})
 Attr('HVPS_V',
      PyTango.DevFloat,12,#RO
      l='High voltage PS voltage',
      unit='kV',min=0,max=40,format='%4.2f',
-     events={'Threshold':0.001})
+     events={THRESHOLD:0.001},
+     qualities={CHANGING:{'rel':0.1}})
 Attr('HVPS_I',
      PyTango.DevFloat,16,
      l='High voltage PS current',
      unit='mA',min=0,max=150,format='%4.1f',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01},
+     qualities={CHANGING:{'rel':0.1}})
 Attr('Peak_I',
      PyTango.DevFloat,20,
      l='Peak current',
      unit='A',min=0,max=400,format='%4.1f',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01},
+     qualities={CHANGING:{'rel':0.1}})
 Attr('Peak_V',
      PyTango.DevFloat,24,
      l='Peak voltage',
      d='peak voltage (calculated',unit='kV',min=0,max=400,format='%4.1f',
-     events={'Threshold':0.01})
+     events={THRESHOLD:0.01},
+     qualities={CHANGING:{'rel':0.1}})
 LV_J = {0:'off',
         1:'vacuum fault',
         2:'oil level fault',
@@ -102,8 +113,8 @@ LV_J = {0:'off',
         10:'klystron collector overtemp',
         11:'cooling down (5 minutes)',
         12:'ready'}
-LV_J_QUALITIES={'warning':[0,1,2,3,4,5,6,7,8,9,10],
-                'changing':[11]}
+LV_J_QUALITIES={WARNING:[0,1,2,3,4,5,6,7,8,9,10],
+                CHANGING:[11]}
 Attr('LV_ST',
      PyTango.DevUChar,37,
      l='Low voltage status',
@@ -117,8 +128,8 @@ F_J = {0:'off',
        3:'high limit fault',
        4:'heating',
        5:'ready'}
-F_J_QUALITIES={'warning':[0,2,3],
-               'changing':[1,4]}
+F_J_QUALITIES={WARNING:[0,2,3],
+               CHANGING:[1,4]}
 Attr('Heat_ST',
      PyTango.DevUChar,38,
      l='Filament heating status',
@@ -137,8 +148,8 @@ HV_J = {0:'Waiting for Low Voltage',#'heating...',
         7:'fault',
         8:'off',
         9:'ready'}
-HV_J_QUALITIES={'alarm':[7],
-                'warning':[0,1,2,3,4,5,6,8]}
+HV_J_QUALITIES={ALARM:[7],
+                WARNING:[0,1,2,3,4,5,6,8]}
 Attr('HVPS_ST',
      PyTango.DevUChar,39,
      l='High voltage PS heating status',
@@ -155,7 +166,7 @@ PL_J = {0:'off',
         6:'RF reflected power',
         7:'off',
         8:'ready'}
-PL_J_QUALITIES={'warning':[0,1,2,3,4,5,6,7]}
+PL_J_QUALITIES={WARNING:[0,1,2,3,4,5,6,7]}
 Attr('Pulse_ST',
      PyTango.DevUChar,40,
      l='Pulse status',
@@ -168,7 +179,7 @@ Attr('LV_Time',
      l='Voltage slow down time',
      d='tempo stop low voltage (5 min)',unit='s',
      events={},
-     qualities={'changing':{'abs':{'above':0,'below':300,'under':True}}},
+     qualities={CHANGING:{ABSOLUTE:{ABOVE:0,BELOW:300,UNDER:True}}},
      )
 Attr('Heat_Time',
      PyTango.DevShort, 44,
@@ -179,7 +190,7 @@ Attr('Heat_Time',
      # tenths of seconds. A formula is required to convert to minutes
      # (integer rounded)
      formula={'read':'VALUE / 6'},
-     qualities={'changing':{'abs':{'above':0,'below':20,'under':True}}},
+     qualities={CHANGING:{ABSOLUTE:{ABOVE:0,BELOW:20,UNDER:True}}},
      )
 
 AttrBit('LV_Interlock_RC',
