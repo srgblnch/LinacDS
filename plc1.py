@@ -564,12 +564,20 @@ Attr('GUN_Kathode_V_setpoint',
 #---- R096 W012 #AO_03: free
 
 #---- R100 W016 @HVS_VS
-Attr('GUN_HV_V_setpoint',# voltage (set) is 90 kV fixed
-     PyTango.DevFloat,100,16,#RW
-     l='HV PS Voltage Setpoint',
-     d='high voltage PS voltage',
-     format='%4.1f',min=-90,max=0,unit='kV',
-     events={THRESHOLD:0.01})
+AttrRampeable('GUN_HV_V_setpoint',# voltage (set) is 90 kV fixed
+              PyTango.DevFloat,100,16,#RW
+              l='HV PS Voltage Setpoint',
+              d='high voltage PS voltage',
+              format='%4.1f',min=-90,max=0,unit='kV',
+              events={THRESHOLD:0.01},
+              rampsDescriptor = {DESCENDING:{STEP:1,#kV
+                                             STEPTIME:1,#s
+                                             THRESHOLD:-50,#kV
+                                             SWITCH:'GUN_HV_ONC'},
+                                 ASCENDING:{STEP:5,#kV
+                                            STEPTIME:0.5,#s
+                                            THRESHOLD:-90,#kV
+                                            SWITCH:'GUN_HV_ONC'}})
      #User request (back) to limit the device setpoint to avoid below -90kV.
 
 #---- R104 W020 @TB_GPA

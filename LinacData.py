@@ -554,12 +554,12 @@ class AttrList(object):
 #                                    STEPTIME:1,#s
 #                                    THRESHOLD:-50,#kV
 #                                    SWITCH:'GUN_HV_ONC'
-#                                   }
-#                                ASCENDIGN:
+#                                   },
+#                                ASCENDING:
 #                                   {STEP:5,#kV
 #                                    STEPTIME:0.5,#s
 #                                    THRESHOLD:-90,#kV
-#                                    SWITCH'GUN_HV_ONC'
+#                                    SWITCH:'GUN_HV_ONC'
 #                                   }}
 
         rfun = self.__getAttrMethod('read',name)
@@ -1627,7 +1627,7 @@ class LinacData(PyTango.Device_4Impl):
             '''
             pass
 
-        #----# FIXME: ramp refactoring
+        #----# Ramp area
         @AttrExc
         def write_attr_with_ramp(self, attr):
             '''With this method we specialize the write of an attribute to 
@@ -1917,6 +1917,8 @@ class LinacData(PyTango.Device_4Impl):
             elif direction == DESCENDING and currentValue < threshold:
                 return True
             return False
+
+        #---- done Ramp area
 
         @AttrExc
         def write_internal_attr(self,attr):

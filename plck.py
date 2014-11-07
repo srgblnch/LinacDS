@@ -54,10 +54,9 @@
 #          the maximum must follow some steps and some time on each step.
 #          This two ramp parameters must be also dynattrs.
 AttrRampeable('HVPS_V_setpoint',
-#Attr('HVPS_V_setpoint',
      PyTango.DevFloat,46,0,#RW
      l='High voltage PS voltage setpoint',
-     unit='kV',min=0,max=33,format='%4.2f',#switch='HVPS_ONC',
+     unit='kV',min=0,max=33,format='%4.2f',
      events={THRESHOLD:0.005},
      qualities={CHANGING:{'rel':0.1}},
      rampsDescriptor = {ASCENDING:{STEP:0.5,#kV
