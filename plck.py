@@ -225,6 +225,10 @@ AttrBit('HVPS_ONC',
                        'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 8 and '\
                        'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 7'
                 },
+        switchDescriptor={ATTR2RAMP:'HVPS_V_setpoint',
+                          WHENON:{FROM:0},#to where the WRITEVALUE say
+                          WHENOFF:{TO:0}#from where the WRITEVALUE say
+                          }
         )
 
 #AttrPLC(HeartBeat,Lock_ST,rLockingAddr,rLockingBit,wLockingAddr,wLockingBit)

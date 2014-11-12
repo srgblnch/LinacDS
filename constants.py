@@ -73,4 +73,6 @@ SWITCHDEST = 'switch_dest'
 WHENON = 'whenOn'
 WHENOFF = 'whenOff'
 ATTR2RAMP = 'attr2ramp'
+FROM = 'from'
+TO = 'to'
 
