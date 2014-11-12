@@ -620,7 +620,7 @@ class AttrList(object):
                                                            qualities,rfun,wfun,
                                                             **kwargs)
         else:
-            rampeableAttr = self.add_Attr(name,tango_T,rfun,wfun,**kwargs)
+            rampeableAttr = self.add_Attr(name,tango_T,rfun,wfun,l,**kwargs)
         #until here, it's not different than another attribute
         #Next is specific for rampeable attributes
         self.impl._plcAttrs[name][RAMP] = rampsDescriptor
@@ -632,7 +632,7 @@ class AttrList(object):
                                        %(name,rampDirection))
             else:
                 rampAttributes = []
-                newAttr = self._buildInternalAttr4RampEnable(name,l)
+                newAttr = self._buildInternalAttr4RampEnable(name,name)
                 if newAttr != None:
                     rampAttributes.append(newAttr)
                 for subAttrName in rampsDescriptor[rampDirection].keys():
@@ -645,7 +645,9 @@ class AttrList(object):
                                                                   [subAttrName]
                         newAttr = self._buildInternalAttr4Ramping(\
                                                         name+'_'+rampDirection,
-                                                     subAttrName,l,subAttrUnit,
+                                                     subAttrName,
+                                                     name+" "+rampDirection,
+                                                     subAttrUnit,
                                                      defaultValue)
                         if newAttr != None:
                             rampAttributes.append(newAttr)
@@ -1669,7 +1671,7 @@ class LinacData(PyTango.Device_4Impl):
             self.write_db.write(self.locking_waddr,toWrite,
                                 TYPE_MAP[PyTango.DevUChar])
             reRead = self.read_db.b(self.locking_raddr)
-            self.info_stream("Writing Locking boolean to %s (%d.%d) byte "\
+            self.debug_stream("Writing Locking boolean to %s (%d.%d) byte "\
                              "was %s; write %s; now %s"
                              %("  lock" if value else "unlock",
                                self.locking_raddr,self.locking_rbit,
@@ -1756,7 +1758,7 @@ class LinacData(PyTango.Device_4Impl):
                                                    attrName,
                                                    PyTango.ErrSeverity.ERR)
             else:
-                self.info_stream("Already running thread for %s ramp"
+                self.warn_stream("Already running thread for %s ramp"
                                  %(attrName))
 
         def __getRampThread(self,attrName):
@@ -2003,6 +2005,13 @@ class LinacData(PyTango.Device_4Impl):
                 return True
             return False
 
+        def __isSwitchAttr(self,attrName):
+            attrStruct = self._getAttrStruct(attrName)
+            if attrStruct != None and attrStruct.has_key(SWITCHDESCRIPTOR)\
+                                            and attrStruct.has_key(WRITEVALUE):
+                return True
+            return False
+
         def createSwitchStateThread(self,attrName):
             '''This creates a thread, if not exist yet, to manage the switch
                state change procedure.
@@ -2044,7 +2053,7 @@ class LinacData(PyTango.Device_4Impl):
                     self._switchThreads[attrName] = None
                 self._switchThreads[attrName] = threading.Thread(
                                      target=self.startSwitch,args=([attrName]))
-                self.info_stream("In createSwitchStateThread(%s): Thread "\
+                self.debug_stream("In createSwitchStateThread(%s): Thread "\
                                  "created."%(attrName))
                 self._switchThreads[attrName].start()
                 return self._switchThreads[attrName]
@@ -2099,10 +2108,11 @@ class LinacData(PyTango.Device_4Impl):
             time.sleep(EVENT_THREAD_PERIOD)
             #when switch on, it's necessary to power up before start
             if transition == WHENON:
-                while not attrStruct[READVALUE] == destinationState:
+                currentState = attrStruct[READVALUE]
+                while not currentState == destinationState:
                     self._applyWriteBit(attrName,destinationState)
-                    self.info_stream("waiting to switch ON (%s)"
-                                     %(destinationState))
+                    self.debug_stream("waiting to switch ON (read:%s!=%s:dest)"
+                                     %(currentState,destinationState))
                     time.sleep(EVENT_THREAD_PERIOD)
                     currentState = attrStruct[READVALUE]
             #Now the value can be applyed (and ramp if it has it)
@@ -2111,16 +2121,17 @@ class LinacData(PyTango.Device_4Impl):
                 pass
             #when switch off, it's necessary to power down after
             if transition == WHENOFF:
-                while not attrStruct[READVALUE] == destinationState:
+                currentState = attrStruct[READVALUE]
+                while not currentState == destinationState:
                     self._applyWriteBit(attrName,destinationState)
-                    self.info_stream("waiting to switch OFF (%s)"
-                                     %(destinationState))
+                    self.debug_stream("waiting to switch OFF (read:%s!=%s:dest)"
+                                     %(currentState,destinationState))
                     time.sleep(EVENT_THREAD_PERIOD)
                     currentState = attrStruct[READVALUE]
             self.info_stream("Ending the switch thread for attribute %s."
                              %(attrName))
             self._getAttrStruct(attrName)[SWITCHDEST] = None
-            self.info_stream("Setting back the previous sepoint to %s (%g)"
+            self.debug_stream("Setting back the previous sepoint to %s (%g)"
                              %(rampAttr,rampBackup))
             time.sleep(EVENT_THREAD_PERIOD)
             rampStruct[RAMPDEST] = rampBackup
@@ -2154,17 +2165,17 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(attrName)
             direction,rampStruct = self.__getRampStruct(attrName)
             if rampStruct == None:
-                self.info_stream("No ramp to wait for %s"%(attrName))
+                self.debug_stream("No ramp to wait for %s"%(attrName))
                 return False#ramp done
             currentValue = attrStruct[WRITEVALUE]
             destinationValue = attrStruct[RAMPDEST]
             if destinationValue == None:
-                self.info_stream("No ramp to wait for %s"%(attrName))
+                self.debug_stream("No ramp to wait for %s"%(attrName))
                 return False#ramp done
             stepsDelta = rampStruct[STEP]
             guestSteps = (abs(currentValue-destinationValue)/stepsDelta)+1
             waitTime = rampStruct[STEPTIME]*guestSteps
-            self.info_stream("Launched the ramp for %s, waiting %d steps "\
+            self.debug_stream("Launched the ramp for %s, waiting %d steps "\
                              "(that would be about %g seconds until it should"\
                              " have ended..."%(attrName,guestSteps,waitTime))
             time.sleep(waitTime)
@@ -2179,6 +2190,7 @@ class LinacData(PyTango.Device_4Impl):
             read_addr = attrStruct[READADDR]
             write_addr = attrStruct[WRITEADDR]
             write_bit = attrStruct[WRITEBIT]
+            self.debug_stream("Apply %s=%s"%(attrName,value))
             self.__writeBit(attrName,read_addr,write_addr,write_bit,value)
             attrStruct[WRITEVALUE] = value
 
@@ -3009,12 +3021,17 @@ class LinacData(PyTango.Device_4Impl):
                             attr2Event.append([attrName,
                                                 attrValue,
                                                 attrQuality])
-                            #FIXME: debug for ramping
-                            if self.__isRampingAttr(attrName):
-                                self.info_stream("EVENT for %s: read=%s "\
-                                                 "write=%s"%(attrName,
-                                             self.__getAttrReadValue(attrName),
-                                                   attrStruct[WRITEVALUE]))
+#                            #FIXME: debug for ramping
+#                            if self.__isRampingAttr(attrName):
+#                                self.info_stream("EVENT for %s: read=%s "\
+#                                                 "write=%s"%(attrName,
+#                                             self.__getAttrReadValue(attrName),
+#                                                   attrStruct[WRITEVALUE]))
+#                            if self.__isSwitchAttr(attrName):
+#                                self.info_stream("EVENT for %s: read=%s "\
+#                                                 "write=%s"%(attrName,
+#                                             self.__getAttrReadValue(attrName),
+#                                                   attrStruct[WRITEVALUE]))
 #                        else:
 #                            if self.__isRampingAttr(attrName) and \
 #                               not self.__isRampDone(attrName):
