@@ -71,6 +71,7 @@ SWITCH = 'switch'
 SWITCHDESCRIPTOR = 'switchDescriptor'
 SWITCHDEST = 'switch_dest'
 WHENON = 'whenOn'
+SWITCHONSLEEP = 1#s
 WHENOFF = 'whenOff'
 ATTR2RAMP = 'attr2ramp'
 FROM = 'from'

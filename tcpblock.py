@@ -75,7 +75,7 @@ class Datablock(object):
            decide is a given block is valid or not.
         '''
         if isinstance(addr,int) and isinstance(values,list):
-            self.info_stream("Adding a checker for address %d with values %s"
+            self.debug_stream("Adding a checker for address %d with values %s"
                               %(addr,values))
             self._checks[addr] = values
             return True

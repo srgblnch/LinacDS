@@ -312,7 +312,7 @@ class AttrList(object):
             else:
                 write = "'%s'"%(writeAddr)
             msg += "%6s\t"%(write)
-        self.impl.debug_stream(msg)
+        self.impl.info_stream(msg)
 
     def __mapTypes(self,attrType):
         # ugly hack needed for SOLEILs archiving system
@@ -414,8 +414,66 @@ class AttrList(object):
 
     def add_AttrAddr(self,name,T,read_addr=None,write_addr=None,
                        meanings=None,qualities=None,events=None,
-                       formula=None,**kwargs):
-        #---- FIXME: What this 'isa' parameter?
+                       formula=None,accumBuffer=None,**kwargs):
+        '''This method is a most general builder of dynamic attributes, for RO
+           as well as for RW depending on if it's provided a write address.
+           There are other optional parameters to configure some special 
+           characteristics.
+           
+           With the meaning parameter, a secondary attribute to the give one
+           using the name is created (with the suffix *_Status and They share 
+           other parameters like qualities and events). The numerical attribute
+           can be used in formulas, alarms and any other machine-like system,
+           but this secondary attribute is an DevString who concatenates the 
+           read value with an string specified in a dictionary in side this
+           meaning parameter in order to provide a human-readable message to
+           understand that value.
+           
+           All the Tango attributes have characteristics known as qualities 
+           (like others like format, units, and so on) used to provide a 5
+           level state-like information. They can by 'invalid', 'valid', 
+           'changing', 'warning' or 'alarm'. With the dictionary provided to
+           the parameter qualities it can be defined some ranges or some 
+           discrete values. The structure splits between this two situations:
+           - Continuous ranges: that is mainly used for DevDoubles but also 
+             integers. As an example of the dictionary:
+             - WARNING:{ABSOLUTE:{BELOW:15,ABOVE:80}}
+               This will show VALID quality between 15 and 80, but warning 
+               if in absolute terms the read value goes out this thresholds.
+           - Discrete values: that is used mainly in the state-like attributes
+             and it will establish the quality by an equality. As example:
+             - ALARM:[0],
+               WARNING:[1,2,3,5,6,7],
+               CHANGING:[4]
+               Suppose a discrete attribute with values between 0 and 8. Then
+               when value is 8 will be VALID, between 0 and 7 will be WARNING 
+               with the exception at 4 that will show CHANGING.
+           
+           Next of the parameters is events and with this is configured the 
+           behaviour of the attribute to emit events. Simply by passing a 
+           dictionary (even void like {}) the attribute will be configured to
+           emit events. In this simplest case events will be emitted if the 
+           value has changed from last reading. But for DevDouble is used a 
+           key THRESHOLD to indicate that read changes below it will not 
+           produce events (like below the format representation). For such 
+           thing is used a circular buffer that collects reads and its mean
+           is used to compare with a new reading to decide if an event has to 
+           be emitted or not.
+           
+           Another parameter is the formula. This is mainly used with the 
+           DevBooleans but it's possible for any other. It's again a dictionary
+           with two possible keys 'read' and/or 'write' and their items shall
+           be evaluable strings in running time that would 'transform' a 
+           reading.
+           
+           The accumBuffer parameter has been developed to introduce interlock
+           tracking (using a secondary attribute called *_tracking). That is, 
+           starting from a set of non interlock values, when the attibute 
+           reads something different to them, it starts collecting those new 
+           values in order to provide a line in the interlock activity. Until 
+           the interlock is cleaned, read value is again in the list of 
+           non interlock values and this buffer is cleaned.
+        '''
         rfun = self.__getAttrMethod('read',name)
 
         if not write_addr is None:
@@ -778,13 +836,13 @@ class AttrList(object):
     def parse_file(self,  fname):
         msg = "%30s\t%10s\t%5s\t%6s\t%6s"\
                %("'attrName'","'Type'","'RO/RW'","'read'","'write'")
-        self.impl.debug_stream( msg)
+        self.impl.info_stream( msg)
         try:
             execfile(fname, self.globals_, self.locals_)
         except IOError, io:
             raise LinacException(io)
         except Exception,e:
-            self.impl.debug_stream("AttrList.parse_file Exception: %s\n%s"
+            self.impl.error_stream("AttrList.parse_file Exception: %s\n%s"
                                    %(e,traceback.format_exc()))
         self.impl.debug_stream('Parse attrFile done.')
 #        self.impl.debug_stream('in the plcAttr dict: %s'
@@ -846,6 +904,9 @@ class LinacData(PyTango.Device_4Impl):
         disconnect_t = 0
         read_db = None
         _important_logs = []
+        
+        #ramping auxiliars
+        
         _rampThreads = {}
         _switchThreads = {}
         
@@ -1729,9 +1790,12 @@ class LinacData(PyTango.Device_4Impl):
             #  * creation cause problems, this can be disabled and 
             #  * operate normally.
             if self.__isRampEnabled(attrName):
-                self.createRampThread(attrName)
-            else: 
-                self.__moveToValue(attrName,ramp_dest)
+                rampDirection,rampDetails = self.__getRampStruct(attrName)
+                if rampDetails != None and self.__isRampSwitchOk(rampDetails):
+                    self.createRampThread(attrName)
+                    return
+            #else:
+            self.__moveToValue(attrName,ramp_dest)
             #FIXME: this doesn't support the formula feature for ramping 
             #       attributes.
 
@@ -1786,7 +1850,7 @@ class LinacData(PyTango.Device_4Impl):
                     self._rampThreads[attrName] = None
                 self._rampThreads[attrName] = threading.Thread(
                                        target=self.startRamp,args=([attrName]))
-                self.debug_stream("In __buildRampThread(%s): Thread created."
+                self.info_stream("In __buildRampThread(%s): Thread created."
                                  %(attrName))
                 self._rampThreads[attrName].start()
                 return self._rampThreads[attrName]
@@ -1816,7 +1880,7 @@ class LinacData(PyTango.Device_4Impl):
                     #destination
                     self.__moveWithoutRamp(attrName)
                 rampDirection,rampDetails = self.__getRampStruct(attrName)
-                self.debug_stream("Attribute %s ramp direction '%s' "\
+                self.info_stream("Attribute %s ramp direction '%s' "\
                                  "parameters: %s"
                                  %(attrName,rampDirection,rampDetails))
                 if rampDirection == None:
@@ -1868,7 +1932,7 @@ class LinacData(PyTango.Device_4Impl):
             rampEnabledStruct = self._getAttrStruct(rampEnabledAttr)
             if rampEnabledStruct != None:
                 isEnable = rampEnabledStruct[READVALUE]
-                self.debug_stream("Ramp for attr %s %s"
+                self.info_stream("Ramp for attr %s %s"
                              %(attrName,"enabled" if isEnable else "disabled"))
                 return isEnable
             return False
@@ -1904,7 +1968,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Used to provide a common method to all the ramp movement types.
             '''
             if self.__isRampingAttr(attrName):
-                self.debug_stream("Apply to %s an %s"%(attrName,value))
+                self.info_stream("Apply to %s an %s"%(attrName,value))
                 attrStruct = self._getAttrStruct(attrName)
                 attrStruct[WRITEVALUE] = value
                 self.write_db.write(attrStruct[WRITEADDR],
@@ -1938,14 +2002,14 @@ class LinacData(PyTango.Device_4Impl):
                                       %(attrName,WRITEVALUE,currentValue))
                     time.sleep(EVENT_THREAD_PERIOD)
                     return
-                self.debug_stream("Moving %s in '%s' direction from %s to %s "\
+                self.info_stream("Moving %s in '%s' direction from %s to %s "\
                                  "(step %s,threshold = %s)"
                                  %(attrName,direction,
                                    currentValue,destinationValue,
                                    step,threshold))
                 if direction == ASCENDING:
                     if currentValue < threshold:
-                        self.debug_stream("Moving %s to the threshold %s"
+                        self.info_stream("Moving %s to the threshold %s"
                                          %(attrName,threshold))
                         value = min(threshold,destinationValue)
                     elif destinationValue-currentValue < step:
@@ -1954,7 +2018,7 @@ class LinacData(PyTango.Device_4Impl):
                         value = currentValue+step
                 elif direction == DESCENDING:
                     if currentValue > threshold:
-                        self.debug_stream("Moving %s to the threshold %s"
+                        self.info_stream("Moving %s to the threshold %s"
                                          %(attrName,threshold))
                         value = max(threshold,destinationValue)
                     elif currentValue-destinationValue < step:
@@ -2053,7 +2117,7 @@ class LinacData(PyTango.Device_4Impl):
                     self._switchThreads[attrName] = None
                 self._switchThreads[attrName] = threading.Thread(
                                      target=self.startSwitch,args=([attrName]))
-                self.debug_stream("In createSwitchStateThread(%s): Thread "\
+                self.info_stream("In createSwitchStateThread(%s): Thread "\
                                  "created."%(attrName))
                 self._switchThreads[attrName].start()
                 return self._switchThreads[attrName]
@@ -2111,10 +2175,12 @@ class LinacData(PyTango.Device_4Impl):
                 currentState = attrStruct[READVALUE]
                 while not currentState == destinationState:
                     self._applyWriteBit(attrName,destinationState)
-                    self.debug_stream("waiting to switch ON (read:%s!=%s:dest)"
+                    self.info_stream("waiting to switch ON (read:%s!=%s:dest)"
                                      %(currentState,destinationState))
                     time.sleep(EVENT_THREAD_PERIOD)
                     currentState = attrStruct[READVALUE]
+                #after switch on a little time is needed overcurrent interlocks
+                time.sleep(SWITCHONSLEEP)
             #Now the value can be applyed (and ramp if it has it)
             self._launchRamp(rampAttr,rampTo)
             while self.__wait4ramp(rampAttr) == True:
@@ -2124,14 +2190,14 @@ class LinacData(PyTango.Device_4Impl):
                 currentState = attrStruct[READVALUE]
                 while not currentState == destinationState:
                     self._applyWriteBit(attrName,destinationState)
-                    self.debug_stream("waiting to switch OFF (read:%s!=%s:dest)"
+                    self.info_stream("waiting to switch OFF (read:%s!=%s:dest)"
                                      %(currentState,destinationState))
                     time.sleep(EVENT_THREAD_PERIOD)
                     currentState = attrStruct[READVALUE]
             self.info_stream("Ending the switch thread for attribute %s."
                              %(attrName))
             self._getAttrStruct(attrName)[SWITCHDEST] = None
-            self.debug_stream("Setting back the previous sepoint to %s (%g)"
+            self.info_stream("Setting back the previous sepoint to %s (%g)"
                              %(rampAttr,rampBackup))
             time.sleep(EVENT_THREAD_PERIOD)
             rampStruct[RAMPDEST] = rampBackup
@@ -2175,7 +2241,7 @@ class LinacData(PyTango.Device_4Impl):
             stepsDelta = rampStruct[STEP]
             guestSteps = (abs(currentValue-destinationValue)/stepsDelta)+1
             waitTime = rampStruct[STEPTIME]*guestSteps
-            self.debug_stream("Launched the ramp for %s, waiting %d steps "\
+            self.info_stream("Launched the ramp for %s, waiting %d steps "\
                              "(that would be about %g seconds until it should"\
                              " have ended..."%(attrName,guestSteps,waitTime))
             time.sleep(waitTime)
@@ -2473,8 +2539,8 @@ class LinacData(PyTango.Device_4Impl):
                 #---- Threads declaration
                 self._tangoEventsThread = threading.Thread(
                                              target=self.eventGeneratorThread)
-                self._tangoEventsTime = CircularBuffer([],maxlen=250)
-                self._tangoEventsNumber = CircularBuffer([],maxlen=250)
+                self._tangoEventsTime = CircularBuffer([],maxlen=540)
+                self._tangoEventsNumber = CircularBuffer([],maxlen=540)
                 self._plcUpdateThread = threading.Thread(
                                                  target=self.plcUpdaterThread)
                 #---- Threads configuration
@@ -3548,7 +3614,7 @@ class LinacDataClass(PyTango.DeviceClass):
             'EventsTime':
                 [[PyTango.DevDouble,
                   PyTango.SPECTRUM,
-                  PyTango.READ, 1000],
+                  PyTango.READ, 1800],
                  {
                   'Display level': PyTango.DispLevel.EXPERT,
                  }
@@ -3556,7 +3622,7 @@ class LinacDataClass(PyTango.DeviceClass):
             'EventsNumber':
                 [[PyTango.DevShort,
                   PyTango.SPECTRUM,
-                  PyTango.READ, 1000],
+                  PyTango.READ, 1800],
                  {
                   'Display level': PyTango.DispLevel.EXPERT,
                  }
