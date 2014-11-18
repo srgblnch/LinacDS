@@ -545,12 +545,20 @@ AttrLogic('att2_ready',
 #---- ## Read/Write attributes
 
 #---- R084 W000 @EG_FVS
-Attr('GUN_Filament_V_setpoint',
-     PyTango.DevFloat,84,0,#RW
-     l='e-gun filament voltage setpoint',
-     format='%4.1f',min=0,max=10,unit='V',
-     events={THRESHOLD:0.01},
-     qualities={WARNING:{ABSOLUTE:{BELOW:0}}})
+AttrRampeable('GUN_Filament_V_setpoint',
+              PyTango.DevFloat,84,0,#RW
+              l='e-gun filament voltage setpoint',
+              format='%4.1f',min=0,max=10,unit='V',
+              events={THRESHOLD:0.01},
+              qualities={WARNING:{ABSOLUTE:{BELOW:0}}},
+              rampsDescriptor = {DESCENDING:{STEP:1,#V
+                                             STEPTIME:1,#s
+                                             THRESHOLD:10,#V
+                                             SWITCH:'GUN_LV_ONC'},
+                                 ASCENDING:{STEP:1,#V
+                                            STEPTIME:1,#s
+                                            THRESHOLD:0,#V
+                                            SWITCH:'GUN_LV_ONC'}})
 
 #---- R088 W004 @EG_KVS
 Attr('GUN_Kathode_V_setpoint',
@@ -733,10 +741,14 @@ AttrBit('GUN_LV_ONC',
         events={},
         formula={'read':
                   'VALUE and '\
-                  'self._internalAttrs[\'Gun_ready\'][\'read_value\'] == True',
+                  'self._plcAttrs[\'Gun_ST\'][\'read_value\'] in [1,4,7,8]',
                  'write':
                   'VALUE ^ self._plcAttrs[\'GUN_HV_ONC\'][\'read_value\']',
-                 'write_not_allowed':'Gun LV not modifiable when Gun HV ON.'},
+                 'write_not_allowed':'Filament voltage cannot be switch '\
+                                                   'ON/OFF with e-Gun HV ON.'},
+        switchDescriptor={ATTR2RAMP:'GUN_Filament_V_setpoint',
+                          WHENON:{FROM:0},
+                          WHENOFF:{TO:0}}
         )
         #formula['write'] condition: avoid LV on/off when HV is on
         #that is: allow to turn LV off when HV is off => 0 xor 0: 0
