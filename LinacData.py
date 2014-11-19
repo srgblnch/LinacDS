@@ -68,7 +68,7 @@ from constants import *
 class release:
     author = 'Lothar Krause <lkrause@cells.es> &'\
              ' Sergi Blanch-Torne <sblanch@cells.es>'
-    hexversion = 0x020203
+    hexversion = (((MAJOR_VERSION<<8)|MINOR_VERSION)<<8)|BUILD_VERSION
     __str__ = lambda self: hex(hexversion)
 
 if False:
@@ -149,6 +149,15 @@ def latin1(x):
 import numpy as np
 DEFAULT_SIZE=10
 class CircularBuffer(object):
+    '''This is made to implement an automatic circular buffer using numpy array
+       and get some statistical values from the collected data.
+       This is used for attributes with changing qualities based on std of 
+       the last readings. The only way to have that is with a little historic 
+       of the read values to know if it's readings are below some threshold 
+       or not.
+       It is also used for the collection of number of events emitted and the 
+       time used for each loop for event emission.
+    '''
     def __init__(self,buffer,maxlen=DEFAULT_SIZE):
         self.__maxlen=maxlen
         if type(buffer) == list:
@@ -161,6 +170,8 @@ class CircularBuffer(object):
         return self.__buffer.__str__()
     def __repr__(self):
         return self.__buffer.__repr__()
+    def __len__(self):
+        return len(self.__buffer)
     def append(self,newElement):
         if len(self.__buffer) > 0:
             self.__buffer = np.append(self.__buffer,
@@ -203,7 +214,8 @@ class CircularBuffer(object):
             return self.__buffer
         else:
             return np.array([])
-    
+    def resize(self,newMaxLen):
+        self.__maxlen = newMaxLen
 
 class AttrList(object):
     '''Manages dynamic attributes and contains methods for conveniently adding
@@ -709,21 +721,6 @@ class AttrList(object):
                                                      defaultValue)
                         if newAttr != None:
                             rampAttributes.append(newAttr)
-#FIXME: this has to be moved out, because it will be an special boolean attr
-#                    elif subAttrName in [SWITCH]:
-#                        switcher = rampsDescriptor[rampDirection][SWITCH]
-                        #The attribute mandatory keyword (even the switch is 
-                        #optional itself) doesn't generates an auxiliar 
-                        #internal attribute; but need to tag this refered 
-                        #attribute to 'report' when it changes.
-#                        if switcher.has_key(WHENOFF):
-#                            defaultValue = switcher[WHENOFF]
-#                            newAttr = self._buildInternalAttr4Ramping(\
-#                                                        name+'_'+rampDirection,
-#                                                              WHENOFF,l,unit,
-#                                                              defaultValue)
-#                            if newAttr != None:
-#                                rampAttributes.append(newAttr)
         rampAttributes.insert(0,rampeableAttr)
         return tuple(rampAttributes)
 
@@ -1898,7 +1895,11 @@ class LinacData(PyTango.Device_4Impl):
                     #      else: 'go' to 0 as it would be the most safe.
                     if not self.__isRampSwitchOk(rampDetails):
                         self.__pauseRamping(attrName,rampDirection,rampDetails)
-                    
+                        #this was pausing the process, but it has been changed
+                        # and the switch on will relaunch this process.
+                        return
+                        #nothing else to do, return the method will terminate 
+                        #the thread.
                     self.__applyAnStep(attrName,rampDirection,rampDetails)
                 else:#No details, direct movement
                     self.__moveWithoutRamp(attrName)
@@ -2054,10 +2055,11 @@ class LinacData(PyTango.Device_4Impl):
             if self.__isInRampingArea(direction,currentValue,threshold):
                 self.info_stream("Pausing %s to the threshold"%(attrName))
                 self.__moveToValue(attrName,threshold)
-            while not self.__isRampSwitchOk(details):
-                self.debug_stream("Waiting to resume %s ramp"%(attrName))
-                time.sleep(details[STEPTIME])
-            self.info_stream("Resuming %s ramp from the threshold"%(attrName))
+            #No wait needed, it will be relaunched by the switch
+#            while not self.__isRampSwitchOk(details):
+#                self.debug_stream("Waiting to resume %s ramp"%(attrName))
+#                time.sleep(details[STEPTIME])
+#            self.info_stream("Resuming %s ramp from the threshold"%(attrName))
 
         def __isInRampingArea(self,direction,currentValue,threshold):
             '''Given a direction check if the current value is in the region
@@ -2146,7 +2148,9 @@ class LinacData(PyTango.Device_4Impl):
             #attribute that has to do this transition.
             rampAttr = switchStruct[ATTR2RAMP]
             rampStruct = self._getAttrStruct(rampAttr)
-            rampBackup = rampStruct[WRITEVALUE]#back up the current write value
+            rampBackup = rampStruct[WRITEVALUE]
+            self.info_stream("Backup write_value of %s (%g)"
+                             %(attrName,rampBackup))
             rampFrom,rampTo = self.__getSwitchInteval(attrName)
             if rampFrom != None and rampTo == None:
                 #start from where it say with end where it is
@@ -2172,10 +2176,11 @@ class LinacData(PyTango.Device_4Impl):
             time.sleep(EVENT_THREAD_PERIOD)
             #when switch on, it's necessary to power up before start
             if transition == WHENON:
+                time.sleep(SWITCHONSLEEP)
                 currentState = attrStruct[READVALUE]
                 while not currentState == destinationState:
                     self._applyWriteBit(attrName,destinationState)
-                    self.info_stream("waiting to switch ON (read:%s!=%s:dest)"
+                    self.info_stream("Waiting to switch ON (read:%s!=%s:dest)"
                                      %(currentState,destinationState))
                     time.sleep(EVENT_THREAD_PERIOD)
                     currentState = attrStruct[READVALUE]
@@ -2190,7 +2195,7 @@ class LinacData(PyTango.Device_4Impl):
                 currentState = attrStruct[READVALUE]
                 while not currentState == destinationState:
                     self._applyWriteBit(attrName,destinationState)
-                    self.info_stream("waiting to switch OFF (read:%s!=%s:dest)"
+                    self.info_stream("Waiting to switch OFF (read:%s!=%s:dest)"
                                      %(currentState,destinationState))
                     time.sleep(EVENT_THREAD_PERIOD)
                     currentState = attrStruct[READVALUE]

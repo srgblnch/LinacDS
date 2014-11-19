@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with tango-ds.  If not, see <http://www.gnu.org/licenses/>.
 
+MAJOR_VERSION = 2
+MINOR_VERSION = 2
+BUILD_VERSION = 7
+
 #---- attributes keys
 READADDR = 'read_addr'
 READBIT = 'read_bit'
