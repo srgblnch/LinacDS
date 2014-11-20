@@ -227,10 +227,8 @@ class HistoryBuffer(CircularBuffer):
     def append(self,newElement):
         if newElement in self._cleaners:
             self._buffer = np.array([newElement])
-            print("Resetting the buffer: %s"%(self._buffer))
         else:
             CircularBuffer.append(self, newElement)
-            print("Append to buffer: %s"%(self._buffer))
 
 class AttrList(object):
     '''Manages dynamic attributes and contains methods for conveniently adding
@@ -462,7 +460,8 @@ class AttrList(object):
             self.impl._plcAttrs[attrHistoryName][BASESET] = \
                                                          historyBuffer[BASESET]
             xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
-            attrHistory = self.add_Attr(attrHistoryName,attrType,
+            attrHistory = self.add_Attr(attrHistoryName,
+                                        PyTango.DevString,#attrType,
                                         rfun=self.impl.read_spectrumAttr,
                                         xdim=xdim,**kwargs)
             toReturn += (attrHistory,)
@@ -1093,10 +1092,12 @@ class LinacData(PyTango.Device_4Impl):
 #                self.push_change_event(attrEventStruct[0],attrEventStruct[1],
 #                                       timestamp,
 #                                       PyTango.AttrQuality.ATTR_VALID)
-            if type(attrEventStruct[1]) == list:
-                print(len(value))
-                self.push_change_event(attrEventStruct[0],attrEventStruct[1],
-                                       timestamp,quality,len(value))
+            if self.__isHistoryBuffer(attrEventStruct[0]):
+                attrValue = self.__buildHistoryBufferString(attrEventStruct[0])
+                self.debug_stream("For attribute %s: %s"
+                                 %(attrEventStruct[0],attrValue))
+                self.push_change_event(attrEventStruct[0],attrValue,
+                                       timestamp,quality)
             else:
                 self.push_change_event(attrEventStruct[0],attrEventStruct[1],
                                        timestamp,quality)
@@ -1355,11 +1356,11 @@ class LinacData(PyTango.Device_4Impl):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             attrStruct = self._getAttrStruct(name)
-            attrValue = attrStruct[READVALUE].array
+            attrValue = self.__buildHistoryBufferString(name)
             attrTimeStamp = attrStruct[READTIME] or time.time()
             attrQuality = attrStruct[LASTEVENTQUALITY] or \
                                                  PyTango.AttrQuality.ATTR_VALID
-            self.info_stream("Attribute %s: value=%s timestamp=%g quality=%s "\
+            self.debug_stream("Attribute %s: value=%s timestamp=%g quality=%s "\
                              "len=%d"%(name,attrValue,attrTimeStamp,
                                        attrQuality,len(attrValue)))
             attr.set_value_date_quality(attrValue,attrTimeStamp,attrQuality)
@@ -2351,6 +2352,16 @@ class LinacData(PyTango.Device_4Impl):
                               and type(attrStruct[READVALUE]) == HistoryBuffer:
                 return True
             return False
+        def __buildHistoryBufferString(self,attrName):
+            if self.__isHistoryBuffer(attrName):
+                valuesList = self._getAttrStruct(attrName)[READVALUE].array
+                self.debug_stream("For %s, building string list from %s"
+                                 %(attrName,valuesList))
+                strList = []
+                for value in valuesList:
+                    strList.append(self.__buildAttrMeaning(attrName,value))
+                return strList
+            return None
 
         @AttrExc
         def write_internal_attr(self,attr):

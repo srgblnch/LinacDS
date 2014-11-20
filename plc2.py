@@ -242,7 +242,8 @@ Attr('CL2_ST',
      d='cooling loop 2 status' + john(cl2_meaning),
      meanings=cl2_meaning,
      qualities=cl2_qualities,
-     events={})
+     events={},
+     historyBuffer={BASESET:[1,4]})
 AttrLogic('cl2_ready',
           logic={'CL2_ST':[1,4]},
           d='cooling loop 2 ready',
@@ -266,7 +267,8 @@ Attr('CL3_ST',
      d='cooling loop 3 status' + john(cl3_meaning),
      meanings=cl3_meaning,
      qualities=cl3_qualities,
-     events={})
+     events={},
+     historyBuffer={BASESET:[1,4]})
 AttrLogic('cl3_ready',
           logic={'CL3_ST':[1,4]},
           d='cooling loop 3 ready',
