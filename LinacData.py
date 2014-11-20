@@ -161,61 +161,76 @@ class CircularBuffer(object):
     def __init__(self,buffer,maxlen=DEFAULT_SIZE):
         self.__maxlen=maxlen
         if type(buffer) == list:
-            self.__buffer = np.array(buffer[-self.__maxlen:])
-            if self.__buffer.ndim > 1:
+            self._buffer = np.array(buffer[-self.__maxlen:])
+            if self._buffer.ndim > 1:
                 raise BufferError("Not supported multi-dimensions")
         else:
             raise BufferError("Input buffer invalid")
     def __str__(self):
-        return self.__buffer.__str__()
+        return self._buffer.__str__()
     def __repr__(self):
-        return self.__buffer.__repr__()
+        return self._buffer.__repr__()
     def __len__(self):
-        return len(self.__buffer)
+        return len(self._buffer)
+    
     def append(self,newElement):
-        if len(self.__buffer) > 0:
-            self.__buffer = np.append(self.__buffer,
+        if len(self._buffer) > 0:
+            self._buffer = np.append(self._buffer,
                                       newElement)[-self.__maxlen:]
         else:
-            self.__buffer = np.array([newElement])
+            self._buffer = np.array([newElement])
     @property
     def mean(self):
-        if len(self.__buffer)>0:
-            return self.__buffer.mean()
+        if len(self._buffer)>0:
+            return self._buffer.mean()
         else:
             return float('NaN')
     @property
     def std(self):
-        if len(self.__buffer)>0:
-            return self.__buffer.std()
+        if len(self._buffer)>0:
+            return self._buffer.std()
         else:
             return float('NaN')
     @property
     def max(self):
-        if len(self.__buffer)>0:
-            return self.__buffer.max()
+        if len(self._buffer)>0:
+            return self._buffer.max()
         else:
             return float('NaN')
     @property
     def min(self):
-        if len(self.__buffer)>0:
-            return self.__buffer.min()
+        if len(self._buffer)>0:
+            return self._buffer.min()
         else:
             return float('NaN')
     @property
     def value(self):
-        if len(self.__buffer)>0:
-            return self.__buffer[-1]
+        if len(self._buffer)>0:
+            return self._buffer[-1]
         else:
             return None
     @property
     def array(self):
-        if len(self.__buffer)>0:
-            return self.__buffer
+        if len(self._buffer)>0:
+            return self._buffer
         else:
             return np.array([])
+    def maxSize(self):
+        return self.__maxlen
     def resize(self,newMaxLen):
         self.__maxlen = newMaxLen
+
+class HistoryBuffer(CircularBuffer):
+    def __init__(self,cleaners,maxlen=DEFAULT_SIZE):
+        CircularBuffer.__init__(self,[],maxlen)
+        self._cleaners = cleaners
+    def append(self,newElement):
+        if newElement in self._cleaners:
+            self._buffer = np.array([newElement])
+            print("Resetting the buffer: %s"%(self._buffer))
+        else:
+            CircularBuffer.append(self, newElement)
+            print("Append to buffer: %s"%(self._buffer))
 
 class AttrList(object):
     '''Manages dynamic attributes and contains methods for conveniently adding
@@ -245,11 +260,20 @@ class AttrList(object):
         })
 
     def add_Attr(self, name, T, rfun=None, wfun=None, l=None, d=None,
-                 min=None, max=None, unit=None,format=None,memorized=False):
+                 min=None, max=None, unit=None,format=None,memorized=False,
+                 xdim=0):
         if wfun:
-            attr = PyTango.Attr(name, T, PyTango.READ_WRITE)
+            if xdim == 0:
+                attr = PyTango.Attr(name, T, PyTango.READ_WRITE)
+            else:
+                self.impl.error_stream("Not supported write attribute in 1D."\
+                                       "%s will be readonly."%(name))
+                attr = PyTango.SpectrumAttr(name,T,PyTango.READ,xdim)
         else:
-            attr = PyTango.Attr(name, T, PyTango.READ)
+            if xdim == 0:
+                attr = PyTango.Attr(name, T, PyTango.READ)
+            else:
+                attr = PyTango.SpectrumAttr(name,T,PyTango.READ,xdim)
 
         aprop = PyTango.UserDefaultAttrProp()
         if unit is not None: aprop.set_unit(latin1(unit))
@@ -265,8 +289,11 @@ class AttrList(object):
         attr.set_default_properties(aprop)
 
         rfun = AttrExc(rfun)
-        if wfun:
-            wfun = AttrExc(wfun)
+        try:
+            if wfun:
+                wfun = AttrExc(wfun)
+        except Exception,e:
+            self.impl.error_stream("Attribute %s build exception: %s"%(name,e))
 
         self.impl.add_attribute(attr, r_meth=rfun, w_meth=wfun)
         if self.impl._plcAttrs.has_key(name) and \
@@ -382,13 +409,21 @@ class AttrList(object):
             attrStruct[LASTEVENTQUALITY] = PyTango.AttrQuality.ATTR_VALID
             
     def __prepareAttrWithMeaning(self,attrName,attrType,meanings,qualities,
-                                 rfun,wfun,**kwargs):
+                                 rfun,wfun,historyBuffer=None,**kwargs):
         '''There are some short integers where the number doesn't mean anything
            by itself. The plcs register description shows a relation between 
            the possible numbers and its meaning.
            These attributes are splitted in two:
            - one with only the number (machine readable: archiver,plots)
            - another string with the number and its meaning (human readable)
+           
+           The historyBuffer parameter has been developed to introduce 
+           interlock tracking (using a secondary attribute called *_History). 
+           That is, starting from a set of non interlock values, when the 
+           attibute reads something different to them, it starts collecting 
+           those new values in order to provide a line in the interlock 
+           activity. Until the interlock is cleaned, read value is again in 
+           the list of non interlock values and this buffer is cleaned.
         '''
         #first, build the same than has been archived
         attrState = self.add_Attr(attrName,attrType,rfun,wfun,**kwargs)
@@ -416,7 +451,22 @@ class AttrList(object):
         #last step is to build this alternative attribute
         attrStatus = self.add_Attr(attrNameStatus,PyTango.DevString,
                                    rfun,wfun=None,**kwargs)
-        return (attrState,attrStatus)
+        toReturn = (attrState,attrStatus)
+        if historyBuffer != None:
+            attrHistoryName = "%s_History"%(attrName)
+            historyDescription = copy(statusDescription)
+            self.impl._plcAttrs[attrHistoryName] = historyDescription
+            self.impl._plcAttrs[attrHistoryName][READVALUE]=HistoryBuffer(
+                                                        historyBuffer[BASESET],
+                                                          maxlen=HISTORYLENGTH)
+            self.impl._plcAttrs[attrHistoryName][BASESET] = \
+                                                         historyBuffer[BASESET]
+            xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
+            attrHistory = self.add_Attr(attrHistoryName,attrType,
+                                        rfun=self.impl.read_spectrumAttr,
+                                        xdim=xdim,**kwargs)
+            toReturn += (attrHistory,)
+        return toReturn
     
     def __prepareAttrWithQualities(self,attrName,attrType,qualities,
                                    rfun,wfun,**kwargs):
@@ -426,7 +476,7 @@ class AttrList(object):
 
     def add_AttrAddr(self,name,T,read_addr=None,write_addr=None,
                        meanings=None,qualities=None,events=None,
-                       formula=None,accumBuffer=None,**kwargs):
+                       formula=None,**kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
            as well as for RW depending on if it's provided a write address.
            There are other optional parameters to configure some special 
@@ -477,14 +527,6 @@ class AttrList(object):
            with two possible keys 'read' and/or 'write' and their items shall
            be evaluable strings in running time that would 'transform' a 
            reading.
-           
-           The accumBuffer parameter has been developed to introduce interlock
-           tracking (using a secondary attribute called *_tracking). That is, 
-           starting from a set of non interlock values, when the attibute 
-           reads something different to them, it starts collecting those new 
-           values in order to provide a line in the interlock activity. Until 
-           the interlock is cleaned, read value is again in the list of 
-           non interlock values and this buffer is cleaned.
         '''
         rfun = self.__getAttrMethod('read',name)
 
@@ -499,8 +541,8 @@ class AttrList(object):
         self.__prepareEvents(name,events)
         if not meanings == None:
             return self.__prepareAttrWithMeaning(name,tango_T,meanings,
-                                                 qualities,
-                                                 rfun,wfun,**kwargs)
+                                                 qualities,rfun,wfun,
+                                                 **kwargs)
         elif not qualities == None:
             return self.__prepareAttrWithQualities(name,tango_T,qualities,
                                                    rfun,wfun,**kwargs)
@@ -587,7 +629,7 @@ class AttrList(object):
         if not meanings == None:
             return self.__prepareAttrWithMeaning(name, PyTango.DevBoolean,
                                                  meanings,qualities,rfun,wfun,
-                                                 **kwargs)
+                                                 historyBuffer=None,**kwargs)
         else:
             return self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,**kwargs)
 
@@ -1040,13 +1082,24 @@ class LinacData(PyTango.Device_4Impl):
                 self.info_stream("In fireEvent() attribute %s = %s"
                                   %(attrEventStruct[0],attrEventStruct[1]))
             if len(attrEventStruct) == 3: #the quality is specified
+#                self.push_change_event(attrEventStruct[0],attrEventStruct[1],
+#                                       timestamp,
+#                                       attrEventStruct[2])
+                quality = attrEventStruct[2]
+            else:
+                quality = PyTango.AttrQuality.ATTR_VALID
+#                                       timestamp,
+#                                       PyTango.AttrQuality.ATTR_VALID)
+#                self.push_change_event(attrEventStruct[0],attrEventStruct[1],
+#                                       timestamp,
+#                                       PyTango.AttrQuality.ATTR_VALID)
+            if type(attrEventStruct[1]) == list:
+                print(len(value))
                 self.push_change_event(attrEventStruct[0],attrEventStruct[1],
-                                       timestamp,
-                                       attrEventStruct[2])
+                                       timestamp,quality,len(value))
             else:
                 self.push_change_event(attrEventStruct[0],attrEventStruct[1],
-                                       timestamp,
-                                       PyTango.AttrQuality.ATTR_VALID)
+                                       timestamp,quality)
         
         def fireEventsList(self,eventsAttrList,log=False):
             '''Given a set of pair [attr,value] (with an optional third element
@@ -1077,7 +1130,9 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(attrName)
             if timestamp == None:
                 timestamp = time.time()
-            if type(attrStruct[READVALUE]) == CircularBuffer:
+            if type(attrStruct[READVALUE]) in [CircularBuffer,HistoryBuffer]:
+#                self.info_stream("appending %d to attribute %s"
+#                                 %(attrValue,attrName))
                 attrStruct[READVALUE].append(attrValue)
             else:
                 attrStruct[READVALUE] = attrValue
@@ -1286,6 +1341,29 @@ class LinacData(PyTango.Device_4Impl):
                                   %(self.get_name(),attr.get_name(),e))
             else:
                 self.__setAttrValue(attr,name,attrType,read_value,read_t)
+
+        @AttrExc
+        def read_spectrumAttr(self, attr):
+            '''This method is a generic read for dynamic spectrum attributes in
+               this device. But right now only supports the historic buffers.
+               
+               The other spectrum attributes, related with the events 
+               generation are not using this because they have they own method.
+            '''
+            if self.get_state()==PyTango.DevState.FAULT or \
+                                               (not self.has_data_available()):
+                return #raise AttributeError("Not available in fault state!")
+            name = attr.get_name()
+            attrStruct = self._getAttrStruct(name)
+            attrValue = attrStruct[READVALUE].array
+            attrTimeStamp = attrStruct[READTIME] or time.time()
+            attrQuality = attrStruct[LASTEVENTQUALITY] or \
+                                                 PyTango.AttrQuality.ATTR_VALID
+            self.info_stream("Attribute %s: value=%s timestamp=%g quality=%s "\
+                             "len=%d"%(name,attrValue,attrTimeStamp,
+                                       attrQuality,len(attrValue)))
+            attr.set_value_date_quality(attrValue,attrTimeStamp,attrQuality)
+
 
         def read_logical_attr(self,attr):
             '''
@@ -2267,6 +2345,13 @@ class LinacData(PyTango.Device_4Impl):
 
         #---- done Ramp area
 
+        def __isHistoryBuffer(self,attrName):
+            attrStruct = self._getAttrStruct(attrName)
+            if attrStruct != None and attrStruct.has_key(BASESET)\
+                              and type(attrStruct[READVALUE]) == HistoryBuffer:
+                return True
+            return False
+
         @AttrExc
         def write_internal_attr(self,attr):
             '''
@@ -2922,6 +3007,8 @@ class LinacData(PyTango.Device_4Impl):
             if attrStruct.has_key(READVALUE):
                 if type(attrStruct[READVALUE]) == CircularBuffer:
                     return attrStruct[READVALUE].value
+                elif type(attrStruct[READVALUE]) == HistoryBuffer:
+                    return attrStruct[READVALUE].array
                 return attrStruct[READVALUE]
             return None
 
@@ -3021,6 +3108,15 @@ class LinacData(PyTango.Device_4Impl):
                     return True
                 else:
                     return False
+            if self.__isHistoryBuffer(attrName):
+#                self.info_stream("Checking event emission for %s "\
+#                                 "(lastValue=%s,newValue=%s)"
+#                                 %(attrName,lastValue,newValue))
+                if len(lastValue) == 0 or \
+                                       newValue != lastValue[len(lastValue)-1]:
+                    return True
+                else:
+                    return False
             #At this point any special case has been treated, only avoid
             #to emit if value doesn't change
             if newValue != lastValue:
@@ -3074,7 +3170,11 @@ class LinacData(PyTango.Device_4Impl):
                             self.__applyReadValue(attrName,newValue,
                                                   self.last_update_time)
                             if attrStruct.has_key(MEANINGS):
-                                attrValue = self.__buildAttrMeaning(\
+                                if attrStruct.has_key(BASESET):
+                                    
+                                    attrValue = attrStruct[READVALUE].array
+                                else:
+                                    attrValue = self.__buildAttrMeaning(\
                                                              attrName,newValue)
                                 attrQuality = self.__buildAttrQuality(\
                                                              attrName,newValue)
@@ -3114,6 +3214,7 @@ class LinacData(PyTango.Device_4Impl):
                         self.warn_stream("In plcGeneralAttrEvents(), "\
                                           "exception in attribute %s: %s"
                                           %(attrName,e))
+                        traceback.print_exc()
             if len(attr2Event) > 0:
                 self.fireEventsList(attr2Event,log=True)
             return len(attr2Event)

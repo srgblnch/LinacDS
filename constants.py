@@ -81,3 +81,6 @@ ATTR2RAMP = 'attr2ramp'
 FROM = 'from'
 TO = 'to'
 
+#---- Historic buffer
+BASESET = 'baseSet'
+HISTORYLENGTH = 20
