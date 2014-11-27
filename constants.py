@@ -17,7 +17,7 @@
 
 MAJOR_VERSION = 2
 MINOR_VERSION = 2
-BUILD_VERSION = 7
+BUILD_VERSION = 8
 
 #---- attributes keys
 READADDR = 'read_addr'
@@ -30,6 +30,7 @@ WRITEVALUE = 'write_value'
 TYPE = 'type'
 FORMULA = 'formula'
 LASTEVENTQUALITY = 'lastEventQuality'
+ENABLE = 'Enable'
 
 #---- internal logic attrs
 LOGIC = 'logic'
@@ -49,9 +50,9 @@ WARNING = 'warning'
 ALARM = 'alarm'
 ABSOLUTE = 'abs'
 RELATIVE = 'rel'
-ABOVE = 'above'
-BELOW = 'below'
-UNDER = 'under'
+ABOVE = 'Above'
+BELOW = 'Below'
+UNDER = 'Under'
 MEANINGS = 'meanings'
 
 #---- periods
@@ -67,7 +68,7 @@ RAMP = 'ramp'
 RAMPDEST = 'ramp_dest'
 STEP = 'step'
 STEPTIME = 'steptime'
-THRESHOLD = 'threshold'
+THRESHOLD = 'Threshold'
 RAMPENABLE = 'rampEnable'
 ASCENDING = 'ascending'
 DESCENDING = 'descending'
@@ -84,3 +85,10 @@ TO = 'to'
 #---- Historic buffer
 BASESET = 'baseSet'
 HISTORYLENGTH = 20
+
+#---- conditional stopper
+AUTOSTOP = 'AutoStop'
+INTEGRATIONTIME = 'IntegrationTime'
+MEAN = 'Mean'
+STD = 'Std'
+TRIGGERED = 'Triggered'

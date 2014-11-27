@@ -192,6 +192,9 @@ class CircularBuffer(object):
         else:
             return float('NaN')
     @property
+    def meanAndStd(self):
+        return (self.mean,self.std)
+    @property
     def max(self):
         if len(self._buffer)>0:
             return self._buffer.max()
@@ -303,54 +306,6 @@ class AttrList(object):
         self.alist.append(attr)
         return attr
 
-    def __getAttrMethod(self,operation,attrName,
-                        isBit=False,rampeable=False,internal=False,
-                        isGroup=False,isLogical=False):
-        #if exist an specific method
-        if hasattr(self.impl,"%s_%s"%(operation,attrName)):
-            return getattr(self.impl,"%s_%s"%(operation,attrName))
-        #or use the generic method for its type
-        elif isBit:
-            return getattr(self.impl,"%s_attr_bit"%(operation))
-        elif operation == 'write' and rampeable:
-            #no sense with read operation
-            return getattr(self.impl,"write_attr_with_ramp")
-        elif isGroup:
-            return getattr(self.impl,'%s_attrGrpBit'%(operation))
-        elif internal:
-            return getattr(self.impl,"%s_internal_attr"%(operation))
-        elif isLogical:
-            return getattr(self.impl,"%s_logical_attr"%(operation))
-        else:
-            return getattr(self.impl,"%s_attr"%(operation))
-
-    def __traceAttrAddr(self,attrName,attrType,
-                        readAddr=None,readBit=None,
-                        writeAddr=None,writeBit=None,
-                        internal=False,internalRO=False):
-        #first column is the attrName
-        msg = "%30s\t"%("'%s'"%attrName)
-        #second, its type
-        msg += "%10s\t"%("'%s'"%attrType)
-        #Then, if it's read only or read/write
-        if not writeAddr == None or internal:
-            msg += "   'RW'\t"
-        else:
-            msg += "'RO'   \t"
-        if not readAddr == None:
-            if not readBit == None:
-                read = "'%s.%s'"%(readAddr,readBit)
-            else:
-                read = "'%s'"%(readAddr)
-            msg += "%6s\t"%(read)
-        if not writeAddr == None:
-            if not writeBit == None:
-                write = "'%s.%s'"%(writeAddr,writeBit)
-            else:
-                write = "'%s'"%(writeAddr)
-            msg += "%6s\t"%(write)
-        self.impl.info_stream(msg)
-
     def __mapTypes(self,attrType):
         # ugly hack needed for SOLEILs archiving system
         if attrType == PyTango.DevFloat:
@@ -360,122 +315,9 @@ class AttrList(object):
         else:
             return attrType
 
-    def __prepareAttribute(self,attrName,attrType,
-                           readAddr,readBit=None,
-                           writeAddr=None,writeBit=None,
-                           formula=None):
-        self.impl._plcAttrs[attrName] = {READADDR:readAddr}
-        if not readBit == None:
-            self.impl._plcAttrs[attrName][READBIT] = readBit
-        self.impl._plcAttrs[attrName][READVALUE] = None
-        self.impl._plcAttrs[attrName][READTIME] = None
-        if not writeAddr == None:
-            self.impl._plcAttrs[attrName][WRITEADDR] = writeAddr
-            self.impl._plcAttrs[attrName][WRITEVALUE] = None
-            if not writeBit == None:
-                self.impl._plcAttrs[attrName][WRITEBIT] = writeBit
-        if attrType in [PyTango.DevString,PyTango.DevBoolean]:
-            self.impl._plcAttrs[attrName][TYPE]=attrType
-        else:
-            self.impl._plcAttrs[attrName][TYPE]=TYPE_MAP[attrType]
-        if formula != None:
-            self.impl._plcAttrs[attrName][FORMULA] = formula
-    def __prepareInternalAttribute(self,attrName,attrType,
-                                   memorized=False,isWritable=False,
-                                   defaultValue=None):
-        self.impl._internalAttrs[attrName] = {}
-        self.impl._internalAttrs[attrName][TYPE]=attrType
-        if memorized:
-            try:
-                #next call will use the type on the structure _internalAttrs
-                memorized = self.impl.recoverDynMemorized(attrName)
-                self.impl._internalAttrs[attrName][READVALUE] = memorized
-            except:
-                self.impl.warn_stream("Cannot recover a memorised value for %s"
-                                      %attrName)
-                self.impl._internalAttrs[attrName][READVALUE] = defaultValue
-        else:
-            self.impl._internalAttrs[attrName][READVALUE] = defaultValue
-        if isWritable:
-            self.impl._internalAttrs[attrName][WRITEVALUE] = None
-        self.impl._internalAttrs[attrName][READTIME] = None
-
-    def __prepareEvents(self,attrName,eventConfig):
-        if not eventConfig == None:
-            attrStruct = self.impl._getAttrStruct(attrName)
-            attrStruct[EVENTS] = eventConfig
-            attrStruct[LASTEVENTQUALITY] = PyTango.AttrQuality.ATTR_VALID
-            
-    def __prepareAttrWithMeaning(self,attrName,attrType,meanings,qualities,
-                                 rfun,wfun,historyBuffer=None,**kwargs):
-        '''There are some short integers where the number doesn't mean anything
-           by itself. The plcs register description shows a relation between 
-           the possible numbers and its meaning.
-           These attributes are splitted in two:
-           - one with only the number (machine readable: archiver,plots)
-           - another string with the number and its meaning (human readable)
-           
-           The historyBuffer parameter has been developed to introduce 
-           interlock tracking (using a secondary attribute called *_History). 
-           That is, starting from a set of non interlock values, when the 
-           attibute reads something different to them, it starts collecting 
-           those new values in order to provide a line in the interlock 
-           activity. Until the interlock is cleaned, read value is again in 
-           the list of non interlock values and this buffer is cleaned.
-        '''
-        #first, build the same than has been archived
-        attrState = self.add_Attr(attrName,attrType,rfun,wfun,**kwargs)
-        #then prepare the human readable attribute
-        #- clone the configuration
-        statusDescription = copy(self.impl._plcAttrs[attrName])
-        statusDescription[MEANINGS] = meanings
-        #write feature is useless on this alternative
-        if statusDescription.has_key(WRITEADDR):
-            statusDescription.pop(WRITEADDR)
-        if statusDescription.has_key(WRITEVALUE):
-            statusDescription.pop(WRITEVALUE)
-        if statusDescription.has_key(WRITEBIT):
-            statusDescription.pop(WRITEBIT)
-        #those attributes may come with a qualities dictionary also
-        if not qualities == None:
-            statusDescription[QUALITIES]=qualities
-        #finally prepare the name for the alternative attribute
-        if attrName.endswith('_ST'):
-            attrNameStatus = attrName.replace('_ST','_Status')
-        else:
-            attrNameStatus = "%s_Status"%(attrName)
-        #insert the attribute description in the structure
-        self.impl._plcAttrs[attrNameStatus] = statusDescription
-        #last step is to build this alternative attribute
-        attrStatus = self.add_Attr(attrNameStatus,PyTango.DevString,
-                                   rfun,wfun=None,**kwargs)
-        toReturn = (attrState,attrStatus)
-        if historyBuffer != None:
-            attrHistoryName = "%s_History"%(attrName)
-            historyDescription = copy(statusDescription)
-            self.impl._plcAttrs[attrHistoryName] = historyDescription
-            self.impl._plcAttrs[attrHistoryName][READVALUE]=HistoryBuffer(
-                                                        historyBuffer[BASESET],
-                                                          maxlen=HISTORYLENGTH)
-            self.impl._plcAttrs[attrHistoryName][BASESET] = \
-                                                         historyBuffer[BASESET]
-            xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
-            attrHistory = self.add_Attr(attrHistoryName,
-                                        PyTango.DevString,#attrType,
-                                        rfun=self.impl.read_spectrumAttr,
-                                        xdim=xdim,**kwargs)
-            toReturn += (attrHistory,)
-        return toReturn
-    
-    def __prepareAttrWithQualities(self,attrName,attrType,qualities,
-                                   rfun,wfun,**kwargs):
-        self.impl._plcAttrs[attrName][READVALUE]=CircularBuffer([])
-        self.impl._plcAttrs[attrName][QUALITIES] = qualities
-        return self.add_Attr(attrName,attrType,rfun,wfun,**kwargs)
-
     def add_AttrAddr(self,name,T,read_addr=None,write_addr=None,
                        meanings=None,qualities=None,events=None,
-                       formula=None,**kwargs):
+                       formula=None,l=None,**kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
            as well as for RW depending on if it's provided a write address.
            There are other optional parameters to configure some special 
@@ -535,16 +377,16 @@ class AttrList(object):
             wfun = None
         self.__traceAttrAddr(name,T,readAddr=read_addr,writeAddr=write_addr)
         tango_T = self.__mapTypes(T)
-        self.__prepareAttribute(name,T,readAddr=read_addr,writeAddr=write_addr,
+        self._prepareAttribute(name,T,readAddr=read_addr,writeAddr=write_addr,
                                 formula=formula)
-        self.__prepareEvents(name,events)
+        self._prepareEvents(name,events)
         if not meanings == None:
-            return self.__prepareAttrWithMeaning(name,tango_T,meanings,
+            return self._prepareAttrWithMeaning(name,tango_T,meanings,
                                                  qualities,rfun,wfun,
                                                  **kwargs)
         elif not qualities == None:
-            return self.__prepareAttrWithQualities(name,tango_T,qualities,
-                                                   rfun,wfun,**kwargs)
+            return self._prepareAttrWithQualities(name,tango_T,qualities,
+                                                   rfun,wfun,l=l,**kwargs)
         else:
             return self.add_Attr(name,tango_T,rfun,wfun,**kwargs)
 
@@ -612,7 +454,7 @@ class AttrList(object):
         self.__traceAttrAddr(name,PyTango.DevBoolean,
                              readAddr=read_addr,readBit=read_bit,
                              writeAddr=write_addr,writeBit=write_bit)
-        self.__prepareAttribute(name,PyTango.DevBoolean,
+        self._prepareAttribute(name,PyTango.DevBoolean,
                                 readAddr=read_addr,readBit=read_bit,
                                 writeAddr=write_addr,writeBit=write_bit,
                                 formula=formula)
@@ -624,9 +466,9 @@ class AttrList(object):
         if type(switchDescriptor) == dict:
             self.impl._plcAttrs[name][SWITCHDESCRIPTOR] = switchDescriptor
             self.impl._plcAttrs[name][SWITCHDEST] = None
-        self.__prepareEvents(name,events)
+        self._prepareEvents(name,events)
         if not meanings == None:
-            return self.__prepareAttrWithMeaning(name, PyTango.DevBoolean,
+            return self._prepareAttrWithMeaning(name, PyTango.DevBoolean,
                                                  meanings,qualities,rfun,wfun,
                                                  historyBuffer=None,**kwargs)
         else:
@@ -648,9 +490,9 @@ class AttrList(object):
         else:
             wfun = None
         self.__traceAttrAddr(name,PyTango.DevBoolean,internal=True)
-        self.__prepareInternalAttribute(name,PyTango.DevBoolean,
+        self._prepareInternalAttribute(name,PyTango.DevBoolean,
                                         isWritable=writable)
-        self.__prepareEvents(name,events)
+        self._prepareEvents(name,events)
         attrDescr = self.impl._internalAttrs[name]
         attrDescr['read_set'] = read_addr_bit_pairs
         attrDescr['write_set'] = write_addr_bit_pairs
@@ -665,8 +507,8 @@ class AttrList(object):
         rfun = self.__getAttrMethod('read',name,isLogical=True)
         wfun = None #this kind can only be ReadOnly
         self.__traceAttrAddr(name,PyTango.DevBoolean,internalRO=True)
-        self.__prepareInternalAttribute(name,PyTango.DevBoolean)
-        self.__prepareEvents(name,events)
+        self._prepareInternalAttribute(name,PyTango.DevBoolean)
+        self._prepareEvents(name,events)
         self.impl._internalAttrs[name][LOGIC]=logic
         self.impl._internalAttrs[name][OPERATOR]=operator
         self.impl._internalAttrs[name][INVERTED]=inverted
@@ -724,12 +566,12 @@ class AttrList(object):
         wfun = self.__getAttrMethod('write',name,rampeable=True)
         self.__traceAttrAddr(name,T,readAddr=read_addr,writeAddr=write_addr)
         tango_T = self.__mapTypes(T)
-        self.__prepareAttribute(name,T,readAddr=read_addr,writeAddr=write_addr)
-        self.__prepareEvents(name,events)
+        self._prepareAttribute(name,T,readAddr=read_addr,writeAddr=write_addr)
+        self._prepareEvents(name,events)
         if not qualities == None:
-            rampeableAttr = self.__prepareAttrWithQualities(name,tango_T,
+            rampeableAttr = self._prepareAttrWithQualities(name,tango_T,
                                                            qualities,rfun,wfun,
-                                                            **kwargs)
+                                                           l=l,**kwargs)
         else:
             rampeableAttr = self.add_Attr(name,tango_T,rfun,wfun,l,**kwargs)
         #until here, it's not different than another attribute
@@ -764,44 +606,6 @@ class AttrList(object):
                             rampAttributes.append(newAttr)
         rampAttributes.insert(0,rampeableAttr)
         return tuple(rampAttributes)
-
-    def _buildInternalAttr4Ramping(self,baseName,suffix,baseLabel,unit,
-                                   defaultValue):
-        name = baseName+'_'+suffix
-        try:
-            rfun = self.__getAttrMethod('read',name,internal=True)
-            wfun = self.__getAttrMethod('write',name,internal=True)
-            self.__prepareInternalAttribute(name,PyTango.DevDouble,
-                                            isWritable=True,memorized=True,
-                                            defaultValue=defaultValue)
-            newInternalAttr = self.add_Attr(name,PyTango.DevDouble,rfun,wfun,
-                                            l=baseLabel+' '+suffix,
-                                            min=0,#strictly positive #?max=1,
-                                            unit=unit,
-                                            format='%4.1f',
-                                            memorized=True)
-            self.__traceAttrAddr(name,'DevDouble',internal=True)
-            return newInternalAttr
-        except Exception,e:
-            self.impl.error_stream("%30s\tException:%s"%(name,e))
-            return None
-        
-    def _buildInternalAttr4RampEnable(self,baseName,baseLabel):
-        name = baseName+'_'+RAMPENABLE
-        try:
-            rfun = self.__getAttrMethod('read',name,internal=True)
-            wfun = self.__getAttrMethod('write',name,internal=True)
-            self.__prepareInternalAttribute(name,PyTango.DevBoolean,
-                                            memorized=True,isWritable=True,
-                                            defaultValue=True)
-            rampEnable = self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,
-                                       l=baseLabel+' ramp enable',
-                                       memorized=True)
-            self.__traceAttrAddr(name,'DevBoolean',internal=True)
-            return rampEnable
-        except Exception,e:
-            self.impl.error_stream("%30s\tException:%s"%(name,e))
-            return None
 
     def add_AttrLock_ST(self, read_addr):
         COMM_STATUS = {0:'unlocked',1:'local',2:'remote'}
@@ -890,6 +694,342 @@ class AttrList(object):
 
     def parse(self, text):
         exec text in self.globals_, self.locals_
+
+    #----# internal auxiliar methods
+
+    def __getAttrMethod(self,operation,attrName,
+                        isBit=False,rampeable=False,internal=False,
+                        isGroup=False,isLogical=False):
+        #if exist an specific method
+        if hasattr(self.impl,"%s_%s"%(operation,attrName)):
+            return getattr(self.impl,"%s_%s"%(operation,attrName))
+        #or use the generic method for its type
+        elif isBit:
+            return getattr(self.impl,"%s_attr_bit"%(operation))
+        elif operation == 'write' and rampeable:
+            #no sense with read operation
+            return getattr(self.impl,"write_attr_with_ramp")
+        elif isGroup:
+            return getattr(self.impl,'%s_attrGrpBit'%(operation))
+        elif internal:
+            return getattr(self.impl,"%s_internal_attr"%(operation))
+        elif isLogical:
+            return getattr(self.impl,"%s_logical_attr"%(operation))
+        else:
+            return getattr(self.impl,"%s_attr"%(operation))
+
+    def __traceAttrAddr(self,attrName,attrType,
+                        readAddr=None,readBit=None,
+                        writeAddr=None,writeBit=None,
+                        internal=False,internalRO=False):
+        #first column is the attrName
+        msg = "%30s\t"%("'%s'"%attrName)
+        #second, its type
+        msg += "%10s\t"%("'%s'"%attrType)
+        #Then, if it's read only or read/write
+        if not writeAddr == None or internal:
+            msg += "   'RW'\t"
+        else:
+            msg += "'RO'   \t"
+        if not readAddr == None:
+            if not readBit == None:
+                read = "'%s.%s'"%(readAddr,readBit)
+            else:
+                read = "'%s'"%(readAddr)
+            msg += "%6s\t"%(read)
+        if not writeAddr == None:
+            if not writeBit == None:
+                write = "'%s.%s'"%(writeAddr,writeBit)
+            else:
+                write = "'%s'"%(writeAddr)
+            msg += "%6s\t"%(write)
+        self.impl.info_stream(msg)
+
+    #----# prepare attribute structures
+
+    def _prepareAttribute(self,attrName,attrType,
+                           readAddr,readBit=None,
+                           writeAddr=None,writeBit=None,
+                           formula=None):
+        self.impl._plcAttrs[attrName] = {READADDR:readAddr}
+        if not readBit == None:
+            self.impl._plcAttrs[attrName][READBIT] = readBit
+        self.impl._plcAttrs[attrName][READVALUE] = None
+        self.impl._plcAttrs[attrName][READTIME] = None
+        if not writeAddr == None:
+            self.impl._plcAttrs[attrName][WRITEADDR] = writeAddr
+            self.impl._plcAttrs[attrName][WRITEVALUE] = None
+            if not writeBit == None:
+                self.impl._plcAttrs[attrName][WRITEBIT] = writeBit
+        if attrType in [PyTango.DevString,PyTango.DevBoolean]:
+            self.impl._plcAttrs[attrName][TYPE]=attrType
+        else:
+            self.impl._plcAttrs[attrName][TYPE]=TYPE_MAP[attrType]
+        if formula != None:
+            self.impl._plcAttrs[attrName][FORMULA] = formula
+    def _prepareInternalAttribute(self,attrName,attrType,
+                                   memorized=False,isWritable=False,
+                                   defaultValue=None):
+        self.impl._internalAttrs[attrName] = {}
+        self.impl._internalAttrs[attrName][TYPE]=attrType
+        if memorized:
+            try:
+                #next call will use the type on the structure _internalAttrs
+                memorized = self.impl.recoverDynMemorized(attrName)
+                self.impl._internalAttrs[attrName][READVALUE] = memorized
+            except:
+                self.impl.warn_stream("Cannot recover a memorised value for %s"
+                                      %attrName)
+                self.impl._internalAttrs[attrName][READVALUE] = defaultValue
+        else:
+            self.impl._internalAttrs[attrName][READVALUE] = defaultValue
+        if isWritable:
+            self.impl._internalAttrs[attrName][WRITEVALUE] = None
+        self.impl._internalAttrs[attrName][READTIME] = None
+
+    def _prepareEvents(self,attrName,eventConfig):
+        if not eventConfig == None:
+            attrStruct = self.impl._getAttrStruct(attrName)
+            attrStruct[EVENTS] = eventConfig
+            attrStruct[LASTEVENTQUALITY] = PyTango.AttrQuality.ATTR_VALID
+            
+    def _prepareAttrWithMeaning(self,attrName,attrType,meanings,qualities,
+                                 rfun,wfun,historyBuffer=None,**kwargs):
+        '''There are some short integers where the number doesn't mean anything
+           by itself. The plcs register description shows a relation between 
+           the possible numbers and its meaning.
+           These attributes are splitted in two:
+           - one with only the number (machine readable: archiver,plots)
+           - another string with the number and its meaning (human readable)
+           
+           The historyBuffer parameter has been developed to introduce 
+           interlock tracking (using a secondary attribute called *_History). 
+           That is, starting from a set of non interlock values, when the 
+           attibute reads something different to them, it starts collecting 
+           those new values in order to provide a line in the interlock 
+           activity. Until the interlock is cleaned, read value is again in 
+           the list of non interlock values and this buffer is cleaned.
+        '''
+        #first, build the same than has been archived
+        attrState = self.add_Attr(attrName,attrType,rfun,wfun,**kwargs)
+        #then prepare the human readable attribute
+        #- clone the configuration
+        statusDescription = copy(self.impl._plcAttrs[attrName])
+        statusDescription[MEANINGS] = meanings
+        #write feature is useless on this alternative
+        if statusDescription.has_key(WRITEADDR):
+            statusDescription.pop(WRITEADDR)
+        if statusDescription.has_key(WRITEVALUE):
+            statusDescription.pop(WRITEVALUE)
+        if statusDescription.has_key(WRITEBIT):
+            statusDescription.pop(WRITEBIT)
+        #those attributes may come with a qualities dictionary also
+        if not qualities == None:
+            statusDescription[QUALITIES]=qualities
+        #finally prepare the name for the alternative attribute
+        if attrName.endswith('_ST'):
+            attrNameStatus = attrName.replace('_ST','_Status')
+        else:
+            attrNameStatus = "%s_Status"%(attrName)
+        #insert the attribute description in the structure
+        self.impl._plcAttrs[attrNameStatus] = statusDescription
+        #last step is to build this alternative attribute
+        attrStatus = self.add_Attr(attrNameStatus,PyTango.DevString,
+                                   rfun,wfun=None,**kwargs)
+        toReturn = (attrState,attrStatus)
+        if historyBuffer != None:
+            attrHistoryName = "%s_History"%(attrNameStatus)
+            historyDescription = copy(statusDescription)
+            self.impl._plcAttrs[attrHistoryName] = historyDescription
+            self.impl._plcAttrs[attrHistoryName][READVALUE]=HistoryBuffer(
+                                                        historyBuffer[BASESET],
+                                                          maxlen=HISTORYLENGTH)
+            self.impl._plcAttrs[attrHistoryName][BASESET] = \
+                                                         historyBuffer[BASESET]
+            xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
+            attrHistory = self.add_Attr(attrHistoryName,
+                                        PyTango.DevString,#attrType,
+                                        rfun=self.impl.read_spectrumAttr,
+                                        xdim=xdim,**kwargs)
+            toReturn += (attrHistory,)
+        return toReturn
+
+    def _prepareAttrWithQualities(self,attrName,attrType,qualities,
+                                   rfun,wfun,l=None,unit=None,
+                                   autoStop=None,**kwargs):
+        '''The attributes with qualitites definition, but without meanings for
+           their possible values, are specifically build to have a 
+           CircularBuffer as the read element. That is made to collect a small 
+           record of the previous values, needed for the RELATIVE condition 
+           (mainly used with CHANGING quality). Without a bit of memory in the 
+           past is not possible to know what had happen.
+           
+           This kind of attributes have another possible keyword named 
+           'autoStop'. This has been initially made for the eGun HV 
+           leakage current, to stop it when this leak is too persistent on 
+           time (adjustable using an extra attribute). Apart from that, the 
+           user has a feature disable for it.
+           
+           TODO: feature 'too far' from a setpoint value.
+        '''
+        self.impl._plcAttrs[attrName][READVALUE]=CircularBuffer([])
+        self.impl._plcAttrs[attrName][QUALITIES] = qualities
+        toReturn = (self.add_Attr(attrName,attrType,rfun,wfun,l=l,unit=unit,
+                                  **kwargs),)
+        if autoStop != None:
+            attrStopperBaseName = attrName#+'_'+AUTOSTOP
+            #self.impl._plcAttrs[attrName][AUTOSTOP] = autoStop
+            toReturn += (self._buildAutoStopSpectrum(attrName,l,autoStop),)
+            toReturn += (self._buildAutoStopEnableAttr(attrName,l,autoStop),)
+            #self.impl._plcAttrs[attrName][AUTOSTOP][ENABLE] = "%s_%s_%s"\
+            #                                       %(attrName,AUTOSTOP,ENABLE)
+            for condition in [BELOW,ABOVE]:
+                if autoStop.has_key(condition):
+                    subName = attrName#+'_'+condition
+                    toReturn += (self._buildAutoStopThresholdAttr(subName,l,
+                                                     unit,autoStop,condition),)
+            toReturn += (self._buildAutoStopIntegrationTimeAttr(attrName,l,
+                                                                    autoStop),)
+            #WARN: increase the CircularBuffer may affect when qualities 
+            #      depend on RELATIVE (usually on CHANGING).
+            #TODO: could be useful to have the CircularBuffer array as Attr
+        return toReturn
+
+    #----# Builders for subattributes
+    def _buildInternalAttr4Ramping(self,baseName,suffix,baseLabel,unit,
+                                   defaultValue):
+        name = baseName+'_'+suffix
+        try:
+            rfun = self.__getAttrMethod('read',name,internal=True)
+            wfun = self.__getAttrMethod('write',name,internal=True)
+            self._prepareInternalAttribute(name,PyTango.DevDouble,
+                                            isWritable=True,memorized=True,
+                                            defaultValue=defaultValue)
+            newInternalAttr = self.add_Attr(name,PyTango.DevDouble,rfun,wfun,
+                                            l=baseLabel+' '+suffix,
+                                            min=0,#strictly positive #?max=1,
+                                            unit=unit,
+                                            format='%4.1f',
+                                            memorized=True)
+            self.__traceAttrAddr(name,'DevDouble',internal=True)
+            return newInternalAttr
+        except Exception,e:
+            self.impl.error_stream("%30s\tException:%s"%(name,e))
+            return None
+        
+    def _buildInternalAttr4RampEnable(self,baseName,baseLabel):
+        name = baseName+'_'+RAMPENABLE
+        try:
+            rfun = self.__getAttrMethod('read',name,internal=True)
+            wfun = self.__getAttrMethod('write',name,internal=True)
+            self._prepareInternalAttribute(name,PyTango.DevBoolean,
+                                            memorized=True,isWritable=True,
+                                            defaultValue=True)
+            rampEnable = self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,
+                                       l=baseLabel+' ramp enable',
+                                       memorized=True)
+            self.__traceAttrAddr(name,'DevBoolean',internal=True)
+            return rampEnable
+        except Exception,e:
+            self.impl.error_stream("%30s\tException:%s"%(name,e))
+            return None
+    
+    def _buildAutoStopSpectrum(self,baseName,baseLabel,autoStopDesc):
+        attrName = "%s_%s"%(baseName,AUTOSTOP)
+        scalarAttr = self.impl._plcAttrs[baseName]
+        attrDesc = copy(scalarAttr)
+        attrDesc[AUTOSTOP] = autoStopDesc
+        self.impl._plcAttrs[attrName] = attrDesc
+        self.impl._plcAttrs[attrName].pop(QUALITIES)
+        sizeOfBuffer = autoStopDesc[INTEGRATIONTIME]/PLC_STEP_UPDATE_PERIOD
+        self.impl._plcAttrs[attrName][READVALUE] = CircularBuffer([])
+        spectrumAttr = self.add_Attr(attrName,PyTango.DevDouble,
+                              rfun=self.impl.read_spectrumAttr,
+                              xdim=1000)
+        #publish the mean and the std of this spectrum as tango attr also
+        meanName = "%s_%s"%(attrName,MEAN)
+        rfun = self.__getAttrMethod('read',meanName,internal=True)
+
+        self._prepareInternalAttribute(meanName,PyTango.DevDouble,
+                                       isWritable=False)
+        self.impl._internalAttrs[meanName][QUALITIES] = \
+                                       self.impl._plcAttrs[baseName][QUALITIES]
+        self._prepareEvents(meanName,self.impl._plcAttrs[baseName][EVENTS])
+        self.impl._internalAttrs[meanName][MEAN] = attrName
+        meanAttr = self.add_Attr(meanName,PyTango.DevDouble,rfun,
+                                       l=baseLabel+' mean',
+                                       memorized=True)
+        
+        
+        stdName = "%s_%s"%(attrName,STD)
+        rfun = self.__getAttrMethod('read',stdName,internal=True)
+        self._prepareInternalAttribute(stdName,PyTango.DevDouble,
+                                       isWritable=False)
+        self._prepareEvents(stdName,self.impl._plcAttrs[baseName][EVENTS])
+        self.impl._internalAttrs[stdName][STD] = attrName
+        stdAttr = self.add_Attr(stdName,PyTango.DevDouble,rfun,
+                                       l=baseLabel+' std',
+                                       memorized=True)
+        
+        return (spectrumAttr,meanAttr,stdAttr)
+    
+    def _buildAutoStopEnableAttr(self,baseName,baseLabel,autoStopDesc):
+        attrName = "%s_%s_%s"%(baseName,AUTOSTOP,ENABLE)
+        label = baseLabel+' '+ENABLE
+        self._prepareInternalAttribute(attrName,PyTango.DevBoolean)
+        self._prepareEvents(attrName,{})
+        rfun = self.__getAttrMethod('read',attrName,internal=True)
+        wfun = self.__getAttrMethod('write',attrName,internal=True)
+        self.impl._internalAttrs[attrName][AUTOSTOP] = {'is'+ENABLE:
+                                                        baseName+'_'+AUTOSTOP}
+        if self.impl._plcAttrs.has_key(baseName+'_'+AUTOSTOP):
+            self.impl._plcAttrs[baseName+'_'+AUTOSTOP][AUTOSTOP][ENABLE] = True
+        self.impl._internalAttrs[attrName][READVALUE] = True
+        self.impl._internalAttrs[attrName][WRITEVALUE] = True
+        enableAttr = self.add_Attr(attrName,PyTango.DevBoolean,rfun,wfun,
+                                   l=label)
+        #A ReadOonly boolean to report when autostopper has acted
+        #FIXME: when clean this boolean?
+        triggerName = "%s_%s_%s"%(baseName,AUTOSTOP,TRIGGERED)
+        label = baseLabel+' '+TRIGGERED
+        self._prepareInternalAttribute(triggerName,PyTango.DevBoolean)
+        self._prepareEvents(triggerName,{})
+        rfun = self.__getAttrMethod('read',triggerName,internal=True)
+        self.impl._internalAttrs[triggerName][TRIGGERED] = False
+        triggerAttr = self.add_Attr(triggerName,PyTango.DevBoolean,rfun,l=label)
+        return (enableAttr,triggerAttr)
+
+    def _buildAutoStopThresholdAttr(self,baseName,baseLabel,unit,autoStopDesc,
+                                   condition):
+        attrName = "%s_%s_%s_%s"%(baseName,AUTOSTOP,condition,THRESHOLD)
+        label = baseLabel+' '+THRESHOLD
+        self._prepareInternalAttribute(attrName,PyTango.DevDouble,
+                                        memorized=True,isWritable=True,
+                                        defaultValue=autoStopDesc[condition])
+        self._prepareEvents(attrName,{})
+        rfun = self.__getAttrMethod('read',attrName,internal=True)
+        wfun = self.__getAttrMethod('write',attrName,internal=True)
+        self.impl._internalAttrs[attrName][AUTOSTOP] = \
+                                            {'is'+condition+THRESHOLD:
+                                             baseName+'_'+AUTOSTOP}
+        return self.add_Attr(attrName,PyTango.DevDouble,rfun,wfun,
+                             l=label,unit=unit)
+
+    def _buildAutoStopIntegrationTimeAttr(self,baseName,baseLabel,
+                                          autoStopDesc):
+        attrName = "%s_%s_%s"%(baseName,AUTOSTOP,INTEGRATIONTIME)
+        label = baseLabel+' '+INTEGRATIONTIME
+        self._prepareInternalAttribute(attrName,PyTango.DevDouble,
+                                        memorized=True,isWritable=True,
+                                    defaultValue=autoStopDesc[INTEGRATIONTIME])
+        self._prepareEvents(attrName,{})
+        rfun = self.__getAttrMethod('read',attrName,internal=True)
+        wfun = self.__getAttrMethod('write',attrName,internal=True)
+        self.impl._internalAttrs[attrName][AUTOSTOP] = \
+                                                {'is'+INTEGRATIONTIME:
+                                                 baseName+'_'+AUTOSTOP}
+        return self.add_Attr(attrName,PyTango.DevDouble,rfun,wfun,
+                             l=label,unit='s')
 
 def get_ip(iface = 'eth0'):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -1120,6 +1260,7 @@ class LinacData(PyTango.Device_4Impl):
                 except Exception,e:
                     self.error_stream("In fireEventsList() Exception with "\
                                       "attribute %s: %s"%(attrEvent[0],e))
+                    traceback.print_exc()
         #---- done event methods
 
         ####
@@ -1356,7 +1497,10 @@ class LinacData(PyTango.Device_4Impl):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             attrStruct = self._getAttrStruct(name)
-            attrValue = self.__buildHistoryBufferString(name)
+            if attrStruct.has_key(BASESET):
+                attrValue = self.__buildHistoryBufferString(name)
+            elif attrStruct.has_key(AUTOSTOP):
+                attrValue = attrStruct[READVALUE].array
             attrTimeStamp = attrStruct[READTIME] or time.time()
             attrQuality = attrStruct[LASTEVENTQUALITY] or \
                                                  PyTango.AttrQuality.ATTR_VALID
@@ -1663,11 +1807,14 @@ class LinacData(PyTango.Device_4Impl):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
 #            self.debug_stream("write_attr_bit[%s]"%(name))
+            write_value = self.prepare_write(attr)
+            self.doWriteAttrBit(name,write_value)
+
+        def doWriteAttrBit(self,name,write_value):
             attrStruct = self._getAttrStruct(name)
             read_addr = attrStruct[READADDR]
             write_addr = attrStruct[WRITEADDR]
             write_bit = attrStruct[WRITEBIT]
-            write_value = self.prepare_write(attr)
             if attrStruct.has_key(FORMULA) and \
                attrStruct[FORMULA].has_key('write'):
                 formula_value = self.__solveFormula(name,write_value,
@@ -2346,6 +2493,145 @@ class LinacData(PyTango.Device_4Impl):
 
         #---- done Ramp area
 
+        #----# autostop area
+        def _refreshInternalAutostopParams(self,attrName):
+            '''There are auxiliar attibutes with the autostop conditions and
+               when their values change them have to be introduced in the 
+               structure of the main attribute with the buffer, who will use it
+               to take the decission.
+               This includes the resizing task of the CircularBuffer.
+            '''
+            #FIXME: use the spectrum attribute and left the circular buffer as
+            #it was to avoid side effects on relative events.
+            if not self._internalAttrs.has_key(attrName):
+                return
+            attrStruct = self._internalAttrs[attrName]
+            if not attrStruct.has_key(AUTOSTOP):
+                return
+            stopperDict = attrStruct[AUTOSTOP]
+            if stopperDict.has_key('is'+ENABLE):
+                refAttr = self._getAttrStruct(stopperDict['is'+ENABLE])
+                refAttr[AUTOSTOP][ENABLE] = attrStruct[READVALUE]
+            if stopperDict.has_key('is'+INTEGRATIONTIME):
+                refAttr =self._getAttrStruct(stopperDict['is'+INTEGRATIONTIME])
+                refAttr[AUTOSTOP][INTEGRATIONTIME] = attrStruct[READVALUE]
+                #resize the CircularBuffer
+                #   time per sample int(INTEGRATIONTIME/PLC_STEP_UPDATE_PERIOD)
+                newBufferSize = int(attrStruct[READVALUE]/PLC_STEP_UPDATE_PERIOD)
+                if refAttr[READVALUE].maxSize() != newBufferSize:
+                    self.info_stream("%s buffer to be resized from %d to %d"
+                                     %(attrName,refAttr[READVALUE].maxSize(),
+                                       newBufferSize))
+                    refAttr[READVALUE].resize(newBufferSize)
+            else:
+                for condition in [BELOW,ABOVE]:
+                    if stopperDict.has_key('is'+condition+THRESHOLD):
+                        key = 'is'+condition+THRESHOLD
+                        refAttr = self._getAttrStruct(stopperDict[key])
+                        refAttr[AUTOSTOP][condition] = attrStruct[READVALUE]
+        
+        def _updateStatistic(self,attrName):
+            if not self._internalAttrs.has_key(attrName):
+                return
+            attrStruct = self._internalAttrs[attrName]
+            if attrStruct.has_key(MEAN):
+                refAttr = attrStruct[MEAN]
+                if not self._plcAttrs.has_key(refAttr):
+                    return
+                attrStruct[READVALUE] = self._plcAttrs[refAttr][READVALUE].mean
+            elif attrStruct.has_key(STD):
+                refAttr = attrStruct[STD]
+                if not self._plcAttrs.has_key(refAttr):
+                    return
+                attrStruct[READVALUE] = self._plcAttrs[refAttr][READVALUE].std
+        
+        def _cleanTriggeredFlag(self,attrName):
+            triggerName = "%s_%s"%(attrName,TRIGGERED)
+            if not self._internalAttrs.has_key(triggerName):
+                return
+            if self._internalAttrs[triggerName][TRIGGERED] == True:
+                #if it's powered off and it was triggered, then this
+                #power off would be because autostop has acted.
+                #Is needed to clean the flag.
+                self.info_stream("Clean the autostop triggered flag "\
+                                 "for %s"%(attrName))
+                self._internalAttrs[triggerName][TRIGGERED] = False
+        
+        def _checkAutoStopConditions(self,attrName):
+            '''The attribute with the Circular buffer has to do some checks
+               to decide if it's necessary to proceed with the autostop 
+               procedure.
+            '''
+            if not self._plcAttrs.has_key(attrName):
+                return
+            attrStruct = self._plcAttrs[attrName]
+            if not attrStruct.has_key(AUTOSTOP):
+                return
+            if not attrStruct[AUTOSTOP].has_key(ENABLE) or \
+                                         attrStruct[AUTOSTOP][ENABLE] == False:
+#                self.info_stream("Stop condition for %s is disabled"
+#                                 %(attrName))
+                return
+            if attrStruct[AUTOSTOP].has_key(SWITCHDESCRIPTOR):
+                switchStruct = self._getAttrStruct(\
+                                        attrStruct[AUTOSTOP][SWITCHDESCRIPTOR])
+                if switchStruct == None or not switchStruct.has_key(READVALUE):
+#                    self.warn_stream("Stop condition for %s cannot be "\
+#                                     "evaluated because there is switch "\
+#                                     "attribute"%(attrName))
+                    return
+                if switchStruct[READVALUE] == False:
+#                    self.info_stream("No stop condition to evaluate for %s,"\
+#                                     "it is already off"%(attrName))
+                    self._cleanTriggeredFlag(attrName)
+                    return
+                if switchStruct.has_key(SWITCHDEST):
+                    if switchStruct[SWITCHDEST] == False:
+                        return
+                    elif switchStruct[READVALUE] == False:
+                        return
+                #doStop = False
+                for condition in [BELOW,ABOVE]:
+                    if attrStruct[AUTOSTOP].has_key(condition):
+                        refValue = attrStruct[AUTOSTOP][condition]
+                        meanValue = attrStruct[READVALUE].mean
+                        #BELOW and ABOVE is compared with mean
+                        if condition == BELOW and refValue > meanValue:
+#                            self.info_stream("Attribute %s stop condition "\
+#                                             "%s is met ref=%g > mean=%g"
+#                                             %(attrName,condition,
+#                                               refValue,meanValue))
+                            self._doAutostop(attrName, condition)#doStop = True
+                        elif condition == ABOVE and refValue < meanValue:
+#                            self.info_stream("Attribute %s stop condition "\
+#                                             "%s is met ref=%g < mean=%g"
+#                                             %(attrName,condition,
+#                                               refValue,meanValue))
+                            self._doAutostop(attrName, condition)#doStop = True
+#                if doStop:
+#                    self.doWriteAttrBit(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR],
+#                                        False)
+        
+        def _doAutostop(self,attrName,condition):
+            attrStruct = self._plcAttrs[attrName]
+            refValue = attrStruct[AUTOSTOP][condition]
+            meanValue,stdValue = attrStruct[READVALUE].meanAndStd
+            self.doWriteAttrBit(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR],False)
+            triggerStruct = self._internalAttrs["%s_%s"%(attrName,TRIGGERED)]
+            self.warn_stream("Flag the autostop trigger for attribute %s"
+                             %(attrName))
+            triggerStruct[TRIGGERED] = True
+            #throw an exception to report the gui
+#            reason = "%s Autostop"%(attrName)
+#            desc = "The attribute %s has been automatically stopped due to "\
+#                   "condition %s (reference %g, mean %g, std %g)"\
+#                   %(attrName,condition,refValue,meanValue,stdValue)
+#            origin = attrName
+#            sever=PyTango.ErrSeverity.WARN
+#            PyTango.Except.throw_exception(reason,desc,origin,sever)
+        
+        #---- done autostop area
+
         def __isHistoryBuffer(self,attrName):
             attrStruct = self._getAttrStruct(attrName)
             if attrStruct != None and attrStruct.has_key(BASESET)\
@@ -2365,15 +2651,13 @@ class LinacData(PyTango.Device_4Impl):
 
         @AttrExc
         def write_internal_attr(self,attr):
-            '''
-            '''
             '''this is referencing to a device attribute that doesn't
                have plc representation'''
             if self.get_state()==PyTango.DevState.FAULT or \
                                                (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
-            self.debug_stream('write_internal_attr(%s)'%(attrName))
+            self.info_stream('write_internal_attr(%s)'%(attrName))
             
             data=[]
             attr.get_write_value(data)
@@ -2392,8 +2676,8 @@ class LinacData(PyTango.Device_4Impl):
                                                        attrDescr[READVALUE])
                     self.storeDynMemozized(attr)
                     if attrDescr.has_key(EVENTS):
-                        self.fireEventsList([attrName,attrValue,
-                                             attrQuality],log=True)
+                        self.fireEventsList([[attrName,attrValue,
+                                              attrQuality]],log=True)
 
         @AttrExc
         def read_lastUpdateStatus(self,attr):
@@ -3193,6 +3477,10 @@ class LinacData(PyTango.Device_4Impl):
                                 attrValue = newValue
                                 attrQuality = self.__buildAttrQuality(\
                                                             attrName,attrValue)
+                            elif attrStruct.has_key(AUTOSTOP):
+                                attrValue = attrStruct[READVALUE].array
+                                attrQuality = PyTango.AttrQuality.ATTR_VALID
+                                self._checkAutoStopConditions(attrName)
                             else:
                                 attrValue = newValue
                                 attrQuality = PyTango.AttrQuality.ATTR_VALID
@@ -3257,6 +3545,19 @@ class LinacData(PyTango.Device_4Impl):
                             newValue = self.__getGrpBitValue(attrName,
                                                        attrStruct['read_set'],
                                                        self.read_db)
+                        elif attrStruct.has_key(AUTOSTOP):
+                            newValue = lastValue
+                            #FIXME: do it better.
+                            #Don't emit events on the loop, because they shall
+                            #be only emitted when they are written.
+                            self._refreshInternalAutostopParams(attrName)
+                            #FIXME: this is task for a internalUpdaterThread
+                        elif attrStruct.has_key(MEAN) or \
+                                                       attrStruct.has_key(STD):
+                            self._updateStatistic(attrName)
+                            newValue = attrStruct[READVALUE]
+                        elif attrStruct.has_key(TRIGGERED):
+                            newValue = attrStruct[TRIGGERED]
                         else:
                             self.warn_stream("In internalAttrEvents(): "\
                                              "unknown how to emit events "\

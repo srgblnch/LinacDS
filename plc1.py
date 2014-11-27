@@ -99,7 +99,10 @@ Attr('GUN_HV_I',
      format='%4.1f',min=-600,max=1,unit='μA',
      events={THRESHOLD:0.01},
      qualities={WARNING:{ABSOLUTE:{ABOVE:1.0,
-                                   BELOW:-20.0}}})
+                                   BELOW:-20.0}}},
+     autoStop={BELOW:-20,
+               INTEGRATIONTIME:1,#s
+               SWITCHDESCRIPTOR:'GUN_HV_ONC'})
 
 #---- R040 @PHS1_PM
 Attr('PHS1_Phase',
