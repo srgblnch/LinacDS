@@ -68,37 +68,43 @@ Attr('Heat_I',
      l='Heating current monitor',
      unit='A',min=0,max=30,format='%4.1f',
      events={THRESHOLD:0.01},
-     qualities={CHANGING:{'rel':0.1}})
+     #qualities={CHANGING:{'rel':0.1}}
+     )
 Attr('Heat_V',
      PyTango.DevFloat,8,
      l='Heating voltage monitor',
      unit='V',min=0,max=30,format='%4.1f',
      events={THRESHOLD:0.01},
-     qualities={CHANGING:{'rel':0.1}})
+     #qualities={CHANGING:{'rel':0.1}}
+     )
 Attr('HVPS_V',
      PyTango.DevFloat,12,#RO
      l='High voltage PS voltage',
      unit='kV',min=0,max=40,format='%4.2f',
      events={THRESHOLD:0.001},
-     qualities={CHANGING:{'rel':0.1}})
+     #qualities={CHANGING:{'rel':0.1}}
+     )
 Attr('HVPS_I',
      PyTango.DevFloat,16,
      l='High voltage PS current',
      unit='mA',min=0,max=150,format='%4.1f',
      events={THRESHOLD:0.01},
-     qualities={CHANGING:{'rel':0.1}})
+     #qualities={CHANGING:{'rel':0.1}}
+     )
 Attr('Peak_I',
      PyTango.DevFloat,20,
      l='Peak current',
      unit='A',min=0,max=400,format='%4.1f',
      events={THRESHOLD:0.01},
-     qualities={CHANGING:{'rel':0.1}})
+     #qualities={CHANGING:{'rel':0.1}}
+     )
 Attr('Peak_V',
      PyTango.DevFloat,24,
      l='Peak voltage',
      d='peak voltage (calculated',unit='kV',min=0,max=400,format='%4.1f',
      events={THRESHOLD:0.01},
-     qualities={CHANGING:{'rel':0.1}})
+     #qualities={CHANGING:{'rel':0.1}}
+     )
 LV_J = {0:'off',
         1:'vacuum fault',
         2:'oil level fault',

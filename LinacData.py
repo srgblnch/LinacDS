@@ -2000,7 +2000,10 @@ class LinacData(PyTango.Device_4Impl):
             self.info_stream("write_attr_with_ramp(%s: %g)"
                              %(attrName,ramp_dest))
             if self.__isRampingAttr(attrName):
-                self._launchRamp(attrName, ramp_dest)
+                if not self.__isRampEnabled(attrName):
+                    self.write_attr(attr)
+                else:
+                    self._launchRamp(attrName, ramp_dest)
 
         def _launchRamp(self,attrName,ramp_dest):
             attrStruct = self._getAttrStruct(attrName)
