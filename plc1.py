@@ -120,7 +120,7 @@ Attr('SF6_P1',
      format='%4.2f',min=-1,max=5,unit='bar',
      events={THRESHOLD:0.001},
      qualities={WARNING:{ABSOLUTE:{BELOW:2.9,
-                                  ABOVE:3.0}}})
+                                  ABOVE:3.05}}})
 
 #---- R052 @SF6P2M
 Attr('SF6_P2',
@@ -129,7 +129,7 @@ Attr('SF6_P2',
      format='%4.2f',min=-1,max=5,unit='bar',
      events={THRESHOLD:0.001},
      qualities={WARNING:{ABSOLUTE:{BELOW:2.9,
-                                  ABOVE:3.0}}})
+                                  ABOVE:3.05}}})
 
 #---- R056 @PHS2_PM
 Attr('PHS2_Phase',

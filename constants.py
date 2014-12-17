@@ -64,15 +64,15 @@ PLC_STEP_UPDATE_PERIOD = EVENT_THREAD_PERIOD/10#s
 EXPECTED_UPDATE_TIME = PLC_MAX_UPDATE_PERIOD#s or less
 
 #---- ramping
-RAMP = 'ramp'
+RAMP = 'Ramp'
 RAMPDEST = 'ramp_dest'
-STEP = 'step'
-STEPTIME = 'steptime'
+STEP = 'Step'
+STEPTIME = 'Steptime'
 THRESHOLD = 'Threshold'
 RAMPENABLE = 'rampEnable'
-ASCENDING = 'ascending'
-DESCENDING = 'descending'
-SWITCH = 'switch'
+ASCENDING = 'Ascending'
+DESCENDING = 'Descending'
+SWITCH = 'Switch'
 SWITCHDESCRIPTOR = 'switchDescriptor'
 SWITCHDEST = 'switch_dest'
 WHENON = 'whenOn'

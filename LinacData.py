@@ -1837,6 +1837,7 @@ class LinacData(PyTango.Device_4Impl):
                 #Depending to the on or off transition keys, this will launch 
                 #a thread who will modify the ATTR2RAMP, and when that 
                 #finishes the write will be set.
+                
                 if self.__stateTransitionNeeded(write_value,
                                                 attrStruct[SWITCHDESCRIPTOR]):
                     attrStruct[SWITCHDEST] = write_value
@@ -1867,6 +1868,12 @@ class LinacData(PyTango.Device_4Impl):
 #                               bin(rbyte),bin(toWrite),bin(reRead)))
 
         def __stateTransitionNeeded(self,value,descriptor):
+            if descriptor.has_key(ATTR2RAMP):
+                enableAttr = descriptor[ATTR2RAMP]+'_rampEnable'
+                enableStruct = self._getAttrStruct(enableAttr)
+                if enableStruct != None and enableStruct[READVALUE] == False:
+                    return False
+                    #if ramp is disabled, not procedure to do
             if self.__stateTransitionToOn(value,descriptor):
                 return True
             elif self.__stateTransitionToOff(value,descriptor):
@@ -2376,7 +2383,33 @@ class LinacData(PyTango.Device_4Impl):
             #once know there shall be transition, get information about the 
             #attribute that has to do this transition.
             rampAttr = switchStruct[ATTR2RAMP]
+            #print("rampAttr: %s"%(rampAttr))
             rampStruct = self._getAttrStruct(rampAttr)
+            #print("rampStruct: %s"%(rampStruct))
+            #before do the switch procedure, check if there is a ramp to launch
+            currentValue = rampStruct[WRITEVALUE]
+            #print("currentValue: %s"%(currentValue))
+            destinationValue = rampStruct[RAMPDEST]
+            #print("destinationValue: %s"%(destinationValue))
+            rampRequired = False
+            for direction in [ASCENDING,DESCENDING]:
+                if rampStruct[RAMP].has_key(direction):
+                    if rampStruct[RAMP][direction].has_key(THRESHOLD):
+                        threshold = rampStruct[RAMP][direction][THRESHOLD]
+                    else:
+                        threshold = 0
+                    #print("%s threshold: %s"%(direction,threshold))
+                    rampDirectionRequired = self.__isInRampingArea(direction,
+                                                       currentValue,threshold)
+                    self.info_stream("%s for direction %s will %srequire a "\
+                                     "ramp."%(rampAttr,direction,"" \
+                                         if rampDirectionRequired else "not "))
+                    rampRequired |= rampDirectionRequired
+            if not rampRequired:
+                self.info_stream("%s is not in a rampoing area, to switch "\
+                                 "procedure required."%(rampAttr))
+                self._applyWriteBit(attrName,destinationState)
+                return
             rampBackup = rampStruct[WRITEVALUE]
             self.info_stream("Backup write_value of %s (%g)"
                              %(attrName,rampBackup))
@@ -2453,10 +2486,18 @@ class LinacData(PyTango.Device_4Impl):
             switchStruct[transition]
             if switchStruct[transition].has_key(TO):
                 to_ = switchStruct[transition][TO]
+                if to_ != None and type(to_) == str:
+                    self.info_stream("__getSwitchInteval 'to_' = '%s' (%s)"
+                                     %(from_,type(from_)))
+                    to_ = self._getAttrStruct(to_)[READVALUE]
             else:
                 to_ = None
             if switchStruct[transition].has_key(FROM):
                 from_ = switchStruct[transition][FROM]
+                if from_ != None and type(from_) == str:
+                    self.info_stream("__getSwitchInteval from_ = '%s' (%s)"
+                                     %(from_,type(from_)))
+                    from_ = self._getAttrStruct(from_)[READVALUE]
             else:
                 from_ = None
             return (from_,to_)

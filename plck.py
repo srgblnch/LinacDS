@@ -232,8 +232,8 @@ AttrBit('HVPS_ONC',
                        'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 7'
                 },
         switchDescriptor={ATTR2RAMP:'HVPS_V_setpoint',
-                          WHENON:{FROM:0},#to where the WRITEVALUE say
-                          WHENOFF:{TO:0}#from where the WRITEVALUE say
+                          WHENON:{FROM:'HVPS_V_setpoint_Ascending_Threshold'},
+                          #WHENOFF:{TO:0}#from where the WRITEVALUE say
                           }
         )
 
