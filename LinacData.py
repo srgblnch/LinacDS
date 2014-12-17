@@ -879,16 +879,20 @@ class AttrList(object):
         if autoStop != None:
             attrStopperBaseName = attrName#+'_'+AUTOSTOP
             #self.impl._plcAttrs[attrName][AUTOSTOP] = autoStop
-            toReturn += (self._buildAutoStopSpectrum(attrName,l,autoStop),)
-            toReturn += (self._buildAutoStopEnableAttr(attrName,l,autoStop),)
+            toReturn += (self._buildAutoStopSpectrum(attrName,l+" "+AUTOSTOP,
+                                                     autoStop),)
+            toReturn += (self._buildAutoStopEnableAttr(attrName,l+" "+AUTOSTOP,
+                                                       autoStop),)
             #self.impl._plcAttrs[attrName][AUTOSTOP][ENABLE] = "%s_%s_%s"\
             #                                       %(attrName,AUTOSTOP,ENABLE)
             for condition in [BELOW,ABOVE]:
                 if autoStop.has_key(condition):
                     subName = attrName#+'_'+condition
-                    toReturn += (self._buildAutoStopThresholdAttr(subName,l,
+                    toReturn += (self._buildAutoStopThresholdAttr(subName,
+                                                                l+" "+AUTOSTOP,
                                                      unit,autoStop,condition),)
-            toReturn += (self._buildAutoStopIntegrationTimeAttr(attrName,l,
+            toReturn += (self._buildAutoStopIntegrationTimeAttr(attrName,
+                                                                l+" "+AUTOSTOP,
                                                                     autoStop),)
             #WARN: increase the CircularBuffer may affect when qualities 
             #      depend on RELATIVE (usually on CHANGING).
