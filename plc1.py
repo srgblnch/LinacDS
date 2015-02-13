@@ -76,7 +76,7 @@ Attr('GUN_Kathode_T',
      format='%4.1f',min=0,max=50,unit='⁰C',
      events={THRESHOLD:0.01},
      qualities={WARNING:{ABSOLUTE:{BELOW:25.0,
-                                  ABOVE:32.0}}})
+                                  ABOVE:45.0}}})
 
 #---- R016 @AI_04: free
 #---- R020 @AI_05: free
