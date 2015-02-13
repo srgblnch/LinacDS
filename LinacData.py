@@ -222,6 +222,8 @@ class CircularBuffer(object):
         return self.__maxlen
     def resize(self,newMaxLen):
         self.__maxlen = newMaxLen
+    def resetBuffer(self):
+        self._buffer = np.array([])
 
 class HistoryBuffer(CircularBuffer):
     def __init__(self,cleaners,maxlen=DEFAULT_SIZE):
@@ -1276,6 +1278,8 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(attrName)
             if timestamp == None:
                 timestamp = time.time()
+            if not self.__filterAutoStopCollection(attrName):
+                return
             if type(attrStruct[READVALUE]) in [CircularBuffer,HistoryBuffer]:
 #                self.info_stream("appending %d to attribute %s"
 #                                 %(attrValue,attrName))
@@ -1283,6 +1287,35 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 attrStruct[READVALUE] = attrValue
             attrStruct[READTIME] = timestamp
+
+        def __filterAutoStopCollection(self,attrName):
+            attrStruct = self._getAttrStruct(attrName)
+#            if attrName == 'GUN_HV_I_AutoStop':
+#                self.info_stream("\n%s:\n%r\n"%(attrName,attrStruct))
+            if attrStruct.has_key(AUTOSTOP) and \
+                                attrStruct[AUTOSTOP].has_key(SWITCHDESCRIPTOR):
+                switchName = attrStruct[AUTOSTOP][SWITCHDESCRIPTOR]
+                switchStruct = self._getAttrStruct(switchName)
+#                self.info_stream("\n\t%s:\n%r\n"%(switchName,switchStruct))
+                if switchStruct.has_key(READVALUE) and \
+                                              switchStruct[READVALUE] == False:
+                    #do not collect data when the switch to stop is already off
+                    self.info_stream("The switch for %s the autostopper is "\
+                                      "off, no needed to collect values"
+                                      %(attrName))
+                    #but if there is data collected (example, just when switch
+                    #off, clean it
+                    if attrStruct.has_key(READVALUE) and \
+                                               len(attrStruct[READVALUE]) != 0:
+                        self.info_stream("Clean up the buffer because "\
+                                          "collected data doesn't have sense "\
+                                          "having the swithc off.")
+#                        backupsize = attrStruct[READVALUE].maxSize()
+#                        attrStruct[READVALUE].resize(0)
+#                        attrStruct[READVALUE].resize(backupsize)
+                        attrStruct[READVALUE].resetBuffer()
+                    return False
+            return True
 
         def __applyWriteValue(self,attrName,attrValue):
             '''Hide the internal attribute struct representation and give an 
