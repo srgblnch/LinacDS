@@ -442,6 +442,8 @@ class AttrList(object):
              - FROM: initial value of the state change ramp
              - TO: final value of the state change ramp
              About those two last keys, they can be both or only one.
+           + AUTOSTOP: in case it has also the autostop feature, this is used
+             to identify the buffer to clean when transition from off to on.
         '''
 
         if write_bit is None:
@@ -859,7 +861,7 @@ class AttrList(object):
     def _prepareAttrWithQualities(self,attrName,attrType,qualities,
                                    rfun,wfun,l=None,unit=None,
                                    autoStop=None,**kwargs):
-        '''The attributes with qualitites definition, but without meanings for
+        '''The attributes with qualities definition, but without meanings for
            their possible values, are specifically build to have a 
            CircularBuffer as the read element. That is made to collect a small 
            record of the previous values, needed for the RELATIVE condition 
@@ -879,26 +881,20 @@ class AttrList(object):
         toReturn = (self.add_Attr(attrName,attrType,rfun,wfun,l=l,unit=unit,
                                   **kwargs),)
         if autoStop != None:
-            attrStopperBaseName = attrName#+'_'+AUTOSTOP
-            #self.impl._plcAttrs[attrName][AUTOSTOP] = autoStop
+            attrStopperBaseName = attrName
             toReturn += (self._buildAutoStopSpectrum(attrName,l+" "+AUTOSTOP,
                                                      autoStop),)
             toReturn += (self._buildAutoStopEnableAttr(attrName,l+" "+AUTOSTOP,
                                                        autoStop),)
-            #self.impl._plcAttrs[attrName][AUTOSTOP][ENABLE] = "%s_%s_%s"\
-            #                                       %(attrName,AUTOSTOP,ENABLE)
             for condition in [BELOW,ABOVE]:
                 if autoStop.has_key(condition):
-                    subName = attrName#+'_'+condition
+                    subName = attrName
                     toReturn += (self._buildAutoStopThresholdAttr(subName,
                                                                 l+" "+AUTOSTOP,
                                                      unit,autoStop,condition),)
             toReturn += (self._buildAutoStopIntegrationTimeAttr(attrName,
                                                                 l+" "+AUTOSTOP,
                                                                     autoStop),)
-            #WARN: increase the CircularBuffer may affect when qualities 
-            #      depend on RELATIVE (usually on CHANGING).
-            #TODO: could be useful to have the CircularBuffer array as Attr
         return toReturn
 
     #----# Builders for subattributes
@@ -965,8 +961,6 @@ class AttrList(object):
         meanAttr = self.add_Attr(meanName,PyTango.DevDouble,rfun,
                                        l=baseLabel+' mean',
                                        memorized=True)
-        
-        
         stdName = "%s_%s"%(attrName,STD)
         rfun = self.__getAttrMethod('read',stdName,internal=True)
         self._prepareInternalAttribute(stdName,PyTango.DevDouble,
@@ -1289,31 +1283,24 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct[READTIME] = timestamp
 
         def __filterAutoStopCollection(self,attrName):
+            '''This method is made to manage the collection of data on the 
+               integration buffer for attributes with the autostop feature.
+               No data shall be collected when it is already off (and the 
+               autostop will not stop anything).
+            '''
             attrStruct = self._getAttrStruct(attrName)
-#            if attrName == 'GUN_HV_I_AutoStop':
-#                self.info_stream("\n%s:\n%r\n"%(attrName,attrStruct))
             if attrStruct.has_key(AUTOSTOP) and \
                                 attrStruct[AUTOSTOP].has_key(SWITCHDESCRIPTOR):
                 switchName = attrStruct[AUTOSTOP][SWITCHDESCRIPTOR]
                 switchStruct = self._getAttrStruct(switchName)
-#                self.info_stream("\n\t%s:\n%r\n"%(switchName,switchStruct))
                 if switchStruct.has_key(READVALUE) and \
                                               switchStruct[READVALUE] == False:
                     #do not collect data when the switch to stop is already off
-                    self.info_stream("The switch for %s the autostopper is "\
+                    self.debug_stream("The switch for %s the autostopper is "\
                                       "off, no needed to collect values"
                                       %(attrName))
-                    #but if there is data collected (example, just when switch
-                    #off, clean it
-                    if attrStruct.has_key(READVALUE) and \
-                                               len(attrStruct[READVALUE]) != 0:
-                        self.info_stream("Clean up the buffer because "\
-                                          "collected data doesn't have sense "\
-                                          "having the swithc off.")
-#                        backupsize = attrStruct[READVALUE].maxSize()
-#                        attrStruct[READVALUE].resize(0)
-#                        attrStruct[READVALUE].resize(backupsize)
-                        attrStruct[READVALUE].resetBuffer()
+                    #if there is data collected, do not clean it until a new 
+                    #transition from off to on.
                     return False
             return True
 
@@ -1912,6 +1899,8 @@ class LinacData(PyTango.Device_4Impl):
                     return False
                     #if ramp is disabled, not procedure to do
             if self.__stateTransitionToOn(value,descriptor):
+                if descriptor.has_key(AUTOSTOP):
+                    self.__cleanAutoStopCollection(descriptor[AUTOSTOP])
                 return True
             elif self.__stateTransitionToOff(value,descriptor):
                 return True
@@ -1925,6 +1914,19 @@ class LinacData(PyTango.Device_4Impl):
             if value == False and descriptor.has_key(WHENOFF):
                 return True
             return False
+
+        def __cleanAutoStopCollection(self,attrName):
+            '''This will clean the buffer with autostop condition collected 
+               data and also the triggered boolean if it was raised.
+            '''
+            attrStruct = self._getAttrStruct(attrName)
+            if attrStruct.has_key(READVALUE) and \
+                                               len(attrStruct[READVALUE]) != 0:
+                self.info_stream("Clean up the buffer because "\
+                                  "collected data doesn't have sense "\
+                                  "having the swithc off.")
+                attrStruct[READVALUE].resetBuffer()
+            #TODO: clean the triggered autostop boolean if raised
 
         def __writeBit(self,name,read_addr,write_addr,write_bit,write_value):
             '''
@@ -3547,7 +3549,6 @@ class LinacData(PyTango.Device_4Impl):
                                                   self.last_update_time)
                             if attrStruct.has_key(MEANINGS):
                                 if attrStruct.has_key(BASESET):
-                                    
                                     attrValue = attrStruct[READVALUE].array
                                 else:
                                     attrValue = self.__buildAttrMeaning(\
