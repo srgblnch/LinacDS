@@ -1926,7 +1926,7 @@ class LinacData(PyTango.Device_4Impl):
                                   "collected data doesn't have sense "\
                                   "having the swithc off.")
                 attrStruct[READVALUE].resetBuffer()
-            #TODO: clean the triggered autostop boolean if raised
+            self._cleanTriggeredFlag(attrName)
 
         def __writeBit(self,name,read_addr,write_addr,write_bit,write_value):
             '''
@@ -2658,42 +2658,47 @@ class LinacData(PyTango.Device_4Impl):
             if attrStruct[AUTOSTOP].has_key(SWITCHDESCRIPTOR):
                 switchStruct = self._getAttrStruct(\
                                         attrStruct[AUTOSTOP][SWITCHDESCRIPTOR])
+                if switchStruct.has_key(READVALUE) and \
+                                              switchStruct[READVALUE] == False:
+#                    self.info_stream("Nothing to check for autostop "\
+#                                     "(it is already off)")
+                    return
+            if len(attrStruct[READVALUE]) < attrStruct[READVALUE].maxSize():
+#                self.info_stream("Nothing to do until buffer sampling "\
+#                                 "completed (%d/%d)."
+#                                 %(len(attrStruct[READVALUE]),
+#                                   attrStruct[READVALUE].maxSize()))
+                return
+            if attrStruct[AUTOSTOP].has_key(SWITCHDESCRIPTOR):
+                switchStruct = self._getAttrStruct(\
+                                        attrStruct[AUTOSTOP][SWITCHDESCRIPTOR])
                 if switchStruct == None or not switchStruct.has_key(READVALUE):
 #                    self.warn_stream("Stop condition for %s cannot be "\
 #                                     "evaluated because there is switch "\
 #                                     "attribute"%(attrName))
-                    return
-                if switchStruct[READVALUE] == False:
-#                    self.info_stream("No stop condition to evaluate for %s,"\
-#                                     "it is already off"%(attrName))
-                    self._cleanTriggeredFlag(attrName)
                     return
                 if switchStruct.has_key(SWITCHDEST):
                     if switchStruct[SWITCHDEST] == False:
                         return
                     elif switchStruct[READVALUE] == False:
                         return
-                #doStop = False
                 for condition in [BELOW,ABOVE]:
                     if attrStruct[AUTOSTOP].has_key(condition):
                         refValue = attrStruct[AUTOSTOP][condition]
                         meanValue = attrStruct[READVALUE].mean
                         #BELOW and ABOVE is compared with mean
                         if condition == BELOW and refValue > meanValue:
-#                            self.info_stream("Attribute %s stop condition "\
-#                                             "%s is met ref=%g > mean=%g"
-#                                             %(attrName,condition,
-#                                               refValue,meanValue))
-                            self._doAutostop(attrName, condition)#doStop = True
+                            self.info_stream("Attribute %s stop condition "\
+                                             "%s is met ref=%g > mean=%g"
+                                             %(attrName,condition,
+                                               refValue,meanValue))
+                            self._doAutostop(attrName, condition)
                         elif condition == ABOVE and refValue < meanValue:
-#                            self.info_stream("Attribute %s stop condition "\
-#                                             "%s is met ref=%g < mean=%g"
-#                                             %(attrName,condition,
-#                                               refValue,meanValue))
-                            self._doAutostop(attrName, condition)#doStop = True
-#                if doStop:
-#                    self.doWriteAttrBit(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR],
-#                                        False)
+                            self.info_stream("Attribute %s stop condition "\
+                                             "%s is met ref=%g < mean=%g"
+                                             %(attrName,condition,
+                                               refValue,meanValue))
+                            self._doAutostop(attrName, condition)
         
         def _doAutostop(self,attrName,condition):
             attrStruct = self._plcAttrs[attrName]
