@@ -2823,26 +2823,40 @@ class LinacData(PyTango.Device_4Impl):
                     prop_values = db.get_device_property(self.get_name(),
                                                        prop_names.value_string)
                     if not prop_values.has_key(attrName):
-                        for k in prop_values.keys():
-                            if attrName.lower() == k.lower():
+                        #it has been found that some properties has been 
+                        #created with some lower letters when related attribute
+                        #uses some capital letters. With this we try to know
+                        #if this is the case to use the apropiate one.
+                        for candidateName in prop_values.keys():
+                            if attrName.lower() == candidateName.lower():
                                 self.warn_stream("Found a case sensitive "\
                                                  "candidate: %s ?= %s"
-                                                 %(attrName,k))
-                                attrName = k
+                                                 %(attrName,candidateName))
+                                attrName = candidateName
                                 break
-                        if attrName != k:
+                        #if even with this trik it's found then assume it 
+                        #doesn't exist.
+                        if attrName != candidateName:
                             raise LookupError("Not found %s in the device "\
                                               "properties (keys:%s)"\
                                               %(attrName,prop_values.keys()))
                     value = prop_values[attrName][0]
                     if attrType in [PyTango.DevDouble,PyTango.DevFloat]:
                         return float(value)
+                    elif attrType in [PyTango.DevShort,PyTango.DevUShort,
+                                      PyTango.DevLong,PyTango.DevULong,
+                                      PyTango.DevLong64,PyTango.DevULong64]:
+                        return int(value)
                     elif attrType == PyTango.DevBoolean:
-                        if value == 'False':
-                            value = False
-                        elif value == 'True':
-                            value = True
-                        return bool(value)
+                        #The content of value is an string with the boolean 
+                        #meaning and bool() call doesn't interpret it like 
+                        #float() does.
+                        if value.lower() == 'false': value = False
+                        elif value.lower() == 'true': value = True
+                        else:
+                            raise ValueError("Cannot understand %s as boolean"
+                                             %(value))
+                        return value
                     self.warn_stream("For memorized %s, unknown type %s"
                                      %(attrName,attrType))
                     return value
