@@ -585,10 +585,11 @@ AttrRampeable('GUN_HV_V_setpoint',# voltage (set) is 90 kV fixed
                                              STEPTIME:1,#s
                                              THRESHOLD:-50,#kV
                                              SWITCH:'GUN_HV_ONC'},
-                                 ASCENDING:{STEP:5,#kV
-                                            STEPTIME:0.5,#s
-                                            THRESHOLD:-90,#kV
-                                            SWITCH:'GUN_HV_ONC'}})
+#                                 ASCENDING:{STEP:5,#kV
+#                                            STEPTIME:0.5,#s
+#                                            THRESHOLD:-90,#kV
+#                                            SWITCH:'GUN_HV_ONC'}
+                                 })
      #User request (back) to limit the device setpoint to avoid below -90kV.
 
 #---- R104 W020 @TB_GPA
