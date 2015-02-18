@@ -779,11 +779,15 @@ class AttrList(object):
         if memorized:
             try:
                 #next call will use the type on the structure _internalAttrs
-                memorized = self.impl.recoverDynMemorized(attrName)
-                self.impl._internalAttrs[attrName][READVALUE] = memorized
-            except:
-                self.impl.warn_stream("Cannot recover a memorised value for %s"
-                                      %attrName)
+                memorizedValue = self.impl.recoverDynMemorized(attrName)
+                self.impl.info_stream("Recovering memorized value of %s (%s)"
+                                      %(attrName,memorizedValue))
+                self.impl._internalAttrs[attrName][READVALUE] = memorizedValue
+                self.impl._internalAttrs[attrName][WRITEVALUE] = memorizedValue
+                print("\n%s\n"%(self.impl._internalAttrs[attrName]))
+            except Exception,e:
+                self.impl.warn_stream("Cannot recover a memorised value for "\
+                                      "%s: %s"%(attrName,e))
                 self.impl._internalAttrs[attrName][READVALUE] = defaultValue
         else:
             self.impl._internalAttrs[attrName][READVALUE] = defaultValue
@@ -2818,10 +2822,30 @@ class LinacData(PyTango.Device_4Impl):
                                                              "*")
                     prop_values = db.get_device_property(self.get_name(),
                                                        prop_names.value_string)
+                    if not prop_values.has_key(attrName):
+                        for k in prop_values.keys():
+                            if attrName.lower() == k.lower():
+                                self.warn_stream("Found a case sensitive "\
+                                                 "candidate: %s ?= %s"
+                                                 %(attrName,k))
+                                attrName = k
+                                break
+                        if attrName != k:
+                            raise LookupError("Not found %s in the device "\
+                                              "properties (keys:%s)"\
+                                              %(attrName,prop_values.keys()))
+                    value = prop_values[attrName][0]
                     if attrType in [PyTango.DevDouble,PyTango.DevFloat]:
-                        return float(prop_values[attrName][0])
+                        return float(value)
                     elif attrType == PyTango.DevBoolean:
-                        return bool(prop_values[attrName][0])
+                        if value == 'False':
+                            value = False
+                        elif value == 'True':
+                            value = True
+                        return bool(value)
+                    self.warn_stream("For memorized %s, unknown type %s"
+                                     %(attrName,attrType))
+                    return value
 
         #---- Done Write Attr method for dynattrs
 
