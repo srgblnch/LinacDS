@@ -1188,7 +1188,8 @@ class LinacData(PyTango.Device_4Impl):
             '''
             self.info_stream('disconnecting...')
             self.set_status('disconnecting...')
-            self._plcUpdatePeriod = PLC_MAX_UPDATE_PERIOD
+            #self._plcUpdatePeriod = PLC_MAX_UPDATE_PERIOD
+            self._setPlcUpdatePeriod(PLC_MAX_UPDATE_PERIOD)
             try:
                 if self.is_connected():
                     tcpblock.close_datablock(self.read_db,self.warn_stream)
@@ -2661,12 +2662,16 @@ class LinacData(PyTango.Device_4Impl):
                 refAttr =self._getAttrStruct(stopperDict['is'+INTEGRATIONTIME])
                 refAttr[AUTOSTOP][INTEGRATIONTIME] = attrStruct[READVALUE]
                 #resize the CircularBuffer
-                #   time per sample int(INTEGRATIONTIME/PLC_STEP_UPDATE_PERIOD)
-                newBufferSize = int(attrStruct[READVALUE]/PLC_STEP_UPDATE_PERIOD)
+                #   time per sample int(INTEGRATIONTIME/self._plcUpdatePeriod)
+                newBufferSize = \
+                          int(attrStruct[READVALUE]/self._getPlcUpdatePeriod())
                 if refAttr[READVALUE].maxSize() != newBufferSize:
-                    self.info_stream("%s buffer to be resized from %d to %d"
+                    self.info_stream("%s buffer to be resized from %d to %d "\
+                                     "(integration time %f seconds with a "\
+                                     "plc reading period of %f seconds)"
                                      %(attrName,refAttr[READVALUE].maxSize(),
-                                       newBufferSize))
+                                       newBufferSize,attrStruct[READVALUE],
+                                       self._plcUpdatePeriod))
                     refAttr[READVALUE].resize(newBufferSize)
             else:
                 for condition in [BELOW,ABOVE]:
@@ -2674,6 +2679,17 @@ class LinacData(PyTango.Device_4Impl):
                         key = 'is'+condition+THRESHOLD
                         refAttr = self._getAttrStruct(stopperDict[key])
                         refAttr[AUTOSTOP][condition] = attrStruct[READVALUE]
+        
+        def _getPlcUpdatePeriod(self):
+#            self.info_stream("current PLC Update period = %f"
+#                             %(self._plcUpdatePeriod))
+            return self._plcUpdatePeriod
+        def _setPlcUpdatePeriod(self,value):
+            self.info_stream("modifying PLC Update period: was %f and now "\
+                             "becomes %f."%(self._plcUpdatePeriod,value))
+            self._plcUpdatePeriod = value
+            #FIXME: this is hardcoding!!
+            self._refreshInternalAutostopParams('GUN_HV_I_AutoStop')
         
         def _updateStatistic(self,attrName):
             if not self._internalAttrs.has_key(attrName):
@@ -3500,7 +3516,7 @@ class LinacData(PyTango.Device_4Impl):
             '''
             '''
             self.info_stream("Starting event generator thread")
-            time.sleep(self._plcUpdatePeriod*2)
+            time.sleep(self._getPlcUpdatePeriod()*2)
             #with in the start up procedure, if the device is running in local 
             #mode, it tries to lock the PLC control for itself by writting the 
             #Locking flag.
@@ -3897,7 +3913,7 @@ class LinacData(PyTango.Device_4Impl):
             '''
             '''
             #self.info_stream("Starting plc updater thread")
-            time.sleep(self._plcUpdatePeriod)
+            time.sleep(self._getPlcUpdatePeriod())
             while not self._plcUpdateJoiner.isSet():
                 try:
                     start_t = time.time()
@@ -3905,7 +3921,8 @@ class LinacData(PyTango.Device_4Impl):
                         self.readPlcRegisters()
                         diff_t = time.time() - start_t
                         if diff_t > EXPECTED_UPDATE_TIME:
-                            if self._plcUpdatePeriod < PLC_MAX_UPDATE_PERIOD:
+                            if self._getPlcUpdatePeriod() < \
+                                                         PLC_MAX_UPDATE_PERIOD:
                                 self.warn_stream("plcUpdaterThread() "\
                                                  "it has take %3.6f seconds, "\
                                                  "more than expected, "\
@@ -3914,8 +3931,9 @@ class LinacData(PyTango.Device_4Impl):
                                                  %(diff_t,
                                                    self._plcUpdatePeriod,
                                                    10*PLC_STEP_UPDATE_PERIOD))
-                                self._plcUpdatePeriod += \
-                                                      10*PLC_STEP_UPDATE_PERIOD
+                                self._setPlcUpdatePeriod(\
+                                                       self._plcUpdatePeriod +\
+                                                     10*PLC_STEP_UPDATE_PERIOD)
                             else:
                                 self.error_stream("plcUpdaterThread() "\
                                                   "it has take %3.6f seconds,"\
@@ -3928,9 +3946,11 @@ class LinacData(PyTango.Device_4Impl):
                             self.warn_stream("plcUpdaterThread() has take "\
                                              "too much time (%3.3f seconds)"
                                              %(diff_t))
-                            if self._plcUpdatePeriod < PLC_MAX_UPDATE_PERIOD:
-                                self._plcUpdatePeriod += \
-                                                      10*PLC_STEP_UPDATE_PERIOD
+                            if self._getPlcUpdatePeriod() < \
+                                                         PLC_MAX_UPDATE_PERIOD:
+                                self._setPlcUpdatePeriod(\
+                                                      self._plcUpdatePeriod + \
+                                                     10*PLC_STEP_UPDATE_PERIOD)
                         else:
                             self.debug_stream("plcUpdaterThread() "\
                                               "it has take %3.6f seconds, "\
@@ -3939,7 +3959,7 @@ class LinacData(PyTango.Device_4Impl):
                                               %(diff_t,
                                               self._plcUpdatePeriod-diff_t,
                                               self._plcUpdatePeriod))
-                            time.sleep(self._plcUpdatePeriod-diff_t)
+                            time.sleep(self._getPlcUpdatePeriod()-diff_t)
                     else:
                         if self._plcUpdateJoiner.isSet():
                             return
@@ -4017,8 +4037,9 @@ class LinacData(PyTango.Device_4Impl):
 #                                 %(diff_t))
                 #---- when an update goes fine, the period is reduced one step
                 #     until the minumum
-                if self._plcUpdatePeriod > PLC_MIN_UPDATE_PERIOD:
-                    self._plcUpdatePeriod -= PLC_STEP_UPDATE_PERIOD
+                if self._getPlcUpdatePeriod() > PLC_MIN_UPDATE_PERIOD:
+                    self._setPlcUpdatePeriod(\
+                                self._plcUpdatePeriod - PLC_STEP_UPDATE_PERIOD)
             except tcpblock.Shutdown, exc:
                 self.set_state(PyTango.DevState.FAULT)
                 msg = 'communication shutdown requested '\
