@@ -319,7 +319,9 @@ class AttrList(object):
 
     def add_AttrAddr(self,name,T,read_addr=None,write_addr=None,
                        meanings=None,qualities=None,events=None,
-                       formula=None,l=None,**kwargs):
+                       formula=None,l=None,
+                       readback=None,setpoint=None,switch=None,
+                       **kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
            as well as for RW depending on if it's provided a write address.
            There are other optional parameters to configure some special 
@@ -368,8 +370,15 @@ class AttrList(object):
            Another parameter is the formula. This is mainly used with the 
            DevBooleans but it's possible for any other. It's again a dictionary
            with two possible keys 'read' and/or 'write' and their items shall
-           be evaluable strings in running time that would 'transform' a 
+           be assessed strings in running time that would 'transform' a 
            reading.
+           
+           The set of arguments about readback, setpoint and switch are there
+           to store defined relations between attributes. That is, to allow the
+           setpoint (that has a read and write addresses) to know if there is 
+           another read only attribute that does the measure of what the 
+           setpoint sets. Also this readback may like to know about the 
+           setpoint and if the element is switch on or off.
         '''
         rfun = self.__getAttrMethod('read',name)
 
@@ -380,7 +389,9 @@ class AttrList(object):
         self.__traceAttrAddr(name,T,readAddr=read_addr,writeAddr=write_addr)
         tango_T = self.__mapTypes(T)
         self._prepareAttribute(name,T,readAddr=read_addr,writeAddr=write_addr,
-                                formula=formula)
+                                formula=formula,readback=readback,
+                                setpoint=setpoint,switch=switch,
+                                **kwargs)
         self._prepareEvents(name,events)
         if not meanings == None:
             return self._prepareAttrWithMeaning(name,tango_T,meanings,
@@ -395,7 +406,8 @@ class AttrList(object):
     def add_AttrAddrBit(self,name,read_addr=None,read_bit=0,write_addr=None,
                           write_bit=None,meanings=None,qualities=None,
                           events=None,isRst=False,activeRst_t=None,
-                          formula=None,switchDescriptor=None,**kwargs):
+                          formula=None,switchDescriptor=None,
+                          readback=None,setpoint=None,**kwargs):
         '''This method is a builder of a boolean dynamic attribute, even for RO
            than for RW. There are many optional parameters.
            
@@ -444,6 +456,13 @@ class AttrList(object):
              About those two last keys, they can be both or only one.
            + AUTOSTOP: in case it has also the autostop feature, this is used
              to identify the buffer to clean when transition from off to on.
+           
+           The set of arguments about readback, setpoint and switch are there
+           to store defined relations between attributes. That is, to allow the
+           setpoint (that has a read and write addresses) to know if there is 
+           another read only attribute that does the measure of what the 
+           setpoint sets. Also this readback may like to know about the 
+           setpoint and if the element is switch on or off.
         '''
 
         if write_bit is None:
@@ -461,7 +480,8 @@ class AttrList(object):
         self._prepareAttribute(name,PyTango.DevBoolean,
                                 readAddr=read_addr,readBit=read_bit,
                                 writeAddr=write_addr,writeBit=write_bit,
-                                formula=formula)
+                                formula=formula,
+                                readback=readback,setpoint=setpoint,**kwargs)
         if isRst:
             self.impl._plcAttrs[name][ISRESET] = True
             self.impl._plcAttrs[name][RESETTIME] = None
@@ -520,7 +540,8 @@ class AttrList(object):
 
     def add_AttrRampeable(self,name,T,read_addr,write_addr,l,unit,
                           rampsDescriptor,
-                          events=None,qualities=None,**kwargs):
+                          events=None,qualities=None,
+                          readback=None,switch=None,**kwargs):
         '''Given 2 plc memory positions (for read and write), with this method
            build a RW attribute that looks like the other RWs but it includes 
            ramping features.
@@ -565,12 +586,20 @@ class AttrList(object):
                                     THRESHOLD:-90,#kV
                                     SWITCH:'GUN_HV_ONC'
                                    }}
+           The set of arguments about readback, setpoint and switch are there
+           to store defined relations between attributes. That is, to allow the
+           setpoint (that has a read and write addresses) to know if there is 
+           another read only attribute that does the measure of what the 
+           setpoint sets. Also this readback may like to know about the 
+           setpoint and if the element is switch on or off.
         '''
         rfun = self.__getAttrMethod('read',name)
         wfun = self.__getAttrMethod('write',name,rampeable=True)
         self.__traceAttrAddr(name,T,readAddr=read_addr,writeAddr=write_addr)
         tango_T = self.__mapTypes(T)
-        self._prepareAttribute(name,T,readAddr=read_addr,writeAddr=write_addr)
+        self._prepareAttribute(name,T,readAddr=read_addr,writeAddr=write_addr,
+                               readback=readback,switch=switch,
+                               **kwargs)
         self._prepareEvents(name,events)
         if not qualities == None:
             rampeableAttr = self._prepareAttrWithQualities(name,tango_T,
@@ -754,7 +783,26 @@ class AttrList(object):
     def _prepareAttribute(self,attrName,attrType,
                            readAddr,readBit=None,
                            writeAddr=None,writeBit=None,
-                           formula=None):
+                           formula=None,
+                           readback=None,setpoint=None,switch=None,
+                           **kwargs):
+        '''This is a constructor of the item in the dictionary of attributes 
+           related with PLC memory locations. At least they have a read address
+           and a type. The booleans also needs a read bit. For writable 
+           attributes there are the equivalents write addresses and booleans
+           also the write bit (it doesn't happen with current PLCs, but we 
+           support them if different).
+           
+           Also is introduced the feature of the formula that can distinguish
+           between a read formula and write case. Not needing both coexisting.
+           
+           The set of arguments about readback, setpoint and switch are there
+           to store defined relations between attributes. That is, to allow the
+           setpoint (that has a read and write addresses) to know if there is 
+           another read only attribute that does the measure of what the 
+           setpoint sets. Also this readback may like to know about the 
+           setpoint and if the element is switch on or off.
+        '''
         self.impl._plcAttrs[attrName] = {READADDR:readAddr}
         if not readBit == None:
             self.impl._plcAttrs[attrName][READBIT] = readBit
@@ -771,6 +819,12 @@ class AttrList(object):
             self.impl._plcAttrs[attrName][TYPE]=TYPE_MAP[attrType]
         if formula != None:
             self.impl._plcAttrs[attrName][FORMULA] = formula
+        if readback != None:
+            self.impl._plcAttrs[attrName][READBACK] = readback
+        if setpoint != None:
+            self.impl._plcAttrs[attrName][SETPOINT] = setpoint
+        if switch != None:
+            self.impl._plcAttrs[attrName][SWITCH] = switch
     def _prepareInternalAttribute(self,attrName,attrType,
                                    memorized=False,isWritable=False,
                                    defaultValue=None):
@@ -784,7 +838,7 @@ class AttrList(object):
                                       %(attrName,memorizedValue))
                 self.impl._internalAttrs[attrName][READVALUE] = memorizedValue
                 self.impl._internalAttrs[attrName][WRITEVALUE] = memorizedValue
-                print("\n%s\n"%(self.impl._internalAttrs[attrName]))
+                #print("\n%s\n"%(self.impl._internalAttrs[attrName]))
             except Exception,e:
                 self.impl.warn_stream("Cannot recover a memorised value for "\
                                       "%s: %s"%(attrName,e))
@@ -2260,6 +2314,8 @@ class LinacData(PyTango.Device_4Impl):
                - go to the threshold
                - increase/decrease the step
                - finish the ramp when too close
+               Extra feature to check if the current value of the setpoint is
+               close enought to the readback value.
             '''
             attrStruct = self._getAttrStruct(attrName)
             #TODO: threshold
@@ -2829,17 +2885,22 @@ class LinacData(PyTango.Device_4Impl):
                         #if this is the case to use the apropiate one.
                         for candidateName in prop_values.keys():
                             if attrName.lower() == candidateName.lower():
-                                self.warn_stream("Found a case sensitive "\
+                                self.warn_stream("** Found a case sensitive "\
                                                  "candidate: %s ?= %s"
                                                  %(attrName,candidateName))
                                 attrName = candidateName
                                 break
+                            else:
+                                self.debug_stream("* Discated candidate %s != %s"
+                                                 %(candidateName,attrName))
                         #if even with this trik it's found then assume it 
                         #doesn't exist.
                         if attrName != candidateName:
-                            raise LookupError("Not found %s in the device "\
-                                              "properties (keys:%s)"\
-                                              %(attrName,prop_values.keys()))
+                            msg = "Not found %s in the device properties"\
+                                  %(attrName)
+                            self.debug_stream("%s (keys:%s)"
+                                              %(msg,prop_values.keys()))
+                            raise LookupError(msg)
                     value = prop_values[attrName][0]
                     if attrType in [PyTango.DevDouble,PyTango.DevFloat]:
                         return float(value)

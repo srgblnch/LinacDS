@@ -89,7 +89,9 @@ Attr('GUN_HV_V',
      l='HV PS Voltage',
      d='high voltage PS voltage',
      format='%4.1f',min=-100,max=0,unit='kV',
-     events={THRESHOLD:0.01})
+     events={THRESHOLD:0.01},
+     setpoint='GUN_HV_V_setpoint',
+     switch='GUN_HV_ONC')
 
 #---- R036 @HVS_CM
 Attr('GUN_HV_I',
@@ -589,7 +591,9 @@ AttrRampeable('GUN_HV_V_setpoint',# voltage (set) is 90 kV fixed
 #                                            STEPTIME:0.5,#s
 #                                            THRESHOLD:-90,#kV
 #                                            SWITCH:'GUN_HV_ONC'}
-                                 })
+                                 },
+              readback='GUN_HV_V',
+              switch='GUN_HV_ONC')
      #User request (back) to limit the device setpoint to avoid below -90kV.
 
 #---- R104 W020 @TB_GPA
@@ -731,7 +735,9 @@ AttrBit('GUN_HV_ONC',#HVS_OC
                           WHENOFF:{TO:0}, #from where the WRITEVALUE say
                           AUTOSTOP:'GUN_HV_I_'+AUTOSTOP,
                                      #to know where it has the autostop feature
-                          }
+                          },
+        readback='GUN_HV_V',
+        setpoint='GUN_HV_V_setpoint'
         )
 AttrBit('Interlock_RC',#IU_RST
         162,3,78,#RW
