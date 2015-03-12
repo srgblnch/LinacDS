@@ -1919,12 +1919,22 @@ class LinacData(PyTango.Device_4Impl):
                 else:
                     write_value = formula_value
             if attrStruct.has_key(SWITCHDESCRIPTOR):
+                #For the switch with autostop, when transition to power on, is
+                #necessary to clean the old collected information or it will
+                #produce an influence on the conditions.
+                descriptor = attrStruct[SWITCHDESCRIPTOR]
+                if self.__stateTransitionToOn(write_value,descriptor) and \
+                                                  descriptor.has_key(AUTOSTOP):
+                    self.__cleanAutoStopCollection(\
+                                        attrStruct[SWITCHDESCRIPTOR][AUTOSTOP])
                 #Depending to the on or off transition keys, this will launch 
                 #a thread who will modify the ATTR2RAMP, and when that 
                 #finishes the write will be set.
-                
-                if self.__stateTransitionNeeded(write_value,
-                                                attrStruct[SWITCHDESCRIPTOR]):
+                self.info_stream("attribute %s has receive a write %s"
+                                 %(name,write_value))
+                if self.__stateTransitionNeeded(write_value,name):
+                                                #attrStruct[SWITCHDESCRIPTOR]):
+                    self.info_stream("doing state transition for %s"%(name))
                     attrStruct[SWITCHDEST] = write_value
                     self.createSwitchStateThread(name)
                     return
@@ -1952,7 +1962,8 @@ class LinacData(PyTango.Device_4Impl):
 #                             %(name,write_value,write_addr,write_bit,
 #                               bin(rbyte),bin(toWrite),bin(reRead)))
 
-        def __stateTransitionNeeded(self,value,descriptor):
+        def __stateTransitionNeeded(self,value,attrName):#descriptor):
+            descriptor = self._getAttrStruct(attrName)[SWITCHDESCRIPTOR]
             if descriptor.has_key(ATTR2RAMP):
                 enableAttr = descriptor[ATTR2RAMP]+'_rampEnable'
                 enableStruct = self._getAttrStruct(enableAttr)
@@ -1960,8 +1971,6 @@ class LinacData(PyTango.Device_4Impl):
                     return False
                     #if ramp is disabled, not procedure to do
             if self.__stateTransitionToOn(value,descriptor):
-                if descriptor.has_key(AUTOSTOP):
-                    self.__cleanAutoStopCollection(descriptor[AUTOSTOP])
                 return True
             elif self.__stateTransitionToOff(value,descriptor):
                 return True
