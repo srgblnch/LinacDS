@@ -838,15 +838,14 @@ class AttrList(object):
                                       %(attrName,memorizedValue))
                 self.impl._internalAttrs[attrName][READVALUE] = memorizedValue
                 self.impl._internalAttrs[attrName][WRITEVALUE] = memorizedValue
-                #print("\n%s\n"%(self.impl._internalAttrs[attrName]))
             except Exception,e:
                 self.impl.warn_stream("Cannot recover a memorised value for "\
                                       "%s: %s"%(attrName,e))
                 self.impl._internalAttrs[attrName][READVALUE] = defaultValue
         else:
             self.impl._internalAttrs[attrName][READVALUE] = defaultValue
-        if isWritable:
-            self.impl._internalAttrs[attrName][WRITEVALUE] = None
+            if isWritable:
+                self.impl._internalAttrs[attrName][WRITEVALUE] = None
         self.impl._internalAttrs[attrName][READTIME] = None
 
     def _prepareEvents(self,attrName,eventConfig):
@@ -1649,12 +1648,12 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             read_addr = attrStruct[READADDR]
             read_bit = attrStruct[READBIT]
-            if attrStruct.has_key(WRITEADDR):
-                write_addr = attrStruct[WRITEADDR]
-                write_bit = attrStruct[WRITEBIT]
-            else:
-                write_addr = None
-                write_bit = None
+#            if attrStruct.has_key(WRITEADDR):
+#                write_addr = attrStruct[WRITEADDR]
+#                write_bit = attrStruct[WRITEBIT]
+#            else:
+#                write_addr = None
+#                write_bit = None
             try:
                 read_value = self.read_db.bit(read_addr, read_bit)
                 if attrStruct.has_key(FORMULA) and \
@@ -1836,6 +1835,9 @@ class LinacData(PyTango.Device_4Impl):
                     else:
                         #print read_value
                         attr.set_value(read_value)
+                    if attrStruct.has_key(WRITEVALUE):
+                        write_value = attrStruct[WRITEVALUE]
+                        attr.set_write_value(write_value)
             except Exception,e:
                 self.error_stream("read_internal_attr(%s) Exception %s"
                                   %(attr.get_name(),e))
