@@ -383,6 +383,14 @@ AttrLogic('Gun_ready',
           events={},
           )
 
+AttrLogic('Gun_HV_ready',
+          logic={'GM_DI':[True],
+                 'GUN_HV_I_AutoStop_Triggered':[False]},
+          d='e-gun high voltage ready',
+          l='e-gun high voltage ready',
+          events={},
+          )
+
 #---- R076 @SCM_1_ST
 Attr('SCM1_ST',
      PyTango.DevUChar,76,#RO
