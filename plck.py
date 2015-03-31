@@ -241,8 +241,8 @@ AttrBit('HVPS_ONC',
 AttrPLC(36,41,63,0,17,0)
 
 AttrLogic('lv_ready',
-          logic={'LV_ST':[0,11,12],
-                 'Heat_ST':[0,4,5]},
+          logic={'LV_ST':[12],
+                 'Heat_ST':[5]},
           d='Klystron LV ready',
           l='Klystron LV ready',
           events={},
