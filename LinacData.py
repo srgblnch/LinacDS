@@ -2414,6 +2414,14 @@ class LinacData(PyTango.Device_4Impl):
                 self.__moveToValue(attrName,value)
                 time.sleep(details[STEPTIME])
                 #TODO: check if the readback is close to where it shall be
+                if attrStruck.has_key(READBACK):
+                    readbackName = attrStruck[READBACK]
+                    readbackStruct = self._getAttrStruct(readbackName)
+                    while abs(readbackStruct.value-value) > WARNING_DISTANCE:
+                        self.warn_stream("Extending step for %s. It is at %g "\
+                                         "when expecting %g"
+                                        %(attrName,readbackStruct.value,value))
+                        time.sleep(details[STEPTIME]/10)
 
         def __isRampSwitchOk(self,details):
             '''Given the details of a ramp in a particular direction, check if
