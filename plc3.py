@@ -69,6 +69,8 @@ HV_QUALITIES={ALARM:[0,3,4],
 Iread_addr = 0
 Iref_addr = 0
 Status_addr  = 128
+CURRENT = "I"
+SETPOINT = "setpoint"
 
 def PS(name, types, rng):
     global Iread_addr
@@ -77,15 +79,22 @@ def PS(name, types, rng):
     global HV,F
     global FOCUS_STATUS,HV_STATUS
     global FOCUS_QUALITIES,HV_QUALITIES
+    global CURRENT,SETPOINT
     for T in types:
         M = T[0].upper()
         desc = name+' current'
-        Attr(name+M+'_I',
+        readbackName = name+M+'_'+CURRENT
+        setpointName = name+M+'_'+CURRENT+'_'+SETPOINT
+        Attr(readbackName,
              PyTango.DevFloat,Iread_addr,
-             d=desc+' monitor',unit='A',**rng)
-        Attr(name+M+'_I_setpoint',
+             d=desc+' monitor',unit='A',
+             setpoint=setpointName,
+             **rng)
+        Attr(setpointName,
              PyTango.DevFloat,Iread_addr+161,Iref_addr,
-             d=desc+' setpoint',unit='A',**rng)
+             d=desc+' setpoint',unit='A',
+             readback=readbackName,
+             **rng)
         Iread_addr += 4
         Iref_addr += 4
         desc_st = '%s %s status'%(name, T)

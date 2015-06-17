@@ -94,3 +94,6 @@ INTEGRATIONTIME = 'IntegrationTime'
 MEAN = 'Mean'
 STD = 'Std'
 TRIGGERED = 'Triggered'
+
+#---- Readback far from setpoint
+WARNING_DISTANCE = 1.0

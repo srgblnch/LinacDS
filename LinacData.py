@@ -1394,6 +1394,22 @@ class LinacData(PyTango.Device_4Impl):
                     return PyTango.AttrQuality.ATTR_WARNING
                 elif self.__checkQuality(attrName,attrValue,CHANGING):
                     return PyTango.AttrQuality.ATTR_CHANGING
+            if attrStruct.has_key(SETPOINT):
+                try:
+                    #This is to review if, not having the value changing (previous
+                    #if) the readback value is or not too far away from the 
+                    #given setpoint.
+                    setpointAttrName = attrStruct[SETPOINT]
+                    readback = attrStruct[READVALUE].value
+                    setpoint = \
+                        self._getAttrStruct(setpointAttrName)[READVALUE].value
+                    diff = abs(readback-setpoint)
+                    if diff > WARNING_DISTANCE:
+                        return PyTango.AttrQuality.ATTR_WARNING
+                except Exception,e:
+                    self.warn_stream("Error comparing readback with "\
+                                     "setpoint: %s"%(e))
+                    return PyTango.AttrQuality.ATTR_INVALID
             return PyTango.AttrQuality.ATTR_VALID
 
         def __checkQuality(self,attrName,attrValue,qualityInQuery):
