@@ -96,4 +96,5 @@ STD = 'Std'
 TRIGGERED = 'Triggered'
 
 #---- Readback far from setpoint
+from PyTango import AttrQuality
 WARNING_DISTANCE = 1.0

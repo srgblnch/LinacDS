@@ -1625,31 +1625,53 @@ class LinacData(PyTango.Device_4Impl):
             '''
             '''
             logic = self._internalAttrs[attrName][LOGIC]
-            #ret = True
             values = []
+            attrStruct = self._getAttrStruct(attrName)
             for key in logic.keys():
-                attrStruct = self._getAttrStruct(attrName)
                 try:
-                    value = self.__getAttrReadValue(key)
+                    if type(logic[key]) == dict:
+                        values.append(self.__evaluateDict(key,logic[key]))
+                    elif type(logic[key]) == list:
+                        values.append(self.__evaluateList(key,logic[key]))
+                    else:
+                        self.warn_stream("step less to evaluate %s for "\
+                                         "key %s unmanaged content type"
+                                         %(attrName,key))
                 except Exception,e:
-                    #That should never happen, perhaps better raise exception
-                    self.error_stream("cannot eval logic attr %s with "\
-                                      "the key %s. Exception: %s"
-                                      %(attrName,key,e))
-                    attrStruct[READTIME] = time.time()
-                    return False
-                values.append(value in logic[key])
-            #self.debug_stream("%s logical values %s"%(attrName,values))
+                    self.error_stream("cannot eval logic attr %s for key %s: "\
+                                      "%s"%(attrName,key,e))
+                    traceback.print_exc()
             if attrStruct[OPERATOR] == 'or':
                 ret = any(values)
             elif attrStruct[OPERATOR] == 'and':
                 ret = all(values)
             attrStruct[READTIME] = time.time()
-            #print("time= %s"%(str(self._internalAttrs[attrName][READTIME])))
             if attrStruct[INVERTED]:
                 return not ret
             attrStruct[READVALUE] = ret
             return ret
+
+        def __evaluateDict(self,attrName,dict2eval):
+            """
+            """
+            for key in dict2eval.keys():
+                if key == QUALITIES:
+                    return self.__evaluateQuality(attrName, dict2eval[key])
+
+        def __evaluateList(self,attrName,list2eval):
+            """
+            """
+            value = self.__getAttrReadValue(attrName)
+            return value in list2eval
+
+        def __evaluateQuality(self,attrName,searchList):
+            """
+            """
+            attrStruct = self._getAttrStruct(attrName)
+            if attrStruct.has_key(LASTEVENTQUALITY):
+                quality = attrStruct[LASTEVENTQUALITY]
+                return quality in searchList
+            return False
 
         #FIXME: this method is merged with read_attr(), and once write versions
         #       become also merged, they will be not necessary anymore.
@@ -2391,6 +2413,7 @@ class LinacData(PyTango.Device_4Impl):
                         value = currentValue-step
                 self.__moveToValue(attrName,value)
                 time.sleep(details[STEPTIME])
+                #TODO: check if the readback is close to where it shall be
 
         def __isRampSwitchOk(self,details):
             '''Given the details of a ramp in a particular direction, check if
