@@ -1297,6 +1297,10 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 self.push_change_event(attrEventStruct[0],attrEventStruct[1],
                                        timestamp,quality)
+            attrStruct = self._getAttrStruct(attrEventStruct[0])
+            if attrStruct.has_key(LASTEVENTQUALITY) and \
+            not quality == attrStruct[LASTEVENTQUALITY]:
+                attrStruct[LASTEVENTQUALITY] = quality
         
         def fireEventsList(self,eventsAttrList,log=False):
             '''Given a set of pair [attr,value] (with an optional third element
@@ -1429,12 +1433,17 @@ class LinacData(PyTango.Device_4Impl):
                     readback = attrStruct[READVALUE].value
                     setpoint = \
                         self._getAttrStruct(setpointAttrName)[READVALUE].value
-                    diff = abs(readback-setpoint)
+                    if not setpoint == None:
+                        diff = abs(readback-setpoint)
+                    else:#When device starts, and not yet classified the info
+                        #of the setpoint attr, this was causing an exception.
+                        diff = 0
                     if diff > WARNING_DISTANCE:
                         return PyTango.AttrQuality.ATTR_WARNING
                 except Exception,e:
                     self.warn_stream("Error comparing readback with "\
                                      "setpoint: %s"%(e))
+                    traceback.print_exc()
                     return PyTango.AttrQuality.ATTR_INVALID
             return PyTango.AttrQuality.ATTR_VALID
 
