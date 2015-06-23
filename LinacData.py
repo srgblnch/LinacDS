@@ -49,19 +49,21 @@ import PyTango
 import sys
 # Add additional import
 #----- PROTECTED REGION ID(LinacData.additionnal_import) ENABLED START -----#
+from copy import copy
+from ctypes import c_uint16, c_uint8, c_float, c_int16
+import fcntl
+import functools
+from numpy import uint16,uint8,float32,int16
+import pprint
+import Queue
+import socket
+import struct
 import time
 import tcpblock
-import socket
-from ctypes import c_uint16, c_uint8, c_float, c_int16
-from numpy import uint16,uint8,float32,int16
-import traceback
-from copy import copy
-from types import StringType
-import functools
-import pprint
 import threading
-import struct
-import fcntl
+import traceback
+from types import StringType
+
 
 from constants import *
 
@@ -1145,6 +1147,10 @@ class LinacData(PyTango.Device_4Impl):
         _rampThreads = {}
         _switchThreads = {}
         
+        #hackish to reemit events
+        _sayAgainThread = None
+        _sayAgainQueue = None
+        
         _prevMemDump = None
         _prevLockSt = None
 
@@ -1279,17 +1285,9 @@ class LinacData(PyTango.Device_4Impl):
                 self.info_stream("In fireEvent() attribute %s = %s"
                                   %(attrEventStruct[0],attrEventStruct[1]))
             if len(attrEventStruct) == 3: #the quality is specified
-#                self.push_change_event(attrEventStruct[0],attrEventStruct[1],
-#                                       timestamp,
-#                                       attrEventStruct[2])
                 quality = attrEventStruct[2]
             else:
                 quality = PyTango.AttrQuality.ATTR_VALID
-#                                       timestamp,
-#                                       PyTango.AttrQuality.ATTR_VALID)
-#                self.push_change_event(attrEventStruct[0],attrEventStruct[1],
-#                                       timestamp,
-#                                       PyTango.AttrQuality.ATTR_VALID)
             if self.__isHistoryBuffer(attrEventStruct[0]):
                 attrValue = self.__buildHistoryBufferString(attrEventStruct[0])
                 self.debug_stream("For attribute %s: %s"
@@ -1306,19 +1304,47 @@ class LinacData(PyTango.Device_4Impl):
                timestamp.
             '''
             if log:
-                self.debug_stream("In fireEventsList():\n%s"
-                                  %(''.join("\t%s\n"%line \
-                                            for line in eventsAttrList)))
+                self.debug_stream("In fireEventsList(): %d events:\n%s"
+                                  %(len(eventsAttrList),''.join("\t%s\n"%line \
+                                    for line in eventsAttrList)))
             timestamp = time.time()
             attrNames = []
             for attrEvent in eventsAttrList:
                 try:
                     self.fireEvent(attrEvent,timestamp)
                     attrNames.append(attrEvent[0])
+                    if not self._sayAgainQueue == None:
+                        self._sayAgainQueue.put([attrEvent,timestamp])
                 except Exception,e:
                     self.error_stream("In fireEventsList() Exception with "\
                                       "attribute %s: %s"%(attrEvent[0],e))
                     traceback.print_exc()
+                    
+        def prepareSayAgain(self):
+            if self._sayAgainThread == None:
+                self._sayAgainThread = \
+                threading.Thread(target=self._doSayAgain)
+            if self._sayAgainQueue == None:
+                self._sayAgainQueue = Queue.Queue()
+            self._sayAgainThread.start()
+            
+        def _doSayAgain(self):
+            while not self._tangoEventsJoiner.isSet():
+                resendAttrs = []
+                start_t = time.time()
+                while not self._sayAgainQueue.empty():
+                    attrEvent,timestamp = self._sayAgainQueue.get()
+                    self.fireEvent(attrEvent,timestamp)
+                    resendAttrs.append(attrEvent[0])
+                nEvents = len(resendAttrs)
+                self.debug_stream("%d events has been said again:\n\t%s"
+                                 %(len(resendAttrs),resendAttrs))
+                diff_t = time.time() - start_t
+                self._tangoEventsTime.append(diff_t)
+                self._tangoEventsNumber.append(nEvents)
+                #self.debug_stream("Say again for: %s"%(resendAttrs))
+                time.sleep(EVENT_THREAD_PERIOD)
+            
         #---- done event methods
 
         ####
@@ -3196,6 +3222,7 @@ class LinacData(PyTango.Device_4Impl):
                 #---- Launch those threads
                 self._plcUpdateThread.start()
                 self._tangoEventsThread.start()
+                self.prepareSayAgain()
                 self.info_stream("All threads launched")
                 #---- When the device starts from scratch in local mode, 
                 #     try to lock the PLC control
