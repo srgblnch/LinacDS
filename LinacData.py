@@ -1298,7 +1298,8 @@ class LinacData(PyTango.Device_4Impl):
                 self.push_change_event(attrEventStruct[0],attrEventStruct[1],
                                        timestamp,quality)
             attrStruct = self._getAttrStruct(attrEventStruct[0])
-            if attrStruct.has_key(LASTEVENTQUALITY) and \
+            if attrStruct != None and \
+            attrStruct.has_key(LASTEVENTQUALITY) and \
             not quality == attrStruct[LASTEVENTQUALITY]:
                 attrStruct[LASTEVENTQUALITY] = quality
         
@@ -1318,7 +1319,8 @@ class LinacData(PyTango.Device_4Impl):
                     self.fireEvent(attrEvent,timestamp)
                     attrNames.append(attrEvent[0])
                     if not self._sayAgainQueue == None:
-                        self._sayAgainQueue.put([attrEvent,timestamp])
+                        if attrEvent[0] not in self._sayAgainQueue.queue:
+                            self._sayAgainQueue.put(attrEvent[0])
                 except Exception,e:
                     self.error_stream("In fireEventsList() Exception with "\
                                       "attribute %s: %s"%(attrEvent[0],e))
@@ -1337,9 +1339,18 @@ class LinacData(PyTango.Device_4Impl):
                 resendAttrs = []
                 start_t = time.time()
                 while not self._sayAgainQueue.empty():
-                    attrEvent,timestamp = self._sayAgainQueue.get()
-                    self.fireEvent(attrEvent,timestamp)
-                    resendAttrs.append(attrEvent[0])
+                    try:
+                        attrName = self._sayAgainQueue.get()
+                        attrStruct = self._getAttrStruct(attrName)
+                        if attrStruct != None:
+                            attrEvent = [attrName,attrStruct[READVALUE]]
+                            if attrStruct.has_key(LASTEVENTQUALITY):
+                                attrEvent.append(attrStruct[LASTEVENTQUALITY])
+                            timestamp = attrStruct[READTIME]
+                            self.fireEvent(attrEvent,timestamp)
+                            resendAttrs.append(attrEvent[0])
+                    except Exception,e:
+                        self.error_stream("Cannot say again %s: %s"%(attrName,e))
                 nEvents = len(resendAttrs)
                 self.debug_stream("%d events has been said again:\n\t%s"
                                  %(len(resendAttrs),resendAttrs))
@@ -1430,7 +1441,10 @@ class LinacData(PyTango.Device_4Impl):
                     #if) the readback value is or not too far away from the 
                     #given setpoint.
                     setpointAttrName = attrStruct[SETPOINT]
-                    readback = attrStruct[READVALUE].value
+                    try:
+                        readback = attrStruct[READVALUE].value
+                    except:
+                        return PyTango.AttrQuality.ATTR_INVALID
                     setpoint = \
                         self._getAttrStruct(setpointAttrName)[READVALUE].value
                     if not setpoint == None:
