@@ -1343,14 +1343,20 @@ class LinacData(PyTango.Device_4Impl):
                         attrName = self._sayAgainQueue.get()
                         attrStruct = self._getAttrStruct(attrName)
                         if attrStruct != None:
-                            attrEvent = [attrName,attrStruct[READVALUE]]
+                            attrValue = self.__getAttrReadValue(attrName)
+                            attrEvent = [attrName,attrValue]
                             if attrStruct.has_key(LASTEVENTQUALITY):
                                 attrEvent.append(attrStruct[LASTEVENTQUALITY])
                             timestamp = attrStruct[READTIME]
-                            self.fireEvent(attrEvent,timestamp)
+                            try:
+                                self.fireEvent(attrEvent,timestamp)
+                            except:
+                                self.warn_stream("fireEvent(%s,%s)"
+                                                 %(attrEvent,timestamp))
                             resendAttrs.append(attrEvent[0])
                     except Exception,e:
                         self.error_stream("Cannot say again %s: %s"%(attrName,e))
+                        traceback.print_exc()
                 nEvents = len(resendAttrs)
                 self.debug_stream("%d events has been said again:\n\t%s"
                                  %(len(resendAttrs),resendAttrs))
@@ -1449,7 +1455,16 @@ class LinacData(PyTango.Device_4Impl):
                         self._getAttrStruct(setpointAttrName)[READVALUE].value
                     if not setpoint == None:
                         if self.__tooFar(setpoint,readback):
+                            self.warn_stream("Found %s readback (%6.3f) too "\
+                                             "far from the setpoint "\
+                                             "(%6.3f +-%6.3f)"
+                                             %(attrName,readback,setpoint,
+                                               setpoint*WARNING_REL_DISTANCE))
                             return PyTango.AttrQuality.ATTR_WARNING
+                        self.debug_stream("%s readback (%6.3f) close to "\
+                                          "setpoint (%6.3f +- %6.3f)"
+                                          %(attrName,readback,setpoint,
+                                            setpoint*WARNING_REL_DISTANCE))
                 except Exception,e:
                     self.warn_stream("Error comparing readback with "\
                                      "setpoint: %s"%(e))
@@ -1458,7 +1473,7 @@ class LinacData(PyTango.Device_4Impl):
             return PyTango.AttrQuality.ATTR_VALID
 
         def __tooFar(self,setpoint,readback):
-            margin = setpoint*WARNING_REL_DISTANCE
+            margin = abs(setpoint*WARNING_REL_DISTANCE)
             if readback > setpoint+margin or readback < setpoint-margin:
                 return True
             return False
