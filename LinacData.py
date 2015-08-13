@@ -1448,18 +1448,20 @@ class LinacData(PyTango.Device_4Impl):
                     setpoint = \
                         self._getAttrStruct(setpointAttrName)[READVALUE].value
                     if not setpoint == None:
-                        diff = abs(readback-setpoint)
-                    else:#When device starts, and not yet classified the info
-                        #of the setpoint attr, this was causing an exception.
-                        diff = 0
-                    if diff > WARNING_DISTANCE:
-                        return PyTango.AttrQuality.ATTR_WARNING
+                        if self.__tooFar(setpoint,readback):
+                            return PyTango.AttrQuality.ATTR_WARNING
                 except Exception,e:
                     self.warn_stream("Error comparing readback with "\
                                      "setpoint: %s"%(e))
                     traceback.print_exc()
                     return PyTango.AttrQuality.ATTR_INVALID
             return PyTango.AttrQuality.ATTR_VALID
+
+        def __tooFar(self,setpoint,readback):
+            margin = setpoint*WARNING_REL_DISTANCE
+            if readback > setpoint+margin or readback < setpoint-margin:
+                return True
+            return False
 
         def __checkQuality(self,attrName,attrValue,qualityInQuery):
             '''Check if this attrName with the give attrValue is with in the 
@@ -2466,7 +2468,7 @@ class LinacData(PyTango.Device_4Impl):
                 if attrStruck.has_key(READBACK):
                     readbackName = attrStruck[READBACK]
                     readbackStruct = self._getAttrStruct(readbackName)
-                    while abs(readbackStruct.value-value) > WARNING_DISTANCE:
+                    while self.__tooFar(value, readbackStruct.value):
                         self.warn_stream("Extending step for %s. It is at %g "\
                                          "when expecting %g"
                                         %(attrName,readbackStruct.value,value))
