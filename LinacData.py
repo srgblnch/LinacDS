@@ -1318,7 +1318,8 @@ class LinacData(PyTango.Device_4Impl):
                 try:
                     self.fireEvent(attrEvent,timestamp)
                     attrNames.append(attrEvent[0])
-                    if not self._sayAgainQueue == None:
+                    if self.attr_IsSayAgainEnable_read and \
+                    not self._sayAgainQueue == None:
                         if attrEvent[0] not in self._sayAgainQueue.queue:
                             self._sayAgainQueue.put(attrEvent[0])
                 except Exception,e:
@@ -1350,17 +1351,21 @@ class LinacData(PyTango.Device_4Impl):
                             timestamp = attrStruct[READTIME]
                             try:
                                 self.fireEvent(attrEvent,timestamp)
-                            except:
-                                self.warn_stream("fireEvent(%s,%s)"
-                                                 %(attrEvent,timestamp))
+                            except Exception,e:
+                                self.debug_stream("fireEvent(%s,%s) "\
+                                                 "exception:\n %s"
+                                                 %(attrEvent,timestamp,e))
                             resendAttrs.append(attrEvent[0])
                     except Exception,e:
-                        self.error_stream("Cannot say again %s: %s"%(attrName,e))
+                        self.error_stream("Cannot say again %s: %s"
+                                          %(attrName,e))
                         traceback.print_exc()
-                nEvents = len(resendAttrs)
-                self.debug_stream("%d events has been said again:\n\t%s"
-                                 %(len(resendAttrs),resendAttrs))
                 diff_t = time.time() - start_t
+                nEvents = len(resendAttrs)
+                if nEvents > 0:
+                    self.debug_stream("%d events has been said again "\
+                                     "(takes %g seconds):\n\t%s"
+                                     %(len(resendAttrs),diff_t,resendAttrs))
                 self._tangoEventsTime.append(diff_t)
                 self._tangoEventsNumber.append(nEvents)
                 #self.debug_stream("Say again for: %s"%(resendAttrs))
@@ -1441,11 +1446,12 @@ class LinacData(PyTango.Device_4Impl):
                     return PyTango.AttrQuality.ATTR_WARNING
                 elif self.__checkQuality(attrName,attrValue,CHANGING):
                     return PyTango.AttrQuality.ATTR_CHANGING
-            if attrStruct.has_key(SETPOINT):
+            if self.attr_IsTooFarEnable_read and \
+            attrStruct.has_key(SETPOINT):
                 try:
-                    #This is to review if, not having the value changing (previous
-                    #if) the readback value is or not too far away from the 
-                    #given setpoint.
+                    #This is to review if, not having the value changing 
+                    #(previous if) the readback value is or not too far away 
+                    #from the given setpoint.
                     setpointAttrName = attrStruct[SETPOINT]
                     try:
                         readback = attrStruct[READVALUE].value
@@ -3082,6 +3088,8 @@ class LinacData(PyTango.Device_4Impl):
                 self.debug_stream("In "+self.get_name()+"::init_device()")
                 self.set_change_event('State', True, False)
                 self.set_change_event('Status', True, False)
+                self.attr_IsSayAgainEnable_read = True
+                self.attr_IsTooFarEnable_read = True
                 #The attributes Locking, Lock_ST, and HeartBeat have also 
                 #events but this call is made in each of the AttrList method
                 #who dynamically build them.
@@ -3310,6 +3318,46 @@ class LinacData(PyTango.Device_4Impl):
             #----- PROTECTED REGION END -----#    //    LinacData.EventsNumber_read
             attr.set_value(self.attr_EventsNumber_read)
             
+
+        #------------------------------------------------------------------
+        #    Read IsSayAgainEnable attribute
+        #------------------------------------------------------------------
+        def read_IsSayAgainEnable(self, attr):
+            self.debug_stream("In " + self.get_name() + ".read_IsSayAgainEnable()")
+            #----- PROTECTED REGION ID(LinacData.IsSayAgainEnable_read) ENABLED START -----#
+            
+            #----- PROTECTED REGION END -----#    //    LinacData.IsSayAgainEnable_read
+            attr.set_value(self.attr_IsSayAgainEnable_read)
+
+        #------------------------------------------------------------------
+        #    Write IsSayAgainEnable attribute
+        #------------------------------------------------------------------
+        def write_IsSayAgainEnable(self, attr):
+            self.debug_stream("In " + self.get_name() + ".write_IsSayAgainEnable()")
+            data=attr.get_write_value()
+            #----- PROTECTED REGION ID(LinacData.IsSayAgainEnable_write) ENABLED START -----#
+            self.attr_IsSayAgainEnable_read = bool(data)
+            #----- PROTECTED REGION END -----#    //    LinacData.IsSayAgainEnable_write
+
+        #------------------------------------------------------------------
+        #    Read IsTooFarEnable attribute
+        #------------------------------------------------------------------
+        def read_IsTooFarEnable(self, attr):
+            self.debug_stream("In " + self.get_name() + ".read_IsTooFarEnable()")
+            #----- PROTECTED REGION ID(LinacData.IsTooFarEnable_read) ENABLED START -----#
+            
+            #----- PROTECTED REGION END -----#    //    LinacData.IsTooFarEnable_read
+            attr.set_value(self.attr_IsTooFarEnable_read)
+
+        #------------------------------------------------------------------
+        #    Write IsTooFarEnable attribute
+        #------------------------------------------------------------------
+        def write_IsTooFarEnable(self, attr):
+            self.debug_stream("In " + self.get_name() + ".write_IsTooFarEnable()")
+            data=attr.get_write_value()
+            #----- PROTECTED REGION ID(LinacData.IsTooFarEnable_write) ENABLED START -----#
+            self.attr_IsTooFarEnable_read = bool(data)
+            #----- PROTECTED REGION END -----#    //    LinacData.IsTooFarEnable_write
 
         #-----------------------------------------------------------------------------
         #    LinacData command methods
@@ -4375,6 +4423,32 @@ class LinacDataClass(PyTango.DeviceClass):
                   PyTango.READ, 1800],
                  {
                   'Display level': PyTango.DispLevel.EXPERT,
+                 }
+                ],
+            'IsSayAgainEnable':
+                [[PyTango.DevBoolean,
+                  PyTango.SCALAR,
+                  PyTango.READ_WRITE],
+                 {
+                  'label': "Is Say Again Feature Enabled?",
+                  'Display level': PyTango.DispLevel.EXPERT,
+                  'description': "This boolean is to enable or disable the "\
+                                 "feature to repeate the events to ensure "\
+                                 "gui publication.",
+                  'Memorized':"true"
+                 }
+                ],
+            'IsTooFarEnable':
+                [[PyTango.DevBoolean,
+                  PyTango.SCALAR,
+                  PyTango.READ_WRITE],
+                 {
+                  'label': "Is Too Far readback Feature Enabled?",
+                  'Display level': PyTango.DispLevel.EXPERT,
+                  'description': "This boolean is to enable or disable the "\
+                                 "feature to use the quality warning for "\
+                                 "readback attributes with setpoint too far",
+                  'Memorized':"true"
                  }
                 ],
         }
