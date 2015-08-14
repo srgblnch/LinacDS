@@ -111,7 +111,8 @@ def PS(name, types, rng):
              d=desc_st+john(meanings),
              meanings=meanings,
              qualities=qualities,
-             events={})
+             events={},
+             IamChecker=['\x01','\x02','\x03','\x04','\x05'])
         Status_addr += 1
 
 

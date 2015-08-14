@@ -323,6 +323,7 @@ class AttrList(object):
                        meanings=None,qualities=None,events=None,
                        formula=None,l=None,
                        readback=None,setpoint=None,switch=None,
+                       IamChecker=None,
                        **kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
            as well as for RW depending on if it's provided a write address.
@@ -381,6 +382,11 @@ class AttrList(object):
            another read only attribute that does the measure of what the 
            setpoint sets. Also this readback may like to know about the 
            setpoint and if the element is switch on or off.
+           
+           In the attribute description, one key argument (default None) is:
+           'IamChecker'. It is made to, if it contains a list of valid read 
+           values, add to the tcpblock reader to decide if a received block 
+           has a valid structure or not.
         '''
         rfun = self.__getAttrMethod('read',name)
 
@@ -395,6 +401,12 @@ class AttrList(object):
                                 setpoint=setpoint,switch=switch,
                                 **kwargs)
         self._prepareEvents(name,events)
+        if not IamChecker == None:
+            try:
+                self.impl.read_db.setChecker(read_addr,IamChecker)
+            except Exception,e:
+                self.impl.error_stream("%s cannot be added in the checker set"\
+                                       "due to:\n%s"%(name,e))
         if not meanings == None:
             return self._prepareAttrWithMeaning(name,tango_T,meanings,
                                                  qualities,rfun,wfun,

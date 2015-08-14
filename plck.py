@@ -49,20 +49,7 @@
 
 #def jin(*args):
 #    return john(args)
-#----TODO: This attrbute will 'Rampeable' above some given threashold.
-#          That is from 0 to this threashold is set directly, and above to 
-#          the maximum must follow some steps and some time on each step.
-#          This two ramp parameters must be also dynattrs.
-AttrRampeable('HVPS_V_setpoint',
-     PyTango.DevFloat,46,0,#RW
-     l='High voltage PS voltage setpoint',
-     unit='kV',min=0,max=33,format='%4.2f',
-     events={THRESHOLD:0.005},
-     qualities={CHANGING:{'rel':0.1}},
-     rampsDescriptor = {ASCENDING:{STEP:0.5,#kV
-                                   STEPTIME:1,#s
-                                   THRESHOLD:20,#kV
-                                   SWITCH:'HVPS_ONC'}})
+
 Attr('Heat_I',
      PyTango.DevFloat,4,
      l='Heating current monitor',
@@ -197,6 +184,21 @@ Attr('Heat_Time',
      formula={'read':'VALUE / 6'},
      qualities={CHANGING:{ABSOLUTE:{ABOVE:0,BELOW:20,UNDER:True}}},
      )
+
+#----TODO: This attrbute will 'Rampeable' above some given threashold.
+#          That is from 0 to this threashold is set directly, and above to 
+#          the maximum must follow some steps and some time on each step.
+#          This two ramp parameters must be also dynattrs.
+AttrRampeable('HVPS_V_setpoint',
+     PyTango.DevFloat,46,0,#RW
+     l='High voltage PS voltage setpoint',
+     unit='kV',min=0,max=33,format='%4.2f',
+     events={THRESHOLD:0.005},
+     qualities={CHANGING:{'rel':0.1}},
+     rampsDescriptor = {ASCENDING:{STEP:0.5,#kV
+                                   STEPTIME:1,#s
+                                   THRESHOLD:20,#kV
+                                   SWITCH:'HVPS_ONC'}})
 
 AttrBit('LV_Interlock_RC',
         62, 0, 16,
