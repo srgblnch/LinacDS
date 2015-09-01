@@ -1,0 +1,60 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
+# linac-attr-dump.py
+# This file is part of tango-ds (http://sourceforge.net/projects/tango-ds/)
+#
+# tango-ds is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# tango-ds is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with tango-ds.  If not, see <http://www.gnu.org/licenses/>.
+
+"""Creates a CSV file containing the values of attributes read from the Linac DS."""
+
+import sys
+from time import strftime
+
+from PyTango import *
+
+
+LINAC_DEVICE = "LI/00/linac"
+
+def main(argv):
+    li = DeviceProxy(LINAC_DEVICE)
+    print "'Attribute';'Comment';'Value';'Unit'"
+    fname = strftime("linac_attr_%F_%T.csv")
+    fout = open(fname, "w")
+    for ai in li.attribute_list_query():
+        aval = li.read_attribute(ai.name)
+        value = aval.value
+        cfg = li.get_attribute_config_ex([ai.name])[0]
+        if cfg.data_type == DevFloat:
+            cfg.events.ch_event.rel_change = "0.0001"
+            li.set_attribute_config_ex([cfg])
+        else:
+            cfg.events.ch_event.abs_change = "0.1"
+            cfg.events.ch_event.rel_change = "0.0"
+            li.set_attribute_config_ex([cfg])
+
+        if type(value)==type(DevState.ON):
+            value = str(value)
+
+        if ai.unit=="No unit":
+            unit = ""
+        else:
+            unit = ai.unit
+        label = ai.label.replace("'","").replace(";",",")
+        ln = "%r;%s;%r;%r\n" % (ai.name , label, value, unit)
+        fout.write(ln)
+        print ln,
+
+if __name__ == "__main__":
+    main(sys.argv)
