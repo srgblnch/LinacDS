@@ -1491,6 +1491,14 @@ class LinacData(PyTango.Device_4Impl):
             return PyTango.AttrQuality.ATTR_VALID
 
         def __tooFar(self,setpoint,readback):
+            '''
+                Definition of 'too far': when the readback and the setpoint 
+                differ more than a certain percentage, the quality of the 
+                readback attribute is warning.
+                But this doesn't apply when the setpoint is too close to 0.
+            '''
+            if -1.0 < setpoint < 1.0:
+                return False
             margin = abs(setpoint*WARNING_REL_DISTANCE)
             if readback > setpoint+margin or readback < setpoint-margin:
                 return True
