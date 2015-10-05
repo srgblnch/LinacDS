@@ -1237,7 +1237,7 @@ class LinacData(PyTango.Device_4Impl):
             '''
             return self.is_connected() and \
                    (len(self.read_db.buf)==self.ReadSize)
-                   
+
         def forceWriteAttrs(self):
             '''There are certain situations, like the PLC shutdown, that 
                results in a bad DB20 values received. Then the writable values
