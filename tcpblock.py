@@ -223,7 +223,7 @@ class Datablock(object):
     def f(self, idx):
         return self.get(idx, 'f', 4)
 
-    def write(self, idx, f, T=None):
+    def write(self, idx, f, T=None,dry=False):
         type_code, size = T[:2]
         self.debug_stream('write register %d (type %s,%s;) size %d bytes'
                           %(idx,f,type_code,size))
@@ -237,7 +237,8 @@ class Datablock(object):
         self._bufferMutex.acquire()
         self.buf[a:z] = bytes
         self._bufferMutex.release()
-        self.rewrite()
+        if not dry:
+            self.rewrite()
 
     def rewrite(self):
         self._bufferMutex.acquire()

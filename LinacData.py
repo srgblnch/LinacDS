@@ -1237,6 +1237,51 @@ class LinacData(PyTango.Device_4Impl):
             '''
             return self.is_connected() and \
                    (len(self.read_db.buf)==self.ReadSize)
+                   
+        def forceWriteAttrs(self):
+            '''There are certain situations, like the PLC shutdown, that 
+               results in a bad DB20 values received. Then the writable values
+               cannot be written because the datablock only changes one 
+               register when many have bad values and is rejected by the plc.
+               
+               Due to this we force a construction of a complete write 
+               datablock to be send once for all.
+            '''
+            try:
+                WriteAttrNames = self._getWattrList()
+                self._forceWriteDB(WriteAttrNames)
+            except Exception,e:
+                self.warn_stream("In forceWriteAttrs() Exception: %s"%(e))
+                traceback.print_exc()
+        
+        def _getWattrList(self):
+            wAttrNames = []
+            for attrName in self._plcAttrs.keys():
+                attrStruct = self._getAttrStruct(attrName)
+                if attrStruct.has_key(WRITEVALUE):
+                    wAttrNames.append(attrName)
+            return wAttrNames
+        
+        def _forceWriteDB(self,attr2write):
+            for attrName in attr2write:
+                attrStruct = self._getAttrStruct(attrName)
+                write_addr = attrStruct[WRITEADDR]
+                write_value = attrStruct[READVALUE]
+                if type(attrStruct[READVALUE]) in [CircularBuffer,HistoryBuffer]:
+                    write_value = attrStruct[READVALUE].value
+                else:
+                    write_value = attrStruct[READVALUE]
+                self.info_stream("Dry write of %s value %s"
+                                 %(attrName,write_value))
+                if attrStruct.has_key(WRITEBIT):
+                    read_addr = attrStruct[READADDR]
+                    write_bit = attrStruct[WRITEBIT]
+                    self.__writeBit(attrName,read_addr,write_addr,write_bit,
+                                    write_value,dry=True)
+                else:
+                    self.write_db.write(write_addr, write_value, 
+                                        attrStruct[TYPE], dry=True)
+            self.write_db.rewrite()
         #---- Done PLC connectivity area
 
         ####
@@ -2128,7 +2173,8 @@ class LinacData(PyTango.Device_4Impl):
                 attrStruct[READVALUE].resetBuffer()
             self._cleanTriggeredFlag(attrName)
 
-        def __writeBit(self,name,read_addr,write_addr,write_bit,write_value):
+        def __writeBit(self,name,read_addr,write_addr,write_bit,write_value,
+                       dry=False):
             '''
             '''
             rbyte = self.read_db.b(read_addr)
@@ -2141,12 +2187,14 @@ class LinacData(PyTango.Device_4Impl):
                 # clears bit 'bitno' of b
                 toWrite = rbyte & ((0xFF)^(1<<write_bit))
                 #a byte of 1s with a unique 0 in the place to set this 0
-            self.write_db.write(write_addr, toWrite,TYPE_MAP[PyTango.DevUChar])
-            reRead = self.read_db.b(read_addr)
-            self.debug_stream("Writing %s boolean to %6s (%d.%d) byte was "\
-                             "%s; write %s; now %s"
-                             %(name,write_value,write_addr,write_bit,
-                               bin(rbyte),bin(toWrite),bin(reRead)))
+            if not dry:
+                self.write_db.write(write_addr, toWrite,
+                                    TYPE_MAP[PyTango.DevUChar])
+                reRead = self.read_db.b(read_addr)
+                self.debug_stream("Writing %s boolean to %6s (%d.%d) byte was "\
+                                  "%s; write %s; now %s"
+                                  %(name,write_value,write_addr,write_bit,
+                                    bin(rbyte),bin(toWrite),bin(reRead)))
 
         def write_attrGrpBit(self,attr):
             '''
@@ -3629,6 +3677,7 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 self.set_state(PyTango.DevState.UNKNOWN)
                 self.set_status("")
+            self.forceWriteAttrs()
             #----- PROTECTED REGION END -----#    //    LinacData.ResetState
 
 
