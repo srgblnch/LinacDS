@@ -182,7 +182,7 @@ AttrBit('EG_ENB',
         meanings={0:'disabled',
                   1:'enabled'},
         qualities={WARNING:[0]},
-        events={})
+        events={},record=True)
 AttrBit('KA_ENB',
         70,1,#RO
         l='Klystron amplifier enabled (PSS)',
@@ -196,7 +196,7 @@ AttrBit('TL_VOK',
         meanings={0:'bad vacuum',
                   1:'good vacuum'},
         qualities={WARNING:[0]},
-        events={})
+        events={},record=True)
 AttrBit('IU_RDY',
         70,5,#RO
         l='Interlock unit ready',

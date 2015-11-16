@@ -323,7 +323,7 @@ class AttrList(object):
                        meanings=None,qualities=None,events=None,
                        formula=None,l=None,
                        readback=None,setpoint=None,switch=None,
-                       IamChecker=None,
+                       IamChecker=None,record=None,
                        **kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
            as well as for RW depending on if it's provided a write address.
@@ -401,6 +401,8 @@ class AttrList(object):
                                 setpoint=setpoint,switch=switch,
                                 **kwargs)
         self._prepareEvents(name,events)
+        if record:
+            self.impl._traceAttrs.append(name)
         if not IamChecker == None:
             try:
                 self.impl.read_db.setChecker(read_addr,IamChecker)
@@ -421,7 +423,7 @@ class AttrList(object):
                           write_bit=None,meanings=None,qualities=None,
                           events=None,isRst=False,activeRst_t=None,
                           formula=None,switchDescriptor=None,
-                          readback=None,setpoint=None,**kwargs):
+                          readback=None,setpoint=None,record=None,**kwargs):
         '''This method is a builder of a boolean dynamic attribute, even for RO
            than for RW. There are many optional parameters.
            
@@ -505,6 +507,8 @@ class AttrList(object):
             self.impl._plcAttrs[name][SWITCHDESCRIPTOR] = switchDescriptor
             self.impl._plcAttrs[name][SWITCHDEST] = None
         self._prepareEvents(name,events)
+        if record:
+            self.impl._traceAttrs.append(name)
         if not meanings == None:
             return self._prepareAttrWithMeaning(name, PyTango.DevBoolean,
                                                  meanings,qualities,rfun,wfun,
@@ -1163,6 +1167,11 @@ class LinacData(PyTango.Device_4Impl):
         _sayAgainThread = None
         _sayAgainQueue = None
         
+        #special event emition trace
+        _traceAttrs = []
+        _tracedAttrsHistory = {}
+        _historySize = 100
+        
         _prevMemDump = None
         _prevLockSt = None
 
@@ -1336,31 +1345,34 @@ class LinacData(PyTango.Device_4Impl):
                attribute. Minimal needs are the attribute name and the value
                to emit, but also can be specified the quality and the timestamp
             '''
+            attrName = attrEventStruct[0]
+            attrValue = attrEventStruct[1]
             if timestamp == None:
                 timestamp = time.time()
-            if self.__isRstAttr(attrEventStruct[0]):
-                self.info_stream("In fireEvent() attribute %s = %s"
-                                  %(attrEventStruct[0],attrEventStruct[1]))
             if len(attrEventStruct) == 3: #the quality is specified
                 quality = attrEventStruct[2]
             else:
                 quality = PyTango.AttrQuality.ATTR_VALID
-            if self.__isHistoryBuffer(attrEventStruct[0]):
-                attrValue = self.__buildHistoryBufferString(attrEventStruct[0])
-                self.debug_stream("For attribute %s: %s"
-                                 %(attrEventStruct[0],attrValue))
-                self.push_change_event(attrEventStruct[0],attrValue,
-                                       timestamp,quality)
+            if attrName in self._traceAttrs:
+                if not self._tracedAttrsHistory.has_key(attrName):
+                    self._tracedAttrsHistory[attrName] = []
+                self._tracedAttrsHistory[attrName].append([attrValue,quality,timestamp])
+                self.info_stream("In fireEvent() attribute %s = %s (%s,%s)"
+                                  %(attrName,attrValue,quality,timestamp))
+                while len(self._tracedAttrsHistory[attrName]) > self._historySize:
+                    self._tracedAttrsHistory[attrName].pop(0)
+            if self.__isHistoryBuffer(attrName):
+                attrValue = self.__buildHistoryBufferString(attrName)
+                self.push_change_event(attrName,attrValue,timestamp,quality)
             else:
-                self.push_change_event(attrEventStruct[0],attrEventStruct[1],
-                                       timestamp,quality)
-            attrStruct = self._getAttrStruct(attrEventStruct[0])
+                self.push_change_event(attrName,attrValue,timestamp,quality)
+            attrStruct = self._getAttrStruct(attrName)
             if attrStruct != None and \
             attrStruct.has_key(LASTEVENTQUALITY) and \
             not quality == attrStruct[LASTEVENTQUALITY]:
                 attrStruct[LASTEVENTQUALITY] = quality
         
-        def fireEventsList(self,eventsAttrList,log=False):
+        def fireEventsList(self,eventsAttrList,timestamp=None,log=False):
             '''Given a set of pair [attr,value] (with an optional third element
                with the quality) emit events for all of them with the same
                timestamp.
@@ -1369,7 +1381,8 @@ class LinacData(PyTango.Device_4Impl):
                 self.debug_stream("In fireEventsList(): %d events:\n%s"
                                   %(len(eventsAttrList),''.join("\t%s\n"%line \
                                     for line in eventsAttrList)))
-            timestamp = time.time()
+            if timestamp == None:
+                timestamp = time.time()
             attrNames = []
             for attrEvent in eventsAttrList:
                 try:
@@ -3691,7 +3704,7 @@ class LinacData(PyTango.Device_4Impl):
                - Lock_{ST,Status}
                - Locking
             '''
-            now = self.last_update_time#time.time()
+            #now = self.last_update_time#time.time()
             attr2Event = []
             #Heartbit
             self.read_heartbeat_attr = self.read_db.bit(self.heartbeat_addr,0)
@@ -3727,7 +3740,7 @@ class LinacData(PyTango.Device_4Impl):
                 LockingStruct[READTIME] = time.time()
                 attr2Event.append(['Locking',self.is_lockedByTango])
             if len(attr2Event) > 0:
-                self.fireEventsList(attr2Event)
+                self.fireEventsList(attr2Event,timestamp=self.last_update_time)
 
         def __attrHasEvents(self,attrName):
             '''
@@ -3959,7 +3972,7 @@ class LinacData(PyTango.Device_4Impl):
                                           %(attrName,e))
                         traceback.print_exc()
             if len(attr2Event) > 0:
-                self.fireEventsList(attr2Event,log=True)
+                self.fireEventsList(attr2Event,timestamp=now,log=True)
             return len(attr2Event)
 
         def internalAttrEvents(self):
@@ -4053,7 +4066,7 @@ class LinacData(PyTango.Device_4Impl):
                                               "exception on emit attribute "\
                                               "%s: %s"%(attrName,e))
             if len(attr2Event) > 0:
-                self.fireEventsList(attr2Event,log=True)
+                self.fireEventsList(attr2Event,timestamp=now,log=True)
             return len(attr2Event)
 
         def checkResetAttr(self,attrName):
@@ -4272,7 +4285,7 @@ class LinacData(PyTango.Device_4Impl):
                                                   %(timeFormated,diff_t)
                 attr2Event = [['lastUpdate',self.read_lastUpdate_attr],
                           ['lastUpdateStatus',self.read_lastUpdateStatus_attr]]
-                self.fireEventsList(attr2Event)
+                self.fireEventsList(attr2Event,timestamp=self.last_update_time)
 #                self.info_stream("Update() it has take %3.6f seconds"
 #                                 %(diff_t))
                 #---- when an update goes fine, the period is reduced one step

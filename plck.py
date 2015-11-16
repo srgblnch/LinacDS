@@ -224,7 +224,7 @@ AttrBit('HVPS_ONC',
         62 ,3, 16,
         l='High voltage on',
         d='high voltage on\nFalse:off\nTrue:on',
-        events={},
+        events={},record=True,
         #rampingAttr='HVPS_V_setpoint',
         formula={'read':'VALUE and '\
                        'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 9 and '\
