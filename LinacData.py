@@ -1172,6 +1172,8 @@ class LinacData(PyTango.Device_4Impl):
         _tracedAttrsHistory = {}
         _historySize = 100
         
+        _traceTooClose = []
+        
         _prevMemDump = None
         _prevLockSt = None
 
@@ -1546,16 +1548,16 @@ class LinacData(PyTango.Device_4Impl):
                         self._getAttrStruct(setpointAttrName)[READVALUE].value
                     if not setpoint == None:
                         if self.__tooFar(setpoint,readback):
-                            self.warn_stream("Found %s readback (%6.3f) too "\
-                                             "far from the setpoint "\
-                                             "(%6.3f +-%6.3f)"
-                                             %(attrName,readback,setpoint,
-                                               setpoint*WARNING_REL_DISTANCE))
+                            if attrName in self._traceTooClose:
+                                self.warn_stream("Found %s readback (%6.3f) "\
+                                                 "too far from setpoint (%6.3f)"
+                                                 %(attrName,readback,setpoint))
                             return PyTango.AttrQuality.ATTR_WARNING
-                        self.debug_stream("%s readback (%6.3f) close to "\
-                                          "setpoint (%6.3f +- %6.3f)"
-                                          %(attrName,readback,setpoint,
-                                            setpoint*WARNING_REL_DISTANCE))
+                        if attrName in self._traceTooClose:
+                            self.info_stream("Found %s readback (%6.3f) "\
+                                             "close enought to the setpoint "\
+                                             "(%6.3f)"
+                                             %(attrName,readback,setpoint))
                 except Exception,e:
                     self.warn_stream("Error comparing readback with "\
                                      "setpoint: %s"%(e))
@@ -1569,12 +1571,26 @@ class LinacData(PyTango.Device_4Impl):
                 differ more than a certain percentage, the quality of the 
                 readback attribute is warning.
                 But this doesn't apply when the setpoint is too close to 0.
+                
+                
+                Definition of 'too far': there are two different definitions
+                - When the setpoint is "close to 0" the warning quality alert 
+                  will be raised if the readback has a difference bigger than 
+                  0.1 (plus minus).
+                - If the setpoint is not that close to 0, the warning alert 
+                  will be raised when their difference is above the 10%. 
+                  It has been used a multiplicative notation but it can be 
+                  made also with additive notation using a multiplication 
+                  factor.
             '''
-            if -1.0 < setpoint < 1.0:
-                return False
-            margin = abs(setpoint*WARNING_REL_DISTANCE)
-            if readback > setpoint+margin or readback < setpoint-margin:
-                return True
+            if ( -CLOSE_ZERO < setpoint < CLOSE_ZERO):
+                diff = abs(setpoint-readback)
+                if (diff > CLOSE_ZERO):
+                    return True
+            else:
+                diff = abs(setpoint/readback)
+                if ( 1-REL_PERCENTAGE > diff or diff > 1+REL_PERCENTAGE):#10%
+                    return True
             return False
 
         def __checkQuality(self,attrName,attrValue,qualityInQuery):
