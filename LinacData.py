@@ -1338,6 +1338,28 @@ class LinacData(PyTango.Device_4Impl):
             self.set_status("")
         #---- done state/status manager methods
         
+        def __doTraceAttr(self,attrName,tag):
+            if attrName in self._traceAttrs:
+                attrStruct = self._getAttrStruct(attrName)
+                readValue = attrStruct[READVALUE]
+                if attrStruct.has_key(WRITEVALUE):
+                    writeValue = attrStruct[WRITEVALUE]
+                else:
+                    writeValue = float('NaN')
+                quality = attrStruct[LASTEVENTQUALITY]
+                timestamp = attrStruct[READTIME]
+                if not self._tracedAttrsHistory.has_key(attrName):
+                    self._tracedAttrsHistory[attrName] = []
+                self._tracedAttrsHistory[attrName].append(\
+                    [tag,readValue,writeValue,quality,timestamp])
+                self.info_stream("Traceing %s with %s tag: "\
+                                 "read = %s, write = %s (%s,%s)"
+                                 %(attrName,tag,readValue,writeValue,
+                                   quality,timestamp))
+                while len(self._tracedAttrsHistory[attrName]) > \
+                self._historySize:
+                    self._tracedAttrsHistory[attrName].pop(0)
+        
         ####
         #---- event methods
         def fireEvent(self,attrEventStruct,timestamp=None):
@@ -1353,14 +1375,7 @@ class LinacData(PyTango.Device_4Impl):
                 quality = attrEventStruct[2]
             else:
                 quality = PyTango.AttrQuality.ATTR_VALID
-            if attrName in self._traceAttrs:
-                if not self._tracedAttrsHistory.has_key(attrName):
-                    self._tracedAttrsHistory[attrName] = []
-                self._tracedAttrsHistory[attrName].append([attrValue,quality,timestamp])
-                self.info_stream("In fireEvent() attribute %s = %s (%s,%s)"
-                                  %(attrName,attrValue,quality,timestamp))
-                while len(self._tracedAttrsHistory[attrName]) > self._historySize:
-                    self._tracedAttrsHistory[attrName].pop(0)
+            self.__doTraceAttr(attrName, "fireEvent(%s)"%attrValue)
             if self.__isHistoryBuffer(attrName):
                 attrValue = self.__buildHistoryBufferString(attrName)
                 self.push_change_event(attrName,attrValue,timestamp,quality)
@@ -1640,8 +1655,6 @@ class LinacData(PyTango.Device_4Impl):
         def __setAttrValue(self,attr,attrName,attrType,attrValue,timestamp):
             '''
             '''
-            self.debug_stream("__setAttrvalue(%s,%s,%s,%s)"
-                              %(attrName,attrType,attrValue,timestamp))
             attrStruct = self._getAttrStruct(attrName)
             self.__applyReadValue(attrName,attrValue,timestamp)
             if attrStruct.has_key(MEANINGS):
@@ -1697,6 +1710,7 @@ class LinacData(PyTango.Device_4Impl):
                 except Exception,e:
                     self.warn_stream("On setAttrValue(%s,%s) Exception: %s"
                                      %(attrName,str(attrValue),e))
+            self.__doTraceAttr(attrName, "__setAttrvalue")
         
         @AttrExc
         def read_attr(self, attr):
@@ -2059,7 +2073,6 @@ class LinacData(PyTango.Device_4Impl):
                                                (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
-#            self.debug_stream("write_attr[%s]"%(name))
             attrStruct = self._getAttrStruct(name)
             attrType = attrStruct[TYPE]
             write_addr = attrStruct[WRITEADDR]
@@ -2069,6 +2082,7 @@ class LinacData(PyTango.Device_4Impl):
                 write_value = self.__solveFormula(name,write_value,
                                                 attrStruct[FORMULA]['write'])
             attrStruct[WRITEVALUE] = write_value
+            self.__doTraceAttr(name, "write_attr")
             self.write_db.write(write_addr, write_value, attrType)
 
         @AttrExc
@@ -2079,8 +2093,8 @@ class LinacData(PyTango.Device_4Impl):
                                                (not self.has_data_available()):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
-#            self.debug_stream("write_attr_bit[%s]"%(name))
             write_value = self.prepare_write(attr)
+            self.__doTraceAttr(name, "write_attr_bit")
             self.doWriteAttrBit(name,write_value)
 
         def doWriteAttrBit(self,name,write_value):
@@ -3948,6 +3962,9 @@ class LinacData(PyTango.Device_4Impl):
                             attr2Event.append([attrName,
                                                 attrValue,
                                                 attrQuality])
+                            self.__doTraceAttr(attrName, 
+                                               "plcGeneralAttrEvents(%s)"
+                                               %attrValue)
 #                            #FIXME: debug for ramping
 #                            if self.__isRampingAttr(attrName):
 #                                self.info_stream("EVENT for %s: read=%s "\
@@ -4061,6 +4078,9 @@ class LinacData(PyTango.Device_4Impl):
                                     attrValue = newValue
                                     attrQuality=PyTango.AttrQuality.ATTR_VALID
                                 attr2Event.append([attrName,attrValue])
+                                self.__doTraceAttr(attrName, 
+                                                   "internalAttrEvents(%s)"
+                                                   %attrValue)
                         except Exception,e:
                             self.error_stream("In internalAttrEvents(), "\
                                               "exception on emit attribute "\
