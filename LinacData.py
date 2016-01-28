@@ -3237,7 +3237,7 @@ class LinacData(PyTango.Device_4Impl):
                 self.debug_stream("In "+self.get_name()+"::init_device()")
                 self.set_change_event('State', True, False)
                 self.set_change_event('Status', True, False)
-                self.attr_IsSayAgainEnable_read = True
+                self.attr_IsSayAgainEnable_read = False
                 self.attr_IsTooFarEnable_read = True
                 #The attributes Locking, Lock_ST, and HeartBeat have also 
                 #events but this call is made in each of the AttrList method
