@@ -982,12 +982,21 @@ class AttrList(object):
             self._prepareInternalAttribute(name,PyTango.DevDouble,
                                             isWritable=True,memorized=True,
                                             defaultValue=defaultValue)
-            newInternalAttr = self.add_Attr(name,PyTango.DevDouble,rfun,wfun,
-                                            l=baseLabel+' '+suffix,
-                                            min=0,#strictly positive #?max=1,
-                                            unit=unit,
-                                            format='%4.1f',
-                                            memorized=True)
+            if suffix in [STEP,STEPTIME]:
+                newInternalAttr = self.add_Attr(name,PyTango.DevDouble,
+                                                rfun,wfun,
+                                                l=baseLabel+' '+suffix,
+                                                min=0,#strictly positive #?max=1,
+                                                unit=unit,
+                                                format='%4.1f',
+                                                memorized=True)
+            elif suffix in [THRESHOLD]:
+                newInternalAttr = self.add_Attr(name,PyTango.DevDouble,
+                                                rfun,wfun,
+                                                l=baseLabel+' '+suffix,
+                                                unit=unit,
+                                                format='%4.1f',
+                                                memorized=True)
             self.__traceAttrAddr(name,'DevDouble',internal=True)
             return newInternalAttr
         except Exception,e:
@@ -2592,8 +2601,8 @@ class LinacData(PyTango.Device_4Impl):
             self.info_stream("Moving %s in '%s' direction from %s to %s "\
                              "(step %s,threshold = %s)"%(attrName,direction,
                              currentValue,destinationValue,step,threshold))
-            value = self.__determineRampStepDestinationValue(currentValue,
-                        destinationValue,threshold,step,direction)
+            value = self.__determineRampStepDestinationValue(attrName,
+                        currentValue,destinationValue,threshold,step,direction)
             self.__moveToValue(attrName,value)
             time.sleep(details[STEPTIME])
             #TODO: check if the readback is close to where it shall be
@@ -2613,7 +2622,7 @@ class LinacData(PyTango.Device_4Impl):
                                       destinationValue))
                     time.sleep(details[STEPTIME]/10)
 
-        def __determineRampStepDestinationValue(self,
+        def __determineRampStepDestinationValue(self,attrName,
                 currentValue,destinationValue,threshold,step,direction):
             if direction == ASCENDING:
                 if currentValue < threshold:
