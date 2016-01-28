@@ -2430,12 +2430,7 @@ class LinacData(PyTango.Device_4Impl):
             self.info_stream("Thread for attribute %s ramping start."
                              %(attrName))
             while not self.__isRampDone(attrName):
-                if threading.current_thread().ident != \
-                                             self._rampThreads[attrName].ident:
-                    self.warn_stream("I am %s and I'm not responsible for "\
-                                     "this ramp! Its %s"
-                                     %(threading.current_thread(),
-                                       self._rampThreads[attrName].ident))
+                if not self.__isTheRampingThread(attrName):
                     return
                 if not self.__isRampEnabled(attrName):
                     #There is a check before create this thread, but it can be
@@ -2446,14 +2441,7 @@ class LinacData(PyTango.Device_4Impl):
                 self.info_stream("Attribute %s ramp direction '%s' "\
                                  "parameters: %s"
                                  %(attrName,rampDirection,rampDetails))
-                if rampDirection == None:
-                    reason = "Error exception!"
-                    description = "Unable to determine the ramp direction!"
-                    self.error_stream("%s %s"%(reason,description))
-                    PyTango.Except.throw_exception(reason,
-                                                   description,
-                                                   attrName,
-                                                   PyTango.ErrSeverity.ERR)
+                if not self.__knownRampDirection(rampDirection):
                     return
                 elif rampDetails != None:
                     #TODO: check if the switch has been OFF
@@ -2473,6 +2461,27 @@ class LinacData(PyTango.Device_4Impl):
                              %(attrName))
             self._getAttrStruct(attrName)[RAMPDEST] = None
             #self._rampThreads[attrName] = None
+
+        def __isTheRampingThread(self,attrName):
+            if threading.current_thread().ident != \
+                                             self._rampThreads[attrName].ident:
+                self.warn_stream("I am %s and I'm not responsible for this "\
+                                 "ramp! Its %s"%(threading.current_thread(),
+                                 self._rampThreads[attrName].ident))
+                return False
+            return True
+
+        def __knownRampDirection(self,rampDirection):
+            if rampDirection == None:
+                reason = "Error exception!"
+                description = "Unable to determine the ramp direction!"
+                self.error_stream("%s %s"%(reason,description))
+                PyTango.Except.throw_exception(reason,
+                                                   description,
+                                                   attrName,
+                                                   PyTango.ErrSeverity.ERR)
+                return False
+            return True
 
         def __isRampDone(self,attrName):
             '''Evaluate if, for a given attribute name, its ramping prodecure
@@ -2542,6 +2551,17 @@ class LinacData(PyTango.Device_4Impl):
                                     value,
                                     attrStruct[TYPE])
 
+        def __reviewApplyAnStepArguments(self,attrStruct,direction,details):
+            if attrStruct == None:
+                return False
+            if not direction in [ASCENDING,DESCENDING]:
+                return False
+            if not details.has_key(STEP):
+                return False
+            if not details.has_key(STEPTIME):
+                return False
+            return True
+
         def __applyAnStep(self,attrName,direction,details):
             '''Based on the ramp definition, decide if next step is to:
                - go to the threshold
@@ -2551,60 +2571,65 @@ class LinacData(PyTango.Device_4Impl):
                close enought to the readback value.
             '''
             attrStruct = self._getAttrStruct(attrName)
-            #TODO: threshold
-            if attrStruct != None and \
-               direction in [ASCENDING,DESCENDING] and \
-               details.has_key(STEP) and \
-               details.has_key(STEPTIME):
-                #prepare
-                currentValue = attrStruct[WRITEVALUE]
-                destinationValue = attrStruct[RAMPDEST]
-                step = details[STEP]
-                steptime = details[STEPTIME]
-                if details.has_key(THRESHOLD):
-                    threshold = details[THRESHOLD]
+            if not self.__reviewApplyAnStepArguments(attrStruct,direction,details):
+                return
+            #---- Prepare the step
+            currentValue = attrStruct[WRITEVALUE]
+            destinationValue = attrStruct[RAMPDEST]
+            step = details[STEP]
+            steptime = details[STEPTIME]
+            if details.has_key(THRESHOLD):
+                threshold = details[THRESHOLD]
+            else:
+                threshold = None
+            if currentValue == None:
+                self.error_stream("Cannot determine where %s is with "\
+                                  "a %s = %s"%(attrName,WRITEVALUE,
+                                               currentValue))
+                time.sleep(EVENT_THREAD_PERIOD)
+                return
+            self.info_stream("Moving %s in '%s' direction from %s to %s "\
+                             "(step %s,threshold = %s)"%(attrName,direction,
+                             currentValue,destinationValue,step,threshold))
+            value = self.__determineRampStepDestinationValue(currentValue,
+                        destinationValue,threshold,step,direction)
+            self.__moveToValue(attrName,value)
+            time.sleep(details[STEPTIME])
+            #TODO: check if the readback is close to where it shall be
+            self.__checkIfStepHasArriveToDestination(attrStruct,value)
+
+        def __checkIfStepHasArriveToDestination(self,attrStruct,destinationValue):
+            if attrStruct.has_key(READBACK):
+                readbackName = attrStruct[READBACK]
+                readbackStruct = self._getAttrStruct(readbackName)
+                while self.__tooFar(destinationValue, readbackStruct.value):
+                    self.warn_stream("Extending step for %s. It is at %g "\
+                                     "when expecting %g"
+                                    %(attrName,readbackStruct.value,
+                                      destinationValue))
+                    time.sleep(details[STEPTIME]/10)
+
+        def __determineRampStepDestinationValue(self,
+                currentValue,destinationValue,threshold,step,direction):
+            if direction == ASCENDING:
+                if currentValue < threshold:
+                    self.info_stream("Moving %s to the threshold %s"
+                                     %(attrName,threshold))
+                    value = min(threshold,destinationValue)
+                elif destinationValue-currentValue < step:
+                    value = destinationValue
                 else:
-                    threshold = None
-                if currentValue == None:
-                    self.error_stream("Cannot determine where %s is with "\
-                                      "a %s = %s"
-                                      %(attrName,WRITEVALUE,currentValue))
-                    time.sleep(EVENT_THREAD_PERIOD)
-                    return
-                self.info_stream("Moving %s in '%s' direction from %s to %s "\
-                                 "(step %s,threshold = %s)"
-                                 %(attrName,direction,
-                                   currentValue,destinationValue,
-                                   step,threshold))
-                if direction == ASCENDING:
-                    if currentValue < threshold:
-                        self.info_stream("Moving %s to the threshold %s"
-                                         %(attrName,threshold))
-                        value = min(threshold,destinationValue)
-                    elif destinationValue-currentValue < step:
-                        value = destinationValue
-                    else:
-                        value = currentValue+step
-                elif direction == DESCENDING:
-                    if currentValue > threshold:
-                        self.info_stream("Moving %s to the threshold %s"
-                                         %(attrName,threshold))
-                        value = max(threshold,destinationValue)
-                    elif currentValue-destinationValue < step:
-                        value = destinationValue
-                    else:
-                        value = currentValue-step
-                self.__moveToValue(attrName,value)
-                time.sleep(details[STEPTIME])
-                #TODO: check if the readback is close to where it shall be
-                if attrStruck.has_key(READBACK):
-                    readbackName = attrStruck[READBACK]
-                    readbackStruct = self._getAttrStruct(readbackName)
-                    while self.__tooFar(value, readbackStruct.value):
-                        self.warn_stream("Extending step for %s. It is at %g "\
-                                         "when expecting %g"
-                                        %(attrName,readbackStruct.value,value))
-                        time.sleep(details[STEPTIME]/10)
+                    value = currentValue+step
+            elif direction == DESCENDING:
+                if currentValue > threshold:
+                    self.info_stream("Moving %s to the threshold %s"
+                                     %(attrName,threshold))
+                    value = max(threshold,destinationValue)
+                elif currentValue-destinationValue < step:
+                    value = destinationValue
+                else:
+                    value = currentValue-step
+            return value
 
         def __isRampSwitchOk(self,details):
             '''Given the details of a ramp in a particular direction, check if
