@@ -198,7 +198,8 @@ AttrRampeable('HVPS_V_setpoint',
      rampsDescriptor = {ASCENDING:{STEP:0.5,#kV
                                    STEPTIME:1,#s
                                    THRESHOLD:20,#kV
-                                   SWITCH:'HVPS_ONC'}})
+                                   SWITCH:'HVPS_ONC'}},
+     readback='HVPS_V')
 
 AttrBit('LV_Interlock_RC',
         62, 0, 16,

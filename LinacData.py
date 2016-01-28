@@ -1726,7 +1726,8 @@ class LinacData(PyTango.Device_4Impl):
                 except Exception,e:
                     self.warn_stream("On setAttrValue(%s,%s) Exception: %s"
                                      %(attrName,str(attrValue),e))
-            self.__doTraceAttr(attrName, "__setAttrvalue")
+            #self.__doTraceAttr(attrName, "__setAttrvalue")
+            #Don't need to trace each time the attribute is read.
         
         @AttrExc
         def read_attr(self, attr):
@@ -2110,8 +2111,8 @@ class LinacData(PyTango.Device_4Impl):
                 return #raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             write_value = self.prepare_write(attr)
-            self.__doTraceAttr(name, "write_attr_bit")
             self.doWriteAttrBit(name,write_value)
+            self.__doTraceAttr(name, "write_attr_bit")
 
         def doWriteAttrBit(self,name,write_value):
             attrStruct = self._getAttrStruct(name)
@@ -2596,16 +2597,19 @@ class LinacData(PyTango.Device_4Impl):
             self.__moveToValue(attrName,value)
             time.sleep(details[STEPTIME])
             #TODO: check if the readback is close to where it shall be
-            self.__checkIfStepHasArriveToDestination(attrStruct,value)
+            self.__checkIfStepHasArriveToDestination(attrName,attrStruct,
+                                                     value,details)
 
-        def __checkIfStepHasArriveToDestination(self,attrStruct,destinationValue):
+        def __checkIfStepHasArriveToDestination(self,attrName,attrStruct,
+                                                destinationValue,details):
             if attrStruct.has_key(READBACK):
                 readbackName = attrStruct[READBACK]
                 readbackStruct = self._getAttrStruct(readbackName)
-                while self.__tooFar(destinationValue, readbackStruct.value):
+                while self.__tooFar(destinationValue,
+                                    readbackStruct['read_value']):
                     self.warn_stream("Extending step for %s. It is at %g "\
                                      "when expecting %g"
-                                    %(attrName,readbackStruct.value,
+                                    %(attrName,readbackStruct['read_value'],
                                       destinationValue))
                     time.sleep(details[STEPTIME]/10)
 
