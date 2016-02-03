@@ -860,6 +860,8 @@ class AttrList(object):
                 self.impl.warn_stream("Cannot recover a memorised value for "\
                                       "%s: %s"%(attrName,e))
                 self.impl._internalAttrs[attrName][READVALUE] = defaultValue
+                if isWritable:
+                    self.impl._internalAttrs[attrName][WRITEVALUE] = None
         else:
             self.impl._internalAttrs[attrName][READVALUE] = defaultValue
             if isWritable:
@@ -2621,6 +2623,7 @@ class LinacData(PyTango.Device_4Impl):
                                     %(attrName,readbackStruct['read_value'],
                                       destinationValue))
                     time.sleep(details[STEPTIME]/10)
+                    rampDirection,rampDetails = self.__getRampStruct(attrName)
                     if not self.__isRampSwitchOk(rampDetails):
                         self.__pauseRamping(attrName,rampDirection,rampDetails)
 
@@ -2675,7 +2678,7 @@ class LinacData(PyTango.Device_4Impl):
 #                time.sleep(details[STEPTIME])
 #            self.info_stream("Resuming %s ramp from the threshold"%(attrName))
 
-        def __getRampThreshold(self,attrname):
+        def __getRampThreshold(self,attrName):
             '''Get the value stored as ramp threshold, if this information
                is not available return a 0
             '''
@@ -2804,7 +2807,7 @@ class LinacData(PyTango.Device_4Impl):
             self.info_stream("Backup write_value of %s (%g)"
                              %(attrName,rampBackup))
             rampFrom,rampTo = self.__getSwitchInteval(attrName)
-            self.info_stream("%s: Switch interval (%s,%s)"
+            self.debug_stream("%s: Switch interval (%s,%s)"
                              %(attrName,rampFrom,rampTo))
             if rampFrom != None and rampTo == None:
                 #start from where it say with end where it is
@@ -2832,12 +2835,21 @@ class LinacData(PyTango.Device_4Impl):
             if transition == WHENON:
                 time.sleep(SWITCHONSLEEP)
                 currentState = attrStruct[READVALUE]
+                #FIXME: this is absolutelly horrible
+                logLessOften = 10
+                i = 0
                 while not currentState == destinationState:
                     self._applyWriteBit(attrName,destinationState)
-                    self.info_stream("Waiting to switch ON (read:%s!=%s:dest)"
-                                     %(currentState,destinationState))
+                    if i%logLessOften == 0:
+                        self.info_stream("Waiting to switch ON "\
+                                         "(read:%s!=%s:dest)"
+                                         %(currentState,destinationState))
+                    i+=1
                     time.sleep(EVENT_THREAD_PERIOD)
                     currentState = attrStruct[READVALUE]
+                if i > 0:
+                    self.info_stream("Reached a switch ON (read:%s!=%s:dest)"
+                                     %(currentState,destinationState))
                 #after switch on a little time is needed overcurrent interlocks
                 time.sleep(SWITCHONSLEEP)
             #Now the value can be applyed (and ramp if it has it)
@@ -2885,11 +2897,11 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 to_ = None
             if switchStruct[transition].has_key(FROM):
-                self.info_stream("%s: switchStruct[%s] = %s"
+                self.debug_stream("%s: switchStruct[%s] = %s"
                                  %(attrName,transition,switchStruct[transition]))
                 from_ = switchStruct[transition][FROM]
                 if from_ != None and type(from_) == str:
-                    self.info_stream("__getSwitchInteval from_ = '%s' (%s)"
+                    self.debug_stream("__getSwitchInteval from_ = '%s' (%s)"
                                      %(from_,type(from_)))
                     from_ = self._getAttrStruct(from_)[READVALUE]
             else:
