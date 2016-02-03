@@ -739,8 +739,10 @@ AttrBit('GUN_HV_ONC',#HVS_OC
         formula={'read':'VALUE and '\
                  'self._plcAttrs[\'Gun_HV_ST\'][\'read_value\'] == 4'},
         switchDescriptor={ATTR2RAMP:'GUN_HV_V_setpoint',
-                          WHENON:{FROM:0},#to where the WRITEVALUE say
-                          WHENOFF:{TO:0}, #from where the WRITEVALUE say
+                          WHENON:
+                            {FROM:'GUN_HV_V_setpoint_Descending_Threshold'},
+                                  #from where the WRITEVALUE say
+                          #WHENOFF:{TO:0}, #to where the WRITEVALUE say
                           AUTOSTOP:'GUN_HV_I_'+AUTOSTOP,
                                      #to know where it has the autostop feature
                           },

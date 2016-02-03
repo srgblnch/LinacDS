@@ -1592,7 +1592,7 @@ class LinacData(PyTango.Device_4Impl):
                   made also with additive notation using a multiplication 
                   factor.
             '''
-            if ( -CLOSE_ZERO < setpoint < CLOSE_ZERO):
+            if ( -CLOSE_ZERO < setpoint < CLOSE_ZERO) or readback == 0:
                 diff = abs(setpoint-readback)
                 if (diff > CLOSE_ZERO):
                     return True
@@ -2621,6 +2621,8 @@ class LinacData(PyTango.Device_4Impl):
                                     %(attrName,readbackStruct['read_value'],
                                       destinationValue))
                     time.sleep(details[STEPTIME]/10)
+                    if not self.__isRampSwitchOk(rampDetails):
+                        self.__pauseRamping(attrName,rampDirection,rampDetails)
 
         def __determineRampStepDestinationValue(self,attrName,
                 currentValue,destinationValue,threshold,step,direction):
@@ -2663,10 +2665,7 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(attrName)
             currentValue = attrStruct[WRITEVALUE]
             destinationValue = attrStruct[RAMPDEST]
-            if details.has_key(THRESHOLD):
-                threshold = details[THRESHOLD]
-            else:
-                threshold = 0
+            threshold = self.__getRampThreshold(attrName)
             if self.__isInRampingArea(direction,currentValue,threshold):
                 self.info_stream("Pausing %s to the threshold"%(attrName))
                 self.__moveToValue(attrName,threshold)
@@ -2675,6 +2674,18 @@ class LinacData(PyTango.Device_4Impl):
 #                self.debug_stream("Waiting to resume %s ramp"%(attrName))
 #                time.sleep(details[STEPTIME])
 #            self.info_stream("Resuming %s ramp from the threshold"%(attrName))
+
+        def __getRampThreshold(self,attrname):
+            '''Get the value stored as ramp threshold, if this information
+               is not available return a 0
+            '''
+            rampDirection,rampDetails = self.__getRampStruct(attrName)
+            if rampDetails != None and rampDetails.has_key(THRESHOLD):
+                return rampDetails[THRESHOLD]
+            else:
+                self.warn_stream("%s: No threshold in details: %s"
+                                 %(attrName,details))
+                return 0.0
 
         def __isInRampingArea(self,direction,currentValue,threshold):
             '''Given a direction check if the current value is in the region
@@ -2793,6 +2804,8 @@ class LinacData(PyTango.Device_4Impl):
             self.info_stream("Backup write_value of %s (%g)"
                              %(attrName,rampBackup))
             rampFrom,rampTo = self.__getSwitchInteval(attrName)
+            self.info_stream("%s: Switch interval (%s,%s)"
+                             %(attrName,rampFrom,rampTo))
             if rampFrom != None and rampTo == None:
                 #start from where it say with end where it is
                 rampTo = rampBackup
@@ -2803,11 +2816,11 @@ class LinacData(PyTango.Device_4Impl):
                 #nothing defined, then by default act depending on the 
                 #transition.
                 if transition == WHENON:
-                    rampFrom = 0
+                    rampFrom = self.__getRampThreshold(attrName)
                     rampTo = rampBackup
                 elif transition == WHENOFF:
                     rampFrom = rampBackup
-                    rampTo = 0
+                    rampTo = self.__getRampThreshold(attrName)
             self.info_stream("Start a '%s' transition for %s with a ramp of "\
                              "%s from %s to %s"
                              %(transition,attrName,rampAttr,rampFrom,rampTo))
@@ -2872,6 +2885,8 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 to_ = None
             if switchStruct[transition].has_key(FROM):
+                self.info_stream("%s: switchStruct[%s] = %s"
+                                 %(attrName,transition,switchStruct[transition]))
                 from_ = switchStruct[transition][FROM]
                 if from_ != None and type(from_) == str:
                     self.info_stream("__getSwitchInteval from_ = '%s' (%s)"
