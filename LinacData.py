@@ -4370,7 +4370,7 @@ class LinacData(PyTango.Device_4Impl):
                     self.last_update_time = time.time()
                     self.check_lock()
                     self.plcBasicAttrEvents()
-                    if self.get_state() == PyTango.DevState.WARNING:
+                    if self.get_state() == PyTango.DevState.ALARM:
                         #This warning would be because attributes with 
                         #this quality, don't log because it happens too often.
                         self.set_state(PyTango.DevState.ON,log=False)
