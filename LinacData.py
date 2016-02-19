@@ -266,7 +266,7 @@ class AttrList(object):
 
     def add_Attr(self, name, T, rfun=None, wfun=None, l=None, d=None,
                  min=None, max=None, unit=None,format=None,memorized=False,
-                 xdim=0):
+                 record=None,xdim=0):
         if wfun:
             if xdim == 0:
                 attr = PyTango.Attr(name, T, PyTango.READ_WRITE)
@@ -279,7 +279,8 @@ class AttrList(object):
                 attr = PyTango.Attr(name, T, PyTango.READ)
             else:
                 attr = PyTango.SpectrumAttr(name,T,PyTango.READ,xdim)
-
+        if record:
+            self.impl._traceAttrs.append(name)
         aprop = PyTango.UserDefaultAttrProp()
         if unit is not None: aprop.set_unit(latin1(unit))
         if min is not None: aprop.set_min_value(str(min))
@@ -323,7 +324,7 @@ class AttrList(object):
                        meanings=None,qualities=None,events=None,
                        formula=None,l=None,
                        readback=None,setpoint=None,switch=None,
-                       IamChecker=None,record=None,
+                       IamChecker=None,
                        **kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
            as well as for RW depending on if it's provided a write address.
@@ -401,8 +402,6 @@ class AttrList(object):
                                 setpoint=setpoint,switch=switch,
                                 **kwargs)
         self._prepareEvents(name,events)
-        if record:
-            self.impl._traceAttrs.append(name)
         if not IamChecker == None:
             try:
                 self.impl.read_db.setChecker(read_addr,IamChecker)
@@ -542,7 +541,7 @@ class AttrList(object):
                                         rfun,wfun,**kwargs)
 
     def add_AttrLogic(self,name,logic,l,d,events=None,
-                      operator='and',inverted=False):
+                      operator='and',inverted=False,**kwargs):
         '''Internal type of attribute made to evaluate a logical formula with 
            other attributes owned by the device with a boolean result.
         '''
@@ -554,7 +553,7 @@ class AttrList(object):
         self.impl._internalAttrs[name][LOGIC]=logic
         self.impl._internalAttrs[name][OPERATOR]=operator
         self.impl._internalAttrs[name][INVERTED]=inverted
-        return self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,l)
+        return self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,l,**kwargs)
 
     def add_AttrRampeable(self,name,T,read_addr,write_addr,l,unit,
                           rampsDescriptor,
@@ -2649,13 +2648,13 @@ class LinacData(PyTango.Device_4Impl):
                     value = currentValue-step
             return value
 
-        def __isRampSwitchOk(self,details):
+        def __isRampSwitchOk(self,rampDetails):
             '''Given the details of a ramp in a particular direction, check if
                there has been configured an switch attribute decide if the ramp
                is ok, but if there isn't an attribute it's assumed and ok.
             '''
-            if details.has_key(SWITCH):
-                switchName = details[SWITCH]
+            if rampDetails != None and rampDetails.has_key(SWITCH):
+                switchName = rampDetails[SWITCH]
                 return bool(self.__getAttrReadValue(switchName))
             else:
                 return True
