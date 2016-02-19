@@ -51,7 +51,9 @@ Attr('GUN_Filament_V',
      l='e-gun filament voltage monitor',
      format='%4.1f',min=0,max=10,unit='V',
      events={THRESHOLD:0.01},
-     qualities={WARNING:{ABSOLUTE:{BELOW:0.0}}})
+     qualities={WARNING:{ABSOLUTE:{BELOW:0.0}}},
+     setpoint='GUN_Filament_V_setpoint',
+     switch='GUN_LV_ONC')
 
 #---- R004 @EG_FCM
 Attr('GUN_Filament_I',
@@ -571,7 +573,9 @@ AttrRampeable('GUN_Filament_V_setpoint',
                                  ASCENDING:{STEP:1,#V
                                             STEPTIME:1,#s
                                             THRESHOLD:0,#V
-                                            SWITCH:'GUN_LV_ONC'}})
+                                            SWITCH:'GUN_LV_ONC'}},
+              readback='GUN_Filament_V',
+              switch='GUN_LV_ONC')
 
 #---- R088 W004 @EG_KVS
 Attr('GUN_Kathode_V_setpoint',
@@ -771,7 +775,9 @@ AttrBit('GUN_LV_ONC',
                                                    'ON/OFF with e-Gun HV ON.'},
         switchDescriptor={ATTR2RAMP:'GUN_Filament_V_setpoint',
                           WHENON:{FROM:0},
-                          WHENOFF:{TO:0}}
+                          WHENOFF:{TO:0}},
+        readback='GUN_Filament_V',
+        setpoint='GUN_Filament_V_setpoint',
         )
         #formula['write'] condition: avoid LV on/off when HV is on
         #that is: allow to turn LV off when HV is off => 0 xor 0: 0
