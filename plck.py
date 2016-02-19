@@ -68,14 +68,14 @@ Attr('HVPS_V',
      PyTango.DevFloat,12,#RO
      l='High voltage PS voltage',
      unit='kV',min=0,max=40,format='%4.2f',
-     events={THRESHOLD:0.001},
+     events={THRESHOLD:0.001},record=True,
      #qualities={CHANGING:{'rel':0.1}}
      )
 Attr('HVPS_I',
      PyTango.DevFloat,16,
      l='High voltage PS current',
      unit='mA',min=0,max=150,format='%4.1f',
-     events={THRESHOLD:0.01},
+     events={THRESHOLD:0.01},record=True,
      #qualities={CHANGING:{'rel':0.1}}
      )
 Attr('Peak_I',
@@ -148,7 +148,7 @@ Attr('HVPS_ST',
      d='high voltage PS heating status'+john(HV_J),
      meanings=HV_J,
      qualities=HV_J_QUALITIES,
-     events={})
+     events={},record=True)
 PL_J = {0:'off',
         1:'focusing B1 undercurrent',
         2:'focusing B2 undercurrent',
@@ -165,7 +165,7 @@ Attr('Pulse_ST',
      d='pulse status'+john(PL_J),
      meanings=PL_J,
      qualities=PL_J_QUALITIES,
-     events={})
+     events={},record=True,
 Attr('LV_Time',
      PyTango.DevShort,42,
      l='Voltage slow down time',
@@ -193,7 +193,7 @@ AttrRampeable('HVPS_V_setpoint',
      PyTango.DevFloat,46,0,#RW
      l='High voltage PS voltage setpoint',
      unit='kV',min=0,max=33,format='%4.2f',
-     events={THRESHOLD:0.005},
+     events={THRESHOLD:0.005},record=True,
      qualities={CHANGING:{'rel':0.1}},
      rampsDescriptor = {ASCENDING:{STEP:0.5,#kV
                                    STEPTIME:1,#s
@@ -256,5 +256,5 @@ AttrLogic('hvps_ready',
                  'Pulse_ST':[0,7,8]},
           d='High voltage PS ready',
           l='High voltage PS ready',
-          events={},
+          events={},record=True,
           )
