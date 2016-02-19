@@ -1359,8 +1359,8 @@ class LinacData(PyTango.Device_4Impl):
                     writeValue = attrStruct[WRITEVALUE]
                 else:
                     writeValue = float('NaN')
-                quality = attrStruct[LASTEVENTQUALITY]
-                timestamp = attrStruct[READTIME]
+                quality = "%s"%attrStruct[LASTEVENTQUALITY]
+                timestamp = time.ctime(attrStruct[READTIME])
                 if not self._tracedAttrsHistory.has_key(attrName):
                     self._tracedAttrsHistory[attrName] = []
                 self._tracedAttrsHistory[attrName].append(\
