@@ -165,7 +165,7 @@ Attr('Pulse_ST',
      d='pulse status'+john(PL_J),
      meanings=PL_J,
      qualities=PL_J_QUALITIES,
-     events={},record=True,
+     events={},record=True)
 Attr('LV_Time',
      PyTango.DevShort,42,
      l='Voltage slow down time',
