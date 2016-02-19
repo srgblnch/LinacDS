@@ -174,6 +174,10 @@ class CircularBuffer(object):
         return self._buffer.__repr__()
     def __len__(self):
         return len(self._buffer)
+    def __float__(self):
+        return float(self.value)
+    def __int__(self):
+        return int(self.value)
     
     def append(self,newElement):
         if len(self._buffer) > 0:
@@ -2615,12 +2619,13 @@ class LinacData(PyTango.Device_4Impl):
             if attrStruct.has_key(READBACK):
                 readbackName = attrStruct[READBACK]
                 readbackStruct = self._getAttrStruct(readbackName)
-                while self.__tooFar(destinationValue,
-                                    readbackStruct['read_value']):
+                while self.__tooFar(float(destinationValue),
+                                    float(readbackStruct['read_value'])):
                     self.warn_stream("Extending step for %s. It is at %g "\
                                      "when expecting %g"
-                                    %(attrName,readbackStruct['read_value'],
-                                      destinationValue))
+                                    %(attrName,
+                                      float(readbackStruct['read_value']),
+                                      float(destinationValue)))
                     time.sleep(details[STEPTIME]/10)
                     rampDirection,rampDetails = self.__getRampStruct(attrName)
                     if not self.__isRampSwitchOk(rampDetails):
