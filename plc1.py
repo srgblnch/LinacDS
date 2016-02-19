@@ -613,7 +613,7 @@ Attr('TB_GPA',
      PyTango.DevFloat,104,20,#RW
      l='timer gun pulses attenuation',
      format='%4.1f',min=-40,max=0,unit='dB',
-     events={THRESHOLD:0.01},record=True)
+     events={THRESHOLD:0.005},record=True)
 
 #---- R108 W024 @PHS1_PS
 Attr('PHS1_Phase_setpoint',
