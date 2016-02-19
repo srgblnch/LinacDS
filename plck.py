@@ -231,8 +231,8 @@ AttrBit('HVPS_ONC',
                        'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 9 and '\
                        'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 8',
                  'write':'VALUE and '\
-                       'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 8 and '\
-                       'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 7'
+                       'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] in [8,9] and '\
+                       'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] in [7,8]'
                 },
         switchDescriptor={ATTR2RAMP:'HVPS_V_setpoint',
                           WHENON:{FROM:'HVPS_V_setpoint_Ascending_Threshold'},
