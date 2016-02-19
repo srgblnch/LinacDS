@@ -1311,16 +1311,19 @@ class LinacData(PyTango.Device_4Impl):
 
         ####
         #---- state/status manager methods
-        def set_state(self, newState):
+        def set_state(self, newState, log=True):
             '''Overload of the superclass method to add event 
                emission functionality.
             '''
             if self.get_state() != newState:
-                self.warn_stream("Change state from %s to %s"
-                                 %(self.get_state(),newState))
+                if log:
+                    self.warn_stream("Change state from %s to %s"
+                                     %(self.get_state(),newState))
                 PyTango.Device_4Impl.set_state(self, newState)
                 self.push_change_event('State',newState)
                 self.set_status("")
+                #as this changes the state, clean non important 
+                #messages in status
 
         def set_status(self, newLine2status,important=False):
             '''Overload of the superclass method to add the extra feature of
@@ -4367,7 +4370,13 @@ class LinacData(PyTango.Device_4Impl):
                     self.last_update_time = time.time()
                     self.check_lock()
                     self.plcBasicAttrEvents()
+                    if self.get_state() == PyTango.DevState.WARNING:
+                        #This warning would be because attributes with 
+                        #this quality, don't log because it happens too often.
+                        self.set_state(PyTango.DevState.ON,log=False)
                     if not self.get_state() in [PyTango.DevState.ON]:
+                        #Recover a ON state when it is responding and the 
+                        #state was showing something different.
                         self.set_state(PyTango.DevState.ON)
                 else:
                     self.set_state(PyTango.DevState.FAULT)
