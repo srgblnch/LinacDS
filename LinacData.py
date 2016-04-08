@@ -1376,10 +1376,10 @@ class LinacData(PyTango.Device_4Impl):
                     self._tracedAttrsHistory[attrName] = []
                 self._tracedAttrsHistory[attrName].append(\
                     [tag,readValue,writeValue,quality,timestamp])
-                self.info_stream("Traceing %s with %s tag: "\
-                                 "read = %s, write = %s (%s,%s)"
-                                 %(attrName,tag,readValue,writeValue,
-                                   quality,timestamp))
+                self.debug_stream("Traceing %s with %s tag: "\
+                                  "read = %s, write = %s (%s,%s)"
+                                  %(attrName,tag,readValue,writeValue,
+                                    quality,timestamp))
                 while len(self._tracedAttrsHistory[attrName]) > \
                 self._historySize:
                     self._tracedAttrsHistory[attrName].pop(0)
@@ -2787,108 +2787,110 @@ class LinacData(PyTango.Device_4Impl):
             if transition == None or switchStruct == None:
                 self.warn_stream("No transition expected for %s from %s to %s"
                                  %(attrName,currentState,destinationState))
-                self._applyWriteBit(attrName,destinationState)
-                return
-            #once know there shall be transition, get information about the 
-            #attribute that has to do this transition.
-            rampAttr = switchStruct[ATTR2RAMP]
-            #print("rampAttr: %s"%(rampAttr))
-            rampStruct = self._getAttrStruct(rampAttr)
-            #print("rampStruct: %s"%(rampStruct))
-            #before do the switch procedure, check if there is a ramp to launch
-            currentValue = rampStruct[WRITEVALUE]
-            #print("currentValue: %s"%(currentValue))
-            destinationValue = rampStruct[RAMPDEST]
-            #print("destinationValue: %s"%(destinationValue))
-            rampRequired = False
-            for direction in [ASCENDING,DESCENDING]:
-                if rampStruct[RAMP].has_key(direction):
-                    if rampStruct[RAMP][direction].has_key(THRESHOLD):
-                        threshold = rampStruct[RAMP][direction][THRESHOLD]
-                    else:
-                        threshold = 0
-                    #print("%s threshold: %s"%(direction,threshold))
-                    rampDirectionRequired = self.__isInRampingArea(direction,
-                                                       currentValue,threshold)
-                    self.info_stream("%s for direction %s will %srequire a "\
-                                     "ramp."%(rampAttr,direction,"" \
-                                         if rampDirectionRequired else "not "))
-                    rampRequired |= rampDirectionRequired
-            if not rampRequired:
-                self.info_stream("%s is not in a rampoing area, to switch "\
-                                 "procedure required."%(rampAttr))
-                self._applyWriteBit(attrName,destinationState)
-                return
-            rampBackup = rampStruct[WRITEVALUE]
-            self.info_stream("Backup write_value of %s (%g)"
-                             %(attrName,rampBackup))
-            rampFrom,rampTo = self.__getSwitchInteval(attrName)
-            self.debug_stream("%s: Switch interval (%s,%s)"
-                             %(attrName,rampFrom,rampTo))
-            if rampFrom != None and rampTo == None:
-                #start from where it say with end where it is
-                rampTo = rampBackup
-            elif rampFrom == None and rampTo != None:
-                #start from where it is and end where it say
-                rampFrom = rampBackup
-            elif rampFrom == None and rampTo == None:
-                #nothing defined, then by default act depending on the 
-                #transition.
-                if transition == WHENON:
-                    rampFrom = self.__getRampThreshold(attrName)
-                    rampTo = rampBackup
-                elif transition == WHENOFF:
-                    rampFrom = rampBackup
-                    rampTo = self.__getRampThreshold(attrName)
-            self.info_stream("Start a '%s' transition for %s with a ramp of "\
-                             "%s from %s to %s"
-                             %(transition,attrName,rampAttr,rampFrom,rampTo))
-            #prepare first by placing the origin in the 'from'
-            rampStruct[RAMPDEST] = rampFrom
-            self.__moveWithoutRamp(rampAttr)
-            time.sleep(EVENT_THREAD_PERIOD)
-            #when switch on, it's necessary to power up before start
-            if transition == WHENON:
-                time.sleep(SWITCHONSLEEP)
-                currentState = attrStruct[READVALUE]
-                #FIXME: this is absolutelly horrible
-                logLessOften = 10
-                i = 0
-                while not currentState == destinationState:
-                    self._applyWriteBit(attrName,destinationState)
-                    if i%logLessOften == 0:
-                        self.info_stream("Waiting to switch ON "\
-                                         "(read:%s!=%s:dest)"
-                                         %(currentState,destinationState))
-                    i+=1
-                    time.sleep(EVENT_THREAD_PERIOD)
-                    currentState = attrStruct[READVALUE]
-                if i > 0:
-                    self.info_stream("Reached a switch ON (read:%s!=%s:dest)"
-                                     %(currentState,destinationState))
-                #after switch on a little time is needed overcurrent interlocks
-                time.sleep(SWITCHONSLEEP)
-            #Now the value can be applyed (and ramp if it has it)
-            self._launchRamp(rampAttr,rampTo)
-            while self.__wait4ramp(rampAttr) == True:
-                pass
-            #when switch off, it's necessary to power down after
-            if transition == WHENOFF:
-                currentState = attrStruct[READVALUE]
-                while not currentState == destinationState:
-                    self._applyWriteBit(attrName,destinationState)
-                    self.info_stream("Waiting to switch OFF (read:%s!=%s:dest)"
-                                     %(currentState,destinationState))
-                    time.sleep(EVENT_THREAD_PERIOD)
-                    currentState = attrStruct[READVALUE]
-            self.info_stream("Ending the switch thread for attribute %s."
-                             %(attrName))
-            self._getAttrStruct(attrName)[SWITCHDEST] = None
-            self.info_stream("Setting back the previous sepoint to %s (%g)"
-                             %(rampAttr,rampBackup))
-            time.sleep(EVENT_THREAD_PERIOD)
-            rampStruct[RAMPDEST] = rampBackup
-            self.__moveWithoutRamp(rampAttr)
+            # FIXME: temporally disabled all the ramps
+#                 self._applyWriteBit(attrName,destinationState)
+#                 return
+            self._applyWriteBit(attrName,destinationState)
+#             #once know there shall be transition, get information about the 
+#             #attribute that has to do this transition.
+#             rampAttr = switchStruct[ATTR2RAMP]
+#             #print("rampAttr: %s"%(rampAttr))
+#             rampStruct = self._getAttrStruct(rampAttr)
+#             #print("rampStruct: %s"%(rampStruct))
+#             #before do the switch procedure, check if there is a ramp to launch
+#             currentValue = rampStruct[WRITEVALUE]
+#             #print("currentValue: %s"%(currentValue))
+#             destinationValue = rampStruct[RAMPDEST]
+#             #print("destinationValue: %s"%(destinationValue))
+#             rampRequired = False
+#             for direction in [ASCENDING,DESCENDING]:
+#                 if rampStruct[RAMP].has_key(direction):
+#                     if rampStruct[RAMP][direction].has_key(THRESHOLD):
+#                         threshold = rampStruct[RAMP][direction][THRESHOLD]
+#                     else:
+#                         threshold = 0
+#                     #print("%s threshold: %s"%(direction,threshold))
+#                     rampDirectionRequired = self.__isInRampingArea(direction,
+#                                                        currentValue,threshold)
+#                     self.info_stream("%s for direction %s will %srequire a "\
+#                                      "ramp."%(rampAttr,direction,"" \
+#                                          if rampDirectionRequired else "not "))
+#                     rampRequired |= rampDirectionRequired
+#             if not rampRequired:
+#                 self.info_stream("%s is not in a rampoing area, to switch "\
+#                                  "procedure required."%(rampAttr))
+#                 self._applyWriteBit(attrName,destinationState)
+#                 return
+#             rampBackup = rampStruct[WRITEVALUE]
+#             self.info_stream("Backup write_value of %s (%g)"
+#                              %(attrName,rampBackup))
+#             rampFrom,rampTo = self.__getSwitchInteval(attrName)
+#             self.debug_stream("%s: Switch interval (%s,%s)"
+#                              %(attrName,rampFrom,rampTo))
+#             if rampFrom != None and rampTo == None:
+#                 #start from where it say with end where it is
+#                 rampTo = rampBackup
+#             elif rampFrom == None and rampTo != None:
+#                 #start from where it is and end where it say
+#                 rampFrom = rampBackup
+#             elif rampFrom == None and rampTo == None:
+#                 #nothing defined, then by default act depending on the 
+#                 #transition.
+#                 if transition == WHENON:
+#                     rampFrom = self.__getRampThreshold(attrName)
+#                     rampTo = rampBackup
+#                 elif transition == WHENOFF:
+#                     rampFrom = rampBackup
+#                     rampTo = self.__getRampThreshold(attrName)
+#             self.info_stream("Start a '%s' transition for %s with a ramp of "\
+#                              "%s from %s to %s"
+#                              %(transition,attrName,rampAttr,rampFrom,rampTo))
+#             #prepare first by placing the origin in the 'from'
+#             rampStruct[RAMPDEST] = rampFrom
+#             self.__moveWithoutRamp(rampAttr)
+#             time.sleep(EVENT_THREAD_PERIOD)
+#             #when switch on, it's necessary to power up before start
+#             if transition == WHENON:
+#                 time.sleep(SWITCHONSLEEP)
+#                 currentState = attrStruct[READVALUE]
+#                 #FIXME: this is absolutelly horrible
+#                 logLessOften = 10
+#                 i = 0
+#                 while not currentState == destinationState:
+#                     self._applyWriteBit(attrName,destinationState)
+#                     if i%logLessOften == 0:
+#                         self.info_stream("Waiting to switch ON "\
+#                                          "(read:%s!=%s:dest)"
+#                                          %(currentState,destinationState))
+#                     i+=1
+#                     time.sleep(EVENT_THREAD_PERIOD)
+#                     currentState = attrStruct[READVALUE]
+#                 if i > 0:
+#                     self.info_stream("Reached a switch ON (read:%s!=%s:dest)"
+#                                      %(currentState,destinationState))
+#                 #after switch on a little time is needed overcurrent interlocks
+#                 time.sleep(SWITCHONSLEEP)
+#             #Now the value can be applyed (and ramp if it has it)
+#             self._launchRamp(rampAttr,rampTo)
+#             while self.__wait4ramp(rampAttr) == True:
+#                 pass
+#             #when switch off, it's necessary to power down after
+#             if transition == WHENOFF:
+#                 currentState = attrStruct[READVALUE]
+#                 while not currentState == destinationState:
+#                     self._applyWriteBit(attrName,destinationState)
+#                     self.info_stream("Waiting to switch OFF (read:%s!=%s:dest)"
+#                                      %(currentState,destinationState))
+#                     time.sleep(EVENT_THREAD_PERIOD)
+#                     currentState = attrStruct[READVALUE]
+#             self.info_stream("Ending the switch thread for attribute %s."
+#                              %(attrName))
+#             self._getAttrStruct(attrName)[SWITCHDEST] = None
+#             self.info_stream("Setting back the previous sepoint to %s (%g)"
+#                              %(rampAttr,rampBackup))
+#             time.sleep(EVENT_THREAD_PERIOD)
+#             rampStruct[RAMPDEST] = rampBackup
+#             self.__moveWithoutRamp(rampAttr)
             
 
         def __getSwitchStruct(self,attrName):
