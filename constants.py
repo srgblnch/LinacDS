@@ -17,13 +17,14 @@
 
 MAJOR_VERSION = 2
 MINOR_VERSION = 42
-BUILD_VERSION = 0
+BUILD_VERSION = 1
 
 #---- attributes keys
 READADDR = 'read_addr'
 READBIT = 'read_bit'
 READVALUE = 'read_value'
 READTIME = 'read_t'
+READTIMESTR = 'read_t_str'
 WRITEADDR = 'write_addr'
 WRITEBIT = 'write_bit'
 WRITEVALUE = 'write_value'
@@ -57,6 +58,8 @@ ABOVE = 'Above'
 BELOW = 'Below'
 UNDER = 'Under'
 MEANINGS = 'meanings'
+EVENTTIME = 'event_t'
+EVENTTIMESTR = 'event_t_str'
 
 #---- periods
 EVENT_THREAD_PERIOD = 0.320#s

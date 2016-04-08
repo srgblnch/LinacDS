@@ -764,7 +764,9 @@ class AttrList(object):
             return getattr(self.impl,"%s_attr_bit"%(operation))
         elif operation == 'write' and rampeable:
             #no sense with read operation
-            return getattr(self.impl,"write_attr_with_ramp")
+            # FIXME: temporally disabled all the ramps
+            #return getattr(self.impl,"write_attr_with_ramp")
+            return getattr(self.impl,"write_attr")
         elif isGroup:
             return getattr(self.impl,'%s_attrGrpBit'%(operation))
         elif internal:
@@ -878,6 +880,7 @@ class AttrList(object):
             attrStruct = self.impl._getAttrStruct(attrName)
             attrStruct[EVENTS] = eventConfig
             attrStruct[LASTEVENTQUALITY] = PyTango.AttrQuality.ATTR_VALID
+            attrStruct[EVENTTIME] = None
             
     def _prepareAttrWithMeaning(self,attrName,attrType,meanings,qualities,
                                  rfun,wfun,historyBuffer=None,**kwargs):
@@ -1407,6 +1410,9 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct.has_key(LASTEVENTQUALITY) and \
             not quality == attrStruct[LASTEVENTQUALITY]:
                 attrStruct[LASTEVENTQUALITY] = quality
+            if attrStruct != None and EVENTTIME in attrStruct:
+                attrStruct[EVENTTIME] = timestamp
+                attrStruct[EVENTTIMESTR] = time.ctime(timestamp)
         
         def fireEventsList(self,eventsAttrList,timestamp=None,log=False):
             '''Given a set of pair [attr,value] (with an optional third element
@@ -1497,6 +1503,7 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 attrStruct[READVALUE] = attrValue
             attrStruct[READTIME] = timestamp
+            attrStruct[READTIMESTR] = time.ctime(timestamp)
 
         def __filterAutoStopCollection(self,attrName):
             '''This method is made to manage the collection of data on the 
