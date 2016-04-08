@@ -630,34 +630,36 @@ class AttrList(object):
             rampeableAttr = self.add_Attr(name,tango_T,rfun,wfun,l,**kwargs)
         #until here, it's not different than another attribute
         #Next is specific for rampeable attributes
-        self.impl._plcAttrs[name][RAMP] = rampsDescriptor
-        self.impl._plcAttrs[name][RAMPDEST] = None
-        for rampDirection in rampsDescriptor.keys():
-            if not rampDirection in [ASCENDING,DESCENDING]:
-                self.impl.error_stream("In attribute %s, the ramp direction "\
-                                       "%s has been not recognised."
-                                       %(name,rampDirection))
-            else:
-                rampAttributes = []
-                newAttr = self._buildInternalAttr4RampEnable(name,name)
-                if newAttr != None:
-                    rampAttributes.append(newAttr)
-                for subAttrName in rampsDescriptor[rampDirection].keys():
-                    if subAttrName in [STEP,STEPTIME,THRESHOLD]:
-                        if subAttrName == STEPTIME:
-                            subAttrUnit = 'seconds'
-                        else:
-                            subAttrUnit = unit
-                        defaultValue = rampsDescriptor[rampDirection]\
-                                                                  [subAttrName]
-                        newAttr = self._buildInternalAttr4Ramping(\
-                                                        name+'_'+rampDirection,
-                                                     subAttrName,
-                                                     name+" "+rampDirection,
-                                                     subAttrUnit,
-                                                     defaultValue)
-                        if newAttr != None:
-                            rampAttributes.append(newAttr)
+        rampAttributes = []
+        # FIXME: temporally disabled all the ramps
+#         self.impl._plcAttrs[name][RAMP] = rampsDescriptor
+#         self.impl._plcAttrs[name][RAMPDEST] = None
+#         for rampDirection in rampsDescriptor.keys():
+#             if not rampDirection in [ASCENDING,DESCENDING]:
+#                 self.impl.error_stream("In attribute %s, the ramp direction "\
+#                                        "%s has been not recognised."
+#                                        %(name,rampDirection))
+#             else:
+#                 rampAttributes = []
+#                 newAttr = self._buildInternalAttr4RampEnable(name,name)
+#                 if newAttr != None:
+#                     rampAttributes.append(newAttr)
+#                 for subAttrName in rampsDescriptor[rampDirection].keys():
+#                     if subAttrName in [STEP,STEPTIME,THRESHOLD]:
+#                         if subAttrName == STEPTIME:
+#                             subAttrUnit = 'seconds'
+#                         else:
+#                             subAttrUnit = unit
+#                         defaultValue = rampsDescriptor[rampDirection]\
+#                                                                   [subAttrName]
+#                         newAttr = self._buildInternalAttr4Ramping(\
+#                                                         name+'_'+rampDirection,
+#                                                      subAttrName,
+#                                                      name+" "+rampDirection,
+#                                                      subAttrUnit,
+#                                                      defaultValue)
+#                         if newAttr != None:
+#                             rampAttributes.append(newAttr)
         rampAttributes.insert(0,rampeableAttr)
         return tuple(rampAttributes)
 
