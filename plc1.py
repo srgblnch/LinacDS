@@ -849,7 +849,8 @@ AttrLogic('ka2_ic',
           )
 
 AttrLogic('any_interlock',
-          logic={'KA_ENB': [True],
+          logic={'IU_RDY': [True],
+                 'KA_ENB': [True],
                  'KA2_IS': [True],
                  'MG_IS': [True],
                  'KA1_IS': [True],
