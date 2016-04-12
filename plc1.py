@@ -78,7 +78,7 @@ Attr('GUN_Kathode_T',
      format='%4.1f',min=0,max=50,unit='⁰C',
      events={THRESHOLD:0.01},
      qualities={WARNING:{ABSOLUTE:{BELOW:25.0,
-                                  ABOVE:45.0}}})
+                                   ABOVE:41.0}}})
 
 #---- R016 @AI_04: free
 #---- R020 @AI_05: free
@@ -845,5 +845,24 @@ AttrLogic('ka2_ic',
           logic={'SF6_P2_ST':[1],'W3_UF':[1],'RL3_UF':[1]},
           d='Klystron 2 interlock',
           l='Klystron 2 interlock',
+          events={},
+          )
+
+AttrLogic('any_interlock',
+          logic={'KA_ENB': [True],
+                 'KA2_IS': [True],
+                 'MG_IS': [True],
+                 'KA1_IS': [True],
+                 'UT_IS': [True],
+                 'AC_IS': [True],
+                 'TL_VOK': [True],
+                 'VC_OK': [True],
+                 'EG_ENB': [True],
+                 'GM_DI': [True],
+                 'KA2_OK': [True],
+                 'KA1_OK': [True],
+                 'LI_OK': [True]},
+          d='any interlock is set',
+          l='any interlock is set',
           events={},
           )
