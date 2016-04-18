@@ -848,22 +848,22 @@ AttrLogic('ka2_ic',
           events={},
           )
 
-AttrLogic('any_interlock',
-          logic={'IU_RDY': [True],
-                 'KA_ENB': [True],
-                 'ka2_ic': [True],
-                 'MG_IS': [True],
-                 'ka1_ic': [True],
-                 'UT_IS': [True],
-                 #'AC_IS': [True],  # It's in PLC2
-                 'TL_VOK': [True],
-                 #'VC_OK': [True],  # It's in PLC2
-                 'EG_ENB': [True],
-                 'GM_DI': [True],
-                 'KA2_OK': [True],
-                 'KA1_OK': [True],
-                 'LI_OK': [True]},
-          d='any interlock is set',
-          l='any interlock is set',
-          events={},
-          )
+# AttrLogic('any_interlock',
+#           logic={'IU_RDY': [True],
+#                  'KA_ENB': [True],
+#                  'ka2_ic': [True],
+#                  'MG_IS': [True],
+#                  'ka1_ic': [True],
+#                  'UT_IS': [True],
+#                  #'AC_IS': [True],  # It's in PLC2
+#                  'TL_VOK': [True],
+#                  #'VC_OK': [True],  # It's in PLC2
+#                  'EG_ENB': [True],
+#                  'GM_DI': [True],
+#                  'KA2_OK': [True],
+#                  'KA1_OK': [True],
+#                  'LI_OK': [True]},
+#           d='any interlock is set',
+#           l='any interlock is set',
+#           events={},
+#           )
