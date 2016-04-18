@@ -982,53 +982,53 @@ class AttrList(object):
                                                                     autoStop),)
         return toReturn
 
-    #----# Builders for subattributes
-    def _buildInternalAttr4Ramping(self,baseName,suffix,baseLabel,unit,
-                                   defaultValue):
-        name = baseName+'_'+suffix
-        try:
-            rfun = self.__getAttrMethod('read',name,internal=True)
-            wfun = self.__getAttrMethod('write',name,internal=True)
-            self._prepareInternalAttribute(name,PyTango.DevDouble,
-                                            isWritable=True,memorized=True,
-                                            defaultValue=defaultValue)
-            if suffix in [STEP,STEPTIME]:
-                newInternalAttr = self.add_Attr(name,PyTango.DevDouble,
-                                                rfun,wfun,
-                                                l=baseLabel+' '+suffix,
-                                                min=0,#strictly positive #?max=1,
-                                                unit=unit,
-                                                format='%4.1f',
-                                                memorized=True)
-            elif suffix in [THRESHOLD]:
-                newInternalAttr = self.add_Attr(name,PyTango.DevDouble,
-                                                rfun,wfun,
-                                                l=baseLabel+' '+suffix,
-                                                unit=unit,
-                                                format='%4.1f',
-                                                memorized=True)
-            self.__traceAttrAddr(name,'DevDouble',internal=True)
-            return newInternalAttr
-        except Exception,e:
-            self.impl.error_stream("%30s\tException:%s"%(name,e))
-            return None
-        
-    def _buildInternalAttr4RampEnable(self,baseName,baseLabel):
-        name = baseName+'_'+RAMPENABLE
-        try:
-            rfun = self.__getAttrMethod('read',name,internal=True)
-            wfun = self.__getAttrMethod('write',name,internal=True)
-            self._prepareInternalAttribute(name,PyTango.DevBoolean,
-                                            memorized=True,isWritable=True,
-                                            defaultValue=True)
-            rampEnable = self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,
-                                       l=baseLabel+' ramp enable',
-                                       memorized=True)
-            self.__traceAttrAddr(name,'DevBoolean',internal=True)
-            return rampEnable
-        except Exception,e:
-            self.impl.error_stream("%30s\tException:%s"%(name,e))
-            return None
+#     #----# Builders for subattributes
+#     def _buildInternalAttr4Ramping(self,baseName,suffix,baseLabel,unit,
+#                                    defaultValue):
+#         name = baseName+'_'+suffix
+#         try:
+#             rfun = self.__getAttrMethod('read',name,internal=True)
+#             wfun = self.__getAttrMethod('write',name,internal=True)
+#             self._prepareInternalAttribute(name,PyTango.DevDouble,
+#                                             isWritable=True,memorized=True,
+#                                             defaultValue=defaultValue)
+#             if suffix in [STEP,STEPTIME]:
+#                 newInternalAttr = self.add_Attr(name,PyTango.DevDouble,
+#                                                 rfun,wfun,
+#                                                 l=baseLabel+' '+suffix,
+#                                                 min=0,#strictly positive #?max=1,
+#                                                 unit=unit,
+#                                                 format='%4.1f',
+#                                                 memorized=True)
+#             elif suffix in [THRESHOLD]:
+#                 newInternalAttr = self.add_Attr(name,PyTango.DevDouble,
+#                                                 rfun,wfun,
+#                                                 l=baseLabel+' '+suffix,
+#                                                 unit=unit,
+#                                                 format='%4.1f',
+#                                                 memorized=True)
+#             self.__traceAttrAddr(name,'DevDouble',internal=True)
+#             return newInternalAttr
+#         except Exception,e:
+#             self.impl.error_stream("%30s\tException:%s"%(name,e))
+#             return None
+#         
+#     def _buildInternalAttr4RampEnable(self,baseName,baseLabel):
+#         name = baseName+'_'+RAMPENABLE
+#         try:
+#             rfun = self.__getAttrMethod('read',name,internal=True)
+#             wfun = self.__getAttrMethod('write',name,internal=True)
+#             self._prepareInternalAttribute(name,PyTango.DevBoolean,
+#                                             memorized=True,isWritable=True,
+#                                             defaultValue=True)
+#             rampEnable = self.add_Attr(name,PyTango.DevBoolean,rfun,wfun,
+#                                        l=baseLabel+' ramp enable',
+#                                        memorized=True)
+#             self.__traceAttrAddr(name,'DevBoolean',internal=True)
+#             return rampEnable
+#         except Exception,e:
+#             self.impl.error_stream("%30s\tException:%s"%(name,e))
+#             return None
     
     def _buildAutoStopSpectrum(self,baseName,baseLabel,autoStopDesc):
         attrName = "%s_%s"%(baseName,AUTOSTOP)
@@ -2164,20 +2164,20 @@ class LinacData(PyTango.Device_4Impl):
                                                    PyTango.ErrSeverity.WARN)
                 else:
                     write_value = formula_value
-            if attrStruct.has_key(SWITCHDESCRIPTOR):
-                #For the switch with autostop, when transition to power on, is
-                #necessary to clean the old collected information or it will
-                #produce an influence on the conditions.
-                descriptor = attrStruct[SWITCHDESCRIPTOR]
-                if self.__stateTransitionToOn(write_value,descriptor) and \
-                                                  descriptor.has_key(AUTOSTOP):
-                    self.__cleanAutoStopCollection(\
-                                        attrStruct[SWITCHDESCRIPTOR][AUTOSTOP])
-                #Depending to the on or off transition keys, this will launch 
-                #a thread who will modify the ATTR2RAMP, and when that 
-                #finishes the write will be set.
-                self.info_stream("attribute %s has receive a write %s"
-                                 %(name,write_value))
+#             if attrStruct.has_key(SWITCHDESCRIPTOR):
+#                 #For the switch with autostop, when transition to power on, is
+#                 #necessary to clean the old collected information or it will
+#                 #produce an influence on the conditions.
+#                 descriptor = attrStruct[SWITCHDESCRIPTOR]
+#                 if self.__stateTransitionToOn(write_value,descriptor) and \
+#                                                   descriptor.has_key(AUTOSTOP):
+#                     self.__cleanAutoStopCollection(\
+#                                         attrStruct[SWITCHDESCRIPTOR][AUTOSTOP])
+#                 #Depending to the on or off transition keys, this will launch 
+#                 #a thread who will modify the ATTR2RAMP, and when that 
+#                 #finishes the write will be set.
+#                 self.info_stream("attribute %s has receive a write %s"
+#                                  %(name,write_value))
 #                 if self.__stateTransitionNeeded(write_value,name):
 #                                                 #attrStruct[SWITCHDESCRIPTOR]):
 #                     self.info_stream("doing state transition for %s"%(name))
@@ -2207,29 +2207,29 @@ class LinacData(PyTango.Device_4Impl):
 #                             "%s; write %s; now %s"
 #                             %(name,write_value,write_addr,write_bit,
 #                               bin(rbyte),bin(toWrite),bin(reRead)))
-
-        def __stateTransitionNeeded(self,value,attrName):#descriptor):
-            descriptor = self._getAttrStruct(attrName)[SWITCHDESCRIPTOR]
-            if descriptor.has_key(ATTR2RAMP):
-                enableAttr = descriptor[ATTR2RAMP]+'_rampEnable'
-                enableStruct = self._getAttrStruct(enableAttr)
-                if enableStruct != None and enableStruct[READVALUE] == False:
-                    return False
-                    #if ramp is disabled, not procedure to do
-            if self.__stateTransitionToOn(value,descriptor):
-                return True
-            elif self.__stateTransitionToOff(value,descriptor):
-                return True
-            return False
-        
-        def __stateTransitionToOn(self,value,descriptor):
-            if value == True and descriptor.has_key(WHENON):
-                return True
-            return False
-        def __stateTransitionToOff(self,value,descriptor):
-            if value == False and descriptor.has_key(WHENOFF):
-                return True
-            return False
+# 
+#         def __stateTransitionNeeded(self,value,attrName):#descriptor):
+#             descriptor = self._getAttrStruct(attrName)[SWITCHDESCRIPTOR]
+#             if descriptor.has_key(ATTR2RAMP):
+#                 enableAttr = descriptor[ATTR2RAMP]+'_rampEnable'
+#                 enableStruct = self._getAttrStruct(enableAttr)
+#                 if enableStruct != None and enableStruct[READVALUE] == False:
+#                     return False
+#                     #if ramp is disabled, not procedure to do
+#             if self.__stateTransitionToOn(value,descriptor):
+#                 return True
+#             elif self.__stateTransitionToOff(value,descriptor):
+#                 return True
+#             return False
+#         
+#         def __stateTransitionToOn(self,value,descriptor):
+#             if value == True and descriptor.has_key(WHENON):
+#                 return True
+#             return False
+#         def __stateTransitionToOff(self,value,descriptor):
+#             if value == False and descriptor.has_key(WHENOFF):
+#                 return True
+#             return False
 
         def __cleanAutoStopCollection(self,attrName):
             '''This will clean the buffer with autostop condition collected 
