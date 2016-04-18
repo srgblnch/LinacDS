@@ -17,7 +17,7 @@
 
 MAJOR_VERSION = 2
 MINOR_VERSION = 43
-BUILD_VERSION = 2
+BUILD_VERSION = 3
 
 #---- attributes keys
 READADDR = 'read_addr'

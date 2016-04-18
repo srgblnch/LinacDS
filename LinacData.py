@@ -2178,12 +2178,12 @@ class LinacData(PyTango.Device_4Impl):
                 #finishes the write will be set.
                 self.info_stream("attribute %s has receive a write %s"
                                  %(name,write_value))
-                if self.__stateTransitionNeeded(write_value,name):
-                                                #attrStruct[SWITCHDESCRIPTOR]):
-                    self.info_stream("doing state transition for %s"%(name))
-                    attrStruct[SWITCHDEST] = write_value
-                    self.createSwitchStateThread(name)
-                    return
+#                 if self.__stateTransitionNeeded(write_value,name):
+#                                                 #attrStruct[SWITCHDESCRIPTOR]):
+#                     self.info_stream("doing state transition for %s"%(name))
+#                     attrStruct[SWITCHDEST] = write_value
+#                     self.createSwitchStateThread(name)
+#                     return
                 #The returns are necessary to avoid the write that is set later
                 #on this method. But in the final else case it has to continue.
             self.__writeBit(name,read_addr,write_addr,write_bit, write_value)
