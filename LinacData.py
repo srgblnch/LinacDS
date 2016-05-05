@@ -4062,7 +4062,7 @@ class LinacData(PyTango.Device_4Impl):
             attr2Reemit = 0
             for attrName in attributeList:
                 self.checkResetAttr(attrName)
-                self.checkRampAttr(attrName)
+                #self.checkRampAttr(attrName)
                 #First check if for this element, it's prepared for events
                 if self.__attrHasEvents(attrName):
                     try:
@@ -4301,39 +4301,39 @@ class LinacData(PyTango.Device_4Impl):
                 return True
             return False
 
-        def checkRampAttr(self,attrName):
-            '''Given a plc attribute, this method check if it has the ramp
-               feature. If it's the case, it will check if any of the user
-               attributes has change to update the main dictionary structure.
-            '''
-            if not self.__isRampAttr(attrName):
-                return
-            attrStruct = self._getAttrStruct(attrName)
-            for rampDirection in attrStruct[RAMP].keys():
-                for subAttrName in attrStruct[RAMP][rampDirection].keys():
-                    if subAttrName in [STEP,STEPTIME,THRESHOLD]:
-                        subAttrStruct= self._getAttrStruct(attrName+'_'+\
-                                                           rampDirection+'_'+\
-                                                           subAttrName)
-                        attrStruct[RAMP][rampDirection][subAttrName] = \
-                                                    subAttrStruct[READVALUE]
-#                    elif subAttrName in [SWITCH]:
-#                        #TODO: check if there has been any power on or off
-#                        #      transition that requires a thread launch to 
-#                        #      manage it.
-#                        if attrStruct[RAMP][rampDirection][subAttrName]\
-#                                                          .has_key(WHENOFF):
-#                            subAttrStruct = self._getAttrStruct(attrName+'_'+\
-#                                                           rampDirection+'_'+\
-#                                                           WHENOFF)
-#                            attrStruct[RAMP][rampDirection][subAttrName] = \
-#                                                    subAttrStruct[READVALUE]
-        
-        def __isRampAttr(self,attrName):
-            attrStruct = self._getAttrStruct(attrName)
-            if attrStruct.has_key(RAMP):
-                return True
-            return False
+#         def checkRampAttr(self,attrName):
+#             '''Given a plc attribute, this method check if it has the ramp
+#                feature. If it's the case, it will check if any of the user
+#                attributes has change to update the main dictionary structure.
+#             '''
+#             if not self.__isRampAttr(attrName):
+#                 return
+#             attrStruct = self._getAttrStruct(attrName)
+#             for rampDirection in attrStruct[RAMP].keys():
+#                 for subAttrName in attrStruct[RAMP][rampDirection].keys():
+#                     if subAttrName in [STEP,STEPTIME,THRESHOLD]:
+#                         subAttrStruct= self._getAttrStruct(attrName+'_'+\
+#                                                            rampDirection+'_'+\
+#                                                            subAttrName)
+#                         attrStruct[RAMP][rampDirection][subAttrName] = \
+#                                                     subAttrStruct[READVALUE]
+# #                    elif subAttrName in [SWITCH]:
+# #                        #TODO: check if there has been any power on or off
+# #                        #      transition that requires a thread launch to 
+# #                        #      manage it.
+# #                        if attrStruct[RAMP][rampDirection][subAttrName]\
+# #                                                          .has_key(WHENOFF):
+# #                            subAttrStruct = self._getAttrStruct(attrName+'_'+\
+# #                                                           rampDirection+'_'+\
+# #                                                           WHENOFF)
+# #                            attrStruct[RAMP][rampDirection][subAttrName] = \
+# #                                                    subAttrStruct[READVALUE]
+#         
+#         def __isRampAttr(self,attrName):
+#             attrStruct = self._getAttrStruct(attrName)
+#             if attrStruct.has_key(RAMP):
+#                 return True
+#             return False
 
         def relock(self):
             '''
