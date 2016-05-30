@@ -16,8 +16,8 @@
 # along with tango-ds.  If not, see <http://www.gnu.org/licenses/>.
 
 MAJOR_VERSION = 2
-MINOR_VERSION = 43
-BUILD_VERSION = 6
+MINOR_VERSION = 44
+BUILD_VERSION = 0
 
 #---- attributes keys
 READADDR = 'read_addr'
