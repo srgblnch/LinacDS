@@ -696,9 +696,27 @@ class AttrList(object):
                                        write_lockingAddr, write_lockingBit)
         return (heartbeat, lockState, lockStatus, locking)
 
-    def add_AttrEnumeration(self, name, suffixes=None, *args, **kwargs):
+    def add_AttrEnumeration(self, name, prefix=None, suffixes=None,
+                            *args, **kwargs):
         self.impl.info_stream("Building a Enumeration attribute set for %s"
                               % name)
+        if prefix is not None:
+            # With the klystrons user likes to see the number in the label,
+            # we don't want in the attribute name because it will make
+            # different between those two equal devices.
+            try:
+                plcN = int(self.impl.get_name().split('plc')[-1])
+            except:
+                plcN = 0
+            if plcN in [4,5]:
+                label = "%s%d_%s" % (prefix, plcN-3, name)
+                name = "%s_%s" % (prefix, name)
+            else:
+                label = "%s_%s" % (prefix, name)
+                name = "%s_%s" % (prefix, name)
+            # FIXME: but this is something "ad hoc"
+        else:
+            label = "%s" % (name)
         if suffixes is None:
             suffixes = {'options': [PyTango.DevString, 'read_write'],
                         'active': [PyTango.DevString, 'read_write'],
@@ -716,7 +734,7 @@ class AttrList(object):
                 else:
                     wfun = None
                 attr = self.add_Attr(name+'_'+suffix, attrType,
-                                     l="%s %s" % (name, suffix), rfun=rfun,
+                                     l="%s %s" % (label, suffix), rfun=rfun,
                                      wfun=wfun, **kwargs)
                 # FIXME: setup events in the self.add_Attr(...)
                 self.impl.set_change_event(name+'_'+suffix, True, False)
