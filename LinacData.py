@@ -689,35 +689,39 @@ class AttrList(object):
                                        write_lockingAddr,write_lockingBit)
         return (heartbeat,lockState,lockStatus,locking)
 
-    def add_AttrEnumeration(self, name, *args, **kwargs):
+    def add_AttrEnumeration(self, name, suffixes=None, *args, **kwargs):
         self.impl.info_stream("Building a Enumeration attribute set for %s"
                                % name)
+        if suffixes is None:
+            suffixes = {'options': [PyTango.DevString, 'read_write'],
+                        'active': [PyTango.DevString, 'read_write'],
+                        'numeric': [PyTango.DevUShort, 'read_only'],
+                        'meaning': [PyTango.DevString, 'read_only']}
         enumObj = EnumerationAttr(name)
         enumObj.device = self.impl
-        optionsAttr = self.add_Attr(name+'_options', PyTango.DevString,
-                                    l=name+' options', rfun=enumObj.read_attr,
-                                    wfun=enumObj.write_attr, **kwargs)
-        activeAttr = self.add_Attr(name+'_active', PyTango.DevString,
-                                   l=name+' active', rfun=enumObj.read_attr,
-                                   wfun=enumObj.write_attr, **kwargs)
-        numericAttr = self.add_Attr(name+'_numeric', PyTango.DevUShort,
-                                     l=name+' numeric', rfun=enumObj.read_attr,
-                                    wfun=None, **kwargs)
-        stringAttr = self.add_Attr(name+'_meaning', PyTango.DevString,
-                                   l=name+' meaning', rfun=enumObj.read_attr,
-                                   wfun=None, **kwargs)
-        # FIXME: setup events in the self.add_Attr(...)
-        for suffix in ['options','active','numeric','meaning']:
-            self.impl.set_change_event(name+'_'+suffix, True, False)
-#             try:
-#                 fullAttrName = name+'_'+suffix
-#                 value = self.__class__.__dict__[suffix].gset(self)
-#                 enumObj.fireEvent(fullAttrName, value)
-#             except Exception as e:
-#                 self.impl.error_stream("Cannot emit a first event for %s: %s"
-#                                        % (fullAttrName, e))
+        attrs = []
+        for suffix in suffixes.keys():
+            try:
+                attrType = suffixes[suffix][0]
+                rfun = enumObj.read_attr
+                if suffixes[suffix][1] == 'read_write':
+                    wfun = enumObj.write_attr
+                else:
+                    wfun = None
+                attr = self.add_Attr(name+'_'+suffix, attrType,
+                                     l="%s %s" % (name,suffix), rfun=rfun,
+                                     wfun=wfun, **kwargs)
+                # FIXME: setup events in the self.add_Attr(...)
+                self.impl.set_change_event(name+'_'+suffix, True, False)
+                attrs.append(attr)
+            except Exception as e:
+                self.impl.debug_stream("In %s enumeration, exception with %s: "
+                                       "%s" % (name, suffix, e))
         self.impl._internalAttrs[name] = enumObj
-        return (activeAttr, numericAttr, stringAttr, optionsAttr)
+        # No need to configure device memorised attributes because the
+        # _LinacAttr subclasses already have this feature nested in the
+        # implementation.
+        return tuple(attrs)
 
     def remove_all(self):
         for attr in self.alist:
@@ -3909,9 +3913,10 @@ class LinacData(PyTango.Device_4Impl):
                     else:
                         time.sleep(self.ReconnectWait)
                         #self.reconnect()
-                except Exception,e:
+                except Exception as e:
                     self.error_stream("In eventGeneratorThread() "\
                                       "exception: %s"%(e))
+                    traceback.print_exc()
 
         def __lastEventHasChangingQuality(self,attrName):
             attrStruct = self._getAttrStruct(attrName)

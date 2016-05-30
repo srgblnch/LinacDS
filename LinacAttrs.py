@@ -262,8 +262,13 @@ class _LinacAttr(object):
 
     # Linac's device structure ---
     def __getitem__(self, name):
-        # TODO: this would be used to access the python properties
-        pass
+        try:
+            return self.__class__.__dict__[name].fget(self)
+        except:
+            return None
+
+    def __setitem__(self, name, value):
+        self.__class__.__dict__[name].fget(self, value)
 
     # First descending level ---
     def _getAttrName(self, attr):
@@ -278,10 +283,13 @@ class _LinacAttr(object):
             self.warning("attrName %s is not starting with %s"
                          % (attrName, self.name))
             return
+        if attrName == self.name:
+            # TODO: there shall be a default behaviour for attrs with no suffix
+            return ''
         if attrName.count('_') == 0:
-            # TODO: there would be a default main reading
-            self.warning("No default reading for %s" % (attrName))
-            return
+            self.warning("No separable name to distinguish suffix (%s)"
+                         % (attrName))
+            return ''
         else:
             _, suffix = attrName.rsplit('_', 1)
             return suffix
@@ -322,8 +330,6 @@ class EnumerationAttr(_LinacAttr):
         self._active = None
         self.setMemorised('options')
         self.setMemorised('active')
-        for suffix in self.memorizedLst:
-            self.recoverDynMemorized(self.name, suffix)
 
     @property
     def options(self):
@@ -337,8 +343,8 @@ class EnumerationAttr(_LinacAttr):
             # FIXME: check the input to avoid issues
             lst = list(literal_eval(lst))
         if type(lst) == list:
-            # FIXME: check if each of the elements are strings
-            # FIXME: and strip those strings
+            for i,element in enumerate(lst):
+                lst[i] = str(element).lower().strip()
             self._options = lst
             self._quality = AttrQuality.ATTR_VALID
             self.fireEvent(self.name+'_options', str(self.options))
@@ -361,8 +367,8 @@ class EnumerationAttr(_LinacAttr):
     def active(self, value):
         if type(value) == int and value <= len(self._options):
             toBeActive = self._options[value]
-        elif value in self._options:
-            toBeActive = value
+        elif value.lower() in self._options:
+            toBeActive = value.lower()
         else:
             raise ValueError("%s is not in the available options" % value)
         self._active = toBeActive

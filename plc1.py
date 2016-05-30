@@ -869,3 +869,9 @@ AttrLogic('ka2_ic',
 #           )
 
 AttrEnumeration('ATT2_u')
+AttrEnumeration('GUN_Cathode_u')
+AttrEnumeration('GUN_CDB_u')
+AttrEnumeration('GUN_HVps_u')
+AttrEnumeration('TU_u')
+AttrEnumeration('A0_u')
+AttrEnumeration('LLRF_u')
