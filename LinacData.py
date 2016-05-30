@@ -2082,6 +2082,29 @@ class LinacData(PyTango.Device_4Impl):
                                                    PyTango.ErrSeverity.WARN)
                 else:
                     write_value = formula_value
+            if attrStruct.has_key(SWITCHDESCRIPTOR):
+                #For the switch with autostop, when transition to power on, is
+                #necessary to clean the old collected information or it will
+                #produce an influence on the conditions.
+                descriptor = attrStruct[SWITCHDESCRIPTOR]
+                if AUTOSTOP in descriptor:
+#                 if self.__stateTransitionToOn(write_value,descriptor) and \
+#                                                   descriptor.has_key(AUTOSTOP):
+                    self.__cleanAutoStopCollection(\
+                                        attrStruct[SWITCHDESCRIPTOR][AUTOSTOP])
+#                 #Depending to the on or off transition keys, this will launch 
+#                 #a thread who will modify the ATTR2RAMP, and when that 
+#                 #finishes the write will be set.
+#                 self.info_stream("attribute %s has receive a write %s"
+#                                  %(name,write_value))
+#                 if self.__stateTransitionNeeded(write_value,name):
+#                                                 #attrStruct[SWITCHDESCRIPTOR]):
+#                     self.info_stream("doing state transition for %s"%(name))
+#                     attrStruct[SWITCHDEST] = write_value
+#                     self.createSwitchStateThread(name)
+#                     return
+                #The returns are necessary to avoid the write that is set later
+                #on this method. But in the final else case it has to continue
                 # The returns are necessary to avoid the write that is set
                 # later on this method. But in the final else case it has to
                 # continue.
