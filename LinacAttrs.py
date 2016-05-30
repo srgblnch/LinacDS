@@ -21,13 +21,52 @@ __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-from LinacData import AttrExc
-from PyTango import AttrQuality
-from PyTango import DevState
+from ast import literal_eval
+import functools
+from PyTango import AttrQuality, Database, DevFailed, DevState
 from time import time
+import traceback
 
 
 # FIXME: understand why I couldn't make work the *args and **kwargs
+
+
+class LinacException(Exception):
+    pass
+
+
+def CommandExc(f):
+    '''Decorates commands so that the exception is logged and also raised.
+    '''
+    def g(self, *args, **kwargs):
+        inst = self  # < for pychecker
+        try:
+            return f(inst, *args, **kwargs)
+        except LinacException:
+            raise
+        except Exception, exc:
+            traceback.print_exc(exc)
+            self._trace = traceback.format_exc(exc)
+            raise
+    functools.update_wrapper(g, f)
+    return g
+
+
+def AttrExc(f):
+    '''Decorates commands so that the exception is logged and also raised.
+    '''
+    def g(self, attr, *args, **kwargs):
+        inst = self  # < for pychecker
+        try:
+            return f(inst, attr, *args, **kwargs)
+        except LinacException:
+            raise
+        except Exception, exc:
+            traceback.print_exc(exc)
+            self._trace = traceback.format_exc(exc)
+            raise
+    functools.update_wrapper(g, f)
+    return g
 
 
 class _LinacAttr(object):
@@ -36,8 +75,10 @@ class _LinacAttr(object):
         """
         super(_LinacAttr, self).__init__()
         self._name = name
-        self._device = device
-        self._timestamp = None
+        self._memorizedLst = []
+        self._tangodb = None
+        self.device = device
+        self._timestamp = time()
         self._quality = AttrQuality.ATTR_VALID
 
     # Main Tango part ---
@@ -52,6 +93,9 @@ class _LinacAttr(object):
     @device.setter
     def device(self, value):
         self._device = value
+        self._tangodb = Database()
+        for suffix in self.memorizedLst:
+            self.recoverDynMemorized(self.name, suffix)
 
     @property
     def timestamp(self):
@@ -63,25 +107,29 @@ class _LinacAttr(object):
 
     # Tango log system ---
     def error(self, msg):
-        if self._device:
+        msg = "[%s] %s" % (self.name, msg)
+        if self.device:
             self.device.error_stream(msg)
         else:
             print("ERROR: %s" % (msg))
 
     def warning(self, msg):
-        if self._device:
+        msg = "[%s] %s" % (self.name, msg)
+        if self.device:
             self.device.warn_stream(msg)
         else:
             print("WARN: %s" % (msg))
 
     def info(self, msg):
-        if self._device:
+        msg = "[%s] %s" % (self.name, msg)
+        if self.device:
             self.device.info_stream(msg)
         else:
             print("INFO: %s" % (msg))
 
     def debug(self, msg):
-        if self._device:
+        msg = "[%s] %s" % (self.name, msg)
+        if self.device:
             self.device.debug_stream(msg)
         else:
             print("DEBUG: %s" % (msg))
@@ -106,6 +154,7 @@ class _LinacAttr(object):
             return
         if attr is not None:
             attrName = self._getAttrName(attr)
+            self.debug("Received a read request for %s" % attrName)
             suffix = self._getSuffix(attrName)
             if not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception
@@ -120,6 +169,8 @@ class _LinacAttr(object):
             return
         if attr is not None:
             attrName = self._getAttrName(attr)
+            self.debug("Received a write request for %s, value %s"
+                       % (attrName, value))
             suffix = self._getSuffix(attrName)
             if not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception
@@ -135,19 +186,84 @@ class _LinacAttr(object):
                 self.warning("No value to write")
                 return
             self.__class__.__dict__[suffix].fset(self, writeValue)
-            self._setAttrValue(attr, writeValue)
+            readValue = getattr(self, suffix)
+            if suffix in self.memorizedLst:
+                self.storeDynMemozized(self.name, suffix, readValue)
+            self._setAttrValue(attr, readValue)
 
     # Tango events area ---
     def fireEvent(self, name, value):
         # FIXME: shall be other event types be fired?
         #        archiver, periodic,...
-        if self._device is not None:
-            self.device.push_change_event(name, value, self.timestamp,
-                                          self.quality)
+        try:
+            if self.device is not None:
+                self.device.push_change_event(name, value, self.timestamp,
+                                              self.quality)
+            self.debug("fireEvent(%s, %s, %s, %s)" % (name, value,
+                                                      self.timestamp,
+                                                      self.quality))
+        except DevFailed as e:
+            self.warning("DevFailed in event %s emit: %s" % (name, e[0].desc))
+        except Exception as e:
+            self.error("Event for %s (with value %s) not emitted due to: %s"
+                       % (name, value, e))
+
+    # Tango memorized dynamic attributes
+    @property
+    def memorizedLst(self):
+        return self._memorizedLst[:]
+
+    def setMemorised(self, suffix):
+        if suffix not in self._memorizedLst:
+            self._memorizedLst.append(suffix)
+
+    def storeDynMemozized(self, mainName, suffix, value):
+        if self.device is None:
+            self.warning("Cannot memorize values outside a "
+                         "tango device server")
+            return
+        self.info("Memorising attribute %s_%s with value %s"
+                  % (mainName, suffix, value))
+        memoriseName = self.device.get_name() + "/" + mainName
+        try:
+            self._tangodb.put_device_attribute_property(memoriseName,
+                                                        {mainName:
+                                                         {suffix: str(value)}})
+        except Exception as e:
+            self.warning("Property %s_%s cannot be stored due to: %s"
+                         % (mainName, suffix, e))
+
+    def recoverDynMemorized(self, mainName, suffix):
+        if self.device is None:
+            self.warning("Cannot recover memorized values outside a "
+                         "tango device server")
+            return
+        memoriseName = self.device.get_name() + "/" + mainName
+        try:
+            property = self._tangodb.\
+                get_device_attribute_property(memoriseName, [mainName])
+            if mainName in property and suffix in property[mainName]:
+                try:
+                    value = literal_eval(property[mainName][suffix][0])
+                except:
+                    value = property[mainName][suffix][0]
+                self.debug("Recovered %r as %s" % (value, type(value)))
+            else:
+                self.info("Nothing to recover from %s_%s" % (mainName, suffix))
+                return
+        except Exception as e:
+            self.warning("Property %s_%s couldn't be recovered due to: %s"
+                         % (mainName, suffix, e))
         else:
-            self.info("FireEvent(%s, %s, %s, %s)" % (name, value,
-                                                     self.timestamp,
-                                                     self.quality))
+            self.info("Recovering memorised value %s for %s_%s"
+                      % (value, mainName, suffix))
+            if hasattr(self, suffix):
+                self.__class__.__dict__[suffix].fset(self, value)
+
+    # Linac's device structure ---
+    def __getitem__(self, name):
+        # TODO: this would be used to access the python properties
+        pass
 
     # First descending level ---
     def _getAttrName(self, attr):
@@ -167,16 +283,24 @@ class _LinacAttr(object):
             self.warning("No default reading for %s" % (attrName))
             return
         else:
-            nothing, suffix = attrName.rsplit('_')
+            _, suffix = attrName.rsplit('_', 1)
             return suffix
 
     def _setAttrValue(self, attr, readValue):
-        if type(attr) == str:
-            self.info("(%s, %s, %s)" % (readValue, self.timestamp,
-                                        self.quality))
-        else:
-            attr.set_value_date_quality(readValue, self.timestamp,
-                                        self.quality)
+        if type(readValue) == list:
+            readValue = "%s" % readValue
+        attrName = self._getAttrName(attr)
+        self.debug("_setAttrValue(%s, %s, %s, %s)"
+                   % (attrName, readValue, self.timestamp, self.quality))
+        if type(attr) != str:
+            # If its an attribute, part of a device, do the corresponding set
+            # print("type(attr) = %s" % type(attr))
+            try:
+                attr.set_value_date_quality(readValue, self.timestamp,
+                                            self.quality)
+            except:
+                attr.set_value_date_quality('', self.timestamp,
+                                            AttrQuality.ATTR_INVALID)
 
 
 class EnumerationAttr(_LinacAttr):
@@ -189,12 +313,17 @@ class EnumerationAttr(_LinacAttr):
         super(EnumerationAttr, self).__init__(name)
         if optionsLst is None:
             self._options = []
+            self._quality = AttrQuality.ATTR_INVALID
         elif type(optionsLst) == list:
             self._options = optionsLst
         else:
             raise TypeError("options shall be a list (not %s)"
                             % type(optionsLst))
         self._active = None
+        self.setMemorised('options')
+        self.setMemorised('active')
+        for suffix in self.memorizedLst:
+            self.recoverDynMemorized(self.name, suffix)
 
     @property
     def options(self):
@@ -204,13 +333,21 @@ class EnumerationAttr(_LinacAttr):
 
     @options.setter
     def options(self, lst):
+        if type(lst) == str:
+            # FIXME: check the input to avoid issues
+            lst = list(literal_eval(lst))
         if type(lst) == list:
+            # FIXME: check if each of the elements are strings
+            # FIXME: and strip those strings
             self._options = lst
+            self._quality = AttrQuality.ATTR_VALID
+            self.fireEvent(self.name+'_options', str(self.options))
             if self._active is not None:
                 # The active may have changed once the list change
-                self.active = self._activ
+                self.active = self._active
         else:
-            raise TypeError("options shall be a list")
+            raise TypeError("options shall be a list (received a %s)"
+                            % type(lst))
 
     @property
     def active(self):
@@ -230,24 +367,25 @@ class EnumerationAttr(_LinacAttr):
             raise ValueError("%s is not in the available options" % value)
         self._active = toBeActive
         self._timestamp = time()
-        self.fireEvent(self.name+'_number', self.number)
-        self.fireEvent(self.name+'_string', self.string)
+        self.fireEvent(self.name+'_active', self.active)
+        self.fireEvent(self.name+'_numeric', self.numeric)
+        self.fireEvent(self.name+'_meaning', self.meaning)
 
     @property
-    def number(self):
+    def numeric(self):
         """Machine-friendly output with the element active.
         """
         if self._active is None:
             raise ValueError("No selection made with the options")
         return self._options.index(self.active)
 
-    @number.setter
-    def number(self, value):
+    @numeric.setter
+    def numeric(self, value):
         if type(value) == int:
             self.active = value
 
     @property
-    def string(self):
+    def meaning(self):
         """Humane-friendly output with the element active.
         """
         if self._active is None:

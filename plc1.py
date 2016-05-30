@@ -867,3 +867,5 @@ AttrLogic('ka2_ic',
 #           l='any interlock is set',
 #           events={},
 #           )
+
+AttrEnumeration('ATT2_u')
