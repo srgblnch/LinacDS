@@ -3077,7 +3077,7 @@ class LinacData(PyTango.Device_4Impl):
                     EVENTS in self._plcAttrs[attrName]:
                 return True
             elif attrName in self._internalAttrs and \
-                    EVENTS in self._internalAttrs[attrName]:
+                    EVENTS in self._internalAttrs[attrName].keys():
                 return True
             return False
 
@@ -3270,7 +3270,6 @@ class LinacData(PyTango.Device_4Impl):
             attr2Reemit = 0
             for attrName in attributeList:
                 self.checkResetAttr(attrName)
-                # self.checkRampAttr(attrName)
                 # First check if for this element, it's prepared for events
                 if self.__attrHasEvents(attrName):
                     try:
@@ -3326,24 +3325,6 @@ class LinacData(PyTango.Device_4Impl):
                             self.__doTraceAttr(attrName,
                                                "plcGeneralAttrEvents(%s)"
                                                % (attrValue))
-#                            #FIXME: debug for ramping
-#                            if self.__isRampingAttr(attrName):
-#                                self.info_stream("EVENT for %s: read=%s "\
-#                                                 "write=%s"%(attrName,
-#                                             self.__getAttrReadValue(attrName),
-#                                                   attrStruct[WRITEVALUE]))
-#                            if self.__isSwitchAttr(attrName):
-#                                self.info_stream("EVENT for %s: read=%s "\
-#                                                 "write=%s"%(attrName,
-#                                             self.__getAttrReadValue(attrName),
-#                                                   attrStruct[WRITEVALUE]))
-#                        else:
-#                            if self.__isRampingAttr(attrName) and \
-#                               not self.__isRampDone(attrName):
-#                                self.info_stream("NO event for %s: read=%s "\
-#                                                 "write=%s"%(attrName,
-#                                             self.__getAttrReadValue(attrName),
-#                                                   attrStruct[WRITEVALUE]))
                         elif self.__checkEventReEmission(attrName):
                             #  Even there is no condition to emit an event
                             #  Check the RE_EVENTS_PERIOD to know if a refresh
@@ -3371,7 +3352,7 @@ class LinacData(PyTango.Device_4Impl):
             for attrName in attributeList:
                 if self.__attrHasEvents(attrName):
                     try:
-                        # evaluate if emition needed
+                        # evaluate if emit is needed
                         # internal attr types:
                         # - logical
                         # - sets
