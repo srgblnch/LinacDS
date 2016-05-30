@@ -165,7 +165,7 @@ class _LinacAttr(object):
             if not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception
                 self.warning("No way to read %s" % suffix)
-                return
+                raise ValueError("cannot read %s" % suffix)
             readValue = getattr(self, suffix)
             self._setAttrValue(attr, readValue)
 
@@ -181,7 +181,7 @@ class _LinacAttr(object):
             if not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception
                 self.warning("No way to write %s" % suffix)
-                return
+                raise ValueError("cannot write %s" % suffix)
             if hasattr(attr, 'get_write_value'):
                 data = []
                 attr.get_write_value(data)
