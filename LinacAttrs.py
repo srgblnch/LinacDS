@@ -86,6 +86,12 @@ class _LinacAttr(object):
     def name(self):
         return self._name
 
+    def __str__(self):
+        return "%s(%s)" % (self.__class__.__name__, self.name)
+
+    def __repr__(self):
+        return "%s: %s" % (self, self.keys())
+
     @property
     def device(self):
         return self._device
@@ -262,13 +268,36 @@ class _LinacAttr(object):
 
     # Linac's device structure ---
     def __getitem__(self, name):
+        #self.info("requested dictionary read access for %s" % name)
         try:
-            return self.__class__.__dict__[name].fget(self)
-        except:
+            if name in self.keys():
+                for kls in self.__class__.__mro__:
+                    if name in kls.__dict__.keys():
+                        return kls.__dict__[name].fget(self)
+        except Exception as e:
+            self.error("Cannot get item for the key %s due to: %s" % (name, e))
             return None
 
     def __setitem__(self, name, value):
-        self.__class__.__dict__[name].fget(self, value)
+        #self.info("requested dictionary write access for %s" % name)
+        try:
+            if name in self.keys():
+                for kls in self.__class__.__mro__:
+                    if name in kls.__dict__.keys():
+                        if kls.__dict__[name].fset == None:
+                            kls.__dict__[name].fset(self, value)
+                        else:
+                            self.warning("%s NO setter" % name)
+        except Exception as e:
+            self.error("Cannot set item %s to key %s due to: %s"
+                       % (value, name, e))
+
+    def keys(self):
+        keys = self.__class__.__dict__.keys()
+        # special properties of the superclass
+        # accessible for all attribute types
+        keys += ['timestamp', 'quality']
+        return [k for k in keys if not k.startswith('__')]
 
     # First descending level ---
     def _getAttrName(self, attr):
@@ -343,7 +372,7 @@ class EnumerationAttr(_LinacAttr):
             # FIXME: check the input to avoid issues
             lst = list(literal_eval(lst))
         if type(lst) == list:
-            for i,element in enumerate(lst):
+            for i, element in enumerate(lst):
                 lst[i] = str(element).lower().strip()
             self._options = lst
             self._quality = AttrQuality.ATTR_VALID
