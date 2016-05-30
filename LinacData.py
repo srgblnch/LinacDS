@@ -3339,8 +3339,8 @@ class LinacData(PyTango.Device_4Impl):
             if len(attr2Event) > 0:
                 self.fireEventsList(attr2Event, timestamp=now, log=True)
             if attr2Reemit > 0:
-                self.info_stream("%d events due to periodic reemission"
-                                 % attr2Reemit)
+                self.debug_stream("%d events due to periodic reemission"
+                                  % attr2Reemit)
             return len(attr2Event)+attr2Reemit
 
         def internalAttrEvents(self):
