@@ -16,7 +16,8 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-__author__ = "Sergi Blanch-Torne"
+__author__ = "Lothar Krause and Sergi Blanch-Torne"
+__maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
@@ -268,7 +269,6 @@ class _LinacAttr(object):
 
     # Linac's device structure ---
     def __getitem__(self, name):
-        #self.info("requested dictionary read access for %s" % name)
         try:
             if name in self.keys():
                 for kls in self.__class__.__mro__:
@@ -279,12 +279,11 @@ class _LinacAttr(object):
             return None
 
     def __setitem__(self, name, value):
-        #self.info("requested dictionary write access for %s" % name)
         try:
             if name in self.keys():
                 for kls in self.__class__.__mro__:
                     if name in kls.__dict__.keys():
-                        if kls.__dict__[name].fset == None:
+                        if kls.__dict__[name].fset is None:
                             kls.__dict__[name].fset(self, value)
                         else:
                             self.warning("%s NO setter" % name)
