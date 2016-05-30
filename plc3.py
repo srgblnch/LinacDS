@@ -228,3 +228,15 @@ AttrLogic('QT_current_ok',
 
 #AttrPLC(HeartBeat,Lock_ST,rLockingAddr,rLockingBit,wLockingAddr,wLockingBit)
 AttrPLC(160,159,291,0,130,0)#----FIXME the locking was 291 but documentation say 292
+
+AttrEnumeration('BC1F_u')
+AttrEnumeration('BC2F_u')
+AttrEnumeration('GL_u')
+AttrEnumeration('SL1F_u')
+AttrEnumeration('SL2F_u')
+AttrEnumeration('SL3F_u')
+AttrEnumeration('SL4F_u')
+AttrEnumeration('QT1F_u')
+AttrEnumeration('QT2F_u')
+AttrEnumeration('QT1H_u')
+AttrEnumeration('QT2V_u')

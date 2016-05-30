@@ -258,3 +258,13 @@ AttrLogic('hvps_ready',
           l='High voltage PS ready',
           events={},record=True,
           )
+
+AttrEnumeration('KA_tube_u')
+AttrEnumeration('KA_thyratron_u')
+AttrEnumeration('KA_3GHz_RFampli_u')
+AttrEnumeration('KA_DCps_thyratron_u')
+AttrEnumeration('KA_HVps_u')
+AttrEnumeration('KA_IP_controller')
+AttrEnumeration('KA_fcoil1_u')
+AttrEnumeration('KA_fcoil2_u')
+AttrEnumeration('KA_fcoil3_u')
