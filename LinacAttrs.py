@@ -24,7 +24,7 @@ __license__ = "GPLv3+"
 
 from ast import literal_eval
 import functools
-from PyTango import AttrQuality, Database, DevFailed, DevState
+from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
 from time import time
 import traceback
 
@@ -100,6 +100,8 @@ class _LinacAttr(object):
     @device.setter
     def device(self, value):
         self._device = value
+        if value is not None:
+            self.debug("Link to the device %s" % self._device)
         self._tangodb = Database()
         for suffix in self.memorizedLst:
             self.recoverDynMemorized(self.name, suffix)
@@ -152,7 +154,10 @@ class _LinacAttr(object):
     def isReadAllowed(self):
         return self.isAllowed()
 
-    def isWriteAllowed(self):
+    def isWriteAllowed(self, attr=None):
+        if attr is not None:
+            if not attr.get_writable() in [AttrWriteType.READ_WRITE]:
+                return False
         return self.isAllowed()
 
     @AttrExc
@@ -166,7 +171,7 @@ class _LinacAttr(object):
             if not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception
                 self.warning("No way to read %s" % suffix)
-                raise ValueError("Can NOT read %s" % suffix)
+                return  # raise ValueError("Can NOT read %s" % suffix)
             readValue = getattr(self, suffix)
             self._setAttrValue(attr, readValue)
 
@@ -182,7 +187,7 @@ class _LinacAttr(object):
             if not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception
                 self.warning("No way to write %s" % suffix)
-                raise ValueError("Can NOT write %s" % suffix)
+                return  # raise ValueError("Can NOT write %s" % suffix)
             if hasattr(attr, 'get_write_value'):
                 data = []
                 attr.get_write_value(data)
@@ -199,16 +204,18 @@ class _LinacAttr(object):
             self._setAttrValue(attr, readValue)
 
     # Tango events area ---
-    def fireEvent(self, name, value):
+    def fireEvent(self, name, value, quality=None):
         # FIXME: shall be other event types be fired?
         #        archiver, periodic,...
         try:
+            if quality is None:
+                quality = self.quality
             if self.device is not None:
                 self.device.push_change_event(name, value, self.timestamp,
-                                              self.quality)
+                                              quality)
             self.debug("fireEvent(%s, %s, %s, %s)" % (name, value,
                                                       self.timestamp,
-                                                      self.quality))
+                                                      quality))
         except DevFailed as e:
             self.warning("DevFailed in event %s emit: %s" % (name, e[0].desc))
         except Exception as e:
@@ -264,8 +271,19 @@ class _LinacAttr(object):
         else:
             self.info("Recovering memorised value %s for %s_%s"
                       % (value, mainName, suffix))
-            if hasattr(self, suffix):
-                self.__class__.__dict__[suffix].fset(self, value)
+            try:
+                if hasattr(self, suffix):
+                    self.__class__.__dict__[suffix].fset(self, value)
+                    readback = self.__class__.__dict__[suffix].fget(self)
+                    if value != readback:
+                        self.warning("readback %s doesn't corresponds with set %s"
+                                     % (value, readback))
+                    else:
+                        self.debug("Well applied %s_%s: %s"
+                                   % (mainName, suffix, value))
+            except Exception as e:
+                self.error("Exeption recovering %s_%s: %s"
+                           % (mainName, suffix, e))
 
     # Linac's device structure ---
     def __getitem__(self, name):
@@ -332,9 +350,14 @@ class _LinacAttr(object):
             # If its an attribute, part of a device, do the corresponding set
             # print("type(attr) = %s" % type(attr))
             try:
+                if self.isWriteAllowed(attr):
+                    attr.set_write_value(readValue)
                 attr.set_value_date_quality(readValue, self.timestamp,
                                             self.quality)
-            except:
+            except Exception as e:
+                self.error("_setAttrValue(%s, %s, %s, %s) exception %s"
+                           % (attrName, readValue, self.timestamp,
+                              self.quality, e))
                 attr.set_value_date_quality('', self.timestamp,
                                             AttrQuality.ATTR_INVALID)
 
@@ -358,6 +381,7 @@ class EnumerationAttr(_LinacAttr):
         self._active = None
         self.setMemorised('options')
         self.setMemorised('active')
+        self.debug("Build the EnumerationAttr %s" % self.name)
 
     @property
     def options(self):
@@ -367,9 +391,23 @@ class EnumerationAttr(_LinacAttr):
 
     @options.setter
     def options(self, lst):
+        # preprocess ---
+        if type(lst) == list and not any([len(each)-1 for each in lst]):
+            # candidate a wrong string made list
+            rebuild = "".join("%s" % i for i in lst)
+            self.debug("Received a wrong string list %s and rebuild to %s"
+                       % (lst, rebuild))
+            try:
+                lst = eval(rebuild)
+            except:
+                lst = [rebuild]
         if type(lst) == str:
             # FIXME: check the input to avoid issues
-            lst = list(literal_eval(lst))
+            bar = list(literal_eval(lst))
+            self.debug("Received a string %r and understand a list: %s"
+                       % (lst, bar))
+            lst = bar
+        # process ---
         if type(lst) == list:
             for i, element in enumerate(lst):
                 lst[i] = str(element).lower().strip()
@@ -377,8 +415,13 @@ class EnumerationAttr(_LinacAttr):
             self._quality = AttrQuality.ATTR_VALID
             self.fireEvent(self.name+'_options', str(self.options))
             if self._active is not None:
-                # The active may have changed once the list change
-                self.active = self._active
+                try:
+                    # The active may have changed once the list change
+                    self.active = self._active
+                except Exception as e:
+                    self.warning("After options change, the active is not "
+                                 "valid anymore")
+                    self._active = None
         else:
             raise TypeError("options shall be a list (received a %s)"
                             % type(lst))
@@ -387,31 +430,41 @@ class EnumerationAttr(_LinacAttr):
     def active(self):
         """Indicates which of the options is activated by the user selection.
         """
-        if len(self._options) > 0:
-            return self._active
-        raise ValueError("no options defined")
+        if self._active is None:
+            return 'None'
+        return self._active
 
     @active.setter
     def active(self, value):
-        if type(value) == int and value <= len(self._options):
-            toBeActive = self._options[value]
-        elif value.lower() in self._options:
-            toBeActive = value.lower()
+        if value == 'None':
+            value = None
+        if value is None and self._active is not None:
+            quality = AttrQuality.ATTR_INVALID
+            self.fireEvent(self.name+'_active', '', quality)
+            self.fireEvent(self.name+'_numeric', 0, quality)
+            self.fireEvent(self.name+'_meaning', '', quality)
+            toBeActive = None
         else:
-            raise ValueError("%s is not in the available options" % value)
-        self._active = toBeActive
-        self._timestamp = time()
-        self.fireEvent(self.name+'_active', self.active)
-        self.fireEvent(self.name+'_numeric', self.numeric)
-        self.fireEvent(self.name+'_meaning', self.meaning)
+            if type(value) == int and value <= len(self._options):
+                toBeActive = self._options[value-1]
+            elif value.lower() in self._options:
+                toBeActive = value.lower()
+            else:
+                raise ValueError("%s is not in the available options %s"
+                                 % (value, self._options))
+            self._active = toBeActive
+            self._timestamp = time()
+            self.fireEvent(self.name+'_active', self.active)
+            self.fireEvent(self.name+'_numeric', self.numeric)
+            self.fireEvent(self.name+'_meaning', self.meaning)
 
     @property
     def numeric(self):
         """Machine-friendly output with the element active.
         """
         if self._active is None:
-            raise ValueError("No selection made with the options")
-        return self._options.index(self.active)
+            return 0
+        return self._options.index(self.active)+1
 
     @numeric.setter
     def numeric(self, value):
@@ -423,5 +476,5 @@ class EnumerationAttr(_LinacAttr):
         """Humane-friendly output with the element active.
         """
         if self._active is None:
-            raise ValueError("No selection made with the options")
-        return "%d:%s" % (self._options.index(self.active), self.active)
+            return 'None'
+        return "%d:%s" % (self.numeric, self.active)

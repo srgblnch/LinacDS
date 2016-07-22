@@ -722,27 +722,32 @@ class AttrList(object):
                         'active': [PyTango.DevString, 'read_write'],
                         'numeric': [PyTango.DevUShort, 'read_only'],
                         'meaning': [PyTango.DevString, 'read_only']}
-        enumObj = EnumerationAttr(name)
-        enumObj.device = self.impl
-        attrs = []
-        for suffix in suffixes.keys():
-            try:
-                attrType = suffixes[suffix][0]
-                rfun = enumObj.read_attr
-                if suffixes[suffix][1] == 'read_write':
-                    wfun = enumObj.write_attr
-                else:
-                    wfun = None
-                attr = self.add_Attr(name+'_'+suffix, attrType,
-                                     l="%s %s" % (label, suffix), rfun=rfun,
-                                     wfun=wfun, **kwargs)
-                # FIXME: setup events in the self.add_Attr(...)
-                self.impl.set_change_event(name+'_'+suffix, True, False)
-                attrs.append(attr)
-            except Exception as e:
-                self.impl.debug_stream("In %s enumeration, exception with %s: "
-                                       "%s" % (name, suffix, e))
-        self.impl._internalAttrs[name] = enumObj
+        try:
+            enumObj = EnumerationAttr(name)
+            enumObj.device = self.impl
+            attrs = []
+            for suffix in suffixes.keys():
+                try:
+                    attrType = suffixes[suffix][0]
+                    rfun = enumObj.read_attr
+                    if suffixes[suffix][1] == 'read_write':
+                        wfun = enumObj.write_attr
+                    else:
+                        wfun = None
+                    attr = self.add_Attr(name+'_'+suffix, attrType,
+                                         l="%s %s" % (label, suffix),
+                                         rfun=rfun, wfun=wfun, **kwargs)
+                    # FIXME: setup events in the self.add_Attr(...)
+                    self.impl.set_change_event(name+'_'+suffix, True, False)
+                    attrs.append(attr)
+                except Exception as e:
+                    self.impl.debug_stream("In %s enumeration, exception "
+                                           "with %s: %s" % (name, suffix, e))
+            self.impl._internalAttrs[name] = enumObj
+        except Exception as e:
+            self.impl.error_stream("Fatal exception building %s: %s"
+                                   % (name, e))
+            traceback.print_exc()
         # No need to configure device memorised attributes because the
         # _LinacAttr subclasses already have this feature nested in the
         # implementation.
