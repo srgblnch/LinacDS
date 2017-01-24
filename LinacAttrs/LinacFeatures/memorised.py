@@ -24,23 +24,30 @@ __license__ = "GPLv3+"
 from feature import _LinacFeature
 from PyTango import Database
 
+
+defaultFieldName = '__value'
+
+
 class Memorised(_LinacFeature):
+
+    _storeValue = {}
+    _recoverValue = {}
+
     def __init__(self, *args, **kwargs):
         super(Memorised, self).__init__(*args, **kwargs)
         self._tangodb = Database()
 
-    def store(self, suffix=None):
+    def store(self, value, suffix=None):
         if self._owner is None or self._owner.device is None:
             self.warning("Cannot memorise values outside a "
                          "tango device server")
             return False
         devName = self._owner.device.get_name()
         attrName = self._owner.name
-        fieldName = suffix or '__value'
+        fieldName = suffix or defaultFieldName
         memorisedName = devName+"/"+attrName
         self.info("Memorising attribute %s%s with value %s"
                   % (mainName, "_%s" % suffix if suffix else "", value))
-        
         try:
             self._tangodb.put_device_attribute_property(memorisedName,
                                                         {attrName:
@@ -50,6 +57,7 @@ class Memorised(_LinacFeature):
             self.warning("Property %s_%s cannot be stored due to: %s"
                          % (attrName, "_%s" % suffix if suffix else "", e))
             return False
+        self._storeValue[fieldName] = value
         return True
 
     def recover(self, suffix=None):
@@ -62,7 +70,7 @@ class Memorised(_LinacFeature):
             return False
         devName = self._owner.device.get_name()
         attrName = self._owner.name
-        fieldName = suffix or '__value'
+        fieldName = suffix or defaultFieldName
         memorisedName = devName+"/"+attrName
         try:
             property = self._tangodb.\
@@ -87,6 +95,7 @@ class Memorised(_LinacFeature):
                 self._applyValue(attrName, fieldName, value)
             else:
                 self._applyValue(attrName, 'read_value', value)
+        self._recoverValue[fieldName] = value
         return True
 
     def _applyValue(self, attrName, field, value, check=True):
@@ -103,3 +112,21 @@ class Memorised(_LinacFeature):
         except Exception as e:
             self.error("Exception applying %s[%s]: %s"
                        % (attrName, field, value))
+
+    def getStoreValue(self, suffix=None):
+        if not suffix:
+            if defaultFieldName in self._storeValue:
+                return self._storeValue[defaultFieldName]
+        else:
+            if suffix in self._storeValue:
+                return self._storeValue[suffix]
+        # other case return None
+
+    def getRecoverValue(self, suffix=None):
+        if not suffix:
+            if defaultFieldName in self._recoverValue:
+                return self._recoverValue[defaultFieldName]
+        else:
+            if suffix in self._recoverValue:
+                return self._recoverValue[suffix]
+        # other case return None

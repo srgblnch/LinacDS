@@ -23,12 +23,9 @@ __license__ = "GPLv3+"
 
 
 from linacAttr import LinacAttr
-from LinacFeatures import Memorised
 
 
 class InternalAttr(LinacAttr):
-
-    _memorised = None
 
     _logic = None
     _operator = None
@@ -42,21 +39,21 @@ class InternalAttr(LinacAttr):
     _readSet = None
     _writeSet = None
 
-    def __init__(self, memorized=False, isWritable=False,
-                 defaultValue=None, *args, **kwargs):
+    def __init__(self, isWritable=False, defaultValue=None, *args, **kwargs):
         """
             Class to describe an attribute that references information from
             any of the Linac's PLCs.
         """
         super(InternalAttr, self).__init__(*args, **kwargs)
-        if memorized:
-            self._memorised = Memorised(owner=self)
-            if not self._memorised.recover():
-                self.info("Using default value %s" % (defaultValue))
+        if defaultValue:
+            if self._memorised:
+                if not self._memorised.getRecoverValue():
+                    self.info("Using default value %s" % (defaultValue))
+                    self._readValue = defaultValue
+                # don't apply the default value if another has been recovered
+                # from database as memorised.
+            else:
                 self._readValue = defaultValue
-        elif defaultValue:
-            self._readValue = defaultValue
-        # FIXME: can those float('NaN') be to mean "non initialised"?
 
     #######################################################
     # Dictionary properties for backwards compatibility ---

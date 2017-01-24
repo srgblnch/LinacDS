@@ -24,7 +24,7 @@ __license__ = "GPLv3+"
 
 from ast import literal_eval
 import functools
-from LinacFeatures import Events
+from LinacFeatures import Events, Memorised
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
 from PyTango import DevUChar, DevShort, DevFloat, DevDouble
 from PyTango import DevBoolean, DevString
@@ -94,9 +94,15 @@ class LinacAttr(object):
     _event_t = None
     _lastEventQuality = AttrQuality.ATTR_INVALID
 
+    _baseSet = None
+
     _AutoStop = None
 
-    def __init__(self, name, valueType, device=None, *args, **kwargs):
+    _memorised = None
+    _memorisedLst = None
+
+    def __init__(self, name, valueType, device=None, memorized=False,
+                 *args, **kwargs):
         """ Main superclass for linac attributes.
         """
         super(LinacAttr, self).__init__(*args, **kwargs)
@@ -107,7 +113,12 @@ class LinacAttr(object):
             self._type = valueType
         else:
             self._type = TYPE_MAP[valueType]
-        self._memorizedLst = []
+        if memorized:
+            self.setMemorised()
+#             self._memorised = Memorised(owner=self)
+#             if not self._memorised.recover():
+#                 self.warning("Cannot recover value from the database")
+#             self._memorisedLst = []
         self._tangodb = None
         self.device = device
         self._timestamp = time()
@@ -143,8 +154,9 @@ class LinacAttr(object):
             # self.debug("Link to the device %s" % value)
             self._device = value
         self._tangodb = Database()
-        for suffix in self.memorizedLst:
-            self.recoverDynMemorized(self.name, suffix)
+        if self._memorisedLst:
+            for suffix in self._memorisedLst:
+                self._memorised.recover(suffix)
 
     # TODO
     # @property
@@ -380,6 +392,14 @@ class LinacAttr(object):
     def AutoStop(self, value):
         self._AutoStop = value
 
+    @property
+    def baseSet(self):
+        return self._baseSet
+
+    @baseSet.setter
+    def baseSet(self, value):
+        self._baseSet = value
+
     ##########################
     # Tango attribute area ---
     def isAllowed(self):
@@ -437,8 +457,8 @@ class LinacAttr(object):
                 return
             self.__class__.__dict__[suffix].fset(self, writeValue)
             readValue = getattr(self, suffix)
-            if suffix in self.memorizedLst:
-                self.storeDynMemozized(self.name, suffix, readValue)
+            if self._memorisedLst and suffix in self._memorisedLst:
+                self._memorised.store(readValue, suffix)
             self._setAttrValue(attr, readValue)
 
     #######################
@@ -467,68 +487,34 @@ class LinacAttr(object):
     ########################################
     # Tango memorized dynamic attributes ---
     @property
-    def memorizedLst(self):
-        return self._memorizedLst[:]
+    def memorisedLst(self):
+        if self._memorisedLst:
+            return self._memorisedLst[:]
 
-    def setMemorised(self, suffix):
-        if suffix not in self._memorizedLst:
-            self._memorizedLst.append(suffix)
+    def setMemorised(self, suffix=None):
+        if not self._memorised:
+            self._memorised = Memorised(owner=self)
+        if not suffix:
+            if not self._memorised.recover():
+                self.warning("Cannot recover value from the database")
+            self._memorisedLst = []
+        elif self._memorisedLst and suffix not in self._memorisedLst:
+            self._memorisedLst.append(suffix)
             if self.device is not None:
-                self.recoverDynMemorized(self.name, suffix)
+                self._memorised.recover(suffix)
 
-    def storeDynMemozized(self, mainName, suffix, value):
-        if self.device is None:
-            self.warning("Cannot memorise values outside a "
-                         "tango device server")
-            return
-        self.info("Memorising attribute %s_%s with value %s"
-                  % (mainName, suffix, value))
-        memoriseName = self.device.get_name() + "/" + mainName
-        try:
-            self._tangodb.put_device_attribute_property(memoriseName,
-                                                        {mainName:
-                                                         {suffix: str(value)}})
-        except Exception as e:
-            self.warning("Property %s_%s cannot be stored due to: %s"
-                         % (mainName, suffix, e))
+    def isMemorised(self):
+        return self._memorised is not None
 
-    def recoverDynMemorized(self, mainName, suffix):
-        if self.device is None:
-            self.warning("Cannot recover memorised values outside a "
-                         "tango device server")
-            return
-        memoriseName = self.device.get_name() + "/" + mainName
-        try:
-            property = self._tangodb.\
-                get_device_attribute_property(memoriseName, [mainName])
-            if mainName in property and suffix in property[mainName]:
-                try:
-                    value = literal_eval(property[mainName][suffix][0])
-                except:
-                    value = property[mainName][suffix][0]
-                self.info("Recovered %r as %s" % (value, type(value)))
-            else:
-                self.info("Nothing to recover from %s_%s" % (mainName, suffix))
-                return
-        except Exception as e:
-            self.warning("Property %s_%s couldn't be recovered due to: %s"
-                         % (mainName, suffix, e))
-        else:
-            self.info("Recovering memorised value %r for %s_%s"
-                      % (value, mainName, suffix))
-            try:
-                if hasattr(self, suffix):
-                    self.__class__.__dict__[suffix].fset(self, value)
-                    readback = self.__class__.__dict__[suffix].fget(self)
-                    if value != readback:
-                        self.warning("readback %s doesn't corresponds with "
-                                     "set %s" % (value, readback))
-                    else:
-                        self.info("Well applied %s_%s: %s"
-                                  % (mainName, suffix, value))
-            except Exception as e:
-                self.error("Exception recovering %s_%s: %s"
-                           % (mainName, suffix, e))
+    def store(self, value, suffix=None):
+        if self.isMemorised():
+            return self._memorised.store(value, suffix)
+        return False
+
+    def recover(self, suffix=None):
+        if self.isMemorised():
+            return self._memorised.recover(suffix)
+        return False
 
     ############################
     # First descending level ---

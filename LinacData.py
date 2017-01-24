@@ -2416,7 +2416,7 @@ class LinacData(PyTango.Device_4Impl):
                     attrDescr[READVALUE] = attrValue
                     attrQuality = self.\
                         __buildAttrQuality(attrName, attrDescr[READVALUE])
-                    self.storeDynMemozized(attr)
+                    attrDescr.store(attrDescr[WRITEVALUE])
                     if EVENTS in attrDescr:
                         self.fireEventsList([[attrName, attrValue,
                                               attrQuality]], log=True)
@@ -2438,87 +2438,6 @@ class LinacData(PyTango.Device_4Impl):
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
             attr.set_value(self.read_lastUpdate_attr)
-
-        def storeDynMemozized(self, attr):
-            '''When a write attr operation, does a change on what was stored'''
-            attrName = attr.get_name()
-            if attrName in self._internalAttrs:
-                attrDescr = self._internalAttrs[attrName]
-                if WRITEVALUE in attrDescr:
-                    value = attrDescr[WRITEVALUE]
-                    self.debug_stream("memorising attr %s with value %s"
-                                      % (attrName, value))
-                    # extract and push the value to the properties
-                    db = PyTango.Database()
-                    prop_names = db.get_device_property_list(self.get_name(),
-                                                             "*")
-                    prop_values = \
-                        db.get_device_property(self.get_name(),
-                                               prop_names.value_string)
-                    prop_values[attr.get_name()] = value
-                    db.put_device_property(self.get_name(), prop_values)
-
-        def recoverDynMemorized(self, attrName):
-            '''When, from what was stored, is wanted to be set'''
-            if attrName in self._internalAttrs:
-                attrDescr = self._internalAttrs[attrName]
-                if TYPE in self._internalAttrs[attrName]:
-                    attrType = self._internalAttrs[attrName][TYPE]
-                    # once this is clear, data can be recovered from the
-                    # database and casted properly
-                    db = PyTango.Database()
-                    prop_names = db.get_device_property_list(self.get_name(),
-                                                             "*")
-                    prop_values = \
-                        db.get_device_property(self.get_name(),
-                                               prop_names.value_string)
-                    if attrName not in prop_values:
-                        # it has been found that some properties has been
-                        # created with some lower letters when related
-                        # attribute uses some capital letters. With this we
-                        # try to know if this is the case to use the
-                        # appropriate one.
-                        for candidateName in prop_values.keys():
-                            if attrName.lower() == candidateName.lower():
-                                self.warn_stream("** Found a case sensitive "
-                                                 "candidate: %s ?= %s"
-                                                 % (attrName, candidateName))
-                                attrName = candidateName
-                                break
-                            else:
-                                self.debug_stream("* Discated candidate "
-                                                  "%s != %s"
-                                                  % (candidateName, attrName))
-                        # if even with this trik it's found then assume it
-                        # doesn't exist.
-                        if attrName != candidateName:
-                            msg = "Not found %s in the device properties"\
-                                  % (attrName)
-                            self.debug_stream("%s (keys:%s)"
-                                              % (msg, prop_values.keys()))
-                            raise LookupError(msg)
-                    value = prop_values[attrName][0]
-                    if attrType in [PyTango.DevDouble, PyTango.DevFloat]:
-                        return float(value)
-                    elif attrType in [PyTango.DevShort, PyTango.DevUShort,
-                                      PyTango.DevLong, PyTango.DevULong,
-                                      PyTango.DevLong64, PyTango.DevULong64]:
-                        return int(value)
-                    elif attrType == PyTango.DevBoolean:
-                        # The content of value is an string with the boolean
-                        # meaning and bool() call doesn't interpret it like
-                        # float() does.
-                        if value.lower() == 'false':
-                            value = False
-                        elif value.lower() == 'true':
-                            value = True
-                        else:
-                            raise ValueError("Cannot understand %s as boolean"
-                                             % (value))
-                        return value
-                    self.warn_stream("For memorized %s, unknown type %s"
-                                     % (attrName, attrType))
-                    return value
 
         # Done Write Attr method for dynattrs ---
 
