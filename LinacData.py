@@ -47,7 +47,8 @@ from types import StringType
 
 
 from constants import *
-from LinacAttrs import LinacException, CommandExc, AttrExc, EnumerationAttr
+from LinacAttrs import LinacException, CommandExc, AttrExc
+from LinacAttrs import EnumerationAttr, PLCAttr
 
 LiAttrSpecializations = [EnumerationAttr]
 
@@ -708,7 +709,7 @@ class AttrList(object):
                 plcN = int(self.impl.get_name().split('plc')[-1])
             except:
                 plcN = 0
-            if plcN in [4,5]:
+            if plcN in [4, 5]:
                 label = "%s%d_%s" % (prefix, plcN-3, name)
                 name = "%s_%s" % (prefix, name)
             else:
@@ -722,10 +723,9 @@ class AttrList(object):
                         'active': [PyTango.DevString, 'read_write'],
                         'numeric': [PyTango.DevUShort, 'read_only'],
                         'meaning': [PyTango.DevString, 'read_only']}
+        attrs = []
         try:
             enumObj = EnumerationAttr(name)
-            enumObj.device = self.impl
-            attrs = []
             for suffix in suffixes.keys():
                 try:
                     attrType = suffixes[suffix][0]
@@ -744,6 +744,7 @@ class AttrList(object):
                     self.impl.debug_stream("In %s enumeration, exception "
                                            "with %s: %s" % (name, suffix, e))
             self.impl._internalAttrs[name] = enumObj
+            enumObj.device = self.impl
         except Exception as e:
             self.impl.error_stream("Fatal exception building %s: %s"
                                    % (name, e))
@@ -767,6 +768,8 @@ class AttrList(object):
         try:
             execfile(fname, self.globals_, self.locals_)
         except IOError as io:
+            self.impl.error_stream("AttrList.parse_file IOError: %s\n%s"
+                                   % (e, traceback.format_exc()))
             raise LinacException(io)
         except Exception as e:
             self.impl.error_stream("AttrList.parse_file Exception: %s\n%s"
@@ -849,28 +852,35 @@ class AttrList(object):
            setpoint sets. Also this readback may like to know about the
            setpoint and if the element is switch on or off.
         '''
-        self.impl._plcAttrs[attrName] = {READADDR: readAddr}
-        if readBit is not None:
-            self.impl._plcAttrs[attrName][READBIT] = readBit
-        self.impl._plcAttrs[attrName][READVALUE] = None
-        self.impl._plcAttrs[attrName][READTIME] = None
-        if writeAddr is not None:
-            self.impl._plcAttrs[attrName][WRITEADDR] = writeAddr
-            self.impl._plcAttrs[attrName][WRITEVALUE] = None
-            if writeBit is not None:
-                self.impl._plcAttrs[attrName][WRITEBIT] = writeBit
-        if attrType in [PyTango.DevString, PyTango.DevBoolean]:
-            self.impl._plcAttrs[attrName][TYPE] = attrType
-        else:
-            self.impl._plcAttrs[attrName][TYPE] = TYPE_MAP[attrType]
-        if formula is not None:
-            self.impl._plcAttrs[attrName][FORMULA] = formula
-        if readback is not None:
-            self.impl._plcAttrs[attrName][READBACK] = readback
-        if setpoint is not None:
-            self.impl._plcAttrs[attrName][SETPOINT] = setpoint
-        if switch is not None:
-            self.impl._plcAttrs[attrName][SWITCH] = switch
+        AttrObj = PLCAttr(name=attrName, device=self.impl, valueType=attrType,
+                          readAddr=readAddr, readBit=readBit,
+                          writeAddr=writeAddr, writeBit=writeBit,
+                          formula=formula,
+                          readback=readback, setpoint=setpoint, switch=switch)
+        self.impl._plcAttrs[attrName] = AttrObj
+        
+#         self.impl._plcAttrs[attrName] = {READADDR: readAddr}
+#         if readBit is not None:
+#             self.impl._plcAttrs[attrName][READBIT] = readBit
+#         self.impl._plcAttrs[attrName][READVALUE] = None
+#         self.impl._plcAttrs[attrName][READTIME] = None
+#         if writeAddr is not None:
+#             self.impl._plcAttrs[attrName][WRITEADDR] = writeAddr
+#             self.impl._plcAttrs[attrName][WRITEVALUE] = None
+#             if writeBit is not None:
+#                 self.impl._plcAttrs[attrName][WRITEBIT] = writeBit
+#         if attrType in [PyTango.DevString, PyTango.DevBoolean]:
+#             self.impl._plcAttrs[attrName][TYPE] = attrType
+#         else:
+#             self.impl._plcAttrs[attrName][TYPE] = TYPE_MAP[attrType]
+#         if formula is not None:
+#             self.impl._plcAttrs[attrName][FORMULA] = formula
+#         if readback is not None:
+#             self.impl._plcAttrs[attrName][READBACK] = readback
+#         if setpoint is not None:
+#             self.impl._plcAttrs[attrName][SETPOINT] = setpoint
+#         if switch is not None:
+#             self.impl._plcAttrs[attrName][SWITCH] = switch
 
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
                                   isWritable=False, defaultValue=None):
@@ -1431,7 +1441,7 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 attrStruct[READVALUE] = attrValue
             attrStruct[READTIME] = timestamp
-            attrStruct[READTIMESTR] = time.ctime(timestamp)
+            # attrStruct[READTIMESTR] = time.ctime(timestamp)
 
         def __filterAutoStopCollection(self, attrName):
             '''This method is made to manage the collection of data on the
@@ -2105,18 +2115,18 @@ class LinacData(PyTango.Device_4Impl):
                                                    PyTango.ErrSeverity.WARN)
                 else:
                     write_value = formula_value
-            if attrStruct.has_key(SWITCHDESCRIPTOR):
-                #For the switch with autostop, when transition to power on, is
-                #necessary to clean the old collected information or it will
-                #produce an influence on the conditions.
+            if SWITCHDESCRIPTOR in attrStruct:
+                # For the switch with autostop, when transition to power on, is
+                # necessary to clean the old collected information or it will
+                # produce an influence on the conditions.
                 descriptor = attrStruct[SWITCHDESCRIPTOR]
                 if AUTOSTOP in descriptor:
-#                 if self.__stateTransitionToOn(write_value,descriptor) and \
-#                                                   descriptor.has_key(AUTOSTOP):
-                    self.__cleanAutoStopCollection(\
-                                        attrStruct[SWITCHDESCRIPTOR][AUTOSTOP])
-#                 #Depending to the on or off transition keys, this will launch 
-#                 #a thread who will modify the ATTR2RAMP, and when that 
+                    # if self.__stateTransitionToOn(write_value,descriptor) \
+                    #                        and descriptor.has_key(AUTOSTOP):
+                    self.__cleanAutoStopCollection(
+                        attrStruct[SWITCHDESCRIPTOR][AUTOSTOP])
+#                 #Depending to the on or off transition keys, this will launch
+#                 #a thread who will modify the ATTR2RAMP, and when that
 #                 #finishes the write will be set.
 #                 self.info_stream("attribute %s has receive a write %s"
 #                                  %(name,write_value))
@@ -2126,8 +2136,6 @@ class LinacData(PyTango.Device_4Impl):
 #                     attrStruct[SWITCHDEST] = write_value
 #                     self.createSwitchStateThread(name)
 #                     return
-                #The returns are necessary to avoid the write that is set later
-                #on this method. But in the final else case it has to continue
                 # The returns are necessary to avoid the write that is set
                 # later on this method. But in the final else case it has to
                 # continue.
@@ -3288,7 +3296,7 @@ class LinacData(PyTango.Device_4Impl):
                                      % (attrName, e))
                     now = time.time()
                     attrStruct[EVENTTIME] = now
-                    attrStruct[EVENTTIMESTR] = time.ctime(now)
+                    # attrStruct[EVENTTIMESTR] = time.ctime(now)
             except Exception as e:
                 self.warn_stream("In EventReEmission() exception in event "
                                  "re-emit for attribute %s: %s" % (attrName,

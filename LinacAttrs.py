@@ -25,7 +25,9 @@ __license__ = "GPLv3+"
 from ast import literal_eval
 import functools
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
-from time import time
+from PyTango import DevUChar, DevShort, DevFloat, DevDouble
+from PyTango import DevBoolean, DevString
+from time import time, ctime
 import traceback
 
 
@@ -70,11 +72,22 @@ def AttrExc(f):
     return g
 
 
+TYPE_MAP = {DevUChar: ('B', 1),
+            DevShort: ('h', 2),
+            DevFloat: ('f', 4),
+            DevDouble: ('f', 4),
+            # the PLCs only use floats of 4 bytes
+            }
+
+
 class _LinacAttr(object):
-    def __init__(self, name, device=None):
+    
+    _device = None
+    
+    def __init__(self, name, device=None, *args, **kwargs):
         """ Main superclass for linac attributes.
         """
-        super(_LinacAttr, self).__init__()
+        super(_LinacAttr, self).__init__(*args, **kwargs)
         self._name = name
         self._memorizedLst = []
         self._tangodb = None
@@ -88,10 +101,14 @@ class _LinacAttr(object):
         return self._name
 
     def __str__(self):
-        return "%s(%s)" % (self.__class__.__name__, self.name)
+        return "%s (%s)" % (self.name, self.__class__.__name__)
 
     def __repr__(self):
-        return "%s: %s" % (self, self.keys())
+        repr = "%s:\n" % self
+        for key in self.keys():
+            if self[key] is not None:
+                repr += "\t%s: %s\n" % (key, self[key])
+        return repr
 
     @property
     def device(self):
@@ -99,9 +116,9 @@ class _LinacAttr(object):
 
     @device.setter
     def device(self, value):
-        self._device = value
         if value is not None:
-            self.debug("Link to the device %s" % self._device)
+            self.debug("Link to the device %s" % value)
+            self._device = value
         self._tangodb = Database()
         for suffix in self.memorizedLst:
             self.recoverDynMemorized(self.name, suffix)
@@ -230,10 +247,12 @@ class _LinacAttr(object):
     def setMemorised(self, suffix):
         if suffix not in self._memorizedLst:
             self._memorizedLst.append(suffix)
+            if self.device is not None:
+                self.recoverDynMemorized(self.name, suffix)
 
     def storeDynMemozized(self, mainName, suffix, value):
         if self.device is None:
-            self.warning("Cannot memorize values outside a "
+            self.warning("Cannot memorise values outside a "
                          "tango device server")
             return
         self.info("Memorising attribute %s_%s with value %s"
@@ -249,7 +268,7 @@ class _LinacAttr(object):
 
     def recoverDynMemorized(self, mainName, suffix):
         if self.device is None:
-            self.warning("Cannot recover memorized values outside a "
+            self.warning("Cannot recover memorised values outside a "
                          "tango device server")
             return
         memoriseName = self.device.get_name() + "/" + mainName
@@ -261,7 +280,7 @@ class _LinacAttr(object):
                     value = literal_eval(property[mainName][suffix][0])
                 except:
                     value = property[mainName][suffix][0]
-                self.debug("Recovered %r as %s" % (value, type(value)))
+                self.info("Recovered %r as %s" % (value, type(value)))
             else:
                 self.info("Nothing to recover from %s_%s" % (mainName, suffix))
                 return
@@ -269,7 +288,7 @@ class _LinacAttr(object):
             self.warning("Property %s_%s couldn't be recovered due to: %s"
                          % (mainName, suffix, e))
         else:
-            self.info("Recovering memorised value %s for %s_%s"
+            self.info("Recovering memorised value %r for %s_%s"
                       % (value, mainName, suffix))
             try:
                 if hasattr(self, suffix):
@@ -279,7 +298,7 @@ class _LinacAttr(object):
                         self.warning("readback %s doesn't corresponds with set %s"
                                      % (value, readback))
                     else:
-                        self.debug("Well applied %s_%s: %s"
+                        self.info("Well applied %s_%s: %s"
                                    % (mainName, suffix, value))
             except Exception as e:
                 self.error("Exeption recovering %s_%s: %s"
@@ -294,6 +313,7 @@ class _LinacAttr(object):
                         return kls.__dict__[name].fget(self)
         except Exception as e:
             self.error("Cannot get item for the key %s due to: %s" % (name, e))
+            traceback.print_exc()
             return None
 
     def __setitem__(self, name, value):
@@ -301,7 +321,7 @@ class _LinacAttr(object):
             if name in self.keys():
                 for kls in self.__class__.__mro__:
                     if name in kls.__dict__.keys():
-                        if kls.__dict__[name].fset is None:
+                        if kls.__dict__[name].fset is not None:
                             kls.__dict__[name].fset(self, value)
                         else:
                             self.warning("%s NO setter" % name)
@@ -309,12 +329,63 @@ class _LinacAttr(object):
             self.error("Cannot set item %s to key %s due to: %s"
                        % (value, name, e))
 
+    def __delitem__(self, name):
+        self.error("Not allowed delitem operation")
+
+    def __len__(self):
+        return len(self.keys())
+
+    def has_key(self, key):
+        return key in self.keys()
+
     def keys(self):
         keys = self.__class__.__dict__.keys()
         # special properties of the superclass
         # accessible for all attribute types
         keys += ['timestamp', 'quality']
-        return [k for k in keys if not k.startswith('__')]
+        return [k for k in keys if not k.startswith('_')]
+
+    def values(self):
+        lst = []
+        for key in self.keys():
+            lst.append(self[key])
+        return lst
+
+    def items(self):
+        lst = []
+        for key in self.keys():
+            lst.append((key, self[key]))
+        return lst
+
+    def __iter__(self):
+        return self.iterkeys()
+
+    def iterkeys(self):
+        for name in self.keys():
+            yield name
+
+    def iteritems(self):
+        for name in self.keys():
+            yield name, self[name]
+
+    def itervalues(self):
+        for name in self.keys():
+            yield self[name]
+
+    def __reversed__(self):
+        keys = self.keys()
+        keys.reverse()
+        for name in keys:
+            yield name
+
+    def __missing__(self, key):
+        return key not in self.keys()
+
+    def __contains__(self, key):
+        return key in self.keys() and self[key] is not None
+
+    def pop(self, key):
+        self[key] = None
 
     # First descending level ---
     def _getAttrName(self, attr):
@@ -363,13 +434,13 @@ class _LinacAttr(object):
 
 
 class EnumerationAttr(_LinacAttr):
-    def __init__(self, name, optionsLst=None):
+    def __init__(self, name, optionsLst=None, *args, **kwargs):
         """Precursor for the future CalibrationAttr class. Based on a list,
            provided by the user, that can be modified (and that's why it is
            memorised) provides a numeric access as well as a string meaning
            that combines both: the number and the string associated.
         """
-        super(EnumerationAttr, self).__init__(name)
+        super(EnumerationAttr, self).__init__(name, *args, **kwargs)
         if optionsLst is None:
             self._options = []
             self._quality = AttrQuality.ATTR_INVALID
@@ -395,7 +466,7 @@ class EnumerationAttr(_LinacAttr):
         if type(lst) == list and not any([len(each)-1 for each in lst]):
             # candidate a wrong string made list
             rebuild = "".join("%s" % i for i in lst)
-            self.debug("Received a wrong string list %s and rebuild to %s"
+            self.warning("Received a wrong string list %s and rebuild to %s"
                        % (lst, rebuild))
             try:
                 lst = eval(rebuild)
@@ -404,7 +475,7 @@ class EnumerationAttr(_LinacAttr):
         if type(lst) == str:
             # FIXME: check the input to avoid issues
             bar = list(literal_eval(lst))
-            self.debug("Received a string %r and understand a list: %s"
+            self.info("Received a string %r and understand a list: %s"
                        % (lst, bar))
             lst = bar
         # process ---
@@ -478,3 +549,173 @@ class EnumerationAttr(_LinacAttr):
         if self._active is None:
             return 'None'
         return "%d:%s" % (self.numeric, self.active)
+
+
+class PLCAttr(_LinacAttr):
+
+    _readValue = None
+    _writeValue = None
+
+    _event_t = None
+    _lastEventQuality = AttrQuality.ATTR_INVALID
+
+    _rst_t = None
+
+    def __init__(self, valueType, valueFormat=None,
+                 readAddr=None, readBit=None,
+                 writeAddr=None, writeBit=None,
+                 formula=None,
+                 events=None, meanings=None, qualities=None, 
+                 readback=None, setpoint=None, switch=None,
+                 IamChecker=None, isRst=None,
+                 *args, **kwargs):
+        """
+            Class to describe an attribute that references information from
+            any of the Linac's PLCs.
+        """
+        super(PLCAttr, self).__init__(*args, **kwargs)
+        if valueType in [DevString, DevBoolean]:
+            self._type = valueType
+        else:
+            self._type = TYPE_MAP[valueType]
+        self._format = valueFormat
+        self._readAddr = readAddr
+        self._readBit = readBit
+        self._writeAddr = writeAddr
+        self._writeBit = writeBit
+        self._formula = formula
+        
+        self._events = events
+        self._meanings = meanings
+        self._qualities = qualities
+        
+        self._readbackAttrName = readback
+        self._setpointAttrName = setpoint
+        self._switchAttrName = switch
+        self._isRst = isRst
+        # self.debug("%s PLCAttr build" % self.name)
+
+    # Deprecated properties for backwards compatibility ---
+    @property
+    def read_value(self):
+        return self._readValue
+
+    @read_value.setter
+    def read_value(self, value):
+        self._readValue = value
+
+    @property
+    def read_t(self):
+        return self._timestamp
+
+    @read_t.setter
+    def read_t(self, value):
+        self._timestamp = value
+
+    @property
+    def read_t_str(self):
+        return ctime(self._timestamp)
+
+    @property
+    def read_addr(self):
+        return self._readAddr
+
+    @property
+    def read_bit(self):
+        return self._readBit
+
+    @property
+    def type(self):
+        return self._type
+
+    @property
+    def format(self):
+        return self._format
+
+    @format.setter
+    def format(self, value):
+        self._format = value
+
+    @property
+    def events(self):
+        return self._events
+
+    @events.setter
+    def events(self, value):
+        self._events = value
+
+    @property
+    def event_t(self):
+        return self._event_t
+
+    @event_t.setter
+    def event_t(self, value):
+        self._event_t = value
+
+    @property
+    def event_t_str(self):
+        return ctime(self._event_t)
+
+    @property
+    def lastEventQuality(self):
+        return self._lastEventQuality
+
+    @lastEventQuality.setter
+    def lastEventQuality(self, value):
+        self._lastEventQuality = value
+
+    @property
+    def meanings(self):
+        return self._meanings
+
+    @meanings.setter
+    def meanings(self, value):
+        self._meanings = value
+
+    @property
+    def qualities(self):
+        return self._qualities
+
+    @property
+    def formula(self):
+        return self._formula
+
+    @property
+    def write_value(self):
+        return self._writeValue
+
+    @write_value.setter
+    def write_value(self, value):
+        self._writeValue = value
+
+    @property
+    def write_addr(self):
+        return self._writeAddr
+
+    @property
+    def write_bit(self):
+        return self._writeBit
+
+    @property
+    def readbackAttr(self):
+        return self._readbackAttrName
+
+    @property
+    def setpointAttr(self):
+        return self._setpointAttrName
+
+    @property
+    def SwitchAttr(self):
+        return self._switchAttrName
+
+    @property
+    def isRst(self):
+        return self._isRst
+
+    @property
+    def rst_t(self):
+        return self._rst_t
+
+    @rst_t.setter
+    def rst_t(self, value):
+        self._rst_t = value
