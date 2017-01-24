@@ -527,7 +527,7 @@ class _LinacAttr(object):
                         self.info("Well applied %s_%s: %s"
                                   % (mainName, suffix, value))
             except Exception as e:
-                self.error("Exeption recovering %s_%s: %s"
+                self.error("Exception recovering %s_%s: %s"
                            % (mainName, suffix, e))
 
     ############################
@@ -606,6 +606,7 @@ class EnumerationAttr(_LinacAttr):
 
     @options.setter
     def options(self, lst):
+        options = []
         # preprocess ---
         if type(lst) == list and not any([len(each)-1 for each in lst]):
             # candidate a wrong string made list
@@ -624,19 +625,23 @@ class EnumerationAttr(_LinacAttr):
             lst = bar
         # process ---
         if type(lst) == list:
-            for i, element in enumerate(lst):
-                lst[i] = str(element).lower().strip()
-            self._options = lst
-            self._quality = AttrQuality.ATTR_VALID
-            self.fireEvent(self.name+'_options', str(self.options))
-            if self._active is not None:
-                try:
-                    # The active may have changed once the list change
-                    self.active = self._active
-                except Exception as e:
-                    self.warning("After options change, the active is not "
-                                 "valid anymore")
-                    self._active = None
+            filteredLst = []
+            for element in lst:
+                if type(element) is str and len(element) > 0:
+                    filteredLst.append(element.lower().strip())
+            if self._options != filteredLst:
+                self._options = filteredLst
+                self._quality = AttrQuality.ATTR_VALID
+                self.fireEvent(self.name+'_options', str(self.options))
+                self.storeDynMemozized(self.name, 'options', self.options)
+                if self._active is not None:
+                    try:
+                        # The active may have changed once the list change
+                        self.active = self._active
+                    except Exception as e:
+                        self.warning("After options change, the active is not "
+                                     "valid anymore")
+                        self._active = None
         else:
             raise TypeError("options shall be a list (received a %s)"
                             % type(lst))
@@ -665,8 +670,10 @@ class EnumerationAttr(_LinacAttr):
             elif value.lower() in self._options:
                 toBeActive = value.lower()
             else:
-                raise ValueError("%s is not in the available options %s"
-                                 % (value, self._options))
+                self.options = self._options + [value]
+                self.warning("%s wasn't in the list of available options "
+                             "but added: %s" % (value, self.options))
+                toBeActive = value.lower()
             self._active = toBeActive
             self._timestamp = time()
             self.fireEvent(self.name+'_active', self.active)

@@ -1956,6 +1956,8 @@ class LinacData(PyTango.Device_4Impl):
         def convert_Lock_ST(self):
             '''
             '''
+            if not 'Lock_Status' in self._plcAttrs:
+                return
             meanings = self._plcAttrs['Lock_Status'][MEANINGS]
             if self.read_lock_ST_attr not in meanings:
                 lock_String = "%d:unknown" % (self.read_lock_ST_attr)
@@ -2011,12 +2013,12 @@ class LinacData(PyTango.Device_4Impl):
                     attrStruct = self._getAttrStruct(attrName)
                     if READVALUE in attrStruct:
                         read_value = attrStruct[READVALUE]
-                    if read_value is None:
-                        attr.set_value_date_quality(0, time.time(),
-                                                    PyTango.AttrQuality.
-                                                    ATTR_INVALID)
-                    else:
-                        attr.set_value(read_value)
+                        if read_value is None:
+                            attr.set_value_date_quality(0, time.time(),
+                                                        PyTango.AttrQuality.
+                                                        ATTR_INVALID)
+                        else:
+                            attr.set_value(read_value)
                     if WRITEVALUE in attrStruct:
                         write_value = attrStruct[WRITEVALUE]
                         attr.set_write_value(write_value)
@@ -2205,25 +2207,26 @@ class LinacData(PyTango.Device_4Impl):
             if self.get_state() == PyTango.DevState.FAULT or \
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
-            rbyte = self.read_db.b(self.locking_raddr)
-            wbyte = self.write_db.b(self.locking_waddr)
-            if value:
-                # sets bit 'bitno' of b
-                toWrite = rbyte | (int(value) << self.locking_wbit)
-                # a byte of 0s with a unique 1 in the place to set this 1
-            else:
-                # clears bit 'bitno' of b
-                toWrite = rbyte & (0xFF) ^ (1 << self.locking_wbit)
-                # a byte of 1s with a unique 0 in the place to set this 0
-            self.write_db.write(self.locking_waddr, toWrite,
-                                TYPE_MAP[PyTango.DevUChar])
-            reRead = self.read_db.b(self.locking_raddr)
-            self.debug_stream("Writing Locking boolean to %s (%d.%d) byte "
-                              "was %s; write %s; now %s"
-                              % ("  lock" if value else "unlock",
-                                 self.locking_raddr, self.locking_rbit,
-                                 bin(rbyte), bin(toWrite), bin(reRead)))
-            self._plcAttrs['Locking'][WRITEVALUE] = value
+            if self.locking_raddr and self.locking_waddr:
+                rbyte = self.read_db.b(self.locking_raddr)
+                wbyte = self.write_db.b(self.locking_waddr)
+                if value:
+                    # sets bit 'bitno' of b
+                    toWrite = rbyte | (int(value) << self.locking_wbit)
+                    # a byte of 0s with a unique 1 in the place to set this 1
+                else:
+                    # clears bit 'bitno' of b
+                    toWrite = rbyte & (0xFF) ^ (1 << self.locking_wbit)
+                    # a byte of 1s with a unique 0 in the place to set this 0
+                self.write_db.write(self.locking_waddr, toWrite,
+                                    TYPE_MAP[PyTango.DevUChar])
+                reRead = self.read_db.b(self.locking_raddr)
+                self.debug_stream("Writing Locking boolean to %s (%d.%d) byte "
+                                  "was %s; write %s; now %s"
+                                  % ("  lock" if value else "unlock",
+                                     self.locking_raddr, self.locking_rbit,
+                                     bin(rbyte), bin(toWrite), bin(reRead)))
+                self._plcAttrs['Locking'][WRITEVALUE] = value
 
         @AttrExc
         def write_Locking(self, attr):
@@ -3073,41 +3076,44 @@ class LinacData(PyTango.Device_4Impl):
             # now = self.last_update_time#time.time()
             attr2Event = []
             # Heartbit
-            self.read_heartbeat_attr = self.read_db.bit(self.heartbeat_addr, 0)
-            HeartBeatStruct = self._getAttrStruct('HeartBeat')
-            if not self.read_heartbeat_attr == HeartBeatStruct[READVALUE]:
-                HeartBeatStruct[READVALUE] = self.read_heartbeat_attr
-                HeartBeatStruct[READTIME] = time.time()
-                attr2Event.append(['HeartBeat', self.read_heartbeat_attr])
+            if self.heartbeat_addr:
+                self.read_heartbeat_attr =\
+                    self.read_db.bit(self.heartbeat_addr, 0)
+                HeartBeatStruct = self._getAttrStruct('HeartBeat')
+                if not self.read_heartbeat_attr == HeartBeatStruct[READVALUE]:
+                    HeartBeatStruct[READVALUE] = self.read_heartbeat_attr
+                    HeartBeatStruct[READTIME] = time.time()
+                    attr2Event.append(['HeartBeat', self.read_heartbeat_attr])
             # Locks
-            self.read_lock_ST_attr = self.read_db.get(self.lock_ST, 'B', 1)
-            lock_str, lock_quality = self.convert_Lock_ST()
-            if self.read_lock_ST_attr not in [0, 1, 2]:
-                self.warn_stream("<<<Invalid locker code %d>>>"
-                                 % (self.read_lock_ST_attr))
-            Lock_STStruct = self._getAttrStruct('Lock_ST')
-            if not self.read_lock_ST_attr == Lock_STStruct[READVALUE]:  # or\
-                # (now - Lock_STStruct[READTIME]) > PERIODIC_EVENT:
-                Lock_STStruct[READVALUE] = self.read_lock_ST_attr
-                Lock_STStruct[READTIME] = time.time()
-                attr2Event.append(['Lock_ST', self.read_lock_ST_attr,
-                                   lock_quality])
-            Lock_StatusStruct = self._getAttrStruct('Lock_Status')
-            if not lock_str == Lock_StatusStruct[READVALUE]:  # or\
-                # (now - Lock_StatusStruct[READTIME]) > PERIODIC_EVENT:
-                Lock_StatusStruct[READVALUE] = lock_str
-                Lock_StatusStruct[READTIME] = time.time()
-                attr2Event.append(['Lock_Status', lock_str, lock_quality])
-            # locking = self.read_lock()
-            LockingStruct = self._getAttrStruct('Locking')
-            if not self.is_lockedByTango == LockingStruct[READVALUE]:  # or\
-                # (now - LockingStruct[READTIME]) > PERIODIC_EVENT:
-                LockingStruct[READVALUE] = self.is_lockedByTango
-                LockingStruct[READTIME] = time.time()
-                attr2Event.append(['Locking', self.is_lockedByTango])
-            if len(attr2Event) > 0:
-                self.fireEventsList(attr2Event,
-                                    timestamp=self.last_update_time)
+            if self.lock_ST:
+                self.read_lock_ST_attr = self.read_db.get(self.lock_ST, 'B', 1)
+                lock_str, lock_quality = self.convert_Lock_ST()
+                if self.read_lock_ST_attr not in [0, 1, 2]:
+                    self.warn_stream("<<<Invalid locker code %d>>>"
+                                     % (self.read_lock_ST_attr))
+                Lock_STStruct = self._getAttrStruct('Lock_ST')
+                if not self.read_lock_ST_attr == Lock_STStruct[READVALUE]:
+                    # or (now - Lock_STStruct[READTIME]) > PERIODIC_EVENT:
+                    Lock_STStruct[READVALUE] = self.read_lock_ST_attr
+                    Lock_STStruct[READTIME] = time.time()
+                    attr2Event.append(['Lock_ST', self.read_lock_ST_attr,
+                                       lock_quality])
+                Lock_StatusStruct = self._getAttrStruct('Lock_Status')
+                if not lock_str == Lock_StatusStruct[READVALUE]:
+                    # or (now - Lock_StatusStruct[READTIME]) > PERIODIC_EVENT:
+                    Lock_StatusStruct[READVALUE] = lock_str
+                    Lock_StatusStruct[READTIME] = time.time()
+                    attr2Event.append(['Lock_Status', lock_str, lock_quality])
+                # locking = self.read_lock()
+                LockingStruct = self._getAttrStruct('Locking')
+                if not self.is_lockedByTango == LockingStruct[READVALUE]:
+                    # or (now - LockingStruct[READTIME]) > PERIODIC_EVENT:
+                    LockingStruct[READVALUE] = self.is_lockedByTango
+                    LockingStruct[READTIME] = time.time()
+                    attr2Event.append(['Locking', self.is_lockedByTango])
+                if len(attr2Event) > 0:
+                    self.fireEventsList(attr2Event,
+                                        timestamp=self.last_update_time)
 
         def __attrHasEvents(self, attrName):
             '''
