@@ -866,30 +866,6 @@ class AttrList(object):
                                isWritable=isWritable,
                                defaultValue=defaultValue)
         self.impl._internalAttrs[attrName] = attrObj
-        
-        
-        
-#         self.impl._internalAttrs[attrName] = {}
-#         self.impl._internalAttrs[attrName][TYPE] = attrType
-#         if memorized:
-#             try:
-#                 # next call will use the type on the structure _internalAttrs
-#                 memorizedValue = self.impl.recoverDynMemorized(attrName)
-#                 self.impl.info_stream("Recovering memorized value of %s (%s)"
-#                                       % (attrName, memorizedValue))
-#                 self.impl._internalAttrs[attrName][READVALUE] = memorizedValue
-#                 self.impl._internalAttrs[attrName][WRITEVALUE] = memorizedValue
-#             except Exception as e:
-#                 self.impl.warn_stream("Cannot recover a memorised value for "
-#                                       "%s: %s" % (attrName, e))
-#                 self.impl._internalAttrs[attrName][READVALUE] = defaultValue
-#                 if isWritable:
-#                     self.impl._internalAttrs[attrName][WRITEVALUE] = None
-#         else:
-#             self.impl._internalAttrs[attrName][READVALUE] = defaultValue
-#             if isWritable:
-#                 self.impl._internalAttrs[attrName][WRITEVALUE] = None
-#         self.impl._internalAttrs[attrName][READTIME] = None
 
     def _prepareEvents(self, attrName, eventConfig):
         if eventConfig is not None:
@@ -1956,7 +1932,7 @@ class LinacData(PyTango.Device_4Impl):
         def convert_Lock_ST(self):
             '''
             '''
-            if not 'Lock_Status' in self._plcAttrs:
+            if 'Lock_Status' not in self._plcAttrs:
                 return
             meanings = self._plcAttrs['Lock_Status'][MEANINGS]
             if self.read_lock_ST_attr not in meanings:
