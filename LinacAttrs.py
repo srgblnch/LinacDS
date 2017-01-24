@@ -24,6 +24,7 @@ __license__ = "GPLv3+"
 
 from ast import literal_eval
 import functools
+from LinacFeatures import Memorised, Events
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
 from PyTango import DevUChar, DevShort, DevFloat, DevDouble
 from PyTango import DevBoolean, DevString
@@ -82,23 +83,35 @@ TYPE_MAP = {DevUChar: ('B', 1),
 
 class _LinacAttr(object):
 
+    _readValue = None
+    _writeValue = None
+
     _device = None
 
-    def __init__(self, name, device=None, *args, **kwargs):
+    _qualities = None
+    _eventsObj = None
+    _events = None
+    _event_t = None
+    _lastEventQuality = AttrQuality.ATTR_INVALID
+
+    _AutoStop = None
+
+    def __init__(self, name, valueType, device=None, *args, **kwargs):
         """ Main superclass for linac attributes.
         """
         super(_LinacAttr, self).__init__(*args, **kwargs)
         self._name = name
+        if valueType is None:
+            self._type = None
+        elif valueType in [DevString, DevBoolean]:
+            self._type = valueType
+        else:
+            self._type = TYPE_MAP[valueType]
         self._memorizedLst = []
         self._tangodb = None
         self.device = device
         self._timestamp = time()
         self._quality = AttrQuality.ATTR_VALID
-
-    # Main Tango part ---
-    @property
-    def name(self):
-        return self._name
 
     def __str__(self):
         return "%s (%s)" % (self.name, self.__class__.__name__)
@@ -106,9 +119,19 @@ class _LinacAttr(object):
     def __repr__(self):
         repr = "%s:\n" % self
         for key in self.keys():
-            if self[key] is not None:
+            if self[key] is None:
+                pass  # ignore
+            elif type(self[key]) is list and len(self[key]) == 0:
+                pass  # ignore
+            else:
                 repr += "\t%s: %s\n" % (key, self[key])
         return repr
+
+    ################
+    # properties ---
+    @property
+    def name(self):
+        return self._name
 
     @property
     def device(self):
@@ -117,11 +140,16 @@ class _LinacAttr(object):
     @device.setter
     def device(self, value):
         if value is not None:
-            self.debug("Link to the device %s" % value)
+            # self.debug("Link to the device %s" % value)
             self._device = value
         self._tangodb = Database()
         for suffix in self.memorizedLst:
             self.recoverDynMemorized(self.name, suffix)
+
+    # TODO
+    # @property
+    # def value(self):
+    #     pass
 
     @property
     def timestamp(self):
@@ -131,35 +159,228 @@ class _LinacAttr(object):
     def quality(self):
         return self._quality
 
+    @property
+    def type(self):
+        return self._type
+
+    ######################
     # Tango log system ---
-    def error(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def error(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.device:
             self.device.error_stream(msg)
         else:
             print("ERROR: %s" % (msg))
 
-    def warning(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def warning(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.device:
             self.device.warn_stream(msg)
         else:
             print("WARN: %s" % (msg))
 
-    def info(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def info(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.device:
             self.device.info_stream(msg)
         else:
             print("INFO: %s" % (msg))
 
-    def debug(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def debug(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.device:
             self.device.debug_stream(msg)
         else:
             print("DEBUG: %s" % (msg))
 
+    #####################################
+    # Dictionary like functionalities ---
+    def __len__(self):
+        return len(self.keys())
+
+    def __getitem__(self, name):
+        try:
+            if name in self.keys():
+                for kls in self.__class__.__mro__:
+                    if name in kls.__dict__.keys():
+                        return kls.__dict__[name].fget(self)
+            else:
+                # self.error("%s not in keys: %s" % (name, self.keys()))
+                return
+        except Exception as e:
+            self.error("Cannot get item for the key %s due to: %s" % (name, e))
+            traceback.print_exc()
+            return None
+
+    def __setitem__(self, name, value):
+        try:
+            if name in self.keys():
+                for kls in self.__class__.__mro__:
+                    if name in kls.__dict__.keys():
+                        if kls.__dict__[name].fset is not None:
+                            kls.__dict__[name].fset(self, value)
+                        else:
+                            self.warning("%s NO setter" % name)
+        except Exception as e:
+            self.error("Cannot set item %s to key %s due to: %s"
+                       % (value, name, e))
+
+    def __delitem__(self, name):
+        self.error("Not allowed delitem operation")
+
+    def has_key(self, key):
+        return key in self.keys()
+
+    def keys(self):
+        # FIXME: should this list be made only once?
+        keys = []
+        discarted = []
+        for kls in self.__class__.__mro__:
+            klskeys = []
+            klsdiscarted = []
+            for key, value in kls.__dict__.iteritems():
+                if isinstance(value, property):
+                    klskeys += [key]
+                else:
+                    klsdiscarted += [key]
+#             self.info("kls: %s" % (kls))
+#             self.info("\t* kls keys: %s" % (klskeys))
+#             self.info("\t* kls discarted: %s" % (klsdiscarted))
+            keys += klskeys
+            discarted += klsdiscarted
+#         self.info("* keys: %s" % (keys))
+#         self.info("* discarted: %s" % (discarted))
+        return keys
+
+    def values(self):
+        lst = []
+        for key in self.keys():
+            lst.append(self[key])
+        return lst
+
+    def items(self):
+        lst = []
+        for key in self.keys():
+            lst.append((key, self[key]))
+        return lst
+
+    def __iter__(self):
+        return self.iterkeys()
+
+    def iterkeys(self):
+        for name in self.keys():
+            yield name
+
+    def itervalues(self):
+        for name in self.keys():
+            yield self[name]
+
+    def iteritems(self):
+        for name in self.keys():
+            yield name, self[name]
+
+    def __reversed__(self):
+        keys = self.keys()
+        keys.reverse()
+        for name in keys:
+            yield name
+
+    def __missing__(self, key):
+        return key not in self.keys()
+
+    def __contains__(self, key):
+        return key in self.keys() and self[key] is not None
+
+    def pop(self, key):
+        self[key] = None
+
+    #######################################################
+    # Dictionary properties for backwards compatibility ---
+    @property
+    def read_value(self):
+        return self._readValue
+
+    @read_value.setter
+    def read_value(self, value):
+        self._readValue = value
+
+    @property
+    def write_value(self):
+        return self._writeValue
+
+    @write_value.setter
+    def write_value(self, value):
+        self._writeValue = value
+
+    @property
+    def read_t(self):
+        return self._timestamp
+
+    @read_t.setter
+    def read_t(self, value):
+        self._timestamp = value
+
+    @property
+    def read_t_str(self):
+        if self._timestamp:
+            return ctime(self._timestamp)
+        return ""
+
+    @property
+    def qualities(self):
+        return self._qualities
+
+    @qualities.setter
+    def qualities(self, value):
+        self._qualities = value
+
+    @property
+    def events(self):
+        return self._events
+
+    @events.setter
+    def events(self, value):
+        if value:
+            self._eventsObj = Events(owner=self)
+        else:
+            self._eventsObj = None
+        self._events = value
+
+    @property
+    def event_t(self):
+        return self._event_t
+
+    @event_t.setter
+    def event_t(self, value):
+        self._event_t = value
+
+    @property
+    def event_t_str(self):
+        if self._event_t:
+            return ctime(self._event_t)
+        return ""
+
+    @property
+    def lastEventQuality(self):
+        return self._lastEventQuality
+
+    @lastEventQuality.setter
+    def lastEventQuality(self, value):
+        self._lastEventQuality = value
+
+    @property
+    def AutoStop(self):
+        return self._AutoStop
+
+    @AutoStop.setter
+    def AutoStop(self, value):
+        self._AutoStop = value
+
+    ##########################
     # Tango attribute area ---
     def isAllowed(self):
         if self.device is None:
@@ -220,26 +441,31 @@ class _LinacAttr(object):
                 self.storeDynMemozized(self.name, suffix, readValue)
             self._setAttrValue(attr, readValue)
 
+    #######################
     # Tango events area ---
     def fireEvent(self, name, value, quality=None):
-        # FIXME: shall be other event types be fired?
-        #        archiver, periodic,...
-        try:
-            if quality is None:
-                quality = self.quality
-            if self.device is not None:
-                self.device.push_change_event(name, value, self.timestamp,
-                                              quality)
-            self.debug("fireEvent(%s, %s, %s, %s)" % (name, value,
-                                                      self.timestamp,
-                                                      quality))
-        except DevFailed as e:
-            self.warning("DevFailed in event %s emit: %s" % (name, e[0].desc))
-        except Exception as e:
-            self.error("Event for %s (with value %s) not emitted due to: %s"
-                       % (name, value, e))
+        if self._eventsObj:
+            self._eventsObj.FireEvent(name, value, quality)
+#         # FIXME: shall be other event types be fired?
+#         #        archiver, periodic,...
+#         try:
+#             if quality is None:
+#                 quality = self.quality
+#             if self.device is not None:
+#                 self.device.push_change_event(name, value, self.timestamp,
+#                                               quality)
+#             self.debug("fireEvent(%s, %s, %s, %s)" % (name, value,
+#                                                       self.timestamp,
+#                                                       quality))
+#         except DevFailed as e:
+#             self.warning("DevFailed in event %s emit: %s"
+#                          % (name, e[0].desc))
+#         except Exception as e:
+#             self.error("Event for %s (with value %s) not emitted due to: %s"
+#                        % (name, value, e))
 
-    # Tango memorized dynamic attributes
+    ########################################
+    # Tango memorized dynamic attributes ---
     @property
     def memorizedLst(self):
         return self._memorizedLst[:]
@@ -304,89 +530,7 @@ class _LinacAttr(object):
                 self.error("Exeption recovering %s_%s: %s"
                            % (mainName, suffix, e))
 
-    # Linac's device structure ---
-    def __getitem__(self, name):
-        try:
-            if name in self.keys():
-                for kls in self.__class__.__mro__:
-                    if name in kls.__dict__.keys():
-                        return kls.__dict__[name].fget(self)
-        except Exception as e:
-            self.error("Cannot get item for the key %s due to: %s" % (name, e))
-            traceback.print_exc()
-            return None
-
-    def __setitem__(self, name, value):
-        try:
-            if name in self.keys():
-                for kls in self.__class__.__mro__:
-                    if name in kls.__dict__.keys():
-                        if kls.__dict__[name].fset is not None:
-                            kls.__dict__[name].fset(self, value)
-                        else:
-                            self.warning("%s NO setter" % name)
-        except Exception as e:
-            self.error("Cannot set item %s to key %s due to: %s"
-                       % (value, name, e))
-
-    def __delitem__(self, name):
-        self.error("Not allowed delitem operation")
-
-    def __len__(self):
-        return len(self.keys())
-
-    def has_key(self, key):
-        return key in self.keys()
-
-    def keys(self):
-        keys = self.__class__.__dict__.keys()
-        # special properties of the superclass
-        # accessible for all attribute types
-        keys += ['timestamp', 'quality']
-        return [k for k in keys if not k.startswith('_')]
-
-    def values(self):
-        lst = []
-        for key in self.keys():
-            lst.append(self[key])
-        return lst
-
-    def items(self):
-        lst = []
-        for key in self.keys():
-            lst.append((key, self[key]))
-        return lst
-
-    def __iter__(self):
-        return self.iterkeys()
-
-    def iterkeys(self):
-        for name in self.keys():
-            yield name
-
-    def iteritems(self):
-        for name in self.keys():
-            yield name, self[name]
-
-    def itervalues(self):
-        for name in self.keys():
-            yield self[name]
-
-    def __reversed__(self):
-        keys = self.keys()
-        keys.reverse()
-        for name in keys:
-            yield name
-
-    def __missing__(self, key):
-        return key not in self.keys()
-
-    def __contains__(self, key):
-        return key in self.keys() and self[key] is not None
-
-    def pop(self, key):
-        self[key] = None
-
+    ############################
     # First descending level ---
     def _getAttrName(self, attr):
         if type(attr) == str:
@@ -553,15 +697,9 @@ class EnumerationAttr(_LinacAttr):
 
 class PLCAttr(_LinacAttr):
 
-    _readValue = None
-    _writeValue = None
-
-    _event_t = None
-    _lastEventQuality = AttrQuality.ATTR_INVALID
-
     _rst_t = None
 
-    def __init__(self, valueType, valueFormat=None,
+    def __init__(self, valueFormat=None,
                  readAddr=None, readBit=None,
                  writeAddr=None, writeBit=None,
                  formula=None,
@@ -574,10 +712,6 @@ class PLCAttr(_LinacAttr):
             any of the Linac's PLCs.
         """
         super(PLCAttr, self).__init__(*args, **kwargs)
-        if valueType in [DevString, DevBoolean]:
-            self._type = valueType
-        else:
-            self._type = TYPE_MAP[valueType]
         self._format = valueFormat
         self._readAddr = readAddr
         self._readBit = readBit
@@ -595,27 +729,8 @@ class PLCAttr(_LinacAttr):
         self._isRst = isRst
         # self.debug("%s PLCAttr build" % self.name)
 
-    # Deprecated properties for backwards compatibility ---
-    @property
-    def read_value(self):
-        return self._readValue
-
-    @read_value.setter
-    def read_value(self, value):
-        self._readValue = value
-
-    @property
-    def read_t(self):
-        return self._timestamp
-
-    @read_t.setter
-    def read_t(self, value):
-        self._timestamp = value
-
-    @property
-    def read_t_str(self):
-        return ctime(self._timestamp)
-
+    #######################################################
+    # Dictionary properties for backwards compatibility ---
     @property
     def read_addr(self):
         return self._readAddr
@@ -623,10 +738,6 @@ class PLCAttr(_LinacAttr):
     @property
     def read_bit(self):
         return self._readBit
-
-    @property
-    def type(self):
-        return self._type
 
     @property
     def format(self):
@@ -637,34 +748,6 @@ class PLCAttr(_LinacAttr):
         self._format = value
 
     @property
-    def events(self):
-        return self._events
-
-    @events.setter
-    def events(self, value):
-        self._events = value
-
-    @property
-    def event_t(self):
-        return self._event_t
-
-    @event_t.setter
-    def event_t(self, value):
-        self._event_t = value
-
-    @property
-    def event_t_str(self):
-        return ctime(self._event_t)
-
-    @property
-    def lastEventQuality(self):
-        return self._lastEventQuality
-
-    @lastEventQuality.setter
-    def lastEventQuality(self, value):
-        self._lastEventQuality = value
-
-    @property
     def meanings(self):
         return self._meanings
 
@@ -673,28 +756,24 @@ class PLCAttr(_LinacAttr):
         self._meanings = value
 
     @property
-    def qualities(self):
-        return self._qualities
-
-    @property
     def formula(self):
         return self._formula
-
-    @property
-    def write_value(self):
-        return self._writeValue
-
-    @write_value.setter
-    def write_value(self, value):
-        self._writeValue = value
 
     @property
     def write_addr(self):
         return self._writeAddr
 
+    @write_addr.setter
+    def write_addr(self, value):
+        self._writeAddr = value
+
     @property
     def write_bit(self):
         return self._writeBit
+
+    @write_bit.setter
+    def write_bit(self, value):
+        self._writeBit = value
 
     @property
     def readbackAttr(self):
@@ -712,6 +791,10 @@ class PLCAttr(_LinacAttr):
     def isRst(self):
         return self._isRst
 
+    @isRst.setter
+    def isRst(self, value):
+        self._isRst = value
+
     @property
     def rst_t(self):
         return self._rst_t
@@ -719,3 +802,112 @@ class PLCAttr(_LinacAttr):
     @rst_t.setter
     def rst_t(self, value):
         self._rst_t = value
+
+
+class InternalAttr(_LinacAttr):
+
+    _memorised = None
+
+    _logic = None
+    _operator = None
+    _inverted = None
+
+    _mean = None
+    _std = None
+
+    _triggered = None
+
+    _readSet = None
+    _writeSet = None
+
+    def __init__(self, memorized=False, isWritable=False,
+                 defaultValue=None, *args, **kwargs):
+        """
+            Class to describe an attribute that references information from
+            any of the Linac's PLCs.
+        """
+        super(InternalAttr, self).__init__(*args, **kwargs)
+        if memorized:
+            self._memorised = Memorised(owner=self)
+            if not self._memorised.recover():
+                self.info("Using default value %s" % (defaultValue))
+                self._readValue = defaultValue
+        elif defaultValue:
+            self._readValue = defaultValue
+        # FIXME: can those float('NaN') be to mean "non initialised"?
+
+    #######################################################
+    # Dictionary properties for backwards compatibility ---
+    @property
+    def logic(self):
+        return self._logic
+
+    @logic.setter
+    def logic(self, value):
+        self._logic = value
+
+    @property
+    def operator(self):
+        return self._operator
+
+    @operator.setter
+    def operator(self, value):
+        self._operator = value
+
+    @property
+    def inverted(self):
+        return self._inverted
+
+    @inverted.setter
+    def inverted(self, value):
+        self._inverted = value
+
+    @property
+    def Mean(self):
+        return self._mean
+
+    @Mean.setter
+    def Mean(self, value):
+        self._mean = value
+
+    @property
+    def Std(self):
+        return self._std
+
+    @Std.setter
+    def Std(self, value):
+        self._std = value
+
+    @property
+    def Triggered(self):
+        return self._triggered
+
+    @Triggered.setter
+    def Triggered(self, value):
+        self._triggered = value
+
+    @property
+    def read_set(self):
+        return self._readSet
+
+    @read_set.setter
+    def read_set(self, value):
+        self._readSet = value
+
+    @property
+    def write_set(self):
+        return self._writeSet
+
+    @write_set.setter
+    def write_set(self, value):
+        self._writeSet = value
+
+    #######################
+    # Memorised feature ---
+    def storeDynMemozized(self, mainName, suffix, value):
+        if self._memorised:
+            self._memorised.store(suffix)
+
+    def recoverDynMemorized(self, mainName, suffix):
+        if self._memorised:
+            self._memorised.recover(suffix)

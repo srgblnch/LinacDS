@@ -48,7 +48,7 @@ from types import StringType
 
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
-from LinacAttrs import EnumerationAttr, PLCAttr
+from LinacAttrs import EnumerationAttr, PLCAttr, InternalAttr
 
 LiAttrSpecializations = [EnumerationAttr]
 
@@ -725,7 +725,7 @@ class AttrList(object):
                         'meaning': [PyTango.DevString, 'read_only']}
         attrs = []
         try:
-            enumObj = EnumerationAttr(name)
+            enumObj = EnumerationAttr(name, valueType=None)
             for suffix in suffixes.keys():
                 try:
                     attrType = suffixes[suffix][0]
@@ -852,36 +852,44 @@ class AttrList(object):
            setpoint sets. Also this readback may like to know about the
            setpoint and if the element is switch on or off.
         '''
-        AttrObj = PLCAttr(name=attrName, device=self.impl, valueType=attrType,
+        attrObj = PLCAttr(name=attrName, device=self.impl, valueType=attrType,
                           readAddr=readAddr, readBit=readBit,
                           writeAddr=writeAddr, writeBit=writeBit,
                           formula=formula,
                           readback=readback, setpoint=setpoint, switch=switch)
-        self.impl._plcAttrs[attrName] = AttrObj
+        self.impl._plcAttrs[attrName] = attrObj
 
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
                                   isWritable=False, defaultValue=None):
-        self.impl._internalAttrs[attrName] = {}
-        self.impl._internalAttrs[attrName][TYPE] = attrType
-        if memorized:
-            try:
-                # next call will use the type on the structure _internalAttrs
-                memorizedValue = self.impl.recoverDynMemorized(attrName)
-                self.impl.info_stream("Recovering memorized value of %s (%s)"
-                                      % (attrName, memorizedValue))
-                self.impl._internalAttrs[attrName][READVALUE] = memorizedValue
-                self.impl._internalAttrs[attrName][WRITEVALUE] = memorizedValue
-            except Exception as e:
-                self.impl.warn_stream("Cannot recover a memorised value for "
-                                      "%s: %s" % (attrName, e))
-                self.impl._internalAttrs[attrName][READVALUE] = defaultValue
-                if isWritable:
-                    self.impl._internalAttrs[attrName][WRITEVALUE] = None
-        else:
-            self.impl._internalAttrs[attrName][READVALUE] = defaultValue
-            if isWritable:
-                self.impl._internalAttrs[attrName][WRITEVALUE] = None
-        self.impl._internalAttrs[attrName][READTIME] = None
+        attrObj = InternalAttr(name=attrName, device=self.impl,
+                               valueType=attrType, memorized=memorized,
+                               isWritable=isWritable,
+                               defaultValue=defaultValue)
+        self.impl._internalAttrs[attrName] = attrObj
+        
+        
+        
+#         self.impl._internalAttrs[attrName] = {}
+#         self.impl._internalAttrs[attrName][TYPE] = attrType
+#         if memorized:
+#             try:
+#                 # next call will use the type on the structure _internalAttrs
+#                 memorizedValue = self.impl.recoverDynMemorized(attrName)
+#                 self.impl.info_stream("Recovering memorized value of %s (%s)"
+#                                       % (attrName, memorizedValue))
+#                 self.impl._internalAttrs[attrName][READVALUE] = memorizedValue
+#                 self.impl._internalAttrs[attrName][WRITEVALUE] = memorizedValue
+#             except Exception as e:
+#                 self.impl.warn_stream("Cannot recover a memorised value for "
+#                                       "%s: %s" % (attrName, e))
+#                 self.impl._internalAttrs[attrName][READVALUE] = defaultValue
+#                 if isWritable:
+#                     self.impl._internalAttrs[attrName][WRITEVALUE] = None
+#         else:
+#             self.impl._internalAttrs[attrName][READVALUE] = defaultValue
+#             if isWritable:
+#                 self.impl._internalAttrs[attrName][WRITEVALUE] = None
+#         self.impl._internalAttrs[attrName][READTIME] = None
 
     def _prepareEvents(self, attrName, eventConfig):
         if eventConfig is not None:
@@ -3414,6 +3422,8 @@ class LinacData(PyTango.Device_4Impl):
                             newValue = attrStruct[READVALUE]
                         elif TRIGGERED in attrStruct:
                             newValue = attrStruct[TRIGGERED]
+                        elif isinstance(attrStruct, EnumerationAttr):
+                            newValue = lastValue  # avoid emit
                         else:
                             self.warn_stream("In internalAttrEvents(): "
                                              "unknown how to emit events "
@@ -3441,6 +3451,7 @@ class LinacData(PyTango.Device_4Impl):
                         self.error_stream("In internalAttrEvents(), "
                                           "exception reading attribute %s: %s"
                                           % (attrName, e))
+                        traceback.print_exc()
                     else:
                         # prepare to emit
                         try:
