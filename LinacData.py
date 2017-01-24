@@ -858,29 +858,6 @@ class AttrList(object):
                           formula=formula,
                           readback=readback, setpoint=setpoint, switch=switch)
         self.impl._plcAttrs[attrName] = AttrObj
-        
-#         self.impl._plcAttrs[attrName] = {READADDR: readAddr}
-#         if readBit is not None:
-#             self.impl._plcAttrs[attrName][READBIT] = readBit
-#         self.impl._plcAttrs[attrName][READVALUE] = None
-#         self.impl._plcAttrs[attrName][READTIME] = None
-#         if writeAddr is not None:
-#             self.impl._plcAttrs[attrName][WRITEADDR] = writeAddr
-#             self.impl._plcAttrs[attrName][WRITEVALUE] = None
-#             if writeBit is not None:
-#                 self.impl._plcAttrs[attrName][WRITEBIT] = writeBit
-#         if attrType in [PyTango.DevString, PyTango.DevBoolean]:
-#             self.impl._plcAttrs[attrName][TYPE] = attrType
-#         else:
-#             self.impl._plcAttrs[attrName][TYPE] = TYPE_MAP[attrType]
-#         if formula is not None:
-#             self.impl._plcAttrs[attrName][FORMULA] = formula
-#         if readback is not None:
-#             self.impl._plcAttrs[attrName][READBACK] = readback
-#         if setpoint is not None:
-#             self.impl._plcAttrs[attrName][SETPOINT] = setpoint
-#         if switch is not None:
-#             self.impl._plcAttrs[attrName][SWITCH] = switch
 
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
                                   isWritable=False, defaultValue=None):

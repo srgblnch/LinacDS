@@ -81,9 +81,9 @@ TYPE_MAP = {DevUChar: ('B', 1),
 
 
 class _LinacAttr(object):
-    
+
     _device = None
-    
+
     def __init__(self, name, device=None, *args, **kwargs):
         """ Main superclass for linac attributes.
         """
@@ -295,11 +295,11 @@ class _LinacAttr(object):
                     self.__class__.__dict__[suffix].fset(self, value)
                     readback = self.__class__.__dict__[suffix].fget(self)
                     if value != readback:
-                        self.warning("readback %s doesn't corresponds with set %s"
-                                     % (value, readback))
+                        self.warning("readback %s doesn't corresponds with "
+                                     "set %s" % (value, readback))
                     else:
                         self.info("Well applied %s_%s: %s"
-                                   % (mainName, suffix, value))
+                                  % (mainName, suffix, value))
             except Exception as e:
                 self.error("Exeption recovering %s_%s: %s"
                            % (mainName, suffix, e))
@@ -467,7 +467,7 @@ class EnumerationAttr(_LinacAttr):
             # candidate a wrong string made list
             rebuild = "".join("%s" % i for i in lst)
             self.warning("Received a wrong string list %s and rebuild to %s"
-                       % (lst, rebuild))
+                         % (lst, rebuild))
             try:
                 lst = eval(rebuild)
             except:
@@ -476,7 +476,7 @@ class EnumerationAttr(_LinacAttr):
             # FIXME: check the input to avoid issues
             bar = list(literal_eval(lst))
             self.info("Received a string %r and understand a list: %s"
-                       % (lst, bar))
+                      % (lst, bar))
             lst = bar
         # process ---
         if type(lst) == list:
@@ -565,7 +565,7 @@ class PLCAttr(_LinacAttr):
                  readAddr=None, readBit=None,
                  writeAddr=None, writeBit=None,
                  formula=None,
-                 events=None, meanings=None, qualities=None, 
+                 events=None, meanings=None, qualities=None,
                  readback=None, setpoint=None, switch=None,
                  IamChecker=None, isRst=None,
                  *args, **kwargs):
@@ -584,11 +584,11 @@ class PLCAttr(_LinacAttr):
         self._writeAddr = writeAddr
         self._writeBit = writeBit
         self._formula = formula
-        
+
         self._events = events
         self._meanings = meanings
         self._qualities = qualities
-        
+
         self._readbackAttrName = readback
         self._setpointAttrName = setpoint
         self._switchAttrName = switch
