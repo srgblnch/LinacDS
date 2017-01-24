@@ -23,6 +23,7 @@ __license__ = "GPLv3+"
 
 from feature import _LinacFeature
 
+
 class Events(_LinacFeature):
     def __init__(self, *args, **kwargs):
         super(Events, self).__init__(*args, **kwargs)

@@ -21,6 +21,7 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
+
 class _LinacFeature(object):
 
     _name = None
