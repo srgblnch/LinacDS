@@ -2631,8 +2631,10 @@ class LinacData(PyTango.Device_4Impl):
                 # Threads declaration ---
                 self._tangoEventsThread = \
                     threading.Thread(target=self.eventGeneratorThread)
-                self._tangoEventsTime = CircularBuffer([], maxlen=540)
-                self._tangoEventsNumber = CircularBuffer([], maxlen=540)
+                self._tangoEventsTime = \
+                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER)
+                self._tangoEventsNumber = \
+                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER)
                 self._plcUpdateThread = \
                     threading.Thread(target=self.plcUpdaterThread)
                 # Threads configuration ---
@@ -2681,6 +2683,11 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMin()")
             # PROTECTED REGION ID(LinacData.EventsTimeMin_read) --
             self.attr_EventsTimeMin_read = self._tangoEventsTime.array.min()
+            if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsTimeMin_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
             # PROTECTED REGION END --- LinacData.EventsTimeMin_read
             attr.set_value(self.attr_EventsTimeMin_read)
 
@@ -2691,13 +2698,18 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMax()")
             # PROTECTED REGION ID(LinacData.EventsTimeMax_read) --
             self.attr_EventsTimeMax_read = self._tangoEventsTime.array.max()
-            # PROTECTED REGION END --- LinacData.EventsTimeMax_read
-            if self.attr_EventsTimeMax_read < self._getPlcUpdatePeriod()*3:
-                attr.set_value(self.attr_EventsTimeMax_read)
-            else:
+            if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsTimeMax_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
+            elif self.attr_EventsTimeMax_read >= self._getPlcUpdatePeriod()*3:
                 attr.set_value_date_quality(self.attr_EventsTimeMax_read,
                                             time.time(),
                                             PyTango.AttrQuality.ATTR_WARNING)
+                return
+            # PROTECTED REGION END --- LinacData.EventsTimeMax_read
+            attr.set_value(self.attr_EventsTimeMax_read)
 
         # ------------------------------------------------------------------
         #    Read EventsTimeMean attribute
@@ -2706,13 +2718,18 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMean()")
             # PROTECTED REGION ID(LinacData.EventsTimeMean_read) --
             self.attr_EventsTimeMean_read = self._tangoEventsTime.array.mean()
-            # PROTECTED REGION END --- LinacData.EventsTimeMean_read
-            if self.attr_EventsTimeMean_read < self._getPlcUpdatePeriod():
-                attr.set_value(self.attr_EventsTimeMean_read)
-            else:
+            if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsTimeMean_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
+            elif self.attr_EventsTimeMean_read >= self._getPlcUpdatePeriod():
                 attr.set_value_date_quality(self.attr_EventsTimeMean_read,
                                             time.time(),
                                             PyTango.AttrQuality.ATTR_WARNING)
+                return
+            # PROTECTED REGION END --- LinacData.EventsTimeMean_read
+            attr.set_value(self.attr_EventsTimeMean_read)
 
         # ------------------------------------------------------------------
         #    Read EventsTimeStd attribute
@@ -2721,6 +2738,11 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() + ".read_EventsTimeStd()")
             # PROTECTED REGION ID(LinacData.EventsTimeStd_read) --
             self.attr_EventsTimeStd_read = self._tangoEventsTime.array.std()
+            if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsTimeStd_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
             # PROTECTED REGION END --- LinacData.EventsTimeStd_read
             attr.set_value(self.attr_EventsTimeStd_read)
 
@@ -2742,7 +2764,13 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() +
             #                   ".read_EventsNumberMin()")
             # PROTECTED REGION ID(LinacData.EventsNumberMin_read) ---
-            self.attr_EventsNumberMin_read = int(self._tangoEventsNumber.array.min())
+            self.attr_EventsNumberMin_read = \
+                int(self._tangoEventsNumber.array.min())
+            if self._tangoEventsNumber.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsNumberMin_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
             # PROTECTED REGION END --- LinacData.EventsNumberMin_read
             attr.set_value(self.attr_EventsNumberMin_read)
 
@@ -2753,7 +2781,13 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() +
             #                   ".read_EventsNumberMax()")
             # PROTECTED REGION ID(LinacData.EventsNumberMax_read) ---
-            self.attr_EventsNumberMax_read = int(self._tangoEventsNumber.array.max())
+            self.attr_EventsNumberMax_read = \
+                int(self._tangoEventsNumber.array.max())
+            if self._tangoEventsNumber.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsNumberMax_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
             # PROTECTED REGION END --- LinacData.EventsNumberMax_read
             attr.set_value(self.attr_EventsNumberMax_read)
 
@@ -2765,6 +2799,11 @@ class LinacData(PyTango.Device_4Impl):
             #                   ".read_EventsNumberMean()")
             # PROTECTED REGION ID(LinacData.EventsNumberMean_read) ---
             self.attr_EventsNumberMean_read = self._tangoEventsNumber.array.mean()
+            if self._tangoEventsNumber.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsNumberMean_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
             # PROTECTED REGION END --- LinacData.EventsNumberMean_read
             attr.set_value(self.attr_EventsNumberMean_read)
 
@@ -2776,6 +2815,11 @@ class LinacData(PyTango.Device_4Impl):
             #                   ".read_EventsNumberStd()")
             # PROTECTED REGION ID(LinacData.EventsNumberStd_read) ---
             self.attr_EventsNumberStd_read = self._tangoEventsNumber.array.std()
+            if self._tangoEventsNumber.array.size < HISTORY_EVENT_BUFFER:
+                attr.set_value_date_quality(self.attr_EventsNumberStd_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_CHANGING)
+                return
             # PROTECTED REGION END --- LinacData.EventsNumberStd_read
             attr.set_value(self.attr_EventsNumberStd_read)
 
