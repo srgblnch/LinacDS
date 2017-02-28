@@ -466,23 +466,6 @@ class LinacAttr(object):
     def fireEvent(self, name, value, quality=None):
         if self._eventsObj:
             self._eventsObj.FireEvent(name, value, quality)
-#         # FIXME: shall be other event types be fired?
-#         #        archiver, periodic,...
-#         try:
-#             if quality is None:
-#                 quality = self.quality
-#             if self.device is not None:
-#                 self.device.push_change_event(name, value, self.timestamp,
-#                                               quality)
-#             self.debug("fireEvent(%s, %s, %s, %s)" % (name, value,
-#                                                       self.timestamp,
-#                                                       quality))
-#         except DevFailed as e:
-#             self.warning("DevFailed in event %s emit: %s"
-#                          % (name, e[0].desc))
-#         except Exception as e:
-#             self.error("Event for %s (with value %s) not emitted due to: %s"
-#                        % (name, value, e))
 
     ########################################
     # Tango memorized dynamic attributes ---

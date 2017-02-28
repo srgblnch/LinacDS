@@ -21,8 +21,8 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-MAJOR_VERSION = 2
-MINOR_VERSION = 44
+MAJOR_VERSION = 3
+MINOR_VERSION = 0
 BUILD_VERSION = 0
 
 # attributes keys ---

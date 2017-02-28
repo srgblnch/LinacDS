@@ -101,8 +101,8 @@ class Datablock(object):
     def doChecks(self, block):
         for addr in self.getCheckersAddresses():
             values = self.getChecker(addr)
-            self.debug_stream("Checking addr %d for values %s (%s)"
-                              % (addr, values, repr(block[addr])))
+            # self.debug_stream("Checking addr %d for values %s (%s)"
+            #                   % (addr, values, repr(block[addr])))
             if not block[addr] in values:
                 self.warn_stream("Check fail for address %d (%s)"
                                  % (addr, repr(block[addr])))
@@ -119,7 +119,7 @@ class Datablock(object):
                                   "returns '%s'" % (str(ready)))
                 time.sleep(0.1)  # return False
             else:
-                self.debug_stream("ready = %s" % (str(ready)))
+                pass  # self.debug_stream("ready = %s" % (str(ready)))
         retries = 0
 
         self._recv = ''
@@ -140,8 +140,8 @@ class Datablock(object):
                 retries = 0
                 if len(self._recv) > self.read_size:
                     # Cut the extra read data ---
-                    self.debug_stream(">> Cut the extra read data (%d)"
-                                      % (len(self._recv)))
+                    # self.debug_stream(">> Cut the extra read data (%d)"
+                    #                   % (len(self._recv)))
                     self._recv = self._recv[-self.read_size:]
                 elif len(self._recv) in \
                         [self.read_size-self.write_size,  # received DB22
@@ -168,7 +168,7 @@ class Datablock(object):
                             self._recv = pendings + self._recv
                 # once data has the correct size, check contents
                 if self.isGoodBlock(self._recv):
-                    self.debug_stream("< Well done")
+                    # self.debug_stream("< Well done")
                     pass  # this is a good reading
                 elif self.isBlockInverted(self._recv):
                     # try to invert the DBs

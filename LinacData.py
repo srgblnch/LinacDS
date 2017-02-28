@@ -1592,9 +1592,9 @@ class LinacData(PyTango.Device_4Impl):
                value given from the PLC to the value reported by the device.
             '''
             result = eval(formula)
-            self.debug_stream("%s formula eval(\"%s\") = %s" % (attrName,
-                                                                formula,
-                                                                result))
+            # self.debug_stream("%s formula eval(\"%s\") = %s" % (attrName,
+            #                                                     formula,
+            #                                                     result))
             return result
 
         def __setAttrValue(self, attr, attrName, attrType, attrValue,
@@ -2012,8 +2012,13 @@ class LinacData(PyTango.Device_4Impl):
             self.Locking.get_write_value(data)
             val = data[0]
             if not self.read_lock():
-                raise LinacException('first required to set Locking flag on '
-                                     '%s device' % self.get_name())
+                try:
+                    exceptionMsg = 'first required to set Locking flag on '\
+                        '%s device' % self.get_name()
+                except Exception as e:
+                    self.error_stream("Exception in prepare_write(): %s" % (e))
+                else:
+                    raise LinacException(exceptionMsg)
             if self.tainted:
                 raise LinacException('mismatch with '
                                      'specification:\n'+self.tainted)
@@ -2663,22 +2668,117 @@ class LinacData(PyTango.Device_4Impl):
         #    Read EventsTime attribute
         # ------------------------------------------------------------------
         def read_EventsTime(self, attr):
-            self.debug_stream("In " + self.get_name() + ".read_EventsTime()")
+            # self.debug_stream("In " + self.get_name() + ".read_EventsTime()")
             # PROTECTED REGION ID(LinacData.EventsTime_read) --
             self.attr_EventsTime_read = self._tangoEventsTime.array
             # PROTECTED REGION END --- LinacData.EventsTime_read
             attr.set_value(self.attr_EventsTime_read)
 
         # ------------------------------------------------------------------
+        #    Read EventsTimeMix attribute
+        # ------------------------------------------------------------------
+        def read_EventsTimeMin(self, attr):
+            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMin()")
+            # PROTECTED REGION ID(LinacData.EventsTimeMin_read) --
+            self.attr_EventsTimeMin_read = self._tangoEventsTime.array.min()
+            # PROTECTED REGION END --- LinacData.EventsTimeMin_read
+            attr.set_value(self.attr_EventsTimeMin_read)
+
+        # ------------------------------------------------------------------
+        #    Read EventsTimeMax attribute
+        # ------------------------------------------------------------------
+        def read_EventsTimeMax(self, attr):
+            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMax()")
+            # PROTECTED REGION ID(LinacData.EventsTimeMax_read) --
+            self.attr_EventsTimeMax_read = self._tangoEventsTime.array.max()
+            # PROTECTED REGION END --- LinacData.EventsTimeMax_read
+            if self.attr_EventsTimeMax_read < self._getPlcUpdatePeriod()*3:
+                attr.set_value(self.attr_EventsTimeMax_read)
+            else:
+                attr.set_value_date_quality(self.attr_EventsTimeMax_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_WARNING)
+
+        # ------------------------------------------------------------------
+        #    Read EventsTimeMean attribute
+        # ------------------------------------------------------------------
+        def read_EventsTimeMean(self, attr):
+            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMean()")
+            # PROTECTED REGION ID(LinacData.EventsTimeMean_read) --
+            self.attr_EventsTimeMean_read = self._tangoEventsTime.array.mean()
+            # PROTECTED REGION END --- LinacData.EventsTimeMean_read
+            if self.attr_EventsTimeMean_read < self._getPlcUpdatePeriod():
+                attr.set_value(self.attr_EventsTimeMean_read)
+            else:
+                attr.set_value_date_quality(self.attr_EventsTimeMean_read,
+                                            time.time(),
+                                            PyTango.AttrQuality.ATTR_WARNING)
+
+        # ------------------------------------------------------------------
+        #    Read EventsTimeStd attribute
+        # ------------------------------------------------------------------
+        def read_EventsTimeStd(self, attr):
+            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeStd()")
+            # PROTECTED REGION ID(LinacData.EventsTimeStd_read) --
+            self.attr_EventsTimeStd_read = self._tangoEventsTime.array.std()
+            # PROTECTED REGION END --- LinacData.EventsTimeStd_read
+            attr.set_value(self.attr_EventsTimeStd_read)
+
+        # ------------------------------------------------------------------
         #    Read EventsNumber attribute
         # ------------------------------------------------------------------
         def read_EventsNumber(self, attr):
-            self.debug_stream("In " + self.get_name() +
-                              ".read_EventsNumber()")
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsNumber()")
             # PROTECTED REGION ID(LinacData.EventsNumber_read) ---
             self.attr_EventsNumber_read = self._tangoEventsNumber.array
             # PROTECTED REGION END --- LinacData.EventsNumber_read
             attr.set_value(self.attr_EventsNumber_read)
+
+        # ------------------------------------------------------------------
+        #    Read EventsNumberMin attribute
+        # ------------------------------------------------------------------
+        def read_EventsNumberMin(self, attr):
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsNumberMin()")
+            # PROTECTED REGION ID(LinacData.EventsNumberMin_read) ---
+            self.attr_EventsNumberMin_read = int(self._tangoEventsNumber.array.min())
+            # PROTECTED REGION END --- LinacData.EventsNumberMin_read
+            attr.set_value(self.attr_EventsNumberMin_read)
+
+        # ------------------------------------------------------------------
+        #    Read EventsNumberMax attribute
+        # ------------------------------------------------------------------
+        def read_EventsNumberMax(self, attr):
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsNumberMax()")
+            # PROTECTED REGION ID(LinacData.EventsNumberMax_read) ---
+            self.attr_EventsNumberMax_read = int(self._tangoEventsNumber.array.max())
+            # PROTECTED REGION END --- LinacData.EventsNumberMax_read
+            attr.set_value(self.attr_EventsNumberMax_read)
+
+        # ------------------------------------------------------------------
+        #    Read EventsNumberMean attribute
+        # ------------------------------------------------------------------
+        def read_EventsNumberMean(self, attr):
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsNumberMean()")
+            # PROTECTED REGION ID(LinacData.EventsNumberMean_read) ---
+            self.attr_EventsNumberMean_read = self._tangoEventsNumber.array.mean()
+            # PROTECTED REGION END --- LinacData.EventsNumberMean_read
+            attr.set_value(self.attr_EventsNumberMean_read)
+
+        # ------------------------------------------------------------------
+        #    Read EventsNumberStd attribute
+        # ------------------------------------------------------------------
+        def read_EventsNumberStd(self, attr):
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsNumberStd()")
+            # PROTECTED REGION ID(LinacData.EventsNumberStd_read) ---
+            self.attr_EventsNumberStd_read = self._tangoEventsNumber.array.std()
+            # PROTECTED REGION END --- LinacData.EventsNumberStd_read
+            attr.set_value(self.attr_EventsNumberStd_read)
+
 
         # ------------------------------------------------------------------
         #    Read IsTooFarEnable attribute
@@ -3013,13 +3113,16 @@ class LinacData(PyTango.Device_4Impl):
         def __attrHasEvents(self, attrName):
             '''
             '''
-            if attrName in self._plcAttrs and \
-                    EVENTS in self._plcAttrs[attrName]:
-                return True
-            elif attrName in self._internalAttrs and \
-                    EVENTS in self._internalAttrs[attrName].keys():
+            if self._getAttrStruct(attrName).events:
                 return True
             return False
+#             if attrName in self._plcAttrs and \
+#                     EVENTS in self._plcAttrs[attrName]:
+#                 return True
+#             elif attrName in self._internalAttrs and \
+#                     EVENTS in self._internalAttrs[attrName].keys():
+#                 return True
+#             return False
 
         def __getAttrReadValue(self, attrName):
             '''
@@ -3048,7 +3151,12 @@ class LinacData(PyTango.Device_4Impl):
                     start_t = time.time()
                     if self.has_data_available():
                         nEvents = self.plcGeneralAttrEvents()
+                        t1 = time.time()
+                        self.debug_stream("%3.6f for plcGeneralAttrEvents()"
+                                          % (t1 - start_t))
                         nEvents += self.internalAttrEvents()
+                        self.debug_stream("%3.6f for internalAttrEvents()"
+                                          % (time.time() - t1))
                         diff_t = time.time() - start_t
                         self._tangoEventsTime.append(diff_t)
                         self._tangoEventsNumber.append(nEvents)
@@ -3195,16 +3303,11 @@ class LinacData(PyTango.Device_4Impl):
                emission.
             '''
             now = time.time()
-            attributeList = self._plcAttrs.keys()
-            # remove the ones managed in plcBasicAttrEvents()
-            if attributeList.count('HeartBeat'):
-                attributeList.pop(attributeList.index('HeartBeat'))
-            if attributeList.count('Lock_ST'):
-                attributeList.pop(attributeList.index('Lock_ST'))
-            if attributeList.count('Lock_Status'):
-                attributeList.pop(attributeList.index('Lock_Status'))
-            if attributeList.count('Locking'):
-                attributeList.pop(attributeList.index('Locking'))
+            attributeList = []
+            for attrName in self._plcAttrs.keys():
+                if attrName not in ['HeartBeat', 'Lock_ST', 'Lock_Status',
+                                    'Locking']:
+                    attributeList.append(attrName)
             # Iterate the remaining to know if they need something to be done
             attr2Event = []
             attr2Reemit = 0
@@ -3213,7 +3316,7 @@ class LinacData(PyTango.Device_4Impl):
                 # First check if for this element, it's prepared for events
                 if self.__attrHasEvents(attrName):
                     try:
-                        attrStruct = self._getAttrStruct(attrName)
+                        attrStruct = self._plcAttrs[attrName]
                         attrType = attrStruct[TYPE]
                         # lastValue = self.__getAttrReadValue(attrName)
                         last_read_t = attrStruct[READTIME]
@@ -3281,6 +3384,9 @@ class LinacData(PyTango.Device_4Impl):
             if attr2Reemit > 0:
                 self.debug_stream("%d events due to periodic reemission"
                                   % attr2Reemit)
+            self.debug_stream("plcGeneralAttrEvents(): %d events from %d "
+                              "attributes" % (len(attr2Event),
+                                                  len(attributeList)))
             return len(attr2Event)+attr2Reemit
 
         def internalAttrEvents(self):
@@ -3386,6 +3492,9 @@ class LinacData(PyTango.Device_4Impl):
                                               "%s: %s" % (attrName, e))
             if len(attr2Event) > 0:
                 self.fireEventsList(attr2Event, timestamp=now, log=True)
+            self.debug_stream("internalAttrEvents(): %d events from %d "
+                              "attributes" % (len(attr2Event),
+                                              len(attributeList)))
             return len(attr2Event)
 
         def checkResetAttr(self, attrName):
@@ -3761,14 +3870,63 @@ class LinacDataClass(PyTango.DeviceClass):
         attr_list = {'EventsTime': [[PyTango.DevDouble,
                                      PyTango.SPECTRUM,
                                      PyTango.READ, 1800],
-                                    {'Display level': PyTango.DispLevel.EXPERT}
+                                    {'Display level':
+                                     PyTango.DispLevel.EXPERT}
                                     ],
+                     'EventsTimeMin': [[PyTango.DevDouble,
+                                        PyTango.SCALAR,
+                                        PyTango.READ],
+                                       {'Display level':
+                                        PyTango.DispLevel.EXPERT}
+                                       ],
+                     'EventsTimeMax': [[PyTango.DevDouble,
+                                        PyTango.SCALAR,
+                                        PyTango.READ],
+                                       {'Display level':
+                                        PyTango.DispLevel.EXPERT}
+                                       ],
+                     'EventsTimeMean': [[PyTango.DevDouble,
+                                        PyTango.SCALAR,
+                                        PyTango.READ],
+                                       {'Display level':
+                                        PyTango.DispLevel.EXPERT}
+                                       ],
+                     'EventsTimeStd': [[PyTango.DevDouble,
+                                        PyTango.SCALAR,
+                                        PyTango.READ],
+                                       {'Display level':
+                                        PyTango.DispLevel.EXPERT}
+                                       ],
                      'EventsNumber': [[PyTango.DevShort,
                                        PyTango.SPECTRUM,
                                        PyTango.READ, 1800],
                                       {'Display level':
                                        PyTango.DispLevel.EXPERT}
                                       ],
+                     'EventsNumberMin': [[PyTango.DevUShort,
+                                          PyTango.SCALAR,
+                                          PyTango.READ],
+                                         {'Display level':
+                                          PyTango.DispLevel.EXPERT}
+                                         ],
+                     'EventsNumberMax': [[PyTango.DevUShort,
+                                          PyTango.SCALAR,
+                                          PyTango.READ],
+                                         {'Display level':
+                                          PyTango.DispLevel.EXPERT}
+                                         ],
+                     'EventsNumberMean': [[PyTango.DevDouble,
+                                          PyTango.SCALAR,
+                                          PyTango.READ],
+                                         {'Display level':
+                                          PyTango.DispLevel.EXPERT}
+                                         ],
+                     'EventsNumberStd': [[PyTango.DevDouble,
+                                          PyTango.SCALAR,
+                                          PyTango.READ],
+                                         {'Display level':
+                                          PyTango.DispLevel.EXPERT}
+                                         ],
                      'IsTooFarEnable': [[PyTango.DevBoolean,
                                          PyTango.SCALAR,
                                          PyTango.READ_WRITE],
