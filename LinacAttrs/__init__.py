@@ -22,7 +22,9 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-from linacAttr import LinacException, CommandExc, AttrExc
 from enumAttr import EnumerationAttr
-from plcAttr import PLCAttr
 from internalAttr import InternalAttr
+from linacAttr import LinacAttr, LinacException, CommandExc, AttrExc
+from meaningAttr import MeaningAttr
+from plcAttr import PLCAttr
+

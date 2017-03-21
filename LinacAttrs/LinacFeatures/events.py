@@ -22,30 +22,36 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 from feature import _LinacFeature
+from PyTango import DevFailed
 
 
 class Events(_LinacFeature):
     def __init__(self, *args, **kwargs):
         super(Events, self).__init__(*args, **kwargs)
 
-    def fireEvent(self, attrName, value, quality=None):
+    def fireEvent(self):
         if self._owner is None or self._owner.device is None:
             self.warning("Cannot emit events outside a tango device server")
-            return
+            return False
         try:
-            if quality is None:
-                quality = self.quality
-            if self._owner.device is not None:
-                self._owner.device.push_change_event(attrName, value,
-                                                     self._owner.timestamp,
-                                                     quality)
-            self.debug("%s.fireEvent(%s, %s, %s, %s)" % (self.name,
-                                                         attrName, value,
-                                                         self._owner.timestamp,
-                                                         quality))
+            self._owner.device.push_change_event(self._owner.name,
+                                                 self._owner.value,
+                                                 self._owner.timestamp,
+                                                 self._owner.quality)
+            if self._owner.name.startswith('Lock'):
+                log = self.info
+            else:
+                log = self.debug
+            log("%s.fireEvent(%s, %s, %s, %s)" % (self.name,
+                                                  self._owner.name,
+                                                  self._owner.value,
+                                                  self._owner.timestamp,
+                                                  self._owner.quality))
+            return True
         except DevFailed as e:
             self.warning("DevFailed in event %s emit: %s"
                          % (self.name, e[0].desc))
         except Exception as e:
             self.error("Event for %s (with value %s) not emitted due to: %s"
-                       % (self.name, value, e))
+                       % (self.name, self._owner.value, e))
+        return False

@@ -22,7 +22,6 @@ __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-from ast import literal_eval
 import functools
 from LinacFeatures import Events, Memorised
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
@@ -30,9 +29,6 @@ from PyTango import DevUChar, DevShort, DevFloat, DevDouble
 from PyTango import DevBoolean, DevString
 from time import time, ctime
 import traceback
-
-
-# FIXME: understand why I couldn't make work the *args and **kwargs
 
 
 class LinacException(Exception):
@@ -89,8 +85,9 @@ class LinacAttr(object):
     _device = None
 
     _qualities = None
-    _eventsObj = None
+
     _events = None
+    _eventsObj = None
     _event_t = None
     _lastEventQuality = AttrQuality.ATTR_INVALID
 
@@ -102,7 +99,7 @@ class LinacAttr(object):
     _memorisedLst = None
 
     def __init__(self, name, valueType, device=None, memorized=False,
-                 *args, **kwargs):
+                 events=None, *args, **kwargs):
         """ Main superclass for linac attributes.
         """
         super(LinacAttr, self).__init__(*args, **kwargs)
@@ -113,6 +110,8 @@ class LinacAttr(object):
             self._type = valueType
         else:
             self._type = TYPE_MAP[valueType]
+        if events is not None:
+            self.events = events
         if memorized:
             self.setMemorised()
 #             self._memorised = Memorised(owner=self)
@@ -145,6 +144,16 @@ class LinacAttr(object):
         return self._name
 
     @property
+    def alias(self):
+        if hasattr(self, '_alias'):
+            return self._alias
+
+    @alias.setter
+    def alias(self, value):
+        if isinstance(value, str):
+            self._alias = value
+
+    @property
     def device(self):
         return self._device
 
@@ -158,10 +167,18 @@ class LinacAttr(object):
             for suffix in self._memorisedLst:
                 self._memorised.recover(suffix)
 
-    # TODO
-    # @property
-    # def value(self):
-    #     pass
+    @property
+    def value(self):
+        return self.rvalue
+
+    @property
+    def rvalue(self):
+        return self.read_value
+
+    @property
+    def wvalue(self):
+        if hasattr(self, 'write_value'):
+            return self.write_value
 
     @property
     def timestamp(self):
@@ -172,8 +189,75 @@ class LinacAttr(object):
         return self._quality
 
     @property
+    def vtq(self):
+        return self.rvalue, self.timestamp, self.quality
+
+    @property
     def type(self):
         return self._type
+
+    ##########################
+    # Tango attribute area ---
+    def isAllowed(self):
+        if self.device is None:
+            return True
+        if self.device.get_state() in [DevState.FAULT]:
+            return False
+        return True
+
+    def isReadAllowed(self):
+        return self.isAllowed()
+
+    def isWriteAllowed(self, attr=None):
+        if attr is not None:
+            if not attr.get_writable() in [AttrWriteType.READ_WRITE]:
+                return False
+        return self.isAllowed()
+
+    @AttrExc
+    def read_attr(self, attr):
+        if not self.isReadAllowed():
+            return
+        if attr is not None:
+            attrName = self._getAttrName(attr)
+            self.info("Received a read request for %s" % attrName)
+#             suffix = self._getSuffix(attrName)
+#             print suffix
+#             print "%r"%self
+#             if not hasattr(self, suffix):
+#                 # FIXME: no way to read, raise exception
+#                 self.warning("No way to read %s" % suffix)
+#                 return  # raise ValueError("Can NOT read %s" % suffix)
+#             readValue = getattr(self, suffix)
+            self._setAttrValue(attr, self.value)
+
+    @AttrExc
+    def write_attr(self, attr, value=None):
+        if not self.isWriteAllowed():
+            return
+        if attr is not None:
+            attrName = self._getAttrName(attr)
+            self.debug("Received a write request for %s, value %s"
+                       % (attrName, value))
+            suffix = self._getSuffix(attrName)
+            if not hasattr(self, suffix):
+                # FIXME: no way to read, raise exception
+                self.warning("No way to write %s" % suffix)
+                return  # raise ValueError("Can NOT write %s" % suffix)
+            if hasattr(attr, 'get_write_value'):
+                data = []
+                attr.get_write_value(data)
+                writeValue = data[0]
+            elif value is not None:
+                writeValue = value
+            else:
+                self.warning("No value to write")
+                return
+            self.__class__.__dict__[suffix].fset(self, writeValue)
+            readValue = getattr(self, suffix)
+            if self._memorisedLst and suffix in self._memorisedLst:
+                self._memorised.store(readValue, suffix)
+            self._setAttrValue(attr, readValue)
 
     ######################
     # Tango log system ---
@@ -314,18 +398,41 @@ class LinacAttr(object):
     # Dictionary properties for backwards compatibility ---
     @property
     def read_value(self):
+        if self.name.startswith('Lock'):
+            pass
+            # self.info("rvalue READ  %s: %s"
+            #           % (self.name, self._readValue))
         return self._readValue
 
     @read_value.setter
     def read_value(self, value):
-        self._readValue = value
+        if self._readValue == value:
+            return
+        if self.name.startswith('Lock'):
+            self.info("rvalue WRITE %s: %s -> %s"
+                      % (self.name, self._readValue, value))
+        if self._readValue != value:
+            self._readValue = value
+            if self._eventsObj and self._eventsObj.fireEvent():
+                pass
+                # TODO: When self.device supports, report back
+                # than an event has been successfully emitted.
+#         else:
+#             self._readValue = value
 
     @property
     def write_value(self):
+#         if self.name.startswith('Lock'):
+#             self.info("wvalue READ  %s: %s" % (self.name, self._writeValue))
         return self._writeValue
 
     @write_value.setter
     def write_value(self, value):
+        if self._writeValue == value:
+            return
+        if self.name.startswith('Lock'):
+            self.info("wvalue WRITE %s: %s -> %s"
+                      % (self.name, self._writeValue, value))
         self._writeValue = value
 
     @property
@@ -356,7 +463,7 @@ class LinacAttr(object):
 
     @events.setter
     def events(self, value):
-        if value:
+        if value is not None:
             self._eventsObj = Events(owner=self)
         else:
             self._eventsObj = None
@@ -400,73 +507,6 @@ class LinacAttr(object):
     def baseSet(self, value):
         self._baseSet = value
 
-    ##########################
-    # Tango attribute area ---
-    def isAllowed(self):
-        if self.device is None:
-            return True
-        if self.device.get_state() in [DevState.FAULT]:
-            return False
-        return True
-
-    def isReadAllowed(self):
-        return self.isAllowed()
-
-    def isWriteAllowed(self, attr=None):
-        if attr is not None:
-            if not attr.get_writable() in [AttrWriteType.READ_WRITE]:
-                return False
-        return self.isAllowed()
-
-    @AttrExc
-    def read_attr(self, attr):
-        if not self.isReadAllowed():
-            return
-        if attr is not None:
-            attrName = self._getAttrName(attr)
-            self.debug("Received a read request for %s" % attrName)
-            suffix = self._getSuffix(attrName)
-            if not hasattr(self, suffix):
-                # FIXME: no way to read, raise exception
-                self.warning("No way to read %s" % suffix)
-                return  # raise ValueError("Can NOT read %s" % suffix)
-            readValue = getattr(self, suffix)
-            self._setAttrValue(attr, readValue)
-
-    @AttrExc
-    def write_attr(self, attr, value=None):
-        if not self.isWriteAllowed():
-            return
-        if attr is not None:
-            attrName = self._getAttrName(attr)
-            self.debug("Received a write request for %s, value %s"
-                       % (attrName, value))
-            suffix = self._getSuffix(attrName)
-            if not hasattr(self, suffix):
-                # FIXME: no way to read, raise exception
-                self.warning("No way to write %s" % suffix)
-                return  # raise ValueError("Can NOT write %s" % suffix)
-            if hasattr(attr, 'get_write_value'):
-                data = []
-                attr.get_write_value(data)
-                writeValue = data[0]
-            elif value is not None:
-                writeValue = value
-            else:
-                self.warning("No value to write")
-                return
-            self.__class__.__dict__[suffix].fset(self, writeValue)
-            readValue = getattr(self, suffix)
-            if self._memorisedLst and suffix in self._memorisedLst:
-                self._memorised.store(readValue, suffix)
-            self._setAttrValue(attr, readValue)
-
-    #######################
-    # Tango events area ---
-    def fireEvent(self, name, value, quality=None):
-        if self._eventsObj:
-            self._eventsObj.FireEvent(name, value, quality)
-
     ########################################
     # Tango memorized dynamic attributes ---
     @property
@@ -508,10 +548,12 @@ class LinacAttr(object):
             return attr.get_name()
 
     def _getSuffix(self, attrName):
-        if not attrName.startswith(self.name):
+        if not ((self.alias and attrName.startswith(self.alias)) or \
+                attrName.startswith(self.name)):
             # FIXME: review naming, but it shall raise an exception
-            self.warning("attrName %s is not starting with %s"
-                         % (attrName, self.name))
+            self.warning("attrName %s is not starting with %s%s"
+                         % (attrName, self.name,
+                            " or %s" % self.alias if self.alias else ""))
             return
         if attrName == self.name:
             # TODO: there shall be a default behaviour for attrs with no suffix
@@ -528,7 +570,7 @@ class LinacAttr(object):
         if type(readValue) == list:
             readValue = "%s" % readValue
         attrName = self._getAttrName(attr)
-        self.debug("_setAttrValue(%s, %s, %s, %s)"
+        self.info("_setAttrValue(%s, %s, %s, %s)"
                    % (attrName, readValue, self.timestamp, self.quality))
         if type(attr) != str:
             # If its an attribute, part of a device, do the corresponding set

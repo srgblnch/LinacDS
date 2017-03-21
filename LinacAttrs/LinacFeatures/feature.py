@@ -35,7 +35,7 @@ class _LinacFeature(object):
     def name(self):
         if self.owner:
             return "%s:%s" % (self.owner.name, self._name)
-        return "%s:" % (self._name)
+        return ":%s" % (self._name)
 
     @property
     def owner(self):

@@ -21,19 +21,21 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-
 from linacAttr import LinacAttr
+from meaningAttr import MeaningAttr
 
 
 class PLCAttr(LinacAttr):
 
     _rst_t = None
 
+    _meanings = None
+    _meaningsObj = None
+
     def __init__(self, valueFormat=None,
                  readAddr=None, readBit=None,
                  writeAddr=None, writeBit=None,
-                 formula=None,
-                 events=None, meanings=None, qualities=None,
+                 formula=None, meanings=None, qualities=None,
                  readback=None, setpoint=None, switch=None,
                  IamChecker=None, isRst=None,
                  *args, **kwargs):
@@ -49,8 +51,7 @@ class PLCAttr(LinacAttr):
         self._writeBit = writeBit
         self._formula = formula
 
-        self._events = events
-        self._meanings = meanings
+        self.meanings = meanings
         self._qualities = qualities
 
         self._readbackAttrName = readback
@@ -76,14 +77,6 @@ class PLCAttr(LinacAttr):
     @format.setter
     def format(self, value):
         self._format = value
-
-    @property
-    def meanings(self):
-        return self._meanings
-
-    @meanings.setter
-    def meanings(self, value):
-        self._meanings = value
 
     @property
     def formula(self):
@@ -132,3 +125,15 @@ class PLCAttr(LinacAttr):
     @rst_t.setter
     def rst_t(self, value):
         self._rst_t = value
+
+    @property
+    def meanings(self):
+        return self._meanings
+
+    @meanings.setter
+    def meanings(self, value):
+        if value is not None:
+            self._meaningsObj = MeaningAttr(owner=self)
+        else:
+            self._meaningsObj = None
+        self._meanings = value
