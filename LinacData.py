@@ -1837,13 +1837,17 @@ class LinacData(PyTango.Device_4Impl):
 #                write_addr = None
 #                write_bit = None
             try:
-                read_value = self.read_db.bit(read_addr, read_bit)
-                if FORMULA in attrStruct and \
-                        'read' in attrStruct[FORMULA]:
-                    read_value = self.\
-                        __solveFormula(name, read_value,
-                                       attrStruct[FORMULA]['read'])
-                read_t = time.time()
+                if read_addr and read_bit:
+                    read_value = self.read_db.bit(read_addr, read_bit)
+                    if FORMULA in attrStruct and \
+                            'read' in attrStruct[FORMULA]:
+                        read_value = self.\
+                            __solveFormula(name, read_value,
+                                           attrStruct[FORMULA]['read'])
+                    read_t = time.time()
+                else:
+                    read_value, read_t, _ = attrStruct.vtq
+                    attrType = attrStruct.type
             except Exception as e:
                 self.error_stream('Trying to read %s/%s and looks to be not '
                                   'well connected to the plc.'
@@ -2035,6 +2039,10 @@ class LinacData(PyTango.Device_4Impl):
                                                         ATTR_INVALID)
                         else:
                             attr.set_value(read_value)
+                    else:
+                        attr.set_value_date_quality(0, time.time(),
+                                                    PyTango.AttrQuality.
+                                                    ATTR_INVALID)
                     if WRITEVALUE in attrStruct:
                         write_value = attrStruct[WRITEVALUE]
                         attr.set_write_value(write_value)
