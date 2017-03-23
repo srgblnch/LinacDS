@@ -25,8 +25,11 @@ __license__ = "GPLv3+"
 import functools
 from LinacFeatures import Events, Memorised
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
-from PyTango import DevUChar, DevShort, DevFloat, DevDouble
 from PyTango import DevBoolean, DevString
+from PyTango import DevUChar, DevShort, DevUShort, DevInt
+from PyTango import DevLong, DevLong64, DevULong, DevULong64
+from PyTango import DevFloat, DevDouble
+
 from time import time, ctime
 import traceback
 
@@ -584,5 +587,14 @@ class LinacAttr(object):
                 self.error("_setAttrValue(%s, %s, %s, %s) exception %s"
                            % (attrName, readValue, self.timestamp,
                               self.quality, e))
-                attr.set_value_date_quality('', self.timestamp,
+                data_type = attr.get_data_type()
+                if data_type in [DevString]:
+                    value = ''
+                elif data_type in [DevDouble, DevFloat, DevLong, DevLong64,
+                                   DevULong, DevULong64, DevShort, DevUShort,
+                                   DevUChar]:
+                    value = 0
+                else:
+                    value = None
+                attr.set_value_date_quality(value, self.timestamp,
                                             AttrQuality.ATTR_INVALID)
