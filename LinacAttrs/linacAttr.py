@@ -86,6 +86,7 @@ class LinacAttr(object):
     _writeValue = None
 
     _device = None
+    _keysLst = None
 
     _qualities = None
 
@@ -131,13 +132,15 @@ class LinacAttr(object):
 
     def __repr__(self):
         repr = "%s:\n" % self
-        for key in self.keys():
-            if self[key] is None:
+        compoments = self.keys()
+        compoments.sort()
+        for each in compoments:
+            if self[each] is None:
                 pass  # ignore
-            elif type(self[key]) is list and len(self[key]) == 0:
+            elif type(self[each]) is list and len(self[each]) == 0:
                 pass  # ignore
             else:
-                repr += "\t%s: %s\n" % (key, self[key])
+                repr += "\t%s: %s\n" % (each, self[each])
         return repr
 
     ################
@@ -334,7 +337,7 @@ class LinacAttr(object):
     def has_key(self, key):
         return key in self.keys()
 
-    def keys(self):
+    def _buildKeysLst(self):
         # FIXME: should this list be made only once?
         keys = []
         discarted = []
@@ -342,18 +345,23 @@ class LinacAttr(object):
             klskeys = []
             klsdiscarted = []
             for key, value in kls.__dict__.iteritems():
-                if isinstance(value, property):
+                if isinstance(value, property) and key not in keys:
                     klskeys += [key]
                 else:
                     klsdiscarted += [key]
-#             self.info("kls: %s" % (kls))
-#             self.info("\t* kls keys: %s" % (klskeys))
-#             self.info("\t* kls discarted: %s" % (klsdiscarted))
+            # self.info("kls: %s" % (kls))
+            # self.info("\t* kls keys: %s" % (klskeys))
+            # self.info("\t* kls discarted: %s" % (klsdiscarted))
             keys += klskeys
             discarted += klsdiscarted
-#         self.info("* keys: %s" % (keys))
-#         self.info("* discarted: %s" % (discarted))
+        # self.info("* keys: %s" % (keys))
+        # self.info("* discarted: %s" % (discarted))
         return keys
+
+    def keys(self):
+        if self._keysLst is None:
+            self._keysLst = self._buildKeysLst()
+        return self._keysLst[:]
 
     def values(self):
         lst = []
