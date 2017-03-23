@@ -1,6 +1,7 @@
 import PyTango
 from time import sleep
 
+relocator = PyTango.DeviceProxy("li/ct/linacdatarelocator-01")
 plc = {}
 dev = {}
 
@@ -72,3 +73,16 @@ def readAll(n,t):
 def readLocking():
     for i in range(1,6):
         print dev[i].Exec("self._plcAttrs['Locking'].vtq")
+
+
+def internalObjsDump():
+    for i in range(1, 6):
+        dev[i].set_timeout_millis(10000)
+        attrNames = eval(dev[i].Exec("self._plcAttrs.keys()"))
+        attrNames += eval(dev[i].Exec("self._internalAttrs.keys()"))
+        attrNames.sort()
+        attrReprs = dev[i].Exec("[self._getAttrStruct(attr) "
+                               "for attr in %s]" % (attrNames))
+        dev[i].set_timeout_millis(3000)
+        with open('plc%d.dump' % (i), 'w') as f:
+            f.write(attrReprs)
