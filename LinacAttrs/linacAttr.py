@@ -409,42 +409,25 @@ class LinacAttr(object):
     # Dictionary properties for backwards compatibility ---
     @property
     def read_value(self):
-        if self.name.startswith('Lock'):
-            pass
-            # self.info("rvalue READ  %s: %s"
-            #           % (self.name, self._readValue))
         return self._readValue
 
     @read_value.setter
     def read_value(self, value):
-        if self._readValue == value:
-            return
-        if self.name.startswith('Lock'):
-            self.info("rvalue WRITE %s: %s -> %s"
-                      % (self.name, self._readValue, value))
         if self._readValue != value:
             self._readValue = value
             if self._eventsObj and self._eventsObj.fireEvent():
                 pass
                 # TODO: When self.device supports, report back
                 # than an event has been successfully emitted.
-#         else:
-#             self._readValue = value
 
     @property
     def write_value(self):
-#         if self.name.startswith('Lock'):
-#             self.info("wvalue READ  %s: %s" % (self.name, self._writeValue))
         return self._writeValue
 
     @write_value.setter
     def write_value(self, value):
-        if self._writeValue == value:
-            return
-        if self.name.startswith('Lock'):
-            self.info("wvalue WRITE %s: %s -> %s"
-                      % (self.name, self._writeValue, value))
-        self._writeValue = value
+        if self._writeValue != value:
+            self._writeValue = value
 
     @property
     def read_t(self):
@@ -492,7 +475,7 @@ class LinacAttr(object):
     def event_t_str(self):
         if self._event_t:
             return ctime(self._event_t)
-        return ""
+        return None
 
     @property
     def lastEventQuality(self):

@@ -3196,7 +3196,8 @@ class LinacData(PyTango.Device_4Impl):
         def __attrHasEvents(self, attrName):
             '''
             '''
-            if self._getAttrStruct(attrName).events:
+            attrStruct = self._getAttrStruct(attrName)
+            if attrStruct._eventsObj:
                 return True
             return False
 #             if attrName in self._plcAttrs and \
@@ -3394,8 +3395,10 @@ class LinacData(PyTango.Device_4Impl):
             # Iterate the remaining to know if they need something to be done
             attr2Event = []
             attr2Reemit = 0
+            print(">>>>")
             for attrName in attributeList:
                 self.checkResetAttr(attrName)
+                print("%30s: %s" % (attrName, self.__attrHasEvents(attrName)))
                 # First check if for this element, it's prepared for events
                 if self.__attrHasEvents(attrName):
                     try:
@@ -3404,14 +3407,15 @@ class LinacData(PyTango.Device_4Impl):
                         # lastValue = self.__getAttrReadValue(attrName)
                         last_read_t = attrStruct[READTIME]
                         if READADDR in attrStruct:
-                            read_addr = attrStruct[READADDR]
-                            if READBIT in attrStruct:
-                                read_bit = attrStruct[READBIT]
-                                newValue = self.read_db.bit(read_addr,
-                                                            read_bit)
-                            else:
-                                newValue = self.read_db.get(read_addr,
-                                                            *attrType)
+#                             read_addr = attrStruct[READADDR]
+#                             if READBIT in attrStruct:
+#                                 read_bit = attrStruct[READBIT]
+#                                 newValue = self.read_db.bit(read_addr,
+#                                                             read_bit)
+#                             else:
+#                                 newValue = self.read_db.get(read_addr,
+#                                                             *attrType)
+                            newValue = attrStruct.hardwareRead(self.read_db)
                             if FORMULA in attrStruct and \
                                     'read' in attrStruct[FORMULA]:
                                 newValue = \
@@ -3462,6 +3466,7 @@ class LinacData(PyTango.Device_4Impl):
                                          "exception in attribute %s: %s"
                                          % (attrName, e))
                         traceback.print_exc()
+            print("<<<<<")
 #             if len(attr2Event) > 0:
 #                 self.fireEventsList(attr2Event, timestamp=now, log=True)
             if attr2Reemit > 0:

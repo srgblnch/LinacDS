@@ -23,6 +23,7 @@ __license__ = "GPLv3+"
 
 from feature import _LinacFeature
 from PyTango import DevFailed
+from time import time
 
 
 class Events(_LinacFeature):
@@ -38,10 +39,11 @@ class Events(_LinacFeature):
                                                  self._owner.value,
                                                  self._owner.timestamp,
                                                  self._owner.quality)
-            if self._owner.name.startswith('Lock'):
-                log = self.info
-            else:
-                log = self.debug
+            self._owner.event_t = time()
+            # if self._owner.name.startswith('Lock'):
+            log = self.info
+            # else:
+            #     log = self.debug
             log("%s.fireEvent(%s, %s, %s, %s)" % (self.name,
                                                   self._owner.name,
                                                   self._owner.value,

@@ -23,6 +23,7 @@ __license__ = "GPLv3+"
 
 from linacAttr import LinacAttr
 from meaningAttr import MeaningAttr
+from PyTango import DevBoolean
 
 
 class PLCAttr(LinacAttr):
@@ -59,6 +60,15 @@ class PLCAttr(LinacAttr):
         self._switchAttrName = switch
         self._isRst = isRst
         # self.debug("%s PLCAttr build" % self.name)
+
+    def hardwareRead(self, datablock):
+        if self.type == DevBoolean:
+            value = datablock.bit(self._readAddr, self._readBit)
+        else:
+            value = datablock.get(self._readAddr, *self.type)
+        if value is not None:
+            self.read_value = value
+        return value
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
