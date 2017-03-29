@@ -30,30 +30,29 @@ class Events(_LinacFeature):
     def __init__(self, *args, **kwargs):
         super(Events, self).__init__(*args, **kwargs)
 
-    def fireEvent(self):
+    def fireEvent(self, name=None, value=None, timestamp=None, quality=None):
         if self._owner is None or self._owner.device is None:
             self.warning("Cannot emit events outside a tango device server")
             return False
         try:
-            self._owner.device.push_change_event(self._owner.name,
-                                                 self._owner.value,
-                                                 self._owner.timestamp,
-                                                 self._owner.quality)
-            self._owner.event_t = time()
+            name = name or self._owner.name
+            value = value or self._owner.rvalue
+            timestamp = timestamp or self._owner.timestamp
+            quality = quality or self._owner.quality
+            self._owner.device.push_change_event(name, value, timestamp,
+                                                 quality)
+            #self._owner.event_t = time()
             # if self._owner.name.startswith('Lock'):
             log = self.info
             # else:
             #     log = self.debug
-            log("%s.fireEvent(%s, %s, %s, %s)" % (self.name,
-                                                  self._owner.name,
-                                                  self._owner.value,
-                                                  self._owner.timestamp,
-                                                  self._owner.quality))
-            return True
+            log("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name, value,
+                                                  timestamp, quality))
+            return time()
         except DevFailed as e:
             self.warning("DevFailed in event %s emit: %s"
                          % (self.name, e[0].desc))
         except Exception as e:
             self.error("Event for %s (with value %s) not emitted due to: %s"
-                       % (self.name, self._owner.value, e))
-        return False
+                       % (self.name, value, e))
+        return None

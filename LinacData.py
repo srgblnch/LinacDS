@@ -48,7 +48,9 @@ from types import StringType
 
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
-from LinacAttrs import EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr
+from LinacAttrs import EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr, \
+                       AutostopAttr
+from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer
 
 LiAttrSpecializations = [EnumerationAttr]
 
@@ -87,121 +89,6 @@ def john(sls):
 def latin1(x):
     return x.decode('utf-8').replace(u'\u2070', u'\u00b0').\
         replace(u'\u03bc', u'\u00b5').encode('latin1')
-
-
-# Circular buffer to store last read values and based on it average define ---
-# the attribute quality
-import numpy as np
-DEFAULT_SIZE = 10
-
-
-class CircularBuffer(object):
-    '''This is made to implement an automatic circular buffer using numpy array
-       and get some statistical values from the collected data.
-       This is used for attributes with changing qualities based on std of
-       the last readings. The only way to have that is with a little historic
-       of the read values to know if it's readings are below some threshold
-       or not.
-       It is also used for the collection of number of events emitted and the
-       time used for each loop for event emission.
-    '''
-    def __init__(self, buffer, maxlen=DEFAULT_SIZE, *args, **kwargs):
-        super(CircularBuffer, self).__init__(*args, **kwargs)
-        self.__maxlen = maxlen
-        if type(buffer) == list:
-            self._buffer = np.array(buffer[-self.__maxlen:])
-            if self._buffer.ndim > 1:
-                raise BufferError("Not supported multi-dimensions")
-        else:
-            raise BufferError("Input buffer invalid")
-
-    def __str__(self):
-        return self._buffer.__str__()
-
-    def __repr__(self):
-        return self._buffer.__repr__()
-
-    def __len__(self):
-        return len(self._buffer)
-
-    def __float__(self):
-        return float(self.value)
-
-    def __int__(self):
-        return int(self.value)
-
-    def append(self, newElement):
-        if len(self._buffer) > 0:
-            self._buffer = np.append(self._buffer, newElement)[-self.__maxlen:]
-        else:
-            self._buffer = np.array([newElement])
-
-    @property
-    def mean(self):
-        if len(self._buffer) > 0:
-            return self._buffer.mean()
-        else:
-            return float('NaN')
-
-    @property
-    def std(self):
-        if len(self._buffer) > 0:
-            return self._buffer.std()
-        else:
-            return float('NaN')
-
-    @property
-    def meanAndStd(self):
-        return (self.mean, self.std)
-
-    @property
-    def max(self):
-        if len(self._buffer) > 0:
-            return self._buffer.max()
-        else:
-            return float('NaN')
-
-    @property
-    def min(self):
-        if len(self._buffer) > 0:
-            return self._buffer.min()
-        else:
-            return float('NaN')
-
-    @property
-    def value(self):
-        if len(self._buffer) > 0:
-            return self._buffer[-1]
-        else:
-            return None
-
-    @property
-    def array(self):
-        if len(self._buffer) > 0:
-            return self._buffer
-        else:
-            return np.array([])
-
-    def maxSize(self):
-        return self.__maxlen
-
-    def resize(self, newMaxLen):
-        self.__maxlen = newMaxLen
-
-    def resetBuffer(self):
-        self._buffer = np.array([])
-
-
-class HistoryBuffer(CircularBuffer):
-    def __init__(self, cleaners, maxlen=DEFAULT_SIZE, *args, **kwargs):
-        super(HistoryBuffer, self).__init__([], maxlen=maxlen, *args, **kwargs)
-        self._cleaners = cleaners
-
-    def append(self, newElement):
-        if newElement in self._cleaners:
-            self._buffer = np.array([newElement])
-        else:
-            CircularBuffer.append(self, newElement)
 
 
 class AttrList(object):
@@ -975,23 +862,35 @@ class AttrList(object):
         toReturn = (self.add_Attr(attrName, attrType, rfun, wfun, l=l,
                                   unit=unit, **kwargs),)
         if autoStop is not None:
-            attrStopperBaseName = attrName
-            toReturn += (self._buildAutoStopSpectrum(attrName, l+" "+AUTOSTOP,
-                                                     autoStop),)
-            toReturn += (self._buildAutoStopEnableAttr(attrName,
-                                                       l+" "+AUTOSTOP,
-                                                       autoStop),)
-            for condition in [BELOW, ABOVE]:
-                if condition in autoStop:
-                    subName = attrName
-                    toReturn += \
-                        (self._buildAutoStopThresholdAttr(subName,
-                                                          l+" "+AUTOSTOP,
-                                                          unit, autoStop,
-                                                          condition),)
-            toReturn += (self._buildAutoStopIntegrationTimeAttr(attrName,
-                                                                l+" "+AUTOSTOP,
-                                                                autoStop),)
+            autostopperName = "%s_%s" % (attrName, AUTOSTOP)
+            autostopper = AutostopAttr(name=autostopperName,
+                                       valueType=attrType,
+                                       device=self.impl,
+                                       plcAttr=self.impl._plcAttrs[attrName],
+                                       below=autoStop.get(BELOW, None),
+                                       above=autoStop.get(ABOVE, None),
+                                       events={})
+            self.impl._internalAttrs[autostopperName] = autostopper
+            self.add_Attr(autostopperName, PyTango.DevDouble,
+                          rfun=autostopper.read_attr, xdim=1000)
+            
+#             attrStopperBaseName = attrName
+#             toReturn += (self._buildAutoStopSpectrum(attrName, l+" "+AUTOSTOP,
+#                                                      autoStop),)
+#             toReturn += (self._buildAutoStopEnableAttr(attrName,
+#                                                        l+" "+AUTOSTOP,
+#                                                        autoStop),)
+#             for condition in [BELOW, ABOVE]:
+#                 if condition in autoStop:
+#                     subName = attrName
+#                     toReturn += \
+#                         (self._buildAutoStopThresholdAttr(subName,
+#                                                           l+" "+AUTOSTOP,
+#                                                           unit, autoStop,
+#                                                           condition),)
+#             toReturn += (self._buildAutoStopIntegrationTimeAttr(attrName,
+#                                                                 l+" "+AUTOSTOP,
+#                                                                 autoStop),)
         return toReturn
 
 #     # # Builders for subattributes ---
@@ -1695,7 +1594,8 @@ class LinacData(PyTango.Device_4Impl):
             name = attr.get_name()
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [EnumerationAttr,
-                                                            MeaningAttr]]):
+                                                            MeaningAttr,
+                                                            AutostopAttr]]):
                 attrStruct.read_attr(attr)
                 return
             attrType = attrStruct[TYPE]
@@ -3334,52 +3234,52 @@ class LinacData(PyTango.Device_4Impl):
             # when non case before, no event
             return False
 
-        def __checkEventReEmission(self, attrName):
-            ''' Check if, even the value doesn't require an event to emit,
-                if last time it was emit is to old and we do a remainder.
-            '''
-            # Huge hackish
-            if attrName in ['Heat_Time', 'LV_Time']:
-                # I don't understand why this two attributes (on the klystrons)
-                # fail (with the simulation) to re-emit those events.
-                return False
-            attrStruct = self._getAttrStruct(attrName)
-            last_event_t = attrStruct[EVENTTIME]
-            if last_event_t:
-                now = time.time()
-                if now - last_event_t > RE_EVENTS_PERIOD:
-                    return True
-            return False
-
-        def __eventReEmission(self, attrName):
-            try:
-                attrStruct = self._getAttrStruct(attrName)
-                attrValue = self.__getAttrReadValue(attrName)
-                if MEANINGS in attrStruct:
-                    if BASESET in attrStruct:
-                        attrValue = attrStruct[READVALUE].array
-                    else:
-                        attrValue = \
-                            self.__buildAttrMeaning(attrName, attrValue)
-                    attrQuality = self.__buildAttrQuality(attrName, attrValue)
-                attrQuality = attrStruct[LASTEVENTQUALITY]
-                timestamp = attrStruct[READTIME]
-                self.__doTraceAttr(attrName, "EventReEmission(%s)" % attrValue)
-                try:
-                    self.fireEvent([attrName, attrValue, attrQuality],
-                                   timestamp)
-                except Exception as e:
-                    self.warn_stream("In EventReEmission() exception firing "
-                                     "event for attribute %s: %s"
-                                     % (attrName, e))
-                    now = time.time()
-                    attrStruct[EVENTTIME] = now
-                    # attrStruct[EVENTTIMESTR] = time.ctime(now)
-            except Exception as e:
-                self.warn_stream("In EventReEmission() exception in event "
-                                 "re-emit for attribute %s: %s" % (attrName,
-                                                                   e))
-                traceback.print_exc()
+#         def __checkEventReEmission(self, attrName):
+#             ''' Check if, even the value doesn't require an event to emit,
+#                 if last time it was emit is to old and we do a remainder.
+#             '''
+#             # Huge hackish
+#             if attrName in ['Heat_Time', 'LV_Time']:
+#                 # I don't understand why this two attributes (on the klystrons)
+#                 # fail (with the simulation) to re-emit those events.
+#                 return False
+#             attrStruct = self._getAttrStruct(attrName)
+#             last_event_t = attrStruct[EVENTTIME]
+#             if last_event_t:
+#                 now = time.time()
+#                 if now - last_event_t > RE_EVENTS_PERIOD:
+#                     return True
+#             return False
+# 
+#         def __eventReEmission(self, attrName):
+#             try:
+#                 attrStruct = self._getAttrStruct(attrName)
+#                 attrValue = self.__getAttrReadValue(attrName)
+#                 if MEANINGS in attrStruct:
+#                     if BASESET in attrStruct:
+#                         attrValue = attrStruct[READVALUE].array
+#                     else:
+#                         attrValue = \
+#                             self.__buildAttrMeaning(attrName, attrValue)
+#                     attrQuality = self.__buildAttrQuality(attrName, attrValue)
+#                 attrQuality = attrStruct[LASTEVENTQUALITY]
+#                 timestamp = attrStruct[READTIME]
+#                 self.__doTraceAttr(attrName, "EventReEmission(%s)" % attrValue)
+#                 try:
+#                     self.fireEvent([attrName, attrValue, attrQuality],
+#                                    timestamp)
+#                 except Exception as e:
+#                     self.warn_stream("In EventReEmission() exception firing "
+#                                      "event for attribute %s: %s"
+#                                      % (attrName, e))
+#                     now = time.time()
+#                     attrStruct[EVENTTIME] = now
+#                     # attrStruct[EVENTTIMESTR] = time.ctime(now)
+#             except Exception as e:
+#                 self.warn_stream("In EventReEmission() exception in event "
+#                                  "re-emit for attribute %s: %s" % (attrName,
+#                                                                    e))
+#                 traceback.print_exc()
 
         def plcGeneralAttrEvents(self):
             '''This method is used to periodically loop to review the list of
@@ -3395,10 +3295,8 @@ class LinacData(PyTango.Device_4Impl):
             # Iterate the remaining to know if they need something to be done
             attr2Event = []
             attr2Reemit = 0
-            print(">>>>")
             for attrName in attributeList:
                 self.checkResetAttr(attrName)
-                print("%30s: %s" % (attrName, self.__attrHasEvents(attrName)))
                 # First check if for this element, it's prepared for events
                 if self.__attrHasEvents(attrName):
                     try:
@@ -3455,18 +3353,17 @@ class LinacData(PyTango.Device_4Impl):
                             self.__doTraceAttr(attrName,
                                                "plcGeneralAttrEvents(%s)"
                                                % (attrValue))
-                        elif self.__checkEventReEmission(attrName):
-                            #  Even there is no condition to emit an event
-                            #  Check the RE_EVENTS_PERIOD to know if a refresh
-                            #  would be nice
-                            self.__eventReEmission(attrName)
-                            attr2Reemit += 1
+#                         elif self.__checkEventReEmission(attrName):
+#                             #  Even there is no condition to emit an event
+#                             #  Check the RE_EVENTS_PERIOD to know if a refresh
+#                             #  would be nice
+#                             self.__eventReEmission(attrName)
+#                             attr2Reemit += 1
                     except Exception as e:
                         self.warn_stream("In plcGeneralAttrEvents(), "
                                          "exception in attribute %s: %s"
                                          % (attrName, e))
                         traceback.print_exc()
-            print("<<<<<")
 #             if len(attr2Event) > 0:
 #                 self.fireEventsList(attr2Event, timestamp=now, log=True)
             if attr2Reemit > 0:
@@ -3513,7 +3410,7 @@ class LinacData(PyTango.Device_4Impl):
                             self._refreshInternalAutostopParams(attrName)
                             # FIXME: this is task for a internalUpdaterThread
                         elif MEAN in attrStruct or STD in attrStruct:
-                            self._updateStatistic(attrName)
+                            # self._updateStatistic(attrName)
                             newValue = attrStruct[READVALUE]
                         elif TRIGGERED in attrStruct:
                             newValue = attrStruct[TRIGGERED]

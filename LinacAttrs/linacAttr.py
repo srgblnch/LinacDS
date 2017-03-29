@@ -24,6 +24,7 @@ __license__ = "GPLv3+"
 
 import functools
 from LinacFeatures import Events, Memorised
+from LinacFeatures import CircularBuffer, HistoryBuffer
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
 from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
@@ -104,6 +105,9 @@ class LinacAttr(object):
 
     def __init__(self, name, valueType, device=None, memorized=False,
                  events=None, *args, **kwargs):
+        # meanings must be is a subclass of LinacAttr or
+        # generates a circular import because MeaningAttr
+        # inherits from LinacAttr.
         """ Main superclass for linac attributes.
         """
         super(LinacAttr, self).__init__(*args, **kwargs)
@@ -413,12 +417,26 @@ class LinacAttr(object):
 
     @read_value.setter
     def read_value(self, value):
-        if self._readValue != value:
+        if isinstance(value, CircularBuffer):
+            if self._readValue is not None:
+                self.warning("Assigned a readValue %s class when was %s"
+                             % (type(value), type(self._readValue)))
             self._readValue = value
-            if self._eventsObj and self._eventsObj.fireEvent():
-                pass
+        if isinstance(self._readValue, CircularBuffer):
+            self._readValue.append(value)
+        elif self._readValue != value:
+            self._readValue = value
+            if self._eventsObj:
+                self.event_t = self._eventsObj.fireEvent()
                 # TODO: When self.device supports, report back
                 # than an event has been successfully emitted.
+                if hasattr(self, '_meaningsObj') and self._meaningsObj:
+                    name = self._meaningsObj.alias
+                    value, timestamp, quality = self._meaningsObj.vtq
+                    self._meaningsObj.event_t = \
+                        self._eventsObj.fireEvent(name, value, timestamp,
+                                                  quality)
+        # TODO: thresholds for events emissions
 
     @property
     def write_value(self):
@@ -561,8 +579,8 @@ class LinacAttr(object):
             return suffix
 
     def _setAttrValue(self, attr, readValue):
-        if type(readValue) == list:
-            readValue = "%s" % readValue
+#         if type(readValue) == list:
+#             readValue = "%s" % readValue
         attrName = self._getAttrName(attr)
         self.info("_setAttrValue(%s, %s, %s, %s)"
                    % (attrName, readValue, self.timestamp, self.quality))
@@ -574,6 +592,11 @@ class LinacAttr(object):
                     attr.set_write_value(readValue)
                 attr.set_value_date_quality(readValue, self.timestamp,
                                             self.quality)
+            except DevFailed as e:
+                print type(readValue)
+                self.error("_setAttrValue(%s, %s, %s, %s) exception %s"
+                           % (attrName, readValue, self.timestamp,
+                              self.quality, e))
             except Exception as e:
                 self.error("_setAttrValue(%s, %s, %s, %s) exception %s"
                            % (attrName, readValue, self.timestamp,

@@ -10,11 +10,12 @@ for i in range(1, 6):
     dev[i] = PyTango.DeviceProxy("li/ct/plc%d" % (i))
     plcAttrs = int(dev[i].Exec("len(self._plcAttrs)"))
     plcAttrsEvents = int(dev[i].Exec("len([x for x in self._plcAttrs.keys() "
-                                     "if self._plcAttrs[x].events])"))
+                                     "if self._plcAttrs[x]._eventsObj])"))
     internalAttrs = int(dev[i].Exec("len(self._internalAttrs)"))
     internalAttrsEvents = int(dev[i].Exec("len([x for x in "
                                           "self._internalAttrs if "
-                                          "self._internalAttrs[x].events])"))
+                                          "self._internalAttrs[x]._eventsObj])"
+                                          ))
     print("plc%d: %3d (%3d), %3d (%3d) -> %3d (%3d)"
           % (i, plcAttrs, plcAttrsEvents, internalAttrs, internalAttrsEvents,
              plcAttrs+internalAttrs, plcAttrsEvents+internalAttrsEvents))
@@ -77,12 +78,12 @@ def readLocking():
 
 def internalObjsDump():
     for i in range(1, 6):
-        dev[i].set_timeout_millis(10000)
+        #dev[i].set_timeout_millis(10000)
         attrNames = eval(dev[i].Exec("self._plcAttrs.keys()"))
         attrNames += eval(dev[i].Exec("self._internalAttrs.keys()"))
         attrNames.sort()
         attrReprs = dev[i].Exec("[self._getAttrStruct(attr) "
                                "for attr in %s]" % (attrNames))
-        dev[i].set_timeout_millis(3000)
+        #dev[i].set_timeout_millis(3000)
         with open('plc%d.dump' % (i), 'w') as f:
             f.write(attrReprs)

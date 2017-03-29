@@ -21,6 +21,9 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-from events import Events
-from feature import _LinacFeature
-from memorised import Memorised
+
+from .autostop import AutoStopParameter
+from .buffers import CircularBuffer, HistoryBuffer
+from .events import Events
+from .feature import _LinacFeature
+from .memorised import Memorised

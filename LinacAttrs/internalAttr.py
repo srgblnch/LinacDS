@@ -39,7 +39,11 @@ class InternalAttr(LinacAttr):
     _readSet = None
     _writeSet = None
 
-    def __init__(self, isWritable=False, defaultValue=None, *args, **kwargs):
+    _meanings = None
+    _meaningsObj = None
+
+    def __init__(self, isWritable=False, defaultValue=None, meanings=None,
+                 *args, **kwargs):
         """
             Class to describe an attribute that references information from
             any of the Linac's PLCs.
@@ -54,6 +58,7 @@ class InternalAttr(LinacAttr):
                 # from database as memorised.
             else:
                 self._readValue = defaultValue
+        self.meanings = meanings
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
@@ -81,29 +86,30 @@ class InternalAttr(LinacAttr):
     def inverted(self, value):
         self._inverted = value
 
-    @property
-    def Mean(self):
-        return self._mean
-
-    @Mean.setter
-    def Mean(self, value):
-        self._mean = value
-
-    @property
-    def Std(self):
-        return self._std
-
-    @Std.setter
-    def Std(self, value):
-        self._std = value
-
-    @property
-    def Triggered(self):
-        return self._triggered
-
-    @Triggered.setter
-    def Triggered(self, value):
-        self._triggered = value
+# Only for the AutostopAttrs
+#     @property
+#     def Mean(self):
+#         return self._mean
+# 
+#     @Mean.setter
+#     def Mean(self, value):
+#         self._mean = value
+# 
+#     @property
+#     def Std(self):
+#         return self._std
+# 
+#     @Std.setter
+#     def Std(self, value):
+#         self._std = value
+# 
+#     @property
+#     def Triggered(self):
+#         return self._triggered
+# 
+#     @Triggered.setter
+#     def Triggered(self, value):
+#         self._triggered = value
 
     @property
     def read_set(self):
@@ -120,6 +126,18 @@ class InternalAttr(LinacAttr):
     @write_set.setter
     def write_set(self, value):
         self._writeSet = value
+
+    @property
+    def meanings(self):
+        return self._meanings
+
+    @meanings.setter
+    def meanings(self, value):
+        if value is not None:
+            self._meaningsObj = MeaningAttr(owner=self)
+        else:
+            self._meaningsObj = None
+        self._meanings = value
 
     #######################
     # Memorised feature ---
