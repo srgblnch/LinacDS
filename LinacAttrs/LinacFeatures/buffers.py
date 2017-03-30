@@ -25,6 +25,8 @@ __license__ = "GPLv3+"
 # Circular buffer to store last read values and based on it average define ---
 # the attribute quality
 import numpy as np
+from types import MethodType
+
 DEFAULT_SIZE = 10
 
 
@@ -39,11 +41,10 @@ class CircularBuffer(object):
        time used for each loop for event emission.
     '''
 
-    _append_cb = []
-
     def __init__(self, buffer, maxlen=DEFAULT_SIZE, *args, **kwargs):
         super(CircularBuffer, self).__init__(*args, **kwargs)
         self.__maxlen = maxlen
+        self._append_cb = []
         if type(buffer) == list:
             self._buffer = np.array(buffer[-self.__maxlen:])
             if self._buffer.ndim > 1:
@@ -73,6 +74,8 @@ class CircularBuffer(object):
             self._buffer = np.array([newElement])
         for cb in self._append_cb:
             if cb is not None and callable(cb):
+#                 if isinstance(cb, MethodType):
+#                     print("\t\t%s.%s" % (cb.im_self.name, cb.__name__))
                 cb()
 
     def append_cb(self, func):

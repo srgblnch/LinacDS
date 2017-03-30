@@ -43,9 +43,9 @@ class Events(_LinacFeature):
                                                  quality)
             #self._owner.event_t = time()
             # if self._owner.name.startswith('Lock'):
-            log = self.info
+            #     log = self.info
             # else:
-            #     log = self.debug
+            log = self.debug
             log("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name, value,
                                                   timestamp, quality))
             return time()

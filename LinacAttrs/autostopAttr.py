@@ -41,24 +41,30 @@ class AutostopAttr(LinacAttr):
         self._plcAttr = plcAttr
         self._enable = AutoStopParameter(tag="Enable", dataType=bool,
                                          owner=self)
-        if below:
-            self._below = AutoStopParameter(tag="Below_Threshold",
-                                            dataType=float, owner=self)
-        if above:
-            self._above = AutoStopParameter(tag="Above_Threshold",
-                                            dataType=float, owner=self)
+        self._below = AutoStopParameter(tag="Below_Threshold",
+                                        dataType=float, owner=self)
+        self._above = AutoStopParameter(tag="Above_Threshold",
+                                        dataType=float, owner=self)
         self._integr_t = AutoStopParameter(tag="IntegrationTime",
                                            dataType=float, owner=self)
+        self.info("Build %s between (%s,%s)" % (self.name, self._below.value,
+                                                self._above.value))
         # also the mean, std and triggered
         self._mean = AutoStopParameter(tag="Mean", dataType=float, owner=self)
         self._std = AutoStopParameter(tag="Std", dataType=float, owner=self)
         self._triggered = AutoStopParameter(tag="Triggered", dataType=bool,
                                             owner=self)
+        self._enable.value = False  # TODO: memorised attribute
+        self._below.value = below or float('-Inf')
+        self._above.value = above or float('Inf')
+        # TODO: initialisation of the integr_t
+        self._mean.value = float('nan')
+        self._std.value = float('nan')
+        self._triggered.value = False
         self._plcAttr.rvalue.append_cb(self.newvaluecb)
 
     @property
     def rvalue(self):
-        print("\n\t%s\n" % (type(self._plcAttr.rvalue)))
         return self._plcAttr.rvalue.array
 
     @property
@@ -72,7 +78,35 @@ class AutostopAttr(LinacAttr):
     def newvaluecb(self):
         if self._enable.value:
             self.info("New Value Callback for %s" % (self._plcAttr.rvalue))
-            self._mean.value = self._plcAttr.rvalue.mean()
-            self._std.value = self._plcAttr.rvalue.std()
+            self._mean.value = self._plcAttr.rvalue.mean
+            self._std.value = self._plcAttr.rvalue.std
             if self._above.value < self._mean.value < self._below.value:
                 self._triggered.value = True
+
+    @property
+    def enable(self):
+        return self._enable.value
+
+    @property
+    def below(self):
+        return self._below.value
+
+    @property
+    def above(self):
+        return self._above.value
+
+    @property
+    def integr_t(self):
+        return self._integr_t.value
+
+    @property
+    def mean(self):
+        return self._mean.value
+
+    @property
+    def std(self):
+        return self._std.value
+
+    @property
+    def triggered(self):
+        return self._triggered.value

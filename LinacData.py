@@ -3417,9 +3417,9 @@ class LinacData(PyTango.Device_4Impl):
                         elif isinstance(attrStruct, EnumerationAttr):
                             newValue = lastValue  # avoid emit
                         else:
-                            self.warn_stream("In internalAttrEvents(): "
-                                             "unknown how to emit events "
-                                             "for %s attribute" % (attrName))
+#                             self.warn_stream("In internalAttrEvents(): "
+#                                              "unknown how to emit events "
+#                                              "for %s attribute" % (attrName))
                             newValue = lastValue
                         emit = False
                         if newValue != lastValue:

@@ -423,7 +423,9 @@ class LinacAttr(object):
                              % (type(value), type(self._readValue)))
             self._readValue = value
         if isinstance(self._readValue, CircularBuffer):
+#             print("\n>\t%s" % (self.name))
             self._readValue.append(value)
+#             print("<\n")
         elif self._readValue != value:
             self._readValue = value
             if self._eventsObj:
@@ -592,11 +594,6 @@ class LinacAttr(object):
                     attr.set_write_value(readValue)
                 attr.set_value_date_quality(readValue, self.timestamp,
                                             self.quality)
-            except DevFailed as e:
-                print type(readValue)
-                self.error("_setAttrValue(%s, %s, %s, %s) exception %s"
-                           % (attrName, readValue, self.timestamp,
-                              self.quality, e))
             except Exception as e:
                 self.error("_setAttrValue(%s, %s, %s, %s) exception %s"
                            % (attrName, readValue, self.timestamp,

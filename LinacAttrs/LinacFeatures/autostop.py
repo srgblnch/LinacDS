@@ -50,11 +50,11 @@ class AutoStopParameter(_LinacFeature):
             if self._value != value:
                 self._write_t = ctime()
                 self._value = value
-                self.__event(self._tag, self._value, self._write_t)
+                #self.__event(self._tag, self._value, self._write_t)
 
     def __event(self, suffix, value, timestamp):
         if self._owner and self._owner._eventsObj:
             attrName = "%s_%s" % (self._owner.name, suffix)
             eventsObj = self._owner._eventsObj
-            eventsObj.fireevent(attrName, value, timestamp,
+            eventsObj.fireEvent(attrName, value, timestamp,
                                 AttrQuality.ATTR_VALID)

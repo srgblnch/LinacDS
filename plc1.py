@@ -111,7 +111,7 @@ Attr('GUN_HV_I',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {ABOVE: 1.0,
                                      BELOW: -20.0}}},
-     autoStop={BELOW: -20,
+     autoStop={BELOW: -20.0,
                INTEGRATIONTIME: 1,  # s
                SWITCHDESCRIPTOR: 'GUN_HV_ONC'})
 
