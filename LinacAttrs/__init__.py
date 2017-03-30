@@ -22,7 +22,7 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-from autostopAttr import AutostopAttr
+from autostopAttr import AutostopAttr, AutoStopParameter
 from enumAttr import EnumerationAttr
 from internalAttr import InternalAttr
 from linacAttr import LinacAttr, LinacException, CommandExc, AttrExc

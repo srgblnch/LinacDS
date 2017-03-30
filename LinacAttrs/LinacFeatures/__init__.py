@@ -22,7 +22,6 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-from .autostop import AutoStopParameter
 from .buffers import CircularBuffer, HistoryBuffer
 from .events import Events
 from .feature import _LinacFeature

@@ -49,7 +49,7 @@ from types import StringType
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
 from LinacAttrs import EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr, \
-                       AutostopAttr
+                       AutostopAttr, AutoStopParameter
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -862,17 +862,11 @@ class AttrList(object):
         toReturn = (self.add_Attr(attrName, attrType, rfun, wfun, l=l,
                                   unit=unit, **kwargs),)
         if autoStop is not None:
-            autostopperName = "%s_%s" % (attrName, AUTOSTOP)
-            autostopper = AutostopAttr(name=autostopperName,
-                                       valueType=attrType,
-                                       device=self.impl,
-                                       plcAttr=self.impl._plcAttrs[attrName],
-                                       below=autoStop.get(BELOW, None),
-                                       above=autoStop.get(ABOVE, None),
-                                       events={})
-            self.impl._internalAttrs[autostopperName] = autostopper
-            self.add_Attr(autostopperName, PyTango.DevDouble,
-                          rfun=autostopper.read_attr, xdim=1000)
+            toReturn += self._buildAutoStopAttributes(attrName, l, attrType,
+                                                      autoStop)
+            
+            
+            
             
 #             attrStopperBaseName = attrName
 #             toReturn += (self._buildAutoStopSpectrum(attrName, l+" "+AUTOSTOP,
@@ -895,98 +889,126 @@ class AttrList(object):
 
 #     # # Builders for subattributes ---
 
-    def _buildAutoStopSpectrum(self, baseName, baseLabel, autoStopDesc):
-        attrName = "%s_%s" % (baseName, AUTOSTOP)
-        scalarAttr = self.impl._plcAttrs[baseName]
-        attrDesc = copy(scalarAttr)
-        attrDesc[AUTOSTOP] = autoStopDesc
-        self.impl._plcAttrs[attrName] = attrDesc
-        self.impl._plcAttrs[attrName].pop(QUALITIES)
-        sizeOfBuffer = autoStopDesc[INTEGRATIONTIME] / PLC_STEP_UPDATE_PERIOD
-        self.impl._plcAttrs[attrName][READVALUE] = CircularBuffer([])
-        spectrumAttr = self.add_Attr(attrName, PyTango.DevDouble,
-                                     rfun=self.impl.read_spectrumAttr,
-                                     xdim=1000)
-        # publish the mean and the std of this spectrum as tango attr also
-        meanName = "%s_%s" % (attrName, MEAN)
-        rfun = self.__getAttrMethod('read', meanName, internal=True)
+    def _buildAutoStopAttributes(self, baseName, baseLabel, attrType,
+                                 autoStopDesc):
+        autostopperName = "%s_%s" % (baseName, AUTOSTOP)
+        autostopperLabel = "%s %s" % (baseLabel, AUTOSTOP)
+        autostopper = AutostopAttr(name=autostopperName,
+                                       valueType=attrType,
+                                       device=self.impl,
+                                       plcAttr=self.impl._plcAttrs[baseName],
+                                       below=autoStopDesc.get(BELOW, None),
+                                       above=autoStopDesc.get(ABOVE, None),
+                                       events={})
+        self.impl._internalAttrs[autostopperName] = autostopper
+        spectrumAttr = self.add_Attr(autostopperName, PyTango.DevDouble,
+                                     rfun=autostopper.read_attr, xdim=1000,
+                                     l=autostopperLabel)
+        enableAttr = self._buildAutoStopEnableAttr(baseName, autostopperLabel,
+                                                   autostopper)
+        return (spectrumAttr, enableAttr, )
 
-        self._prepareInternalAttribute(meanName, PyTango.DevDouble,
-                                       isWritable=False)
-        self.impl._internalAttrs[meanName][QUALITIES] = \
-            self.impl._plcAttrs[baseName][QUALITIES]
-        self._prepareEvents(meanName, self.impl._plcAttrs[baseName][EVENTS])
-        self.impl._internalAttrs[meanName][MEAN] = attrName
-        meanAttr = self.add_Attr(meanName, PyTango.DevDouble, rfun,
-                                 l=baseLabel+' mean')
-        stdName = "%s_%s" % (attrName, STD)
-        rfun = self.__getAttrMethod('read', stdName, internal=True)
-        self._prepareInternalAttribute(stdName, PyTango.DevDouble,
-                                       isWritable=False)
-        self._prepareEvents(stdName, self.impl._plcAttrs[baseName][EVENTS])
-        self.impl._internalAttrs[stdName][STD] = attrName
-        stdAttr = self.add_Attr(stdName, PyTango.DevDouble, rfun,
-                                l=baseLabel+' std')
+    def _buildAutoStopEnableAttr(self, baseName, baseLabel, autostopper):
+        enableName = "%s_%s_%s" % (baseName, AUTOSTOP, ENABLE)
+        enableLabel = "%s %s" % (baseLabel, ENABLE)
+        enabler = autostopper._enable
+        enabler.alias = enableName
+        self.impl._internalAttrs[enableName] = enabler
+        return self.add_Attr(enableName, PyTango.DevBoolean,
+                             rfun=enabler.read_attr, wfun=enabler.write_attr,
+                             l=enableLabel)
+        
+#         attrName = "%s_%s" % (baseName, AUTOSTOP)
+#         scalarAttr = self.impl._plcAttrs[baseName]
+#         attrDesc = copy(scalarAttr)
+#         attrDesc[AUTOSTOP] = autoStopDesc
+#         self.impl._plcAttrs[attrName] = attrDesc
+#         self.impl._plcAttrs[attrName].pop(QUALITIES)
+#         sizeOfBuffer = autoStopDesc[INTEGRATIONTIME] / PLC_STEP_UPDATE_PERIOD
+#         self.impl._plcAttrs[attrName][READVALUE] = CircularBuffer([])
+#         spectrumAttr = self.add_Attr(attrName, PyTango.DevDouble,
+#                                      rfun=self.impl.read_spectrumAttr,
+#                                      xdim=1000)
+#         # publish the mean and the std of this spectrum as tango attr also
+#         meanName = "%s_%s" % (attrName, MEAN)
+#         rfun = self.__getAttrMethod('read', meanName, internal=True)
+# 
+#         self._prepareInternalAttribute(meanName, PyTango.DevDouble,
+#                                        isWritable=False)
+#         self.impl._internalAttrs[meanName][QUALITIES] = \
+#             self.impl._plcAttrs[baseName][QUALITIES]
+#         self._prepareEvents(meanName, self.impl._plcAttrs[baseName][EVENTS])
+#         self.impl._internalAttrs[meanName][MEAN] = attrName
+#         meanAttr = self.add_Attr(meanName, PyTango.DevDouble, rfun,
+#                                  l=baseLabel+' mean')
+#         stdName = "%s_%s" % (attrName, STD)
+#         rfun = self.__getAttrMethod('read', stdName, internal=True)
+#         self._prepareInternalAttribute(stdName, PyTango.DevDouble,
+#                                        isWritable=False)
+#         self._prepareEvents(stdName, self.impl._plcAttrs[baseName][EVENTS])
+#         self.impl._internalAttrs[stdName][STD] = attrName
+#         stdAttr = self.add_Attr(stdName, PyTango.DevDouble, rfun,
+#                                 l=baseLabel+' std')
+# 
+#         return (spectrumAttr, meanAttr, stdAttr)
 
-        return (spectrumAttr, meanAttr, stdAttr)
-
-    def _buildAutoStopEnableAttr(self, baseName, baseLabel, autoStopDesc):
-        attrName = "%s_%s_%s" % (baseName, AUTOSTOP, ENABLE)
-        label = baseLabel+' '+ENABLE
-        self._prepareInternalAttribute(attrName, PyTango.DevBoolean)
-        self._prepareEvents(attrName, {})
-        rfun = self.__getAttrMethod('read', attrName, internal=True)
-        wfun = self.__getAttrMethod('write', attrName, internal=True)
-        self.impl._internalAttrs[attrName][AUTOSTOP] = {'is'+ENABLE:
-                                                        baseName+'_'+AUTOSTOP}
-        if baseName+'_'+AUTOSTOP in self.impl._plcAttrs:
-            self.impl._plcAttrs[baseName+'_'+AUTOSTOP][AUTOSTOP][ENABLE] = True
-        self.impl._internalAttrs[attrName][READVALUE] = True
-        self.impl._internalAttrs[attrName][WRITEVALUE] = True
-        enableAttr = self.add_Attr(attrName, PyTango.DevBoolean, rfun, wfun,
-                                   l=label)
-        # A ReadOonly boolean to report when autostopper has acted
-        # FIXME: when clean this boolean?
-        triggerName = "%s_%s_%s" % (baseName, AUTOSTOP, TRIGGERED)
-        label = baseLabel+' '+TRIGGERED
-        self._prepareInternalAttribute(triggerName, PyTango.DevBoolean)
-        self._prepareEvents(triggerName, {})
-        rfun = self.__getAttrMethod('read', triggerName, internal=True)
-        self.impl._internalAttrs[triggerName][TRIGGERED] = False
-        triggerAttr = self.add_Attr(triggerName, PyTango.DevBoolean, rfun,
-                                    l=label)
-        return (enableAttr, triggerAttr)
-
-    def _buildAutoStopThresholdAttr(self, baseName, baseLabel, unit,
-                                    autoStopDesc, condition):
-        attrName = "%s_%s_%s_%s" % (baseName, AUTOSTOP, condition, THRESHOLD)
-        label = baseLabel+' '+THRESHOLD
-        self._prepareInternalAttribute(attrName, PyTango.DevDouble,
-                                       memorized=True, isWritable=True,
-                                       defaultValue=autoStopDesc[condition])
-        self._prepareEvents(attrName, {})
-        rfun = self.__getAttrMethod('read', attrName, internal=True)
-        wfun = self.__getAttrMethod('write', attrName, internal=True)
-        self.impl._internalAttrs[attrName][AUTOSTOP] = \
-            {'is'+condition+THRESHOLD: baseName+'_'+AUTOSTOP}
-        return self.add_Attr(attrName, PyTango.DevDouble, rfun, wfun,
-                             l=label, unit=unit)
-
-    def _buildAutoStopIntegrationTimeAttr(self, baseName, baseLabel,
-                                          autoStopDesc):
-        attrName = "%s_%s_%s" % (baseName, AUTOSTOP, INTEGRATIONTIME)
-        label = baseLabel+' '+INTEGRATIONTIME
-        integrationTime = autoStopDesc[INTEGRATIONTIME]
-        self._prepareInternalAttribute(attrName, PyTango.DevDouble,
-                                       memorized=True, isWritable=True,
-                                       defaultValue=integrationTime)
-        self._prepareEvents(attrName, {})
-        rfun = self.__getAttrMethod('read', attrName, internal=True)
-        wfun = self.__getAttrMethod('write', attrName, internal=True)
-        self.impl._internalAttrs[attrName][AUTOSTOP] = \
-            {'is'+INTEGRATIONTIME: baseName+'_'+AUTOSTOP}
-        return self.add_Attr(attrName, PyTango.DevDouble, rfun, wfun,
-                             l=label, unit='s')
+#     def _buildAutoStopEnableAttr(self, baseName, baseLabel, autoStopDesc):
+#         attrName = "%s_%s_%s" % (baseName, AUTOSTOP, ENABLE)
+#         label = baseLabel+' '+ENABLE
+#         self._prepareInternalAttribute(attrName, PyTango.DevBoolean)
+#         self._prepareEvents(attrName, {})
+#         rfun = self.__getAttrMethod('read', attrName, internal=True)
+#         wfun = self.__getAttrMethod('write', attrName, internal=True)
+#         self.impl._internalAttrs[attrName][AUTOSTOP] = {'is'+ENABLE:
+#                                                         baseName+'_'+AUTOSTOP}
+#         if baseName+'_'+AUTOSTOP in self.impl._plcAttrs:
+#             self.impl._plcAttrs[baseName+'_'+AUTOSTOP][AUTOSTOP][ENABLE] = True
+#         self.impl._internalAttrs[attrName][READVALUE] = True
+#         self.impl._internalAttrs[attrName][WRITEVALUE] = True
+#         enableAttr = self.add_Attr(attrName, PyTango.DevBoolean, rfun, wfun,
+#                                    l=label)
+#         # A ReadOonly boolean to report when autostopper has acted
+#         # FIXME: when clean this boolean?
+#         triggerName = "%s_%s_%s" % (baseName, AUTOSTOP, TRIGGERED)
+#         label = baseLabel+' '+TRIGGERED
+#         self._prepareInternalAttribute(triggerName, PyTango.DevBoolean)
+#         self._prepareEvents(triggerName, {})
+#         rfun = self.__getAttrMethod('read', triggerName, internal=True)
+#         self.impl._internalAttrs[triggerName][TRIGGERED] = False
+#         triggerAttr = self.add_Attr(triggerName, PyTango.DevBoolean, rfun,
+#                                     l=label)
+#         return (enableAttr, triggerAttr)
+# 
+#     def _buildAutoStopThresholdAttr(self, baseName, baseLabel, unit,
+#                                     autoStopDesc, condition):
+#         attrName = "%s_%s_%s_%s" % (baseName, AUTOSTOP, condition, THRESHOLD)
+#         label = baseLabel+' '+THRESHOLD
+#         self._prepareInternalAttribute(attrName, PyTango.DevDouble,
+#                                        memorized=True, isWritable=True,
+#                                        defaultValue=autoStopDesc[condition])
+#         self._prepareEvents(attrName, {})
+#         rfun = self.__getAttrMethod('read', attrName, internal=True)
+#         wfun = self.__getAttrMethod('write', attrName, internal=True)
+#         self.impl._internalAttrs[attrName][AUTOSTOP] = \
+#             {'is'+condition+THRESHOLD: baseName+'_'+AUTOSTOP}
+#         return self.add_Attr(attrName, PyTango.DevDouble, rfun, wfun,
+#                              l=label, unit=unit)
+# 
+#     def _buildAutoStopIntegrationTimeAttr(self, baseName, baseLabel,
+#                                           autoStopDesc):
+#         attrName = "%s_%s_%s" % (baseName, AUTOSTOP, INTEGRATIONTIME)
+#         label = baseLabel+' '+INTEGRATIONTIME
+#         integrationTime = autoStopDesc[INTEGRATIONTIME]
+#         self._prepareInternalAttribute(attrName, PyTango.DevDouble,
+#                                        memorized=True, isWritable=True,
+#                                        defaultValue=integrationTime)
+#         self._prepareEvents(attrName, {})
+#         rfun = self.__getAttrMethod('read', attrName, internal=True)
+#         wfun = self.__getAttrMethod('write', attrName, internal=True)
+#         self.impl._internalAttrs[attrName][AUTOSTOP] = \
+#             {'is'+INTEGRATIONTIME: baseName+'_'+AUTOSTOP}
+#         return self.add_Attr(attrName, PyTango.DevDouble, rfun, wfun,
+#                              l=label, unit='s')
 
 
 def get_ip(iface='eth0'):
@@ -1595,7 +1617,8 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [EnumerationAttr,
                                                             MeaningAttr,
-                                                            AutostopAttr]]):
+                                                            AutostopAttr,
+                                                            AutoStopParameter]]):
                 attrStruct.read_attr(attr)
                 return
             attrType = attrStruct[TYPE]

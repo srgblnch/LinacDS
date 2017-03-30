@@ -23,7 +23,10 @@ __license__ = "GPLv3+"
 
 
 from .linacAttr import LinacAttr
-from .LinacFeatures import AutoStopParameter
+from .LinacFeatures import CircularBuffer
+from .LinacFeatures import _LinacFeature
+from PyTango import AttrQuality, DevBoolean, DevFloat
+from time import ctime
 
 
 class AutostopAttr(LinacAttr):
@@ -39,20 +42,20 @@ class AutostopAttr(LinacAttr):
     def __init__(self, plcAttr, below=None, above=None, *args, **kwargs):
         super(AutostopAttr, self).__init__(*args, **kwargs)
         self._plcAttr = plcAttr
-        self._enable = AutoStopParameter(tag="Enable", dataType=bool,
+        self._enable = AutoStopParameter(tag="Enable", dataType=DevBoolean,
                                          owner=self)
         self._below = AutoStopParameter(tag="Below_Threshold",
-                                        dataType=float, owner=self)
+                                        dataType=DevFloat, owner=self)
         self._above = AutoStopParameter(tag="Above_Threshold",
-                                        dataType=float, owner=self)
+                                        dataType=DevFloat, owner=self)
         self._integr_t = AutoStopParameter(tag="IntegrationTime",
-                                           dataType=float, owner=self)
+                                           dataType=DevFloat, owner=self)
         self.info("Build %s between (%s,%s)" % (self.name, self._below.value,
                                                 self._above.value))
         # also the mean, std and triggered
-        self._mean = AutoStopParameter(tag="Mean", dataType=float, owner=self)
-        self._std = AutoStopParameter(tag="Std", dataType=float, owner=self)
-        self._triggered = AutoStopParameter(tag="Triggered", dataType=bool,
+        self._mean = AutoStopParameter(tag="Mean", dataType=DevFloat, owner=self)
+        self._std = AutoStopParameter(tag="Std", dataType=DevFloat, owner=self)
+        self._triggered = AutoStopParameter(tag="Triggered", dataType=DevBoolean,
                                             owner=self)
         self._enable.value = False  # TODO: memorised attribute
         self._below.value = below or float('-Inf')
@@ -114,3 +117,44 @@ class AutostopAttr(LinacAttr):
     @property
     def triggered(self):
         return self._triggered.value
+
+
+class AutoStopParameter(_LinacFeature, LinacAttr):
+
+    _tag = None
+    _type = None
+    _value = None
+    _write_t = None
+
+    def __init__(self, owner, tag, dataType, *args, **kwargs):
+        super(AutoStopParameter, self).__init__(owner=owner,
+                                                name="%s:Meaning"
+                                                % (owner.name),
+                                                valueType=dataType,
+                                                *args, **kwargs)
+        self._tag = tag
+        if dataType == DevFloat:
+            self._type = float
+        elif dataType == DevBoolean:
+            self._type = bool
+        else:
+            self._type = dataType
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        if isinstance(value, self._type):
+            if self._value != value:
+                self._write_t = ctime()
+                self._value = value
+                #self.__event(self._tag, self._value, self._write_t)
+
+    def __event(self, suffix, value, timestamp):
+        if self._owner and self._owner._eventsObj:
+            attrName = "%s_%s" % (self._owner.name, suffix)
+            eventsObj = self._owner._eventsObj
+            eventsObj.fireEvent(attrName, value, timestamp,
+                                AttrQuality.ATTR_VALID)
