@@ -77,7 +77,7 @@ class AutostopAttr(LinacAttr):
 
     def newvaluecb(self):
         if self._enable.value:
-            self.info("New Value Callback for %s" % (self._plcAttr.rvalue))
+            # self.info("New Value Callback for\n%s" % (self._plcAttr.rvalue))
             self._mean.value = self._plcAttr.rvalue.mean
             self._std.value = self._plcAttr.rvalue.std
             if self._above.value < self._mean.value < self._below.value:
@@ -101,11 +101,15 @@ class AutostopAttr(LinacAttr):
 
     @property
     def mean(self):
-        return self._mean.value
+        if self._enable.value:
+            return self._mean.value
+        return float('nan')
 
     @property
     def std(self):
-        return self._std.value
+        if self._enable.value:
+            return self._std.value
+        return float('nan')
 
     @property
     def triggered(self):
