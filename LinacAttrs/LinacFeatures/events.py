@@ -41,11 +41,10 @@ class Events(_LinacFeature):
             quality = quality or self._owner.quality
             self._owner.device.push_change_event(name, value, timestamp,
                                                  quality)
-            #self._owner.event_t = time()
-            # if self._owner.name.startswith('Lock'):
-            #     log = self.info
-            # else:
-            log = self.debug
+            if self._owner.name in []:
+                log = self.info
+            else:
+                log = self.debug
             log("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name, value,
                                                   timestamp, quality))
             return time()
