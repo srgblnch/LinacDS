@@ -41,29 +41,33 @@ class _LinacFeature(object):
     def owner(self):
         return self._owner
 
-    def error(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def error(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.owner:
             self.owner.error(msg, tagName=False)
         else:
             print("ERROR: %s" % (msg))
 
-    def warning(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def warning(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.owner:
             self.owner.warning(msg, tagName=False)
         else:
             print("WARN: %s" % (msg))
 
-    def info(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def info(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.owner:
             self.owner.info(msg, tagName=False)
         else:
             print("INFO: %s" % (msg))
 
-    def debug(self, msg):
-        msg = "[%s] %s" % (self.name, msg)
+    def debug(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
         if self.owner:
             self.owner.debug(msg, tagName=False)
         else:

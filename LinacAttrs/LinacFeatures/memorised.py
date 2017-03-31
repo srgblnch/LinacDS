@@ -23,6 +23,7 @@ __license__ = "GPLv3+"
 
 from feature import _LinacFeature
 from PyTango import Database
+import traceback
 
 
 defaultFieldName = '__value'
@@ -43,16 +44,18 @@ class Memorised(_LinacFeature):
                          "tango device server")
             return False
         devName = self._owner.device.get_name()
-        attrName = self._owner.name
+        attrName = self._owner.alias or self._owner.name
         fieldName = suffix or defaultFieldName
         memorisedName = devName+"/"+attrName
         self.info("Memorising attribute %s%s with value %s"
-                  % (mainName, "_%s" % suffix if suffix else "", value))
+                  % (attrName, "_%s" % suffix if suffix else "", value))
         try:
             self._tangodb.put_device_attribute_property(memorisedName,
                                                         {attrName:
                                                          {fieldName:
                                                           str(value)}})
+            self.info("put_device_attribute_property(%s,{%s:{%s:%s}})"
+                      % (memorisedName, attrName, fieldName, str(value)))
         except Exception as e:
             self.warning("Property %s_%s cannot be stored due to: %s"
                          % (attrName, "_%s" % suffix if suffix else "", e))
@@ -69,7 +72,7 @@ class Memorised(_LinacFeature):
                          "tango device server")
             return False
         devName = self._owner.device.get_name()
-        attrName = self._owner.name
+        attrName = self._owner.alias or self._owner.name
         fieldName = suffix or defaultFieldName
         memorisedName = devName+"/"+attrName
         try:
@@ -92,26 +95,39 @@ class Memorised(_LinacFeature):
             self.info("Recovering memorised value %r for %s%s"
                       % (value, attrName, "_%s" % suffix if suffix else ""))
             if hasattr(self, fieldName):
-                self._applyValue(attrName, fieldName, value)
+                self._applyValue(attrName, value, fieldName)
             else:
-                self._applyValue(attrName, 'read_value', value)
+                self._applyValue(attrName, value)
         self._recoverValue[fieldName] = value
         return True
 
-    def _applyValue(self, attrName, field, value, check=True):
+    def _applyValue(self, attrName, value, field=None, check=True,
+                    silent=False):
+        if field is None:
+            for fieldCandidate in ['wvalue', 'rvalue']:
+                if self._applyValue(attrName, value, field=fieldCandidate,
+                                    check=check, silent=True):
+                    self.info("Applied %s to %s[%s]"% (str(value), attrName,
+                                                       fieldCandidate))
+                    return True
+            self.error("Unknown field candidate to apply %s to %s"
+                       % (str(value), attrName))
         try:
-            self.__class__.__dict__[field].fset(self, value)
-            if check:
-                readback = self.__class__.__dict__[field].fget(self)
-                if value != readback:
-                    self.warning("readback %s doesn't corresponds with set %s"
-                                 % (value, readback))
-                else:
-                    self.info("Well applied %s[%s]: %s"
-                              % (attrName, field, value))
+            dct = self._owner.__class__.__dict__
+            if dct[field] is not None:
+                dct[field].fset(self._owner, value)
+                if check:
+                    readback = dct[field].fget(self._owner)
+                    if value != readback:
+                        if not silent:
+                            self.warning("readback %s doesn't corresponds "
+                                         "with set %s" % (value, readback))
+                return True
         except Exception as e:
-            self.error("Exception applying %s[%s]: %s"
-                       % (attrName, field, value))
+            if not silent:
+                self.error("Exception applying %s[%s]: %s -> %s(%s)"
+                           % (attrName, field, value, type(e).__name__, e))
+        return False
 
     def getStoreValue(self, suffix=None):
         if not suffix:

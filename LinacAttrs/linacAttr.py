@@ -246,14 +246,7 @@ class LinacAttr(object):
         if not self.isWriteAllowed():
             return
         if attr is not None:
-            attrName = self._getAttrName(attr)
-            self.debug("Received a write request for %s, value %s"
-                       % (attrName, value))
-            suffix = self._getSuffix(attrName)
-            if not hasattr(self, suffix):
-                # FIXME: no way to read, raise exception
-                self.warning("No way to write %s" % suffix)
-                return  # raise ValueError("Can NOT write %s" % suffix)
+            # stablish the data to be written
             if hasattr(attr, 'get_write_value'):
                 data = []
                 attr.get_write_value(data)
@@ -263,10 +256,26 @@ class LinacAttr(object):
             else:
                 self.warning("No value to write")
                 return
-            self.__class__.__dict__[suffix].fset(self, writeValue)
-            readValue = getattr(self, suffix)
-            if self._memorisedLst and suffix in self._memorisedLst:
-                self._memorised.store(readValue, suffix)
+            # then work with the attribute
+            attrName = self._getAttrName(attr)
+            self.info("Received a write request for %s, value %s"
+                       % (attrName, writeValue))
+            suffix = self._getSuffix(attrName)
+            if self.alias == attrName:
+                self.value = writeValue
+                readValue = self.value
+            elif not hasattr(self, suffix):
+                # FIXME: no way to read, raise exception
+                self.warning("No way to write %s for %s" % (suffix, self.alias))
+                return  # raise ValueError("Can NOT write %s" % suffix)
+            else:
+                self.__class__.__dict__[suffix].fset(self, writeValue)
+                readValue = getattr(self, suffix)
+            if self._memorisedLst is not None:
+                if suffix in self._memorisedLst:
+                    self._memorised.store(readValue, suffix)
+                elif len(self._memorisedLst) == 0:
+                    self._memorised.store(readValue)
             self._setAttrValue(attr, readValue)
 
     ######################
@@ -422,10 +431,8 @@ class LinacAttr(object):
                 self.warning("Assigned a readValue %s class when was %s"
                              % (type(value), type(self._readValue)))
             self._readValue = value
-        if isinstance(self._readValue, CircularBuffer):
-#             print("\n>\t%s" % (self.name))
+        elif isinstance(self._readValue, CircularBuffer):
             self._readValue.append(value)
-#             print("<\n")
         elif self._readValue != value:
             self._readValue = value
             if self._eventsObj:

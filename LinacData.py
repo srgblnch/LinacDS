@@ -857,7 +857,8 @@ class AttrList(object):
 
            TODO: feature 'too far' from a setpoint value.
         '''
-        self.impl._plcAttrs[attrName][READVALUE] = CircularBuffer([])
+        self.impl._plcAttrs[attrName][READVALUE] = \
+            CircularBuffer([], owner=self.impl._plcAttrs[attrName])
         self.impl._plcAttrs[attrName][QUALITIES] = qualities
         toReturn = (self.add_Attr(attrName, attrType, rfun, wfun, l=l,
                                   unit=unit, **kwargs),)
@@ -913,10 +914,13 @@ class AttrList(object):
         enableLabel = "%s %s" % (baseLabel, ENABLE)
         enabler = autostopper._enable
         enabler.alias = enableName
+        enabler.setMemorised()
         self.impl._internalAttrs[enableName] = enabler
         return self.add_Attr(enableName, PyTango.DevBoolean,
                              rfun=enabler.read_attr, wfun=enabler.write_attr,
                              l=enableLabel)
+        
+        
         
 #         attrName = "%s_%s" % (baseName, AUTOSTOP)
 #         scalarAttr = self.impl._plcAttrs[baseName]
@@ -1507,7 +1511,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Check if the a value is with in any of the configured relative
                ranges for the specific configuration with in an attribute.
             '''
-            if RELATIVE in qualityDict and type(buffer) == CircularBuffer:
+            if RELATIVE in qualityDict and isintance(buffer, CircularBuffer):
                 if buffer.std >= qualityDict[RELATIVE]:
                     return True
             return False
@@ -1615,12 +1619,15 @@ class LinacData(PyTango.Device_4Impl):
                 return  # raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             attrStruct = self._getAttrStruct(name)
-            if any([isinstance(attrStruct, kls) for kls in [EnumerationAttr,
+            if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
+                                                            InternalAttr,
+                                                            EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
                                                             AutoStopParameter]]):
                 attrStruct.read_attr(attr)
                 return
+            self.warn_stream("DEPRECATED read_attr for %s" % (name))
             attrType = attrStruct[TYPE]
             read_addr = attrStruct[READADDR]
             if READBIT in attrStruct:
@@ -1661,6 +1668,15 @@ class LinacData(PyTango.Device_4Impl):
                 return  # raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             attrStruct = self._getAttrStruct(name)
+            if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
+                                                            InternalAttr,
+                                                            EnumerationAttr,
+                                                            MeaningAttr,
+                                                            AutostopAttr,
+                                                            AutoStopParameter]]):
+                attrStruct.read_attr(attr)
+                return
+            self.warn_stream("DEPRECATED read_spectrumAttr for %s" % (name))
             if BASESET in attrStruct:
                 attrValue = self.__buildHistoryBufferString(name)
             elif AUTOSTOP in attrStruct:
@@ -1751,6 +1767,15 @@ class LinacData(PyTango.Device_4Impl):
             name = attr.get_name()
             attrType = PyTango.DevBoolean
             attrStruct = self._getAttrStruct(name)
+            if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
+                                                            InternalAttr,
+                                                            EnumerationAttr,
+                                                            MeaningAttr,
+                                                            AutostopAttr,
+                                                            AutoStopParameter]]):
+                attrStruct.read_attr(attr)
+                return
+            self.warn_stream("DEPRECATED read_attr_bit for %s" % (name))
             read_addr = attrStruct[READADDR]
             read_bit = attrStruct[READBIT]
 #            if WRITEADDR in attrStruct:
@@ -1940,7 +1965,8 @@ class LinacData(PyTango.Device_4Impl):
             if self.is_lockedByTango != newLockValue:
                 self.is_lockedByTango = newLockValue
                 #self.fireEventsList([['Locking', self.is_lockedByTango]])
-                self._plcAttrs['Locking'].read_value = newLockValue
+                if 'Locking' in self._plcAttrs:
+                    self._plcAttrs['Locking'].read_value = newLockValue
 
         @AttrExc
         def read_internal_attr(self, attr):
@@ -2006,9 +2032,15 @@ class LinacData(PyTango.Device_4Impl):
                 return  # raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             attrStruct = self._getAttrStruct(name)
-            if any([isinstance(attrStruct, kls) for kls in [EnumerationAttr]]):
+            if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
+                                                            InternalAttr,
+                                                            EnumerationAttr,
+                                                            MeaningAttr,
+                                                            AutostopAttr,
+                                                            AutoStopParameter]]):
                 attrStruct.write_attr(attr)
                 return
+            self.warn_stream("DEPRECATED write_attr for %s" % (name))
             attrType = attrStruct[TYPE]
             write_addr = attrStruct[WRITEADDR]
             write_value = self.prepare_write(attr)
@@ -2033,6 +2065,15 @@ class LinacData(PyTango.Device_4Impl):
 
         def doWriteAttrBit(self, name, write_value):
             attrStruct = self._getAttrStruct(name)
+            if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
+                                                            InternalAttr,
+                                                            EnumerationAttr,
+                                                            MeaningAttr,
+                                                            AutostopAttr,
+                                                            AutoStopParameter]]):
+                attrStruct.read_attr(attr)
+                return
+            self.warn_stream("DEPRECATED write_attr_bit for %s" % (name))
             read_addr = attrStruct[READADDR]
             write_addr = attrStruct[WRITEADDR]
             write_bit = attrStruct[WRITEBIT]
@@ -2603,9 +2644,9 @@ class LinacData(PyTango.Device_4Impl):
                 self._tangoEventsThread = \
                     threading.Thread(target=self.eventGeneratorThread)
                 self._tangoEventsTime = \
-                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER)
+                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
                 self._tangoEventsNumber = \
-                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER)
+                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
                 self._plcUpdateThread = \
                     threading.Thread(target=self.plcUpdaterThread)
                 # Threads configuration ---

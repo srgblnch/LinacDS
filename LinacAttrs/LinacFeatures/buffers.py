@@ -26,11 +26,12 @@ __license__ = "GPLv3+"
 # the attribute quality
 import numpy as np
 from types import MethodType
+from feature import _LinacFeature
 
 DEFAULT_SIZE = 10
 
 
-class CircularBuffer(object):
+class CircularBuffer(_LinacFeature):
     '''This is made to implement an automatic circular buffer using numpy array
        and get some statistical values from the collected data.
        This is used for attributes with changing qualities based on std of
@@ -44,6 +45,8 @@ class CircularBuffer(object):
     def __init__(self, buffer, maxlen=DEFAULT_SIZE, *args, **kwargs):
         super(CircularBuffer, self).__init__(*args, **kwargs)
         self.__maxlen = maxlen
+        self._mean = float('NaN')
+        self._std = float('NaN')
         self._append_cb = []
         if type(buffer) == list:
             self._buffer = np.array(buffer[-self.__maxlen:])
@@ -67,16 +70,20 @@ class CircularBuffer(object):
     def __int__(self):
         return int(self.value)
 
-    def append(self, newElement):
+    def append(self, value):
         if len(self._buffer) > 0:
-            self._buffer = np.append(self._buffer, newElement)[-self.__maxlen:]
+            self._buffer = np.append(self._buffer, value)[-self.__maxlen:]
         else:
-            self._buffer = np.array([newElement])
-        for cb in self._append_cb:
-            if cb is not None and callable(cb):
-#                 if isinstance(cb, MethodType):
-#                     print("\t\t%s.%s" % (cb.im_self.name, cb.__name__))
-                cb()
+            self._buffer = np.array([value])
+        #self._mean = self._buffer.mean()
+        #self._std = self._buffer.std()
+        if self._append_cb:
+            self.debug("has %d callback(s)" % (len(self._append_cb)))
+            for cb in self._append_cb:
+                if callable(cb) and isinstance(cb, MethodType):
+                    self.debug("proceeding with callback %s.%s()"
+                               % (cb.im_self.name, cb.__name__))
+                    cb()
 
     def append_cb(self, func):
         self._append_cb.append(func)

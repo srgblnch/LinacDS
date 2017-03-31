@@ -43,28 +43,29 @@ class AutostopAttr(LinacAttr):
         super(AutostopAttr, self).__init__(*args, **kwargs)
         self._plcAttr = plcAttr
         self._enable = AutoStopParameter(tag="Enable", dataType=DevBoolean,
-                                         owner=self)
+                                         owner=self,
+                                         device=self._plcAttr.device)
         self._below = AutoStopParameter(tag="Below_Threshold",
                                         dataType=DevFloat, owner=self)
         self._above = AutoStopParameter(tag="Above_Threshold",
                                         dataType=DevFloat, owner=self)
         self._integr_t = AutoStopParameter(tag="IntegrationTime",
                                            dataType=DevFloat, owner=self)
-        self.info("Build %s between (%s,%s)" % (self.name, self._below.value,
-                                                self._above.value))
         # also the mean, std and triggered
         self._mean = AutoStopParameter(tag="Mean", dataType=DevFloat, owner=self)
         self._std = AutoStopParameter(tag="Std", dataType=DevFloat, owner=self)
         self._triggered = AutoStopParameter(tag="Triggered", dataType=DevBoolean,
                                             owner=self)
-        self._enable.value = False  # TODO: memorised attribute
-        self._below.value = below or float('-Inf')
-        self._above.value = above or float('Inf')
+        self._enable.rvalue = False
+        self._below.rvalue = below or float('-Inf')
+        self._above.rvalue = above or float('Inf')
         # TODO: initialisation of the integr_t
-        self._mean.value = float('nan')
-        self._std.value = float('nan')
-        self._triggered.value = False
+        self._mean.rvalue = float('nan')
+        self._std.rvalue = float('nan')
+        self._triggered.rvalue = False
         self._plcAttr.rvalue.append_cb(self.newvaluecb)
+        self.info("Build %s between (%s,%s)" % (self.name, self._below.value,
+                                                self._above.value))
 
     @property
     def rvalue(self):
@@ -80,11 +81,11 @@ class AutostopAttr(LinacAttr):
 
     def newvaluecb(self):
         if self._enable.value:
-            # self.info("New Value Callback for\n%s" % (self._plcAttr.rvalue))
-            self._mean.value = self._plcAttr.rvalue.mean
-            self._std.value = self._plcAttr.rvalue.std
-            if self._above.value < self._mean.value < self._below.value:
-                self._triggered.value = True
+            self.debug("New Value Callback from %s" % (self._plcAttr))
+            self._mean.rvalue = self._plcAttr.rvalue.mean
+            self._std.rvalue = self._plcAttr.rvalue.std
+            if self._above.rvalue < self._mean.rvalue < self._below.rvalue:
+                self._triggered.rvalue = True
 
     @property
     def enable(self):
@@ -128,7 +129,7 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
 
     def __init__(self, owner, tag, dataType, *args, **kwargs):
         super(AutoStopParameter, self).__init__(owner=owner,
-                                                name="%s:Meaning"
+                                                name="%s:fsda"
                                                 % (owner.name),
                                                 valueType=dataType,
                                                 *args, **kwargs)
@@ -140,17 +141,31 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
         else:
             self._type = dataType
 
+    def __str__(self):
+        return "%s (%s)" % (self.alias, self.__class__.__name__)
+
     @property
     def value(self):
+        return self.rvalue
+
+    @property
+    def rvalue(self):
         return self._value
 
-    @value.setter
-    def value(self, value):
+
+    @rvalue.setter
+    def rvalue(self, value):
         if isinstance(value, self._type):
             if self._value != value:
                 self._write_t = ctime()
                 self._value = value
-                #self.__event(self._tag, self._value, self._write_t)
+                # self.__event(self._tag, self._value, self._write_t)
+        else:
+            try:
+                self.rvalue = eval("%s(%s)" % (self._type.__name__, value))
+            except:
+                self.warning("rvalue assignment failed in the eval() section")
+
 
     def __event(self, suffix, value, timestamp):
         if self._owner and self._owner._eventsObj:
