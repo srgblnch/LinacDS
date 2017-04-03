@@ -46,17 +46,23 @@ class AutostopAttr(LinacAttr):
                                          owner=self,
                                          device=self._plcAttr.device)
         self._below = AutoStopParameter(tag="Below_Threshold",
-                                        dataType=DevFloat, owner=self)
+                                        dataType=DevFloat, owner=self,
+                                        device=self._plcAttr.device)
         self._above = AutoStopParameter(tag="Above_Threshold",
-                                        dataType=DevFloat, owner=self)
+                                        dataType=DevFloat, owner=self,
+                                        device=self._plcAttr.device)
         self._integr_t = AutoStopParameter(tag="IntegrationTime",
-                                           dataType=DevFloat, owner=self)
+                                           dataType=DevFloat, owner=self,
+                                           device=self._plcAttr.device)
         # also the mean, std and triggered
         self._mean = AutoStopParameter(tag="Mean", dataType=DevFloat,
-                                       owner=self)
-        self._std = AutoStopParameter(tag="Std", dataType=DevFloat, owner=self)
+                                       owner=self,
+                                       device=self._plcAttr.device)
+        self._std = AutoStopParameter(tag="Std", dataType=DevFloat, owner=self,
+                                      device=self._plcAttr.device)
         self._triggered = AutoStopParameter(tag="Triggered",
-                                            dataType=DevBoolean, owner=self)
+                                            dataType=DevBoolean, owner=self,
+                                            device=self._plcAttr.device)
         self._enable.rvalue = False
         self._below.rvalue = below or float('-Inf')
         self._above.rvalue = above or float('Inf')
