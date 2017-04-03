@@ -800,7 +800,8 @@ class AttrList(object):
             historyDescription = copy(attrStruct)
             self.impl._plcAttrs[attrHistoryName] = historyDescription
             self.impl._plcAttrs[attrHistoryName][READVALUE] =\
-                HistoryBuffer(historyBuffer[BASESET], maxlen=HISTORYLENGTH)
+                HistoryBuffer(historyBuffer[BASESET], maxlen=HISTORYLENGTH,
+                              owner=self.impl._plcAttrs[attrHistoryName])
             self.impl._plcAttrs[attrHistoryName][BASESET] =\
                 historyBuffer[BASESET]
             xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
@@ -2098,46 +2099,46 @@ class LinacData(PyTango.Device_4Impl):
             pass
 
         # # autostop area ---
-        def _refreshInternalAutostopParams(self, attrName):
-            '''There are auxiliar attibutes with the autostop conditions and
-               when their values change them have to be introduced in the
-               structure of the main attribute with the buffer, who will use it
-               to take the decission.
-               This includes the resizing task of the CircularBuffer.
-            '''
-            # FIXME: use the spectrum attribute and left the circular buffer
-            # as it was to avoid side effects on relative events.
-            if attrName not in self._internalAttrs:
-                return
-            attrStruct = self._internalAttrs[attrName]
-            if AUTOSTOP not in attrStruct:
-                return
-            stopperDict = attrStruct[AUTOSTOP]
-            if 'is'+ENABLE in stopperDict:
-                refAttr = self._getAttrStruct(stopperDict['is'+ENABLE])
-                refAttr[AUTOSTOP][ENABLE] = attrStruct[READVALUE]
-            if 'is'+INTEGRATIONTIME in stopperDict:
-                refAttr = self._getAttrStruct(stopperDict['is' +
-                                                          INTEGRATIONTIME])
-                refAttr[AUTOSTOP][INTEGRATIONTIME] = attrStruct[READVALUE]
-                # resize the CircularBuffer
-                #   time per sample int(INTEGRATIONTIME/self._plcUpdatePeriod)
-                newBufferSize = \
-                    int(attrStruct[READVALUE]/self._getPlcUpdatePeriod())
-                if refAttr[READVALUE].maxSize() != newBufferSize:
-                    self.info_stream("%s buffer to be resized from %d to %d "
-                                     "(integration time %f seconds with a "
-                                     "plc reading period of %f seconds)"
-                                     % (attrName, refAttr[READVALUE].maxSize(),
-                                        newBufferSize, attrStruct[READVALUE],
-                                        self._plcUpdatePeriod))
-                    refAttr[READVALUE].resize(newBufferSize)
-            else:
-                for condition in [BELOW, ABOVE]:
-                    if 'is'+condition+THRESHOLD in stopperDict:
-                        key = 'is'+condition+THRESHOLD
-                        refAttr = self._getAttrStruct(stopperDict[key])
-                        refAttr[AUTOSTOP][condition] = attrStruct[READVALUE]
+#         def _refreshInternalAutostopParams(self, attrName):
+#             '''There are auxiliar attibutes with the autostop conditions and
+#                when their values change them have to be introduced in the
+#                structure of the main attribute with the buffer, who will use it
+#                to take the decission.
+#                This includes the resizing task of the CircularBuffer.
+#             '''
+#             # FIXME: use the spectrum attribute and left the circular buffer
+#             # as it was to avoid side effects on relative events.
+#             if attrName not in self._internalAttrs:
+#                 return
+#             attrStruct = self._internalAttrs[attrName]
+#             if AUTOSTOP not in attrStruct:
+#                 return
+#             stopperDict = attrStruct[AUTOSTOP]
+#             if 'is'+ENABLE in stopperDict:
+#                 refAttr = self._getAttrStruct(stopperDict['is'+ENABLE])
+#                 refAttr[AUTOSTOP][ENABLE] = attrStruct[READVALUE]
+#             if 'is'+INTEGRATIONTIME in stopperDict:
+#                 refAttr = self._getAttrStruct(stopperDict['is' +
+#                                                           INTEGRATIONTIME])
+#                 refAttr[AUTOSTOP][INTEGRATIONTIME] = attrStruct[READVALUE]
+#                 # resize the CircularBuffer
+#                 #   time per sample int(INTEGRATIONTIME/self._plcUpdatePeriod)
+#                 newBufferSize = \
+#                     int(attrStruct[READVALUE]/self._getPlcUpdatePeriod())
+#                 if refAttr[READVALUE].maxSize() != newBufferSize:
+#                     self.info_stream("%s buffer to be resized from %d to %d "
+#                                      "(integration time %f seconds with a "
+#                                      "plc reading period of %f seconds)"
+#                                      % (attrName, refAttr[READVALUE].maxSize(),
+#                                         newBufferSize, attrStruct[READVALUE],
+#                                         self._plcUpdatePeriod))
+#                     refAttr[READVALUE].resize(newBufferSize)
+#             else:
+#                 for condition in [BELOW, ABOVE]:
+#                     if 'is'+condition+THRESHOLD in stopperDict:
+#                         key = 'is'+condition+THRESHOLD
+#                         refAttr = self._getAttrStruct(stopperDict[key])
+#                         refAttr[AUTOSTOP][condition] = attrStruct[READVALUE]
 
         def _getPlcUpdatePeriod(self):
             return self._plcUpdatePeriod
@@ -2147,7 +2148,7 @@ class LinacData(PyTango.Device_4Impl):
                              "becomes %f." % (self._plcUpdatePeriod, value))
             self._plcUpdatePeriod = value
             # FIXME: this is hardcoding!!
-            self._refreshInternalAutostopParams('GUN_HV_I_AutoStop')
+            # self._refreshInternalAutostopParams('GUN_HV_I_AutoStop')
 
         def _updateStatistic(self, attrName):
             if attrName not in self._internalAttrs:
@@ -2164,77 +2165,77 @@ class LinacData(PyTango.Device_4Impl):
                     return
                 attrStruct[READVALUE] = self._plcAttrs[refAttr][READVALUE].std
 
-        def _cleanTriggeredFlag(self, attrName):
-            triggerName = "%s_%s" % (attrName, TRIGGERED)
-            if triggerName not in self._internalAttrs:
-                return
-            if self._internalAttrs[triggerName][TRIGGERED]:
-                # if it's powered off and it was triggered, then this
-                # power off would be because autostop has acted.
-                # Is needed to clean the flag.
-                self.info_stream("Clean the autostop triggered flag "
-                                 "for %s" % (attrName))
-                self._internalAttrs[triggerName][TRIGGERED] = False
+#         def _cleanTriggeredFlag(self, attrName):
+#             triggerName = "%s_%s" % (attrName, TRIGGERED)
+#             if triggerName not in self._internalAttrs:
+#                 return
+#             if self._internalAttrs[triggerName][TRIGGERED]:
+#                 # if it's powered off and it was triggered, then this
+#                 # power off would be because autostop has acted.
+#                 # Is needed to clean the flag.
+#                 self.info_stream("Clean the autostop triggered flag "
+#                                  "for %s" % (attrName))
+#                 self._internalAttrs[triggerName][TRIGGERED] = False
 
-        def _checkAutoStopConditions(self, attrName):
-            '''The attribute with the Circular buffer has to do some checks
-               to decide if it's necessary to proceed with the autostop
-               procedure.
-            '''
-            if attrName not in self._plcAttrs:
-                return
-            attrStruct = self._plcAttrs[attrName]
-            if AUTOSTOP not in attrStruct:
-                return
-            if ENABLE not in attrStruct[AUTOSTOP] or \
-                    not attrStruct[AUTOSTOP][ENABLE]:
-                return
-            if SWITCHDESCRIPTOR in attrStruct[AUTOSTOP]:
-                switchStruct = \
-                    self._getAttrStruct(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR])
-                if READVALUE in switchStruct and \
-                        not switchStruct[READVALUE]:
-                    return
-            if len(attrStruct[READVALUE]) < attrStruct[READVALUE].maxSize():
-                return
-            if SWITCHDESCRIPTOR in attrStruct[AUTOSTOP]:
-                switchStruct = \
-                    self._getAttrStruct(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR])
-                if switchStruct is None or READVALUE not in switchStruct:
-                    return
-                if SWITCHDEST in switchStruct:
-                    if switchStruct[SWITCHDEST]:
-                        return
-                    elif not switchStruct[READVALUE]:
-                        return
-                for condition in [BELOW, ABOVE]:
-                    if condition in attrStruct[AUTOSTOP]:
-                        refValue = attrStruct[AUTOSTOP][condition]
-                        meanValue = attrStruct[READVALUE].mean
-                        # BELOW and ABOVE is compared with mean
-                        if condition == BELOW and refValue > meanValue:
-                            self.info_stream("Attribute %s stop condition "
-                                             "%s is met ref=%g > mean=%g"
-                                             % (attrName, condition,
-                                                refValue, meanValue))
-                            self._doAutostop(attrName, condition)
-                        elif condition == ABOVE and refValue < meanValue:
-                            self.info_stream("Attribute %s stop condition "
-                                             "%s is met ref=%g < mean=%g"
-                                             % (attrName, condition,
-                                                refValue, meanValue))
-                            self._doAutostop(attrName, condition)
+#         def _checkAutoStopConditions(self, attrName):
+#             '''The attribute with the Circular buffer has to do some checks
+#                to decide if it's necessary to proceed with the autostop
+#                procedure.
+#             '''
+#             if attrName not in self._plcAttrs:
+#                 return
+#             attrStruct = self._plcAttrs[attrName]
+#             if AUTOSTOP not in attrStruct:
+#                 return
+#             if ENABLE not in attrStruct[AUTOSTOP] or \
+#                     not attrStruct[AUTOSTOP][ENABLE]:
+#                 return
+#             if SWITCHDESCRIPTOR in attrStruct[AUTOSTOP]:
+#                 switchStruct = \
+#                     self._getAttrStruct(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR])
+#                 if READVALUE in switchStruct and \
+#                         not switchStruct[READVALUE]:
+#                     return
+#             if len(attrStruct[READVALUE]) < attrStruct[READVALUE].maxSize():
+#                 return
+#             if SWITCHDESCRIPTOR in attrStruct[AUTOSTOP]:
+#                 switchStruct = \
+#                     self._getAttrStruct(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR])
+#                 if switchStruct is None or READVALUE not in switchStruct:
+#                     return
+#                 if SWITCHDEST in switchStruct:
+#                     if switchStruct[SWITCHDEST]:
+#                         return
+#                     elif not switchStruct[READVALUE]:
+#                         return
+#                 for condition in [BELOW, ABOVE]:
+#                     if condition in attrStruct[AUTOSTOP]:
+#                         refValue = attrStruct[AUTOSTOP][condition]
+#                         meanValue = attrStruct[READVALUE].mean
+#                         # BELOW and ABOVE is compared with mean
+#                         if condition == BELOW and refValue > meanValue:
+#                             self.info_stream("Attribute %s stop condition "
+#                                              "%s is met ref=%g > mean=%g"
+#                                              % (attrName, condition,
+#                                                 refValue, meanValue))
+#                             self._doAutostop(attrName, condition)
+#                         elif condition == ABOVE and refValue < meanValue:
+#                             self.info_stream("Attribute %s stop condition "
+#                                              "%s is met ref=%g < mean=%g"
+#                                              % (attrName, condition,
+#                                                 refValue, meanValue))
+#                             self._doAutostop(attrName, condition)
 
-        def _doAutostop(self, attrName, condition):
-            attrStruct = self._plcAttrs[attrName]
-            refValue = attrStruct[AUTOSTOP][condition]
-            meanValue, stdValue = attrStruct[READVALUE].meanAndStd
-            self.doWriteAttrBit(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR], False)
-            triggerStruct = self._internalAttrs["%s_%s"
-                                                % (attrName, TRIGGERED)]
-            self.warn_stream("Flag the autostop trigger for attribute %s"
-                             % (attrName))
-            triggerStruct[TRIGGERED] = True
+#         def _doAutostop(self, attrName, condition):
+#             attrStruct = self._plcAttrs[attrName]
+#             refValue = attrStruct[AUTOSTOP][condition]
+#             meanValue, stdValue = attrStruct[READVALUE].meanAndStd
+#             self.doWriteAttrBit(attrStruct[AUTOSTOP][SWITCHDESCRIPTOR], False)
+#             triggerStruct = self._internalAttrs["%s_%s"
+#                                                 % (attrName, TRIGGERED)]
+#             self.warn_stream("Flag the autostop trigger for attribute %s"
+#                              % (attrName))
+#             triggerStruct[TRIGGERED] = True
 
         # done autostop area ---
 

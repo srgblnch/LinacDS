@@ -262,7 +262,7 @@ class LinacAttr(object):
                       % (attrName, writeValue))
             suffix = self._getSuffix(attrName)
             if self.alias == attrName:
-                self.value = writeValue
+                self.rvalue = writeValue
                 readValue = self.value
             elif not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception

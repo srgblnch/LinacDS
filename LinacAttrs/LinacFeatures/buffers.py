@@ -147,8 +147,8 @@ class CircularBuffer(_LinacFeature):
 
 
 class HistoryBuffer(CircularBuffer):
-    def __init__(self, cleaners, maxlen=DEFAULT_SIZE, *args, **kwargs):
-        super(HistoryBuffer, self).__init__([], maxlen=maxlen, *args, **kwargs)
+    def __init__(self, cleaners, *args, **kwargs):
+        super(HistoryBuffer, self).__init__([], *args, **kwargs)
         self._cleaners = cleaners
 
     def append(self, newElement):
