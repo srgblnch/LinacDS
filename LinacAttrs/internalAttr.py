@@ -86,31 +86,6 @@ class InternalAttr(LinacAttr):
     def inverted(self, value):
         self._inverted = value
 
-# Only for the AutostopAttrs
-#     @property
-#     def Mean(self):
-#         return self._mean
-# 
-#     @Mean.setter
-#     def Mean(self, value):
-#         self._mean = value
-# 
-#     @property
-#     def Std(self):
-#         return self._std
-# 
-#     @Std.setter
-#     def Std(self, value):
-#         self._std = value
-# 
-#     @property
-#     def Triggered(self):
-#         return self._triggered
-# 
-#     @Triggered.setter
-#     def Triggered(self, value):
-#         self._triggered = value
-
     @property
     def read_set(self):
         return self._readSet

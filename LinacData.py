@@ -48,8 +48,8 @@ from types import StringType
 
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
-from LinacAttrs import EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr, \
-                       AutostopAttr, AutoStopParameter
+from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
+                        AutostopAttr, AutoStopParameter)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -795,34 +795,6 @@ class AttrList(object):
         meaningAttr = self.add_Attr(meaningAttrName, PyTango.DevString, rfun,
                                     wfun=None, **kwargs)
         toReturn = (attrState, meaningAttr)
-        
-        
-        
-        
-#         # # - clone the configuration
-#         statusDescription = copy(self.impl._plcAttrs[attrName])
-#         statusDescription[MEANINGS] = meanings
-#         # write feature is useless on this alternative
-#         if WRITEADDR in statusDescription:
-#             statusDescription.pop(WRITEADDR)
-#         if WRITEVALUE in statusDescription:
-#             statusDescription.pop(WRITEVALUE)
-#         if WRITEBIT in statusDescription:
-#             statusDescription.pop(WRITEBIT)
-#         # those attributes may come with a qualities dictionary also
-#         if qualities is not None:
-#             statusDescription[QUALITIES] = qualities
-        # finally prepare the name for the alternative attribute
-#         if attrName.endswith('_ST'):
-#             attrNameStatus = attrName.replace('_ST', '_Status')
-#         else:
-#             attrNameStatus = "%s_Status" % (attrName)
-#         # insert the attribute description in the structure
-#         self.impl._plcAttrs[attrNameStatus] = statusDescription
-#         # last step is to build this alternative attribute
-#         attrStatus = self.add_Attr(attrNameStatus, PyTango.DevString, rfun,
-#                                    wfun=None, **kwargs)
-#         toReturn = (attrState, attrStatus)
         if historyBuffer is not None:
             attrHistoryName = "%s_History" % (meaningAttrName)
             historyDescription = copy(attrStruct)
@@ -865,57 +837,49 @@ class AttrList(object):
         if autoStop is not None:
             toReturn += self._buildAutoStopAttributes(attrName, l, attrType,
                                                       autoStop)
-            
-            
-            
-            
-#             attrStopperBaseName = attrName
-#             toReturn += (self._buildAutoStopSpectrum(attrName, l+" "+AUTOSTOP,
-#                                                      autoStop),)
-#             toReturn += (self._buildAutoStopEnableAttr(attrName,
-#                                                        l+" "+AUTOSTOP,
-#                                                        autoStop),)
-#             for condition in [BELOW, ABOVE]:
-#                 if condition in autoStop:
-#                     subName = attrName
-#                     toReturn += \
-#                         (self._buildAutoStopThresholdAttr(subName,
-#                                                           l+" "+AUTOSTOP,
-#                                                           unit, autoStop,
-#                                                           condition),)
-#             toReturn += (self._buildAutoStopIntegrationTimeAttr(attrName,
-#                                                                 l+" "+AUTOSTOP,
-#                                                                 autoStop),)
         return toReturn
 
 #     # # Builders for subattributes ---
 
     def _buildAutoStopAttributes(self, baseName, baseLabel, attrType,
                                  autoStopDesc):
+        attrs = []
         autostopperName = "%s_%s" % (baseName, AUTOSTOP)
         autostopperLabel = "%s %s" % (baseLabel, AUTOSTOP)
         autostopper = AutostopAttr(name=autostopperName,
-                                       valueType=attrType,
-                                       device=self.impl,
-                                       plcAttr=self.impl._plcAttrs[baseName],
-                                       below=autoStopDesc.get(BELOW, None),
-                                       above=autoStopDesc.get(ABOVE, None),
-                                       events={})
+                                   valueType=attrType,
+                                   device=self.impl,
+                                   plcAttr=self.impl._plcAttrs[baseName],
+                                   below=autoStopDesc.get(BELOW, None),
+                                   above=autoStopDesc.get(ABOVE, None),
+                                   events={})
         self.impl._internalAttrs[autostopperName] = autostopper
         spectrumAttr = self.add_Attr(autostopperName, PyTango.DevDouble,
                                      rfun=autostopper.read_attr, xdim=1000,
                                      l=autostopperLabel)
+        attrs.append(spectrumAttr)
         enableAttr = self._buildAutoStopEnableAttr(autostopperName,
                                                    autostopperLabel,
                                                    autostopper)
+        attrs.append(enableAttr)
         # TODO: below/above threshold and integration time attributes
+        for condition in [BELOW, ABOVE]:
+            if condition in autoStopDesc:
+                condAttr = self._buildAutoStopConditionAttr(condition,
+                                                            autostopperName,
+                                                            autostopperLabel,
+                                                            autostopper)
+                attrs.append(condAttr)
         meanAttr, stdAttr = self._buildAutoStopMeanStdAttr(autostopperName,
                                                            autostopperLabel,
                                                            autostopper)
+        attrs.append(meanAttr)
+        attrs.append(stdAttr)
         triggeredAttr = self._buildAutoStopTriggeredAttr(autostopperName,
                                                          autostopperLabel,
                                                          autostopper)
-        return (spectrumAttr, enableAttr, meanAttr, stdAttr, triggeredAttr, )
+        attrs.append(triggeredAttr)
+        return tuple(attrs)
 
     def _buildAutoStopEnableAttr(self, baseName, baseLabel, autostopper):
         enableName = "%s_%s" % (baseName, ENABLE)
@@ -927,24 +891,36 @@ class AttrList(object):
         return self.add_Attr(enableName, PyTango.DevBoolean,
                              rfun=enabler.read_attr, wfun=enabler.write_attr,
                              l=enableLabel)
-        
+
+    def _buildAutoStopConditionAttr(self, condition, baseName, baseLabel,
+                                    autostopper):
+        conditionName = "%s_%s_Threshold" % (baseName, condition)
+        conditionLabel = "%s %s Threshold" % (baseName, condition)
+        conditioner = getattr(autostopper, '_%s' % (condition.lower()))
+        conditioner.alias = conditionName
+        conditioner.setMemorised()
+        self.impl._internalAttrs[conditionName] = conditioner
+        return self.add_Attr(conditionName, PyTango.DevDouble,
+                             rfun=conditioner.read_attr,
+                             wfun=conditioner.write_attr,
+                             l=conditionLabel)
+
     def _buildAutoStopMeanStdAttr(self, baseName, baseLabel, autostopper):
         meanName = "%s_%s" % (baseName, MEAN)
         meanLabel = "%s %s" % (baseLabel, MEAN)
         meaner = autostopper._mean
         meaner.alias = meanName
         self.impl._internalAttrs[meanName] = meaner
-        
         stdName = "%s_%s" % (baseName, STD)
         stdLabel = "%s %s" % (baseLabel, STD)
         stder = autostopper._std
         stder.alias = stdName
         self.impl._internalAttrs[stdName] = stder
-        return (self.add_Attr(meanName, PyTango.DevDouble, rfun=meaner.read_attr,
-                              l=meanLabel),
-                self.add_Attr(stdName, PyTango.DevDouble, rfun=stder.read_attr,
-                              l=stdLabel))
-        
+        return (self.add_Attr(meanName, PyTango.DevDouble,
+                              rfun=meaner.read_attr, l=meanLabel),
+                self.add_Attr(stdName, PyTango.DevDouble,
+                              rfun=stder.read_attr, l=stdLabel))
+
     def _buildAutoStopTriggeredAttr(self, baseName, baseLabel, autostopper):
         triggeredName = "%s_%s" % (baseName, TRIGGERED)
         triggeredLabel = "%s %s" % (baseLabel, TRIGGERED)
@@ -953,98 +929,6 @@ class AttrList(object):
         self.impl._internalAttrs[triggeredName] = triggereder
         return self.add_Attr(triggeredName, PyTango.DevBoolean,
                              rfun=triggereder.read_attr, l=triggeredLabel)
-        
-#         attrName = "%s_%s" % (baseName, AUTOSTOP)
-#         scalarAttr = self.impl._plcAttrs[baseName]
-#         attrDesc = copy(scalarAttr)
-#         attrDesc[AUTOSTOP] = autoStopDesc
-#         self.impl._plcAttrs[attrName] = attrDesc
-#         self.impl._plcAttrs[attrName].pop(QUALITIES)
-#         sizeOfBuffer = autoStopDesc[INTEGRATIONTIME] / PLC_STEP_UPDATE_PERIOD
-#         self.impl._plcAttrs[attrName][READVALUE] = CircularBuffer([])
-#         spectrumAttr = self.add_Attr(attrName, PyTango.DevDouble,
-#                                      rfun=self.impl.read_spectrumAttr,
-#                                      xdim=1000)
-#         # publish the mean and the std of this spectrum as tango attr also
-#         meanName = "%s_%s" % (attrName, MEAN)
-#         rfun = self.__getAttrMethod('read', meanName, internal=True)
-# 
-#         self._prepareInternalAttribute(meanName, PyTango.DevDouble,
-#                                        isWritable=False)
-#         self.impl._internalAttrs[meanName][QUALITIES] = \
-#             self.impl._plcAttrs[baseName][QUALITIES]
-#         self._prepareEvents(meanName, self.impl._plcAttrs[baseName][EVENTS])
-#         self.impl._internalAttrs[meanName][MEAN] = attrName
-#         meanAttr = self.add_Attr(meanName, PyTango.DevDouble, rfun,
-#                                  l=baseLabel+' mean')
-#         stdName = "%s_%s" % (attrName, STD)
-#         rfun = self.__getAttrMethod('read', stdName, internal=True)
-#         self._prepareInternalAttribute(stdName, PyTango.DevDouble,
-#                                        isWritable=False)
-#         self._prepareEvents(stdName, self.impl._plcAttrs[baseName][EVENTS])
-#         self.impl._internalAttrs[stdName][STD] = attrName
-#         stdAttr = self.add_Attr(stdName, PyTango.DevDouble, rfun,
-#                                 l=baseLabel+' std')
-# 
-#         return (spectrumAttr, meanAttr, stdAttr)
-
-#     def _buildAutoStopEnableAttr(self, baseName, baseLabel, autoStopDesc):
-#         attrName = "%s_%s_%s" % (baseName, AUTOSTOP, ENABLE)
-#         label = baseLabel+' '+ENABLE
-#         self._prepareInternalAttribute(attrName, PyTango.DevBoolean)
-#         self._prepareEvents(attrName, {})
-#         rfun = self.__getAttrMethod('read', attrName, internal=True)
-#         wfun = self.__getAttrMethod('write', attrName, internal=True)
-#         self.impl._internalAttrs[attrName][AUTOSTOP] = {'is'+ENABLE:
-#                                                         baseName+'_'+AUTOSTOP}
-#         if baseName+'_'+AUTOSTOP in self.impl._plcAttrs:
-#             self.impl._plcAttrs[baseName+'_'+AUTOSTOP][AUTOSTOP][ENABLE] = True
-#         self.impl._internalAttrs[attrName][READVALUE] = True
-#         self.impl._internalAttrs[attrName][WRITEVALUE] = True
-#         enableAttr = self.add_Attr(attrName, PyTango.DevBoolean, rfun, wfun,
-#                                    l=label)
-#         # A ReadOonly boolean to report when autostopper has acted
-#         # FIXME: when clean this boolean?
-#         triggerName = "%s_%s_%s" % (baseName, AUTOSTOP, TRIGGERED)
-#         label = baseLabel+' '+TRIGGERED
-#         self._prepareInternalAttribute(triggerName, PyTango.DevBoolean)
-#         self._prepareEvents(triggerName, {})
-#         rfun = self.__getAttrMethod('read', triggerName, internal=True)
-#         self.impl._internalAttrs[triggerName][TRIGGERED] = False
-#         triggerAttr = self.add_Attr(triggerName, PyTango.DevBoolean, rfun,
-#                                     l=label)
-#         return (enableAttr, triggerAttr)
-# 
-#     def _buildAutoStopThresholdAttr(self, baseName, baseLabel, unit,
-#                                     autoStopDesc, condition):
-#         attrName = "%s_%s_%s_%s" % (baseName, AUTOSTOP, condition, THRESHOLD)
-#         label = baseLabel+' '+THRESHOLD
-#         self._prepareInternalAttribute(attrName, PyTango.DevDouble,
-#                                        memorized=True, isWritable=True,
-#                                        defaultValue=autoStopDesc[condition])
-#         self._prepareEvents(attrName, {})
-#         rfun = self.__getAttrMethod('read', attrName, internal=True)
-#         wfun = self.__getAttrMethod('write', attrName, internal=True)
-#         self.impl._internalAttrs[attrName][AUTOSTOP] = \
-#             {'is'+condition+THRESHOLD: baseName+'_'+AUTOSTOP}
-#         return self.add_Attr(attrName, PyTango.DevDouble, rfun, wfun,
-#                              l=label, unit=unit)
-# 
-#     def _buildAutoStopIntegrationTimeAttr(self, baseName, baseLabel,
-#                                           autoStopDesc):
-#         attrName = "%s_%s_%s" % (baseName, AUTOSTOP, INTEGRATIONTIME)
-#         label = baseLabel+' '+INTEGRATIONTIME
-#         integrationTime = autoStopDesc[INTEGRATIONTIME]
-#         self._prepareInternalAttribute(attrName, PyTango.DevDouble,
-#                                        memorized=True, isWritable=True,
-#                                        defaultValue=integrationTime)
-#         self._prepareEvents(attrName, {})
-#         rfun = self.__getAttrMethod('read', attrName, internal=True)
-#         wfun = self.__getAttrMethod('write', attrName, internal=True)
-#         self.impl._internalAttrs[attrName][AUTOSTOP] = \
-#             {'is'+INTEGRATIONTIME: baseName+'_'+AUTOSTOP}
-#         return self.add_Attr(attrName, PyTango.DevDouble, rfun, wfun,
-#                              l=label, unit='s')
 
 
 def get_ip(iface='eth0'):
@@ -1581,11 +1465,11 @@ class LinacData(PyTango.Device_4Impl):
             if attrValue is None:
                 attr.set_value_date_quality(0, timestamp,
                                             PyTango.AttrQuality.ATTR_INVALID)
-#             if MEANINGS in attrStruct:
-#                 attrMeaning = self.__buildAttrMeaning(attrName, attrValue)
-#                 attrQuality = self.__buildAttrQuality(attrName, attrValue)
-#                 attr.set_value_date_quality(attrMeaning, timestamp,
-#                                             attrQuality)
+            # if MEANINGS in attrStruct:
+            #      attrMeaning = self.__buildAttrMeaning(attrName, attrValue)
+            #     attrQuality = self.__buildAttrQuality(attrName, attrValue)
+            #     attr.set_value_date_quality(attrMeaning, timestamp,
+            #                                 attrQuality)
             elif QUALITIES in attrStruct:
                 attrQuality = self.__buildAttrQuality(attrName, attrValue)
                 attr.set_value_date_quality(attrValue, timestamp,
@@ -1656,7 +1540,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
-                                                            AutoStopParameter]]):
+                                                            AutoStopParameter
+                                                            ]]):
                 attrStruct.read_attr(attr)
                 return
             self.warn_stream("DEPRECATED read_attr for %s" % (name))
@@ -1705,7 +1590,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
-                                                            AutoStopParameter]]):
+                                                            AutoStopParameter
+                                                            ]]):
                 attrStruct.read_attr(attr)
                 return
             self.warn_stream("DEPRECATED read_spectrumAttr for %s" % (name))
@@ -1804,18 +1690,19 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
-                                                            AutoStopParameter]]):
+                                                            AutoStopParameter
+                                                            ]]):
                 attrStruct.read_attr(attr)
                 return
             self.warn_stream("DEPRECATED read_attr_bit for %s" % (name))
             read_addr = attrStruct[READADDR]
             read_bit = attrStruct[READBIT]
-#            if WRITEADDR in attrStruct:
-#                write_addr = attrStruct[WRITEADDR]
-#                write_bit = attrStruct[WRITEBIT]
-#            else:
-#                write_addr = None
-#                write_bit = None
+            # if WRITEADDR in attrStruct:
+            #     write_addr = attrStruct[WRITEADDR]
+            #     write_bit = attrStruct[WRITEBIT]
+            # else:
+            #     write_addr = None
+            #     write_bit = None
             try:
                 if read_addr and read_bit:
                     read_value = self.read_db.bit(read_addr, read_bit)
@@ -1884,8 +1771,6 @@ class LinacData(PyTango.Device_4Impl):
                 return  # raise AttributeError("Not available in fault state!")
             rbyte = self.read_db.b(self.locking_raddr)
             locker = bool(rbyte & (1 << self.locking_rbit))
-#            self.debug_stream("Read Control Lock: rbyte(%d) is %d, locker %d"
-#                              %(self.locking_raddr,rbyte,locker))
             return locker
 
         @AttrExc
@@ -1901,9 +1786,6 @@ class LinacData(PyTango.Device_4Impl):
             attrName = attr.get_name()
             value, timestamp, quality = self._plcAttrs[attrName].vtq
             attr.set_value_date_quality(value, timestamp, quality)
-            # self.__setAttrValue(attr, attr.get_name(), PyTango.DevBoolean,
-            #                     self.is_lockedByTango, time.time())
-            # attr.set_value(self.read_lock())
 
         @AttrExc
         def read_Lock_ST(self, attr):
@@ -1913,69 +1795,9 @@ class LinacData(PyTango.Device_4Impl):
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
-            self.info_stream('reading %s'%(attrName))
+            self.info_stream('reading %s' % (attrName))
             value, timestamp, quality = self._plcAttrs[attrName].vtq
             attr.set_value_date_quality(value, timestamp, quality)
-#             read_addr = self._plcAttrs[attrName][READADDR]
-#             attrType = ('B', 1)
-#             try:
-#                 self.read_lock_ST_attr = self.read_db.get(read_addr, *attrType)
-#                 lockStr, lock_quality = self.convert_Lock_ST()
-#                 if attrName.endswith('_Status'):
-#                     attr.set_value(lockStr)
-#                 else:
-#                     attr.set_value(self.read_lock_ST_attr)
-#                 attr.set_quality(lock_quality)
-#             except Exception as e:
-#                 self.error_stream('Trying to read %s/%s and may not '
-#                                   'well connected to the plc.'
-#                                   % (self.get_name(), attr.get_name()))
-#                 self.debug_stream('Exception (%s/%s): %s'
-#                                   % (self.get_name(), attr.get_name(), e))
-#                 if attrName.endswith('_Status'):
-#                     attr.set_value("-1:exception")
-#                 else:
-#                     attr.set_value(-1)
-#                 attr.set_quality(PyTango.AttrQuality.ATTR_WARNING)
-
-#         def convert_Lock_ST(self):
-#             '''
-#             '''
-#             if 'Lock_Status' not in self._plcAttrs:
-#                 return
-#             meanings = self._plcAttrs['Lock_Status'][MEANINGS]
-#             if self.read_lock_ST_attr not in meanings:
-#                 lock_String = "%d:unknown" % (self.read_lock_ST_attr)
-#                 lock_quality = PyTango.AttrQuality.ATTR_WARNING
-#             else:
-#                 if self.read_lock_ST_attr == 1:
-#                     if self._deviceIsInLocal:
-#                         tag = "%s (Tango)" % (meanings[self.read_lock_ST_attr])
-#                     elif self._deviceIsInRemote:
-#                         tag = "%s (Labview)"\
-#                               % (meanings[self.read_lock_ST_attr])
-#                 elif self.read_lock_ST_attr == 2 and self._deviceIsInRemote:
-#                     tag = "%s (Tango Read Only)"\
-#                           % (meanings[self.read_lock_ST_attr])
-#                 else:
-#                     tag = "%s" % (meanings[self.read_lock_ST_attr])
-#                 lock_String = "%d:%s" % (self.read_lock_ST_attr, tag)
-#                 if QUALITIES in self._plcAttrs['Lock_Status']:
-#                     qualities = self._plcAttrs['Lock_Status'][QUALITIES]
-#                     if self.read_lock_ST_attr in qualities:
-#                         lock_quality = qualities[self.read_lock_ST_attr]
-#                     else:
-#                         lock_quality = PyTango.AttrQuality.ATTR_WARNING
-#                 else:
-#                     lock_quality = PyTango.AttrQuality.ATTR_VALID
-#             if (self._deviceIsInLocal and self.read_lock_ST_attr == 1) or \
-#                     (self._deviceIsInRemote and self.read_lock_ST_attr == 2):
-#                 self.lockingChange(True, lock_String)
-#             else:
-#                 self.lockingChange(False, lock_String)
-#             # FIXME: the numeric scalars are in use by alarms, and cannot ---
-#             #        be changed this way.
-#             return (lock_String, lock_quality)
 
         def _checkLocking(self):
             if self._isLocalLocked() or self._isRemoteLocked():
@@ -1996,7 +1818,7 @@ class LinacData(PyTango.Device_4Impl):
             '''
             if self.is_lockedByTango != newLockValue:
                 self.is_lockedByTango = newLockValue
-                #self.fireEventsList([['Locking', self.is_lockedByTango]])
+                # self.fireEventsList([['Locking', self.is_lockedByTango]])
                 if 'Locking' in self._plcAttrs:
                     self._plcAttrs['Locking'].read_value = newLockValue
 
@@ -2069,7 +1891,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
-                                                            AutoStopParameter]]):
+                                                            AutoStopParameter
+                                                            ]]):
                 attrStruct.write_attr(attr)
                 return
             self.warn_stream("DEPRECATED write_attr for %s" % (name))
@@ -2102,7 +1925,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
-                                                            AutoStopParameter]]):
+                                                            AutoStopParameter
+                                                            ]]):
                 attrStruct.read_attr(attr)
                 return
             self.warn_stream("DEPRECATED write_attr_bit for %s" % (name))
@@ -2411,14 +2235,6 @@ class LinacData(PyTango.Device_4Impl):
             self.warn_stream("Flag the autostop trigger for attribute %s"
                              % (attrName))
             triggerStruct[TRIGGERED] = True
-            # throw an exception to report the gui
-#            reason = "%s Autostop"%(attrName)
-#            desc = "The attribute %s has been automatically stopped due to "\
-#                   "condition %s (reference %g, mean %g, std %g)"\
-#                   %(attrName,condition,refValue,meanValue,stdValue)
-#            origin = attrName
-#            sever=PyTango.ErrSeverity.WARN
-#            PyTango.Except.throw_exception(reason,desc,origin,sever)
 
         # done autostop area ---
 
@@ -2724,7 +2540,8 @@ class LinacData(PyTango.Device_4Impl):
         #    Read EventsTimeMix attribute
         # ------------------------------------------------------------------
         def read_EventsTimeMin(self, attr):
-            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMin()")
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsTimeMin()")
             # PROTECTED REGION ID(LinacData.EventsTimeMin_read) --
             self.attr_EventsTimeMin_read = self._tangoEventsTime.array.min()
             if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
@@ -2739,7 +2556,8 @@ class LinacData(PyTango.Device_4Impl):
         #    Read EventsTimeMax attribute
         # ------------------------------------------------------------------
         def read_EventsTimeMax(self, attr):
-            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMax()")
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsTimeMax()")
             # PROTECTED REGION ID(LinacData.EventsTimeMax_read) --
             self.attr_EventsTimeMax_read = self._tangoEventsTime.array.max()
             if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
@@ -2759,7 +2577,8 @@ class LinacData(PyTango.Device_4Impl):
         #    Read EventsTimeMean attribute
         # ------------------------------------------------------------------
         def read_EventsTimeMean(self, attr):
-            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeMean()")
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsTimeMean()")
             # PROTECTED REGION ID(LinacData.EventsTimeMean_read) --
             self.attr_EventsTimeMean_read = self._tangoEventsTime.array.mean()
             if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
@@ -2779,7 +2598,8 @@ class LinacData(PyTango.Device_4Impl):
         #    Read EventsTimeStd attribute
         # ------------------------------------------------------------------
         def read_EventsTimeStd(self, attr):
-            # self.debug_stream("In " + self.get_name() + ".read_EventsTimeStd()")
+            # self.debug_stream("In " + self.get_name() +
+            #                   ".read_EventsTimeStd()")
             # PROTECTED REGION ID(LinacData.EventsTimeStd_read) --
             self.attr_EventsTimeStd_read = self._tangoEventsTime.array.std()
             if self._tangoEventsTime.array.size < HISTORY_EVENT_BUFFER:
@@ -2842,7 +2662,8 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() +
             #                   ".read_EventsNumberMean()")
             # PROTECTED REGION ID(LinacData.EventsNumberMean_read) ---
-            self.attr_EventsNumberMean_read = self._tangoEventsNumber.array.mean()
+            self.attr_EventsNumberMean_read = \
+                self._tangoEventsNumber.array.mean()
             if self._tangoEventsNumber.array.size < HISTORY_EVENT_BUFFER:
                 attr.set_value_date_quality(self.attr_EventsNumberMean_read,
                                             time.time(),
@@ -2858,7 +2679,8 @@ class LinacData(PyTango.Device_4Impl):
             # self.debug_stream("In " + self.get_name() +
             #                   ".read_EventsNumberStd()")
             # PROTECTED REGION ID(LinacData.EventsNumberStd_read) ---
-            self.attr_EventsNumberStd_read = self._tangoEventsNumber.array.std()
+            self.attr_EventsNumberStd_read = \
+                self._tangoEventsNumber.array.std()
             if self._tangoEventsNumber.array.size < HISTORY_EVENT_BUFFER:
                 attr.set_value_date_quality(self.attr_EventsNumberStd_read,
                                             time.time(),
@@ -2866,7 +2688,6 @@ class LinacData(PyTango.Device_4Impl):
                 return
             # PROTECTED REGION END --- LinacData.EventsNumberStd_read
             attr.set_value(self.attr_EventsNumberStd_read)
-
 
         # ------------------------------------------------------------------
         #    Read IsTooFarEnable attribute
@@ -3167,7 +2988,7 @@ class LinacData(PyTango.Device_4Impl):
             # Locks
             if self.lock_ST:
                 self.read_lock_ST_attr = self.read_db.get(self.lock_ST, 'B', 1)
-                #lock_str, lock_quality = self.convert_Lock_ST()
+                # lock_str, lock_quality = self.convert_Lock_ST()
                 if self.read_lock_ST_attr not in [0, 1, 2]:
                     self.warn_stream("<<<Invalid locker code %d>>>"
                                      % (self.read_lock_ST_attr))
@@ -3176,18 +2997,18 @@ class LinacData(PyTango.Device_4Impl):
                     # or (now - Lock_STStruct[READTIME]) > PERIODIC_EVENT:
                     Lock_STStruct[READTIME] = time.time()
                     Lock_STStruct[READVALUE] = self.read_lock_ST_attr
-#                 Lock_StatusStruct = self._getAttrStruct('Lock_Status')
-#                 if not lock_str == Lock_StatusStruct[READVALUE]:
-#                     # or (now - Lock_StatusStruct[READTIME]) > PERIODIC_EVENT:
-#                     Lock_StatusStruct[READTIME] = time.time()
-#                     Lock_StatusStruct[READVALUE] = lock_str
+                # Lock_StatusStruct = self._getAttrStruct('Lock_Status')
+                # if not lock_str == Lock_StatusStruct[READVALUE]:
+                #     or (now - Lock_StatusStruct[READTIME]) > PERIODIC_EVENT:
+                #     Lock_StatusStruct[READTIME] = time.time()
+                #     Lock_StatusStruct[READVALUE] = lock_str
                 # locking = self.read_lock()
                 LockingStruct = self._getAttrStruct('Locking')
                 self._checkLocking()
-#                 if not self.is_lockedByTango == LockingStruct[READVALUE]:
-#                     # or (now - LockingStruct[READTIME]) > PERIODIC_EVENT:
-#                     LockingStruct[READTIME] = time.time()
-#                     LockingStruct[READVALUE] = self.is_lockedByTango
+                # if not self.is_lockedByTango == LockingStruct[READVALUE]:
+                #     # or (now - LockingStruct[READTIME]) > PERIODIC_EVENT:
+                #     LockingStruct[READTIME] = time.time()
+                #     LockingStruct[READVALUE] = self.is_lockedByTango
 
         def __attrHasEvents(self, attrName):
             '''
@@ -3196,13 +3017,13 @@ class LinacData(PyTango.Device_4Impl):
             if attrStruct._eventsObj:
                 return True
             return False
-#             if attrName in self._plcAttrs and \
-#                     EVENTS in self._plcAttrs[attrName]:
-#                 return True
-#             elif attrName in self._internalAttrs and \
-#                     EVENTS in self._internalAttrs[attrName].keys():
-#                 return True
-#             return False
+            # if attrName in self._plcAttrs and \
+            #         EVENTS in self._plcAttrs[attrName]:
+            #     return True
+            # elif attrName in self._internalAttrs and \
+            #         EVENTS in self._internalAttrs[attrName].keys():
+            #     return True
+            # return False
 
         def __getAttrReadValue(self, attrName):
             '''
@@ -3330,53 +3151,6 @@ class LinacData(PyTango.Device_4Impl):
             # when non case before, no event
             return False
 
-#         def __checkEventReEmission(self, attrName):
-#             ''' Check if, even the value doesn't require an event to emit,
-#                 if last time it was emit is to old and we do a remainder.
-#             '''
-#             # Huge hackish
-#             if attrName in ['Heat_Time', 'LV_Time']:
-#                 # I don't understand why this two attributes (on the klystrons)
-#                 # fail (with the simulation) to re-emit those events.
-#                 return False
-#             attrStruct = self._getAttrStruct(attrName)
-#             last_event_t = attrStruct[EVENTTIME]
-#             if last_event_t:
-#                 now = time.time()
-#                 if now - last_event_t > RE_EVENTS_PERIOD:
-#                     return True
-#             return False
-# 
-#         def __eventReEmission(self, attrName):
-#             try:
-#                 attrStruct = self._getAttrStruct(attrName)
-#                 attrValue = self.__getAttrReadValue(attrName)
-#                 if MEANINGS in attrStruct:
-#                     if BASESET in attrStruct:
-#                         attrValue = attrStruct[READVALUE].array
-#                     else:
-#                         attrValue = \
-#                             self.__buildAttrMeaning(attrName, attrValue)
-#                     attrQuality = self.__buildAttrQuality(attrName, attrValue)
-#                 attrQuality = attrStruct[LASTEVENTQUALITY]
-#                 timestamp = attrStruct[READTIME]
-#                 self.__doTraceAttr(attrName, "EventReEmission(%s)" % attrValue)
-#                 try:
-#                     self.fireEvent([attrName, attrValue, attrQuality],
-#                                    timestamp)
-#                 except Exception as e:
-#                     self.warn_stream("In EventReEmission() exception firing "
-#                                      "event for attribute %s: %s"
-#                                      % (attrName, e))
-#                     now = time.time()
-#                     attrStruct[EVENTTIME] = now
-#                     # attrStruct[EVENTTIMESTR] = time.ctime(now)
-#             except Exception as e:
-#                 self.warn_stream("In EventReEmission() exception in event "
-#                                  "re-emit for attribute %s: %s" % (attrName,
-#                                                                    e))
-#                 traceback.print_exc()
-
         def plcGeneralAttrEvents(self):
             '''This method is used to periodically loop to review the list of
                attribute (above the basics) and check if they need event
@@ -3401,14 +3175,14 @@ class LinacData(PyTango.Device_4Impl):
                         # lastValue = self.__getAttrReadValue(attrName)
                         last_read_t = attrStruct[READTIME]
                         if READADDR in attrStruct:
-#                             read_addr = attrStruct[READADDR]
-#                             if READBIT in attrStruct:
-#                                 read_bit = attrStruct[READBIT]
-#                                 newValue = self.read_db.bit(read_addr,
-#                                                             read_bit)
-#                             else:
-#                                 newValue = self.read_db.get(read_addr,
-#                                                             *attrType)
+                            # read_addr = attrStruct[READADDR]
+                            # if READBIT in attrStruct:
+                            #     read_bit = attrStruct[READBIT]
+                            #     newValue = self.read_db.bit(read_addr,
+                            #                                 read_bit)
+                            # else:
+                            #     newValue = self.read_db.get(read_addr,
+                            #                                 *attrType)
                             newValue = attrStruct.hardwareRead(self.read_db)
                             if FORMULA in attrStruct and \
                                     'read' in attrStruct[FORMULA]:
@@ -3449,25 +3223,25 @@ class LinacData(PyTango.Device_4Impl):
                             self.__doTraceAttr(attrName,
                                                "plcGeneralAttrEvents(%s)"
                                                % (attrValue))
-#                         elif self.__checkEventReEmission(attrName):
-#                             #  Even there is no condition to emit an event
-#                             #  Check the RE_EVENTS_PERIOD to know if a refresh
-#                             #  would be nice
-#                             self.__eventReEmission(attrName)
-#                             attr2Reemit += 1
+                        # elif self.__checkEventReEmission(attrName):
+                            #  Even there is no condition to emit an event
+                            #  Check the RE_EVENTS_PERIOD to know if a refresh
+                            #  would be nice
+                        #     self.__eventReEmission(attrName)
+                        #     attr2Reemit += 1
                     except Exception as e:
                         self.warn_stream("In plcGeneralAttrEvents(), "
                                          "exception in attribute %s: %s"
                                          % (attrName, e))
                         traceback.print_exc()
-#             if len(attr2Event) > 0:
-#                 self.fireEventsList(attr2Event, timestamp=now, log=True)
+            # if len(attr2Event) > 0:
+            #     self.fireEventsList(attr2Event, timestamp=now, log=True)
             if attr2Reemit > 0:
                 self.debug_stream("%d events due to periodic reemission"
                                   % attr2Reemit)
             self.debug_stream("plcGeneralAttrEvents(): %d events from %d "
                               "attributes" % (len(attr2Event),
-                                                  len(attributeList)))
+                                              len(attributeList)))
             return len(attr2Event)+attr2Reemit
 
         def internalAttrEvents(self):
@@ -3513,9 +3287,9 @@ class LinacData(PyTango.Device_4Impl):
                         elif isinstance(attrStruct, EnumerationAttr):
                             newValue = lastValue  # avoid emit
                         else:
-#                             self.warn_stream("In internalAttrEvents(): "
-#                                              "unknown how to emit events "
-#                                              "for %s attribute" % (attrName))
+                            # self.warn_stream("In internalAttrEvents(): "
+                            #                  "unknown how to emit events "
+                            #                  "for %s attribute" % (attrName))
                             newValue = lastValue
                         emit = False
                         if newValue != lastValue:

@@ -28,4 +28,3 @@ from internalAttr import InternalAttr
 from linacAttr import LinacAttr, LinacException, CommandExc, AttrExc
 from meaningAttr import MeaningAttr
 from plcAttr import PLCAttr
-

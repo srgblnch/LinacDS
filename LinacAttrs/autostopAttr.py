@@ -52,10 +52,11 @@ class AutostopAttr(LinacAttr):
         self._integr_t = AutoStopParameter(tag="IntegrationTime",
                                            dataType=DevFloat, owner=self)
         # also the mean, std and triggered
-        self._mean = AutoStopParameter(tag="Mean", dataType=DevFloat, owner=self)
+        self._mean = AutoStopParameter(tag="Mean", dataType=DevFloat,
+                                       owner=self)
         self._std = AutoStopParameter(tag="Std", dataType=DevFloat, owner=self)
-        self._triggered = AutoStopParameter(tag="Triggered", dataType=DevBoolean,
-                                            owner=self)
+        self._triggered = AutoStopParameter(tag="Triggered",
+                                            dataType=DevBoolean, owner=self)
         self._enable.rvalue = False
         self._below.rvalue = below or float('-Inf')
         self._above.rvalue = above or float('Inf')
@@ -152,7 +153,6 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
     def rvalue(self):
         return self._value
 
-
     @rvalue.setter
     def rvalue(self, value):
         if isinstance(value, self._type):
@@ -165,7 +165,6 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
                 self.rvalue = eval("%s(%s)" % (self._type.__name__, value))
             except:
                 self.warning("rvalue assignment failed in the eval() section")
-
 
     def __event(self, suffix, value, timestamp):
         if self._owner and self._owner._eventsObj:

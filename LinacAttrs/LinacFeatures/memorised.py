@@ -107,8 +107,8 @@ class Memorised(_LinacFeature):
             for fieldCandidate in ['wvalue', 'rvalue']:
                 if self._applyValue(attrName, value, field=fieldCandidate,
                                     check=check, silent=True):
-                    self.info("Applied %s to %s[%s]"% (str(value), attrName,
-                                                       fieldCandidate))
+                    self.info("Applied %s to %s[%s]" % (str(value), attrName,
+                                                        fieldCandidate))
                     return True
             self.error("Unknown field candidate to apply %s to %s"
                        % (str(value), attrName))

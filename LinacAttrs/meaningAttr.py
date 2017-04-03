@@ -25,6 +25,7 @@ from linacAttr import LinacAttr
 from LinacFeatures import _LinacFeature
 from PyTango import DevString
 
+
 class MeaningAttr(_LinacFeature, LinacAttr):
     _meanings = {}
 
@@ -32,8 +33,6 @@ class MeaningAttr(_LinacFeature, LinacAttr):
         super(MeaningAttr, self).__init__(owner=owner,
                                           name="%s:Meaning" % (owner.name),
                                           valueType=DevString, *args, **kwargs)
-        #_LinacFeature.__init__(self, owner, *args, **kwargs)
-        #LinacAttr.__init__(self, "%s:Meaning" % (owner.name), DevString)
 
     def __str__(self):
         return "%s (%s)" % (self.alias, self.__class__.__name__)

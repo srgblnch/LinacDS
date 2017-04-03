@@ -75,8 +75,6 @@ class CircularBuffer(_LinacFeature):
             self._buffer = np.append(self._buffer, value)[-self.__maxlen:]
         else:
             self._buffer = np.array([value])
-        #self._mean = self._buffer.mean()
-        #self._std = self._buffer.std()
         if self._append_cb:
             self.debug("has %d callback(s)" % (len(self._append_cb)))
             for cb in self._append_cb:

@@ -259,14 +259,15 @@ class LinacAttr(object):
             # then work with the attribute
             attrName = self._getAttrName(attr)
             self.info("Received a write request for %s, value %s"
-                       % (attrName, writeValue))
+                      % (attrName, writeValue))
             suffix = self._getSuffix(attrName)
             if self.alias == attrName:
                 self.value = writeValue
                 readValue = self.value
             elif not hasattr(self, suffix):
                 # FIXME: no way to read, raise exception
-                self.warning("No way to write %s for %s" % (suffix, self.alias))
+                self.warning("No way to write %s for %s"
+                             % (suffix, self.alias))
                 return  # raise ValueError("Can NOT write %s" % suffix)
             else:
                 self.__class__.__dict__[suffix].fset(self, writeValue)
@@ -569,7 +570,7 @@ class LinacAttr(object):
             return attr.get_name()
 
     def _getSuffix(self, attrName):
-        if not ((self.alias and attrName.startswith(self.alias)) or \
+        if not ((self.alias and attrName.startswith(self.alias)) or
                 attrName.startswith(self.name)):
             # FIXME: review naming, but it shall raise an exception
             self.warning("attrName %s is not starting with %s%s"
@@ -588,11 +589,9 @@ class LinacAttr(object):
             return suffix
 
     def _setAttrValue(self, attr, readValue):
-#         if type(readValue) == list:
-#             readValue = "%s" % readValue
         attrName = self._getAttrName(attr)
         self.info("_setAttrValue(%s, %s, %s, %s)"
-                   % (attrName, readValue, self.timestamp, self.quality))
+                  % (attrName, readValue, self.timestamp, self.quality))
         if type(attr) != str:
             # If its an attribute, part of a device, do the corresponding set
             # print("type(attr) = %s" % type(attr))
