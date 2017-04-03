@@ -541,7 +541,9 @@ class LinacAttr(object):
             self._memorised = Memorised(owner=self)
         if not suffix:
             if not self._memorised.recover():
-                self.warning("Cannot recover value from the database")
+                self.warning("Cannot recover value %sfrom the database"
+                             % ("for %s " % self.alias 
+                                if self.alias is not None else ""))
             self._memorisedLst = []
         elif self._memorisedLst and suffix not in self._memorisedLst:
             self._memorisedLst.append(suffix)

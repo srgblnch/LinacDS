@@ -40,8 +40,10 @@ class Memorised(_LinacFeature):
 
     def store(self, value, suffix=None):
         if self._owner is None or self._owner.device is None:
-            self.warning("Cannot memorise values outside a "
-                         "tango device server")
+            self.warning("Cannot memorise values %soutside a "
+                         "tango device server"
+                         % ("for %s " % self._owner.alias
+                            if self._owner.alias is not None else ""))
             return False
         devName = self._owner.device.get_name()
         attrName = self._owner.alias or self._owner.name
@@ -68,8 +70,10 @@ class Memorised(_LinacFeature):
             Recover the value from the tangoDB
         """
         if self._owner is None or self._owner.device is None:
-            self.warning("Cannot recover memorised values outside a "
-                         "tango device server")
+            self.warning("Cannot recover memorised values %soutside a "
+                         "tango device server"
+                         % ("for %s " % self._owner.alias
+                            if self._owner.alias is not None else ""))
             return False
         devName = self._owner.device.get_name()
         attrName = self._owner.alias or self._owner.name
