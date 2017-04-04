@@ -68,6 +68,7 @@ class PLCAttr(LinacAttr):
             value = datablock.get(self._readAddr, *self.type)
         if value is not None:
             self.read_value = value
+            self._timestamp = self._device.last_update_time
         return value
 
     #######################################################
