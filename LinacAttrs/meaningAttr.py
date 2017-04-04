@@ -41,9 +41,9 @@ class MeaningAttr(_LinacFeature, LinacAttr):
     def rvalue(self):
         if self._owner.value not in self._meanings:
             if self._owner.value:
-                return "%d:unknown" % (self._owner.value)
+                return "%s:unknown" % (self._owner.value)
             return "Not established"
-        return "%d:%s" % (self._owner.value, self._meanings[self._owner.value])
+        return "%s:%s" % (self._owner.value, self._meanings[self._owner.value])
 
     @property
     def timestamp(self):
