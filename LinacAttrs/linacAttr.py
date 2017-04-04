@@ -99,6 +99,7 @@ class LinacAttr(object):
     _baseSet = None
 
     _AutoStop = None
+    _switchDescriptor = None
 
     _memorised = None
     _memorisedLst = None
@@ -520,6 +521,14 @@ class LinacAttr(object):
     @AutoStop.setter
     def AutoStop(self, value):
         self._AutoStop = value
+
+    @property
+    def switchDescriptor(self):
+        return self._switchDescriptor
+
+    @switchDescriptor.setter
+    def switchDescriptor(self, value):
+        self._switchDescriptor = value
 
     @property
     def baseSet(self):

@@ -34,14 +34,17 @@ class AutostopAttr(LinacAttr):
     #       make this class inherit from internalAttr.
 
     _plcAttr = None
+    _switchAttr = None
     _enable = None
     _below = None
     _above = None
     _integr_t = None
 
-    def __init__(self, plcAttr, below=None, above=None, *args, **kwargs):
+    def __init__(self, plcAttr, below=None, above=None, switchAttr=None,
+                 *args, **kwargs):
         super(AutostopAttr, self).__init__(*args, **kwargs)
         self._plcAttr = plcAttr
+        self._switchAttr = switchAttr
         self._enable = AutoStopParameter(tag="Enable", dataType=DevBoolean,
                                          owner=self,
                                          device=self._plcAttr.device)
@@ -97,6 +100,10 @@ class AutostopAttr(LinacAttr):
     @property
     def enable(self):
         return self._enable.value
+
+    @property
+    def switch(self):
+        return self._switchAttr
 
     @property
     def below(self):

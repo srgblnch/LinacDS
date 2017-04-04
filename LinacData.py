@@ -370,6 +370,14 @@ class AttrList(object):
         if type(switchDescriptor) == dict:
             self.impl._plcAttrs[name][SWITCHDESCRIPTOR] = switchDescriptor
             self.impl._plcAttrs[name][SWITCHDEST] = None
+            # in the construction of the AutostopAttr() the current switch
+            # may not be build yet. Then now they must be linked together.
+            if AUTOSTOP in switchDescriptor:
+                autostopAttrName = switchDescriptor[AUTOSTOP]
+                if autostopAttrName in self.impl._internalAttrs:
+                    autostopper = self.impl._internalAttrs[autostopAttrName]
+                    if autostopper.switch == name:
+                        autostopper._switchAttr = self.impl._plcAttrs[name]
         self._prepareEvents(name, events)
         if record:
             self.impl._traceAttrs.append(name)
@@ -836,23 +844,32 @@ class AttrList(object):
         toReturn = (self.add_Attr(attrName, attrType, rfun, wfun, l=l,
                                   unit=unit, **kwargs),)
         if autoStop is not None:
+            # FIXME: shall it be in the AttrWithQualities? Or more generic?
             toReturn += self._buildAutoStopAttributes(attrName, l, attrType,
                                                       autoStop)
         return toReturn
 
-#     # # Builders for subattributes ---
+    # # Builders for subattributes ---
 
     def _buildAutoStopAttributes(self, baseName, baseLabel, attrType,
                                  autoStopDesc):
         attrs = []
         autostopperName = "%s_%s" % (baseName, AUTOSTOP)
         autostopperLabel = "%s %s" % (baseLabel, AUTOSTOP)
+        autostopSwitch = autoStopDesc.get(SWITCHDESCRIPTOR, None)
+        if autostopSwitch in self.impl._plcAttrs:
+            autostopSwitch = self.impl._plcAttrs[autostopSwitch]
+            # depending on the build process, the switch object may not be
+            # build yet. That's why the name (as string) is stored.
+            # Later, when the switch (AttrAddrBit) is build, this assignment
+            # will be completed.
         autostopper = AutostopAttr(name=autostopperName,
                                    valueType=attrType,
                                    device=self.impl,
                                    plcAttr=self.impl._plcAttrs[baseName],
                                    below=autoStopDesc.get(BELOW, None),
                                    above=autoStopDesc.get(ABOVE, None),
+                                   switchAttr=autostopSwitch,
                                    events={})
         self.impl._internalAttrs[autostopperName] = autostopper
         spectrumAttr = self.add_Attr(autostopperName, PyTango.DevDouble,
@@ -863,7 +880,6 @@ class AttrList(object):
                                                    autostopperLabel,
                                                    autostopper)
         attrs.append(enableAttr)
-        # TODO: below/above threshold and integration time attributes
         for condition in [BELOW, ABOVE]:
             if condition in autoStopDesc:
                 condAttr = self._buildAutoStopConditionAttr(condition,
@@ -871,6 +887,7 @@ class AttrList(object):
                                                             autostopperLabel,
                                                             autostopper)
                 attrs.append(condAttr)
+        # TODO: integration time attribute
         meanAttr, stdAttr = self._buildAutoStopMeanStdAttr(autostopperName,
                                                            autostopperLabel,
                                                            autostopper)
