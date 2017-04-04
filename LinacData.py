@@ -870,15 +870,19 @@ class AttrList(object):
                                    below=autoStopDesc.get(BELOW, None),
                                    above=autoStopDesc.get(ABOVE, None),
                                    switchAttr=autostopSwitch,
+                                   integr_t=autoStopDesc.get(INTEGRATIONTIME,
+                                                             None),
                                    events={})
         self.impl._internalAttrs[autostopperName] = autostopper
         spectrumAttr = self.add_Attr(autostopperName, PyTango.DevDouble,
                                      rfun=autostopper.read_attr, xdim=1000,
                                      l=autostopperLabel)
         attrs.append(spectrumAttr)
-        enableAttr = self._buildAutoStopEnableAttr(autostopperName,
-                                                   autostopperLabel,
-                                                   autostopper)
+        enableAttr = self._buildAutoStoperAttr(autostopperName,
+                                               autostopperLabel, ENABLE,
+                                               autostopper._enable,
+                                               PyTango.DevBoolean,
+                                               memorised=True, writable=True)
         attrs.append(enableAttr)
         for condition in [BELOW, ABOVE]:
             if condition in autoStopDesc:
@@ -887,28 +891,48 @@ class AttrList(object):
                                                             autostopperLabel,
                                                             autostopper)
                 attrs.append(condAttr)
-        # TODO: integration time attribute
-        meanAttr, stdAttr = self._buildAutoStopMeanStdAttr(autostopperName,
-                                                           autostopperLabel,
-                                                           autostopper)
+        integrAttr = self._buildAutoStoperAttr(autostopperName,
+                                               autostopperLabel,
+                                               INTEGRATIONTIME,
+                                               autostopper._integr_t,
+                                               PyTango.DevDouble,
+                                               memorised=True, writable=True)
+        meanAttr = self._buildAutoStoperAttr(autostopperName,
+                                             autostopperLabel, MEAN,
+                                             autostopper._mean,
+                                             PyTango.DevDouble)
         attrs.append(meanAttr)
+        stdAttr = self._buildAutoStoperAttr(autostopperName,
+                                            autostopperLabel, STD,
+                                            autostopper._std,
+                                            PyTango.DevDouble)
         attrs.append(stdAttr)
-        triggeredAttr = self._buildAutoStopTriggeredAttr(autostopperName,
-                                                         autostopperLabel,
-                                                         autostopper)
+        triggeredAttr = self._buildAutoStoperAttr(autostopperName,
+                                                  autostopperLabel, TRIGGERED,
+                                                  autostopper._triggered,
+                                                  PyTango.DevBoolean,
+                                                  memorised=True)
         attrs.append(triggeredAttr)
         return tuple(attrs)
 
-    def _buildAutoStopEnableAttr(self, baseName, baseLabel, autostopper):
-        enableName = "%s_%s" % (baseName, ENABLE)
-        enableLabel = "%s %s" % (baseLabel, ENABLE)
-        enabler = autostopper._enable
-        enabler.alias = enableName
-        enabler.setMemorised()
-        self.impl._internalAttrs[enableName] = enabler
-        return self.add_Attr(enableName, PyTango.DevBoolean,
-                             rfun=enabler.read_attr, wfun=enabler.write_attr,
-                             l=enableLabel)
+    def _buildAutoStoperAttr(self, baseName, baseLabel, suffix,
+                             autostopperComponent, dataType, memorised=False,
+                             writable=False):
+        attrName = "%s_%s" % (baseName, suffix)
+        attrLabel = "%s %s" % (baseLabel, suffix)
+        autostopperComponent.alias = attrName
+        if memorised:
+            autostopperComponent.setMemorised()
+        rfun = autostopperComponent.read_attr
+        if writable:
+            wfun = autostopperComponent.write_attr
+        else:
+            wfun = None
+        self.impl._internalAttrs[attrName] = autostopperComponent
+        
+        return self.add_Attr(attrName, dataType,
+                             rfun=rfun, wfun=wfun,
+                             l=attrLabel)
 
     def _buildAutoStopConditionAttr(self, condition, baseName, baseLabel,
                                     autostopper):
@@ -922,31 +946,6 @@ class AttrList(object):
                              rfun=conditioner.read_attr,
                              wfun=conditioner.write_attr,
                              l=conditionLabel)
-
-    def _buildAutoStopMeanStdAttr(self, baseName, baseLabel, autostopper):
-        meanName = "%s_%s" % (baseName, MEAN)
-        meanLabel = "%s %s" % (baseLabel, MEAN)
-        meaner = autostopper._mean
-        meaner.alias = meanName
-        self.impl._internalAttrs[meanName] = meaner
-        stdName = "%s_%s" % (baseName, STD)
-        stdLabel = "%s %s" % (baseLabel, STD)
-        stder = autostopper._std
-        stder.alias = stdName
-        self.impl._internalAttrs[stdName] = stder
-        return (self.add_Attr(meanName, PyTango.DevDouble,
-                              rfun=meaner.read_attr, l=meanLabel),
-                self.add_Attr(stdName, PyTango.DevDouble,
-                              rfun=stder.read_attr, l=stdLabel))
-
-    def _buildAutoStopTriggeredAttr(self, baseName, baseLabel, autostopper):
-        triggeredName = "%s_%s" % (baseName, TRIGGERED)
-        triggeredLabel = "%s %s" % (baseLabel, TRIGGERED)
-        triggereder = autostopper._triggered
-        triggereder.alias = triggeredName
-        self.impl._internalAttrs[triggeredName] = triggereder
-        return self.add_Attr(triggeredName, PyTango.DevBoolean,
-                             rfun=triggereder.read_attr, l=triggeredLabel)
 
 
 def get_ip(iface='eth0'):
