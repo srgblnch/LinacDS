@@ -41,7 +41,7 @@ class AutostopAttr(LinacAttr):
     _integr_t = None
 
     def __init__(self, plcAttr, below=None, above=None, switchAttr=None,
-                 *args, **kwargs):
+                 integr_t=None, *args, **kwargs):
         super(AutostopAttr, self).__init__(*args, **kwargs)
         self._plcAttr = plcAttr
         self._switchAttr = switchAttr
@@ -70,6 +70,7 @@ class AutostopAttr(LinacAttr):
         self._below.rvalue = below or float('-Inf')
         self._above.rvalue = above or float('Inf')
         # TODO: initialisation of the integr_t
+        self._integr_t.rvalue = integr_t or float('Inf')
         self._mean.rvalue = float('nan')
         self._std.rvalue = float('nan')
         self._triggered.rvalue = False
@@ -92,6 +93,8 @@ class AutostopAttr(LinacAttr):
     def newvaluecb(self):
         if self._enable.value:
             self.debug("New Value Callback from %s" % (self._plcAttr))
+            if self._eventsObj:
+                self._eventsObj.fireEvent()
             self._mean.rvalue = self._plcAttr.rvalue.mean
             self._std.rvalue = self._plcAttr.rvalue.std
             if self._above.rvalue < self._mean.rvalue < self._below.rvalue:
