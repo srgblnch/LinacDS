@@ -29,6 +29,7 @@ from time import time
 class Events(_LinacFeature):
     def __init__(self, *args, **kwargs):
         super(Events, self).__init__(*args, **kwargs)
+        self._ctr = EventCtr()
 
     def fireEvent(self, name=None, value=None, timestamp=None, quality=None):
         if self._owner is None or self._owner.device is None:
@@ -41,12 +42,10 @@ class Events(_LinacFeature):
             quality = quality or self._owner.quality
             self._owner.device.push_change_event(name, value, timestamp,
                                                  quality)
-            if self._owner.name in []:
-                log = self.info
-            else:
-                log = self.debug
-            log("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name, value,
-                                                  timestamp, quality))
+            self.debug("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name,
+                                                         value, timestamp,
+                                                         quality))
+            self._ctr += 1
             return time()
         except DevFailed as e:
             self.warning("DevFailed in event %s emit: %s"
@@ -55,3 +54,27 @@ class Events(_LinacFeature):
             self.error("Event for %s (with value %s) not emitted due to: %s"
                        % (self.name, value, e))
         return None
+
+
+class EventCtr(object):
+
+    __instance = None
+    __ctr = 0
+
+    def __new__(cls):
+        if cls.__instance is None:
+            cls.__instance = object.__new__(cls)
+        return cls.__instance
+
+    @property
+    def ctr(self):
+        return self.__ctr
+
+    def __iadd__(self, value):
+        self.__ctr += value
+        # print("\nAdded %d, having %s\n" % (value, self.__ctr))
+        return self
+
+    def clear(self):
+        # print("\nclear()\n")
+        self.__ctr = 0

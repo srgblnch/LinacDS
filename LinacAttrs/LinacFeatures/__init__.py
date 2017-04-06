@@ -23,6 +23,6 @@ __license__ = "GPLv3+"
 
 
 from .buffers import CircularBuffer, HistoryBuffer
-from .events import Events
+from .events import Events, EventCtr
 from .feature import _LinacFeature
 from .memorised import Memorised

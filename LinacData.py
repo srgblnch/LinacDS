@@ -50,7 +50,7 @@ from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
 from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
                         AutostopAttr, AutoStopParameter)
-from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer
+from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 LiAttrSpecializations = [EnumerationAttr]
 
@@ -3064,18 +3064,21 @@ class LinacData(PyTango.Device_4Impl):
             # Locking flag.
             if self._deviceIsInLocal:
                 self.write_lock(True)
+            eventCtr = EventCtr()
             while not self._tangoEventsJoiner.isSet():
                 try:
                     start_t = time.time()
                     if self.has_data_available():
-                        nEvents = self.plcGeneralAttrEvents()
+                        self.plcGeneralAttrEvents()
                         t1 = time.time()
                         self.debug_stream("%3.6f for plcGeneralAttrEvents()"
                                           % (t1 - start_t))
-                        nEvents += self.internalAttrEvents()
-                        self.debug_stream("%3.6f for internalAttrEvents()"
-                                          % (time.time() - t1))
+#                         self.internalAttrEvents()
+#                         self.debug_stream("%3.6f for internalAttrEvents()"
+#                                           % (time.time() - t1))
                         diff_t = time.time() - start_t
+                        nEvents = eventCtr.ctr
+                        eventCtr.clear()
                         self._tangoEventsTime.append(diff_t)
                         self._tangoEventsNumber.append(nEvents)
                         self.debug_stream("eventGeneratorThread() "
@@ -3174,200 +3177,204 @@ class LinacData(PyTango.Device_4Impl):
                emission.
             '''
             now = time.time()
-            attributeList = []
-            for attrName in self._plcAttrs.keys():
-                if attrName not in ['HeartBeat', 'Lock_ST', 'Lock_Status',
-                                    'Locking']:
-                    attributeList.append(attrName)
+            # attributeList = []
+            # for attrName in self._plcAttrs.keys():
+            #     if attrName not in ['HeartBeat', 'Lock_ST', 'Lock_Status',
+            #                         'Locking']:
+            #         attributeList.append(attrName)
+            attributeList = self._plcAttrs.keys()
+            for exclude in ['HeartBeat', 'Lock_ST', 'Lock_Status', 'Locking']:
+                if attributeList.count(exclude):
+                    attributeList.pop(attributeList.index(exclude))
             # Iterate the remaining to know if they need something to be done
-            attr2Event = []
-            attr2Reemit = 0
             for attrName in attributeList:
                 self.checkResetAttr(attrName)
+                attrStruct = self._plcAttrs[attrName]
+                if hasattr(attrStruct, 'hardwareRead'):
+                    attrStruct.hardwareRead(self.read_db)
+                
+                
                 # First check if for this element, it's prepared for events
-                if self.__attrHasEvents(attrName):
-                    try:
-                        attrStruct = self._plcAttrs[attrName]
-                        attrType = attrStruct[TYPE]
-                        # lastValue = self.__getAttrReadValue(attrName)
-                        last_read_t = attrStruct[READTIME]
-                        if READADDR in attrStruct:
-                            # read_addr = attrStruct[READADDR]
-                            # if READBIT in attrStruct:
-                            #     read_bit = attrStruct[READBIT]
-                            #     newValue = self.read_db.bit(read_addr,
-                            #                                 read_bit)
-                            # else:
-                            #     newValue = self.read_db.get(read_addr,
-                            #                                 *attrType)
-                            newValue = attrStruct.hardwareRead(self.read_db)
-                            if FORMULA in attrStruct and \
-                                    'read' in attrStruct[FORMULA]:
-                                newValue = \
-                                    self.__solveFormula(attrName, newValue,
-                                                        attrStruct[FORMULA]
-                                                        ['read'])
-                        if self.__checkAttrEmissionParams(attrName, newValue):
-                            self.__applyReadValue(attrName, newValue,
-                                                  self.last_update_time)
-                            if MEANINGS in attrStruct:
-                                if BASESET in attrStruct:
-                                    attrValue = attrStruct[READVALUE].array
-                                else:
-                                    attrValue = \
-                                        self.__buildAttrMeaning(attrName,
-                                                                newValue)
-                                attrQuality = \
-                                    self.__buildAttrQuality(attrName, newValue)
-                            elif QUALITIES in attrStruct:
-                                attrValue = newValue
-                                attrQuality = \
-                                    self.__buildAttrQuality(attrName,
-                                                            attrValue)
-                            elif AUTOSTOP in attrStruct:
-                                attrValue = attrStruct[READVALUE].array
-                                attrQuality = PyTango.AttrQuality.ATTR_VALID
-                                self._checkAutoStopConditions(attrName)
-                            else:
-                                attrValue = newValue
-                                attrQuality = PyTango.AttrQuality.ATTR_VALID
-                            # store the current quality to know an end of
-                            # a movement: quality from changing to valid
-                            attrStruct[LASTEVENTQUALITY] = attrQuality
-                            # collect to launch fire event
-                            attr2Event.append([attrName, attrValue,
-                                               attrQuality])
-                            self.__doTraceAttr(attrName,
-                                               "plcGeneralAttrEvents(%s)"
-                                               % (attrValue))
-                        # elif self.__checkEventReEmission(attrName):
-                            #  Even there is no condition to emit an event
-                            #  Check the RE_EVENTS_PERIOD to know if a refresh
-                            #  would be nice
-                        #     self.__eventReEmission(attrName)
-                        #     attr2Reemit += 1
-                    except Exception as e:
-                        self.warn_stream("In plcGeneralAttrEvents(), "
-                                         "exception in attribute %s: %s"
-                                         % (attrName, e))
-                        traceback.print_exc()
+#                 if self.__attrHasEvents(attrName):
+#                     try:
+#                         attrStruct = self._plcAttrs[attrName]
+#                         attrType = attrStruct[TYPE]
+#                         # lastValue = self.__getAttrReadValue(attrName)
+#                         last_read_t = attrStruct[READTIME]
+#                         if READADDR in attrStruct:
+#                             # read_addr = attrStruct[READADDR]
+#                             # if READBIT in attrStruct:
+#                             #     read_bit = attrStruct[READBIT]
+#                             #     newValue = self.read_db.bit(read_addr,
+#                             #                                 read_bit)
+#                             # else:
+#                             #     newValue = self.read_db.get(read_addr,
+#                             #                                 *attrType)
+#                             newValue = attrStruct.hardwareRead(self.read_db)
+#                             if FORMULA in attrStruct and \
+#                                     'read' in attrStruct[FORMULA]:
+#                                 newValue = \
+#                                     self.__solveFormula(attrName, newValue,
+#                                                         attrStruct[FORMULA]
+#                                                         ['read'])
+#                         if self.__checkAttrEmissionParams(attrName, newValue):
+#                             self.__applyReadValue(attrName, newValue,
+#                                                   self.last_update_time)
+#                             if MEANINGS in attrStruct:
+#                                 if BASESET in attrStruct:
+#                                     attrValue = attrStruct[READVALUE].array
+#                                 else:
+#                                     attrValue = \
+#                                         self.__buildAttrMeaning(attrName,
+#                                                                 newValue)
+#                                 attrQuality = \
+#                                     self.__buildAttrQuality(attrName, newValue)
+#                             elif QUALITIES in attrStruct:
+#                                 attrValue = newValue
+#                                 attrQuality = \
+#                                     self.__buildAttrQuality(attrName,
+#                                                             attrValue)
+#                             elif AUTOSTOP in attrStruct:
+#                                 attrValue = attrStruct[READVALUE].array
+#                                 attrQuality = PyTango.AttrQuality.ATTR_VALID
+#                                 self._checkAutoStopConditions(attrName)
+#                             else:
+#                                 attrValue = newValue
+#                                 attrQuality = PyTango.AttrQuality.ATTR_VALID
+#                             # store the current quality to know an end of
+#                             # a movement: quality from changing to valid
+#                             attrStruct[LASTEVENTQUALITY] = attrQuality
+#                             # collect to launch fire event
+#                             self.__doTraceAttr(attrName,
+#                                                "plcGeneralAttrEvents(%s)"
+#                                                % (attrValue))
+#                         # elif self.__checkEventReEmission(attrName):
+#                             #  Even there is no condition to emit an event
+#                             #  Check the RE_EVENTS_PERIOD to know if a refresh
+#                             #  would be nice
+#                         #     self.__eventReEmission(attrName)
+#                         #     attr2Reemit += 1
+#                     except Exception as e:
+#                         self.warn_stream("In plcGeneralAttrEvents(), "
+#                                          "exception in attribute %s: %s"
+#                                          % (attrName, e))
+#                         traceback.print_exc()
             # if len(attr2Event) > 0:
             #     self.fireEventsList(attr2Event, timestamp=now, log=True)
-            if attr2Reemit > 0:
-                self.debug_stream("%d events due to periodic reemission"
-                                  % attr2Reemit)
-            self.debug_stream("plcGeneralAttrEvents(): %d events from %d "
-                              "attributes" % (len(attr2Event),
-                                              len(attributeList)))
-            return len(attr2Event)+attr2Reemit
+#             if attr2Reemit > 0:
+#                 self.debug_stream("%d events due to periodic reemission"
+#                                   % attr2Reemit)
+#             self.debug_stream("plcGeneralAttrEvents(): %d events from %d "
+#                               "attributes" % (len(attr2Event),
+#                                               len(attributeList)))
 
-        def internalAttrEvents(self):
-            '''
-            '''
-            now = time.time()
-            attributeList = self._internalAttrs.keys()
-            attr2Event = []
-            for attrName in attributeList:
-                if self.__attrHasEvents(attrName):
-                    try:
-                        # evaluate if emit is needed
-                        # internal attr types:
-                        # - logical
-                        # - sets
-                        attrStruct = self._getAttrStruct(attrName)
-                        attrType = attrStruct[TYPE]
-                        lastValue = self.__getAttrReadValue(attrName)
-                        last_read_t = attrStruct[READTIME]
-                        if LOGIC in attrStruct:
-                            # self.info_stream("Attribute %s is from logical "
-                            #                  "type"%(attrName))
-                            newValue = self._evalLogical(attrName)
-                        elif 'read_set' in attrStruct:
-                            # self.info_stream("Attribute %s is from group "
-                            #                  "type" % (attrName))
-                            newValue = \
-                                self.__getGrpBitValue(attrName,
-                                                      attrStruct['read_set'],
-                                                      self.read_db)
-                        elif AUTOSTOP in attrStruct:
-                            newValue = lastValue
-                            # FIXME: do it better.
-                            # Don't emit events on the loop, because they shall
-                            # be only emitted when they are written.
-                            self._refreshInternalAutostopParams(attrName)
-                            # FIXME: this is task for a internalUpdaterThread
-                        elif MEAN in attrStruct or STD in attrStruct:
-                            # self._updateStatistic(attrName)
-                            newValue = attrStruct[READVALUE]
-                        elif TRIGGERED in attrStruct:
-                            newValue = attrStruct[TRIGGERED]
-                        elif isinstance(attrStruct, EnumerationAttr):
-                            newValue = lastValue  # avoid emit
-                        else:
-                            # self.warn_stream("In internalAttrEvents(): "
-                            #                  "unknown how to emit events "
-                            #                  "for %s attribute" % (attrName))
-                            newValue = lastValue
-                        emit = False
-                        if newValue != lastValue:
-                            # self.info_stream("Emit because %s!=%s"
-                            #                  % (str(newValue),
-                            #                     str(lastValue)))
-                            emit = True
-                        elif (last_read_t is None):
-                            # self.info_stream("Emit new value because it "
-                            #                  "wasn't read before")
-                            emit = True
-                        else:
-                            pass
-                            # self.info_stream("No event to emit "
-                            #                  "(lastValue %s (%s), "
-                            #                  "newValue %s)"
-                            #                  %(str(lastValue),
-                            #                    str(last_read_t),
-                            #                    str(newValue)))
-                    except Exception as e:
-                        self.error_stream("In internalAttrEvents(), "
-                                          "exception reading attribute %s: %s"
-                                          % (attrName, e))
-                        traceback.print_exc()
-                    else:
-                        # prepare to emit
-                        try:
-                            if emit:
-                                self.__applyReadValue(attrName,
-                                                      newValue,
-                                                      self.last_update_time)
-                                if MEANINGS in attrStruct:
-                                    attrValue = \
-                                        self.__buildAttrMeaning(attrName,
-                                                                newValue)
-                                    attrQuality = \
-                                        self.__buildAttrQuality(attrName,
-                                                                newValue)
-                                elif QUALITIES in attrStruct:
-                                    attrValue = newValue
-                                    attrQuality = \
-                                        self.__buildAttrQuality(attrName,
-                                                                attrValue)
-                                else:
-                                    attrValue = newValue
-                                    attrQuality =\
-                                        PyTango.AttrQuality.ATTR_VALID
-                                attr2Event.append([attrName, attrValue])
-                                self.__doTraceAttr(attrName,
-                                                   "internalAttrEvents(%s)"
-                                                   % (attrValue))
-                        except Exception as e:
-                            self.error_stream("In internalAttrEvents(), "
-                                              "exception on emit attribute "
-                                              "%s: %s" % (attrName, e))
-#             if len(attr2Event) > 0:
-#                 self.fireEventsList(attr2Event, timestamp=now, log=True)
-            self.debug_stream("internalAttrEvents(): %d events from %d "
-                              "attributes" % (len(attr2Event),
-                                              len(attributeList)))
-            return len(attr2Event)
+#         def internalAttrEvents(self):
+#             '''
+#             '''
+#             now = time.time()
+#             attributeList = self._internalAttrs.keys()
+#             attr2Event = []
+#             for attrName in attributeList:
+#                 if self.__attrHasEvents(attrName):
+#                     try:
+#                         # evaluate if emit is needed
+#                         # internal attr types:
+#                         # - logical
+#                         # - sets
+#                         attrStruct = self._getAttrStruct(attrName)
+#                         attrType = attrStruct[TYPE]
+#                         lastValue = self.__getAttrReadValue(attrName)
+#                         last_read_t = attrStruct[READTIME]
+#                         if LOGIC in attrStruct:
+#                             # self.info_stream("Attribute %s is from logical "
+#                             #                  "type"%(attrName))
+#                             newValue = self._evalLogical(attrName)
+#                         elif 'read_set' in attrStruct:
+#                             # self.info_stream("Attribute %s is from group "
+#                             #                  "type" % (attrName))
+#                             newValue = \
+#                                 self.__getGrpBitValue(attrName,
+#                                                       attrStruct['read_set'],
+#                                                       self.read_db)
+#                         elif AUTOSTOP in attrStruct:
+#                             newValue = lastValue
+#                             # FIXME: do it better.
+#                             # Don't emit events on the loop, because they shall
+#                             # be only emitted when they are written.
+#                             self._refreshInternalAutostopParams(attrName)
+#                             # FIXME: this is task for a internalUpdaterThread
+#                         elif MEAN in attrStruct or STD in attrStruct:
+#                             # self._updateStatistic(attrName)
+#                             newValue = attrStruct[READVALUE]
+#                         elif TRIGGERED in attrStruct:
+#                             newValue = attrStruct[TRIGGERED]
+#                         elif isinstance(attrStruct, EnumerationAttr):
+#                             newValue = lastValue  # avoid emit
+#                         else:
+#                             # self.warn_stream("In internalAttrEvents(): "
+#                             #                  "unknown how to emit events "
+#                             #                  "for %s attribute" % (attrName))
+#                             newValue = lastValue
+#                         emit = False
+#                         if newValue != lastValue:
+#                             # self.info_stream("Emit because %s!=%s"
+#                             #                  % (str(newValue),
+#                             #                     str(lastValue)))
+#                             emit = True
+#                         elif (last_read_t is None):
+#                             # self.info_stream("Emit new value because it "
+#                             #                  "wasn't read before")
+#                             emit = True
+#                         else:
+#                             pass
+#                             # self.info_stream("No event to emit "
+#                             #                  "(lastValue %s (%s), "
+#                             #                  "newValue %s)"
+#                             #                  %(str(lastValue),
+#                             #                    str(last_read_t),
+#                             #                    str(newValue)))
+#                     except Exception as e:
+#                         self.error_stream("In internalAttrEvents(), "
+#                                           "exception reading attribute %s: %s"
+#                                           % (attrName, e))
+#                         traceback.print_exc()
+#                     else:
+#                         # prepare to emit
+#                         try:
+#                             if emit:
+#                                 self.__applyReadValue(attrName,
+#                                                       newValue,
+#                                                       self.last_update_time)
+#                                 if MEANINGS in attrStruct:
+#                                     attrValue = \
+#                                         self.__buildAttrMeaning(attrName,
+#                                                                 newValue)
+#                                     attrQuality = \
+#                                         self.__buildAttrQuality(attrName,
+#                                                                 newValue)
+#                                 elif QUALITIES in attrStruct:
+#                                     attrValue = newValue
+#                                     attrQuality = \
+#                                         self.__buildAttrQuality(attrName,
+#                                                                 attrValue)
+#                                 else:
+#                                     attrValue = newValue
+#                                     attrQuality =\
+#                                         PyTango.AttrQuality.ATTR_VALID
+#                                 attr2Event.append([attrName, attrValue])
+#                                 self.__doTraceAttr(attrName,
+#                                                    "internalAttrEvents(%s)"
+#                                                    % (attrValue))
+#                         except Exception as e:
+#                             self.error_stream("In internalAttrEvents(), "
+#                                               "exception on emit attribute "
+#                                               "%s: %s" % (attrName, e))
+# #             if len(attr2Event) > 0:
+# #                 self.fireEventsList(attr2Event, timestamp=now, log=True)
+# #             self.debug_stream("internalAttrEvents(): %d events from %d "
+# #                               "attributes" % (len(attr2Event),
+# #                                               len(attributeList)))
+#             return len(attr2Event)
 
         def checkResetAttr(self, attrName):
             '''
