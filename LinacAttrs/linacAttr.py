@@ -433,21 +433,13 @@ class LinacAttr(object):
                 self.warning("Assigned a readValue %s class when was %s"
                              % (type(value), type(self._readValue)))
             self._readValue = value
+            self.launchEvents()
         elif isinstance(self._readValue, CircularBuffer):
             self._readValue.append(value)
+            self.launchEvents()
         elif self._readValue != value:
             self._readValue = value
-            if self._eventsObj:
-                self.event_t = self._eventsObj.fireEvent()
-                # TODO: When self.device supports, report back
-                # than an event has been successfully emitted.
-                if hasattr(self, '_meaningsObj') and self._meaningsObj:
-                    name = self._meaningsObj.alias
-                    value, timestamp, quality = self._meaningsObj.vtq
-                    self._meaningsObj.event_t = \
-                        self._eventsObj.fireEvent(name, value, timestamp,
-                                                  quality)
-        # TODO: thresholds for events emissions
+            self.launchEvents()
 
     @property
     def write_value(self):
@@ -505,6 +497,17 @@ class LinacAttr(object):
         if self._event_t:
             return ctime(self._event_t)
         return None
+
+    def launchEvents(self):
+        if self._eventsObj:
+            # TODO: thresholds for events emissions
+            self.event_t = self._eventsObj.fireEvent()
+        if hasattr(self, '_meaningsObj') and self._meaningsObj:
+            name = self._meaningsObj.alias
+            value, timestamp, quality = self._meaningsObj.vtq
+            self._meaningsObj.event_t = \
+                self._eventsObj.fireEvent(name, value, timestamp,
+                                          quality)
 
     @property
     def lastEventQuality(self):
