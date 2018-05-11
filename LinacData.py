@@ -1385,7 +1385,7 @@ class LinacData(PyTango.Device_4Impl):
                   made also with additive notation using a multiplication
                   factor.
             '''
-            if (CLOSE_ZERO < setpoint < CLOSE_ZERO) or readback == 0:
+            if (-CLOSE_ZERO < setpoint < CLOSE_ZERO) or readback == 0:
                 diff = abs(setpoint - readback)
                 if (diff > CLOSE_ZERO):
                     return True
@@ -1515,7 +1515,10 @@ class LinacData(PyTango.Device_4Impl):
                     if 'format' in attrStruct:
                         try:
                             format = attrStruct['format']
-                            writeValue = float(format % writeValue)
+                            if format.endswith("d"):
+                                writeValue = int(format % writeValue)
+                            else:
+                                writeValue = float(format % writeValue)
                         except Exception as e:
                             self.error_stream("Cannot format value for the "
                                               "attribute %s: %s" % (attrName,
