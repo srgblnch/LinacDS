@@ -642,42 +642,42 @@ Attr('ATT2_P_setpoint',
 Attr('TB_KA1_Delay',
      PyTango.DevShort, 148, 64,  # RW
      l='timer klystron amplifier 1 delay',
-     min=1, max=56, unit='μs', events={})
+     min=1, max=56, unit='ns', events={}, format="%2d")
 
 # R150 W066 @TB_KAD2 ---
 Attr('TB_KA2_Delay',
      PyTango.DevShort, 150, 66,  # RW
      l='timer klystron amplifier 2 delay',
      d='timer klystron amplifier 2 delay (step 32 ns)',
-     min=544, max=4096, unit='ns', events={})
+     min=544, max=4096, unit='ns', events={}, format="%4d")
 
 # R152 W068 @TB_RF2D ---
 Attr('TB_RF2_Delay',
      PyTango.DevShort, 152, 68,  # RW
      l='timer RF2 delay',
      d='timer RF2 delay (step 8 ns)',
-     min=512, max=1920, unit='ns', events={})
+     min=512, max=1920, unit='ns', events={}, format="%4d")
 
 # R154 W070 @TB_EGD ---
 Attr('TB_Gun_Delay',
      PyTango.DevShort, 154, 70,  # RW
      l='timer e-gun delay',
      d='timer e-gun delay (step 32 ns)',
-     min=32, max=4096, unit='ns', events={})
+     min=32, max=4096, unit='ns', events={}, format="%4d")
 
 # R156 W072 @TB_GPI ---
 Attr('TB_GPI',
      PyTango.DevShort, 156, 72,  # RW
      l='timer e-gun pulse',
      d='timer e-gun pulse interval (SBM) / width (MBM)',
-     min=6, max=1054, unit='ns', events={})
+     min=6, max=1054, unit='ns', events={}, format="%4d")
 
 # R158 W074 @TB_GPN ---
 Attr('TB_GPN',
      PyTango.DevShort, 158, 74,  # RW
      l='number of pulses',
      d='number of pulses in SBM (not use in MBM)',
-     min=1, max=16, events={})
+     min=1, max=16, events={}, format="%2d")
 
 # R160 W076 @TB_GPM ---
 Attr('TB_GPM',
@@ -688,7 +688,7 @@ Attr('TB_GPM',
      meanings={0: "beam on",
                1: "mix",
                2: "beam off"},
-     events={}, record=True)
+     events={}, record=True, format="%1d")
 
 # R162 W078 @DO_0to7 ---
 AttrBit('TB_MBM',
