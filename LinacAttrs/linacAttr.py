@@ -236,7 +236,7 @@ class LinacAttr(object):
             return
         if attr is not None:
             attrName = self._getAttrName(attr)
-            self.info("Received a read request for %s" % attrName)
+            self.debug("Received a read request for %s" % attrName)
 #             suffix = self._getSuffix(attrName)
 #             print suffix
 #             print "%r"%self
@@ -609,8 +609,8 @@ class LinacAttr(object):
 
     def _setAttrValue(self, attr, readValue):
         attrName = self._getAttrName(attr)
-        self.info("_setAttrValue(%s, %s, %s, %s)"
-                  % (attrName, readValue, self.timestamp, self.quality))
+        self.debug("_setAttrValue(%s, %s, %s, %s)"
+                   % (attrName, readValue, self.timestamp, self.quality))
         if type(attr) != str:
             # If its an attribute, part of a device, do the corresponding set
             # print("type(attr) = %s" % type(attr))
