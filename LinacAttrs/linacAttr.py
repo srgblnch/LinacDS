@@ -184,6 +184,11 @@ class LinacAttr(object):
 
     @property
     def rvalue(self):
+        if isinstance(self._readValue, CircularBuffer):
+            if self.type == ('f', 4):
+                return float(self.read_value)
+            else:
+                return int(self.read_value)
         return self.read_value
 
     @property
