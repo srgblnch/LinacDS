@@ -22,7 +22,7 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 from feature import _LinacFeature
-from PyTango import DevFailed
+from PyTango import AttrQuality, DevFailed
 from time import time
 
 
@@ -39,6 +39,10 @@ class Events(_LinacFeature):
             name = name or self._owner.name
             value = value or self._owner.rvalue
             timestamp = timestamp or self._owner.timestamp
+            if value is None:
+                value = self._owner.noneValue
+                self._owner.device.push_change_event(name, value, timestamp,
+                                                     AttrQuality.ATTR_INVALID)
             quality = quality or self._owner.quality
             self._owner.device.push_change_event(name, value, timestamp,
                                                  quality)

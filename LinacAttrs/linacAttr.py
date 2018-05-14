@@ -212,6 +212,16 @@ class LinacAttr(object):
     def type(self):
         return self._type
 
+    @property
+    def noneValue(self):
+        if self._type == ('f', 4):
+            return float('NaN')
+        elif self._type in [('h', 2), ('B', 1)]:
+            return 0
+        else:
+            return '0'
+        return 
+
     ##########################
     # Tango attribute area ---
     def isAllowed(self):

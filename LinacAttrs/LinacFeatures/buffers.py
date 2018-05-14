@@ -65,7 +65,10 @@ class CircularBuffer(_LinacFeature):
         return len(self._buffer)
 
     def __float__(self):
-        return float(self.value)
+        try:
+            return float(self.value)
+        except:
+            return float('NaN')
 
     def __int__(self):
         return int(self.value)

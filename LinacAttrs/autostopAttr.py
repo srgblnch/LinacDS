@@ -74,13 +74,13 @@ class AutostopAttr(LinacAttr):
         self._mean.rvalue = float('nan')
         self._std.rvalue = float('nan')
         self._triggered.rvalue = False
-        self._plcAttr.rvalue.append_cb(self.newvaluecb)
+        self._plcAttr.read_value.append_cb(self.newvaluecb)
         self.info("Build %s between (%s,%s)" % (self.name, self._below.value,
                                                 self._above.value))
 
     @property
     def rvalue(self):
-        return self._plcAttr.rvalue.array
+        return self._plcAttr.read_value.array
 
     @property
     def timestamp(self):
@@ -95,8 +95,8 @@ class AutostopAttr(LinacAttr):
             self.debug("New Value Callback from %s" % (self._plcAttr))
             if self._eventsObj:
                 self._eventsObj.fireEvent()
-            self._mean.rvalue = self._plcAttr.rvalue.mean
-            self._std.rvalue = self._plcAttr.rvalue.std
+            self._mean.rvalue = self._plcAttr.read_value.mean
+            self._std.rvalue = self._plcAttr.read_value.std
             if self._above.rvalue < self._mean.rvalue < self._below.rvalue:
                 self._triggered.rvalue = True
 
