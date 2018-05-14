@@ -28,6 +28,7 @@ __all__ = ["LinacData", "LinacDataClass", "main"]
 __docformat__ = 'restructuredtext'
 
 import PyTango
+from PyTango import AttrQuality
 import sys
 # Add additional import
 # PROTECTED REGION ID(LinacData.additionnal_import) ---
