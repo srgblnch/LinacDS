@@ -21,9 +21,9 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-MAJOR_VERSION = 3
-MINOR_VERSION = 0
-BUILD_VERSION = 0
+version = "3.0.0-alpha"
+MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION = [
+    int(x.split('-')[0]) for x in "3.0.1-a".split('.')]
 
 # attributes keys ---
 READADDR = 'read_addr'
@@ -107,6 +107,6 @@ STD = 'Std'
 TRIGGERED = 'Triggered'
 
 # Readback far from setpoint ---
-from PyTango import AttrQuality
+# from PyTango import AttrQuality
 CLOSE_ZERO = 0.1
 REL_PERCENTAGE = 0.1
