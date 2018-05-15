@@ -55,7 +55,7 @@ class MeaningAttr(_LinacFeature, LinacAttr):
 
     @property
     def meanings(self):
-        return
+        return self._meanings
 
     @meanings.setter
     def meanings(self, value):
