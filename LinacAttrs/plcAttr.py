@@ -30,6 +30,9 @@ class PLCAttr(LinacAttr):
 
     _rst_t = None
 
+    _label = None
+    _description = None
+
     _meanings = None
     _meaningsObj = None
 
@@ -39,6 +42,7 @@ class PLCAttr(LinacAttr):
                  formula=None, meanings=None, qualities=None,
                  readback=None, setpoint=None, switch=None,
                  IamChecker=None, isRst=None,
+                 label=None, description=None,
                  *args, **kwargs):
         """
             Class to describe an attribute that references information from
@@ -51,6 +55,9 @@ class PLCAttr(LinacAttr):
         self._writeAddr = writeAddr
         self._writeBit = writeBit
         self._formula = formula
+
+        self._label = label
+        self._description = description
 
         self.meanings = meanings
         self._qualities = qualities
@@ -70,6 +77,22 @@ class PLCAttr(LinacAttr):
             self.read_value = value
             self._timestamp = self._device.last_update_time
         return value
+
+    @property
+    def label(self):
+        return self._label
+
+    #@label.setter
+    #def label(self, value):
+    #    self._label = value
+
+    @property
+    def description(self):
+        return self._description
+
+    #@description.setter
+    #def description(self, value):
+    #    self._description = value
 
     #######################################################
     # Dictionary properties for backwards compatibility ---

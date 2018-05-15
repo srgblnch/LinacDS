@@ -190,7 +190,7 @@ class AttrList(object):
 
     def add_AttrAddr(self, name, T, read_addr=None, write_addr=None,
                      meanings=None, qualities=None, events=None,
-                     formula=None, l=None,
+                     formula=None, l=None, d=None,
                      readback=None, setpoint=None, switch=None,
                      IamChecker=None, **kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
@@ -267,7 +267,8 @@ class AttrList(object):
         self._prepareAttribute(name, T, readAddr=read_addr,
                                writeAddr=write_addr, formula=formula,
                                readback=readback, setpoint=setpoint,
-                               switch=switch, **kwargs)
+                               switch=switch, label=l, description=d,
+                               **kwargs)
         self._prepareEvents(name, events)
         if IamChecker is not None:
             try:
@@ -289,7 +290,8 @@ class AttrList(object):
                         write_addr=None, write_bit=None, meanings=None,
                         qualities=None, events=None, isRst=False,
                         activeRst_t=None, formula=None, switchDescriptor=None,
-                        readback=None, setpoint=None, record=None, **kwargs):
+                        readback=None, setpoint=None, record=None, 
+                        l=None, d=None, **kwargs):
         '''This method is a builder of a boolean dynamic attribute, even for RO
            than for RW. There are many optional parameters.
 
@@ -362,7 +364,8 @@ class AttrList(object):
         self._prepareAttribute(name, PyTango.DevBoolean, readAddr=read_addr,
                                readBit=read_bit, writeAddr=write_addr,
                                writeBit=write_bit, formula=formula,
-                               readback=readback, setpoint=setpoint, **kwargs)
+                               readback=readback, setpoint=setpoint, 
+                               label=l, description=d, **kwargs)
         if isRst:
             self.impl._plcAttrs[name][ISRESET] = True
             self.impl._plcAttrs[name][RESETTIME] = None
@@ -433,7 +436,7 @@ class AttrList(object):
 
     def add_AttrRampeable(self, name, T, read_addr, write_addr, l, unit,
                           rampsDescriptor, events=None, qualities=None,
-                          readback=None, switch=None, **kwargs):
+                          readback=None, switch=None, d=None, **kwargs):
         '''Given 2 plc memory positions (for read and write), with this method
            build a RW attribute that looks like the other RWs but it includes
            ramping features.
@@ -491,7 +494,7 @@ class AttrList(object):
         tango_T = self.__mapTypes(T)
         self._prepareAttribute(name, T, readAddr=read_addr,
                                writeAddr=write_addr, readback=readback,
-                               switch=switch, **kwargs)
+                               switch=switch, label=l, description=d, **kwargs)
         self._prepareEvents(name, events)
         if qualities is not None:
             rampeableAttr = self._prepareAttrWithQualities(name, tango_T,
@@ -732,7 +735,8 @@ class AttrList(object):
 
     def _prepareAttribute(self, attrName, attrType, readAddr, readBit=None,
                           writeAddr=None, writeBit=None, formula=None,
-                          readback=None, setpoint=None, switch=None, **kwargs):
+                          readback=None, setpoint=None, switch=None,
+                          label=None, description=None, **kwargs):
         '''This is a constructor of the item in the dictionary of attributes
            related with PLC memory locations. At least they have a read address
            and a type. The booleans also needs a read bit. For writable
@@ -754,7 +758,8 @@ class AttrList(object):
                           readAddr=readAddr, readBit=readBit,
                           writeAddr=writeAddr, writeBit=writeBit,
                           formula=formula,
-                          readback=readback, setpoint=setpoint, switch=switch)
+                          readback=readback, setpoint=setpoint, switch=switch,
+                          label=label, description=description)
         self.impl._plcAttrs[attrName] = attrObj
 
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
