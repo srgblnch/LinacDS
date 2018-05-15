@@ -131,6 +131,12 @@ class LinacAttr(object):
         self.device = device
         self._timestamp = time()
         self._quality = AttrQuality.ATTR_VALID
+        if self._type == ('f', 4):
+            self._noneValue = float('NaN')
+        elif self._type in [('h', 2), ('B', 1)]:
+            self._noneValue = 0
+        else:
+            self._noneValue = '0'
 
     def __str__(self):
         return "%s (%s)" % (self.name, self.__class__.__name__)
@@ -220,16 +226,11 @@ class LinacAttr(object):
             return 0
         else:
             return '0'
-        return 
 
     ##########################
     # Tango attribute area ---
     def isAllowed(self):
-        if self.device is None:
-            return True
-        if self.device.get_state() in [DevState.FAULT]:
-            return False
-        return True
+        return self._noneValue
 
     def isReadAllowed(self):
         return self.isAllowed()
