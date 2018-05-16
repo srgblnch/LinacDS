@@ -231,6 +231,7 @@ class LinacAttr(object):
     # Tango attribute area ---
     def isAllowed(self):
         return self._noneValue
+        # FIXME: this doesn't have much sense, or at least explain
 
     def isReadAllowed(self):
         return self.isAllowed()

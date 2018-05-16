@@ -24,7 +24,7 @@ __license__ = "GPLv3+"
 
 from autostopAttr import AutostopAttr, AutoStopParameter
 from enumAttr import EnumerationAttr
-from internalAttr import InternalAttr
+from internalAttr import InternalAttr, LogicInternalAttr
 from linacAttr import LinacAttr, LinacException, CommandExc, AttrExc
 from meaningAttr import MeaningAttr
 from plcAttr import PLCAttr

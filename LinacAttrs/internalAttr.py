@@ -63,30 +63,6 @@ class InternalAttr(LinacAttr):
     #######################################################
     # Dictionary properties for backwards compatibility ---
     @property
-    def logic(self):
-        return self._logic
-
-    @logic.setter
-    def logic(self, value):
-        self._logic = value
-
-    @property
-    def operator(self):
-        return self._operator
-
-    @operator.setter
-    def operator(self, value):
-        self._operator = value
-
-    @property
-    def inverted(self):
-        return self._inverted
-
-    @inverted.setter
-    def inverted(self, value):
-        self._inverted = value
-
-    @property
     def read_set(self):
         return self._readSet
 
@@ -102,6 +78,7 @@ class InternalAttr(LinacAttr):
     def write_set(self, value):
         self._writeSet = value
 
+    # FIXME: this may be a reference to a MeaningAttr
     @property
     def meanings(self):
         return self._meanings
@@ -114,6 +91,7 @@ class InternalAttr(LinacAttr):
             self._meaningsObj = None
         self._meanings = value
 
+    # FIXME: this may be a reference to a Memorized feature
     #######################
     # Memorised feature ---
     def storeDynMemozized(self, mainName, suffix, value):
@@ -123,3 +101,24 @@ class InternalAttr(LinacAttr):
     def recoverDynMemorized(self, mainName, suffix):
         if self._memorised:
             self._memorised.recover(suffix)
+
+
+class LogicInternalAttr(InternalAttr):
+    def __init__(self, logic=None, operator=None, inverted=None,
+                 *args, **kwargs):
+        super(LogicInternalAttr, self).__init__(*args, **kwargs)
+        self._logic = logic
+        self._operator = operator
+        self._inverted = inverted
+
+    @property
+    def logic(self):
+        return self._logic
+
+    @property
+    def operator(self):
+        return self._operator
+
+    @property
+    def inverted(self):
+        return self._inverted

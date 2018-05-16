@@ -49,8 +49,9 @@ from types import StringType
 
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
-from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
-                        AutostopAttr, AutoStopParameter)
+from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr,
+                        LogicInternalAttr, MeaningAttr, AutostopAttr,
+                        AutoStopParameter)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -427,11 +428,10 @@ class AttrList(object):
         rfun = self.__getAttrMethod('read', name, isLogical=True)
         wfun = None  # this kind can only be ReadOnly
         self.__traceAttrAddr(name, PyTango.DevBoolean, internalRO=True)
-        self._prepareInternalAttribute(name, PyTango.DevBoolean)
+        self.impl.info_stream("%s logic: %s" % (name, logic))
+        self._prepareInternalAttribute(name, PyTango.DevBoolean, logic=logic,
+                                       operator=operator, inverted=inverted)
         self._prepareEvents(name, events)
-        self.impl._internalAttrs[name][LOGIC] = logic
-        self.impl._internalAttrs[name][OPERATOR] = operator
-        self.impl._internalAttrs[name][INVERTED] = inverted
         return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun, l, **kwargs)
 
     def add_AttrRampeable(self, name, T, read_addr, write_addr, l, unit,
@@ -763,11 +763,20 @@ class AttrList(object):
         self.impl._plcAttrs[attrName] = attrObj
 
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
-                                  isWritable=False, defaultValue=None):
-        attrObj = InternalAttr(name=attrName, device=self.impl,
-                               valueType=attrType, memorized=memorized,
-                               isWritable=isWritable,
-                               defaultValue=defaultValue)
+                                  isWritable=False, defaultValue=None,
+                                  logic=None, operator=None, inverted=None):
+        if logic is not None:
+            attrObj = LogicInternalAttr(name=attrName, device=self.impl,
+                                        valueType=attrType,
+                                        memorized=memorized,
+                                        isWritable=isWritable,
+                                        defaultValue=defaultValue, logic=logic,
+                                        operator=operator, inverted=inverted)
+        else:
+            attrObj = InternalAttr(name=attrName, device=self.impl,
+                                   valueType=attrType, memorized=memorized,
+                                   isWritable=isWritable,
+                                   defaultValue=defaultValue)
         self.impl._internalAttrs[attrName] = attrObj
 
     def _prepareEvents(self, attrName, eventConfig):
@@ -1563,6 +1572,7 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
+                                                            LogicInternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1613,6 +1623,7 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
+                                                            LogicInternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1713,6 +1724,7 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
+                                                            LogicInternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1914,6 +1926,7 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
+                                                            LogicInternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1948,6 +1961,7 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
+                                                            LogicInternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
