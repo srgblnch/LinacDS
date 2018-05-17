@@ -23,6 +23,7 @@ __license__ = "GPLv3+"
 
 
 from linacAttr import LinacAttr
+from .LinacFeatures import Logic
 
 
 class InternalAttr(LinacAttr):
@@ -42,8 +43,10 @@ class InternalAttr(LinacAttr):
     _meanings = None
     _meaningsObj = None
 
+    _logicObj = None
+
     def __init__(self, isWritable=False, defaultValue=None, meanings=None,
-                 *args, **kwargs):
+                 logic=None, operator=None, inverted=None, *args, **kwargs):
         """
             Class to describe an attribute that references information from
             any of the Linac's PLCs.
@@ -59,6 +62,9 @@ class InternalAttr(LinacAttr):
             else:
                 self._readValue = defaultValue
         self.meanings = meanings
+        if logic is not None:
+            self._logicObj = Logic(owner=self, logic=logic, operator=operator,
+                                   inverted=inverted)
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
@@ -90,6 +96,10 @@ class InternalAttr(LinacAttr):
         else:
             self._meaningsObj = None
         self._meanings = value
+
+    @property
+    def logicObj(self):
+        return self._logicObj
 
     # FIXME: this may be a reference to a Memorized feature
     #######################

@@ -49,9 +49,8 @@ from types import StringType
 
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
-from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr,
-                        LogicAttr, MeaningAttr, AutostopAttr,
-                        AutoStopParameter)
+from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
+                        AutostopAttr, AutoStopParameter)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -765,17 +764,11 @@ class AttrList(object):
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
                                   isWritable=False, defaultValue=None,
                                   logic=None, operator=None, inverted=None):
-        if logic is not None:
-            attrObj = LogicAttr(name=attrName, device=self.impl,
-                                valueType=attrType, memorized=memorized,
-                                isWritable=isWritable,
-                                defaultValue=defaultValue, logic=logic,
-                                operator=operator, inverted=inverted)
-        else:
-            attrObj = InternalAttr(name=attrName, device=self.impl,
-                                   valueType=attrType, memorized=memorized,
-                                   isWritable=isWritable,
-                                   defaultValue=defaultValue)
+        attrObj = InternalAttr(name=attrName, device=self.impl,
+                               valueType=attrType, memorized=memorized,
+                               isWritable=isWritable,
+                               defaultValue=defaultValue, logic=logic,
+                               operator=operator, inverted=inverted)
         self.impl._internalAttrs[attrName] = attrObj
 
     def _prepareEvents(self, attrName, eventConfig):
@@ -1571,7 +1564,6 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
-                                                            LogicAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1622,7 +1614,6 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
-                                                            LogicAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1660,9 +1651,9 @@ class LinacData(PyTango.Device_4Impl):
             '''
             '''
             if attrName in self._internalAttrs and \
-                    isinstance(self._internalAttrs[attrName], LogicAttr):
+                    hasattr(self._internalAttrs[attrName], 'logic'):
                 attrStruct = self._internalAttrs[attrName]
-                logic = attrStruct.logic
+                logic = attrStruct.logicObj.logic
                 values = []
                 self.info_stream("Evaluate %s LogicAttr" % attrName)
                 for key in logic.keys():
@@ -1679,12 +1670,12 @@ class LinacData(PyTango.Device_4Impl):
                         self.error_stream("cannot eval logic attr %s for key %s: "
                                           "%s" % (attrName, key, e))
                         traceback.print_exc()
-                if attrStruct.operator == 'or':
+                if attrStruct.logicObj.operator == 'or':
                     ret = any(values)
-                elif attrStruct.operator == 'and':
+                elif attrStruct.logicObj.operator == 'and':
                     ret = all(values)
                 attrStruct.read_t = time.time()
-                if attrStruct.inverted:
+                if attrStruct.logicObj.inverted:
                     ret = not ret
                     self.info_stream("For %s: values %s (%s) (inverted) answer %s"
                                      % (attrName, values, attrStruct.operator, ret))

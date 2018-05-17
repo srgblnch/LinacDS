@@ -16,20 +16,34 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .internalAttr import InternalAttr
+from feature import _LinacFeature
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
-__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
+__copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-class LogicAttr(InternalAttr):
-    def __init__(self, logic=None, operator=None, inverted=None,
+
+class Logic(_LinacFeature):
+
+    _logic = None
+    _operator = None
+    _inverted = None
+
+    def __init__(self, owner, logic=None, operator=None, inverted=None,
                  *args, **kwargs):
-        super(LogicAttr, self).__init__(*args, **kwargs)
+        super(Logic, self).__init__(owner=owner, *args, **kwargs)
+        self._str_ = "%s:Logic" % (self.owner.name)
         self._logic = logic
         self._operator = operator
         self._inverted = inverted
+
+    def __str__(self):
+        return "%s (%s, %s, %s)" % (self._str_, self._logic, self._operator,
+                                    "inverted" if self._inverted else "normal")
+
+    def __repr__(self):
+        return self.__str__()
 
     @property
     def logic(self):
