@@ -16,16 +16,29 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .internalAttr import InternalAttr
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
-__copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
+__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
+class LogicAttr(InternalAttr):
+    def __init__(self, logic=None, operator=None, inverted=None,
+                 *args, **kwargs):
+        super(LogicAttr, self).__init__(*args, **kwargs)
+        self._logic = logic
+        self._operator = operator
+        self._inverted = inverted
 
-from autostopAttr import AutostopAttr, AutoStopParameter
-from enumAttr import EnumerationAttr
-from internalAttr import InternalAttr
-from linacAttr import LinacAttr, LinacException, CommandExc, AttrExc
-from logicAttr import LogicAttr
-from meaningAttr import MeaningAttr
-from plcAttr import PLCAttr
+    @property
+    def logic(self):
+        return self._logic
+
+    @property
+    def operator(self):
+        return self._operator
+
+    @property
+    def inverted(self):
+        return self._inverted

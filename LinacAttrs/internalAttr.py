@@ -101,24 +101,3 @@ class InternalAttr(LinacAttr):
     def recoverDynMemorized(self, mainName, suffix):
         if self._memorised:
             self._memorised.recover(suffix)
-
-
-class LogicInternalAttr(InternalAttr):
-    def __init__(self, logic=None, operator=None, inverted=None,
-                 *args, **kwargs):
-        super(LogicInternalAttr, self).__init__(*args, **kwargs)
-        self._logic = logic
-        self._operator = operator
-        self._inverted = inverted
-
-    @property
-    def logic(self):
-        return self._logic
-
-    @property
-    def operator(self):
-        return self._operator
-
-    @property
-    def inverted(self):
-        return self._inverted
