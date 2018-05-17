@@ -39,8 +39,8 @@ __license__ = "GPLv3+"
 
    kwargs: l=None,       :label of the attribute
            d=None,       :description of the attribute
-           min=None,     :minimum value allowed
-           max=None,     :maximum value allowed
+           minValue=None,     :minimum value allowed
+           maxValue=None,     :maximum value allowed
            unit=None,    :attribute unit
            format=None   :In the number case (int/float) its precision
            events={}     :dictionary where its existence will set up attr
@@ -60,21 +60,21 @@ __license__ = "GPLv3+"
 Attr('Heat_I',
      PyTango.DevFloat, 4,  # RO
      l='Heating current monitor',
-     unit='A', min=0, max=30, format='%4.1f',
+     unit='A', minValue=0, maxValue=30, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('Heat_V',
      PyTango.DevFloat, 8,  # RO
      l='Heating voltage monitor',
-     unit='V', min=0, max=30, format='%4.1f',
+     unit='V', minValue=0, maxValue=30, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('HVPS_V',
      PyTango.DevFloat, 12,  # RO
      l='High voltage PS voltage',
-     unit='kV', min=0, max=40, format='%4.2f',
+     unit='kV', minValue=0, maxValue=40, format='%4.2f',
      events={THRESHOLD: 0.001}, record=True,
      # qualities={CHANGING: {'rel': 0.1}}
      )
@@ -82,7 +82,7 @@ Attr('HVPS_V',
 Attr('HVPS_I',
      PyTango.DevFloat, 16,  # RO
      l='High voltage PS current',
-     unit='mA', min=0, max=150, format='%4.1f',
+     unit='mA', minValue=0, maxValue=150, format='%4.1f',
      events={THRESHOLD: 0.01}, record=True,
      # qualities={CHANGING: {'rel': 0.1}}
      )
@@ -90,7 +90,7 @@ Attr('HVPS_I',
 Attr('Peak_I',
      PyTango.DevFloat, 20,  # RO
      l='Peak current',
-     unit='A', min=0, max=400, format='%4.1f',
+     unit='A', minValue=0, maxValue=400, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
@@ -98,7 +98,7 @@ Attr('Peak_V',
      PyTango.DevFloat, 24,  # RO
      l='Peak voltage',
      d='peak voltage (calculated',
-     unit='kV', min=0, max=400, format='%4.1f',
+     unit='kV', minValue=0, maxValue=400, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
@@ -209,7 +209,7 @@ Attr('Heat_Time',
 AttrRampeable('HVPS_V_setpoint',
               PyTango.DevFloat, 46, 0,  # RW
               l='High voltage PS voltage setpoint',
-              unit='kV', min=0, max=33, format='%4.2f',
+              unit='kV', minValue=0, maxValue=33, format='%4.2f',
               events={THRESHOLD: 0.005}, record=True,
               qualities={CHANGING: {'rel': 0.1}},
               rampsDescriptor={ASCENDING: {STEP: 0.5,  # kV

@@ -39,8 +39,8 @@ __license__ = "GPLv3+"
 
    kwargs: l=None,       :label of the attribute
            d=None,       :description of the attribute
-           min=None,     :minimum value allowed
-           max=None,     :maximum value allowed
+           minValue=None,     :minimum value allowed
+           maxValue=None,     :maximum value allowed
            unit=None,    :attribute unit
            format=None   :In the number case (int/float) its precision
            events={}     :dictionary where its existence will set up attr
@@ -123,61 +123,61 @@ def PS(name, types, rng):
         Status_addr += 1
 
 
-PS('SL1', F, {'min': 0.0, 'max': 1.0, 'format': '%4.2f',
+PS('SL1', F, {'minValue': 0.0, 'maxValue': 1.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('SL2', F, {'min': 0.0, 'max': 1.0, 'format': '%4.2f',
+PS('SL2', F, {'minValue': 0.0, 'maxValue': 1.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('SL3', F, {'min': 0.0, 'max': 1.0, 'format': '%4.2f',
+PS('SL3', F, {'minValue': 0.0, 'maxValue': 1.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('SL4', F, {'min': 0.0, 'max': 1.0, 'format': '%4.2f',
+PS('SL4', F, {'minValue': 0.0, 'maxValue': 1.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('BC1', F, {'min': 0.0, 'max': 200.0, 'format': '%4.2f',
+PS('BC1', F, {'minValue': 0.0, 'maxValue': 200.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('BC2', F, {'min': 0.0, 'max': 200.0, 'format': '%4.2f',
+PS('BC2', F, {'minValue': 0.0, 'maxValue': 200.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('GL',  F, {'min': 0.0, 'max': 130.0, 'format': '%4.2f',
+PS('GL',  F, {'minValue': 0.0, 'maxValue': 130.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('QT1', F, {'min': 0.0, 'max': 6.0, 'format': '%4.3f',
+PS('QT1', F, {'minValue': 0.0, 'maxValue': 6.0, 'format': '%4.3f',
               EVENTS: {THRESHOLD: 0.0001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('QT2', F, {'min': 0.0, 'max': 6.0, 'format': '%4.3f',
+PS('QT2', F, {'minValue': 0.0, 'maxValue': 6.0, 'format': '%4.3f',
               EVENTS: {THRESHOLD: 0.0001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('SL1', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('SL1', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('SL2', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('SL2', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('SL3', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('SL3', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('SL4', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('SL4', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('BC1', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('BC1', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('BC2', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('BC2', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('GL', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('GL', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
               EVENTS: {THRESHOLD: 0.001},
               QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('AS1', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('AS1', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('QT1', HV, {'min': -16.0, 'max': 16.0, 'format': '%4.2f',
+PS('QT1', HV, {'minValue': -16.0, 'maxValue': 16.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
-PS('AS2', HV, {'min': -2.0, 'max': 2.0, 'format': '%4.2f',
+PS('AS2', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                EVENTS: {THRESHOLD: 0.001},
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
 

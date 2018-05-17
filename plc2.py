@@ -39,8 +39,8 @@ __license__ = "GPLv3+"
 
    kwargs: l=None,       :label of the attribute
            d=None,       :description of the attribute
-           min=None,     :minimum value allowed
-           max=None,     :maximum value allowed
+           minValue=None,     :minimum value allowed
+           maxValue=None,     :maximum value allowed
            unit=None,    :attribute unit
            format=None   :In the number case (int/float) its precision
            events={}     :dictionary where its existence will set up attr
@@ -70,7 +70,7 @@ for i in range(9):
     Attr('IP%d_P' % (number),
          PyTango.DevFloat, 4*i,  # RO
          l='ion pump %d pressure monitor' % (number),
-         format='%2.1e', min=1e-11, max=1e0, unit='mbar',
+         format='%2.1e', minValue=1e-11, maxValue=1e0, unit='mbar',
          events={}, qualities={WARNING: {ABSOLUTE: {ABOVE: 1e-7}}})
 
 # R036 @HG1_PM ---
@@ -83,7 +83,7 @@ for i in range(5):
     Attr('HVG%d_P' % (number),
          PyTango.DevFloat, 36+4*i,  # RO
          l='high vacuum gauge %d pressure monitor' % (number),
-         format='%2.1e', min=1e-11, max=1, unit='mbar',
+         format='%2.1e', minValue=1e-11, maxValue=1, unit='mbar',
          events={}, qualities={WARNING: {ABSOLUTE: {ABOVE: 1e-7}}})
 
 # R056 @CL1_TM ---
@@ -94,7 +94,7 @@ for i in range(3):
     Attr('CL%d_T' % (number),
          PyTango.DevFloat, 56+4*i,  # RO
          l='cooling loop %d temperature monitor' % (number),
-         format='%4.2f', min=0, max=50, unit='⁰C',
+         format='%4.2f', minValue=0, maxValue=50, unit='⁰C',
          events={THRESHOLD: 0.001})
 
 # R068 @CL1_PWDM ---
@@ -105,7 +105,7 @@ for i in range(3):
     Attr('CL%d_PWD' % (number),
          PyTango.DevFloat, 68+4*i,  # RO
          l='cooling loop %d power drive monitor' % (number),
-         format='%4.1f', min=0, max=100, unit='%',
+         format='%4.1f', minValue=0, maxValue=100, unit='%',
          events={THRESHOLD: 0.1}, qualities={WARNING: {ABSOLUTE: {BELOW: 15,
                                                                   ABOVE: 80}}})
 
@@ -284,7 +284,7 @@ for i in range(3):
     Attr('CL%d_T_setpoint' % (number),
          PyTango.DevFloat, 100+4*i, 4*i,  # RW
          l='cooling loop %d temperature setpoint' % (number),
-         format='%4.2f', unit='⁰C', min=0, max=50,
+         format='%4.2f', unit='⁰C', minValue=0, maxValue=50,
          events={THRESHOLD: 0.01},
          qualities={CHANGING: {RELATIVE: 0.5},
                     WARNING: {ABSOLUTE: {ABOVE: 40, BELOW: 20}},

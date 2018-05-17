@@ -121,7 +121,8 @@ class AttrList(object):
         })
 
     def add_Attr(self, name, T, rfun=None, wfun=None, l=None, d=None,
-                 min=None, max=None, unit=None, format=None, memorized=False,
+                 minValue=None, maxValue=None, unit=None, format=None,
+                 memorized=False,
                  record=None, xdim=0):
         if wfun:
             if xdim == 0:
@@ -141,10 +142,10 @@ class AttrList(object):
         aprop = PyTango.UserDefaultAttrProp()
         if unit is not None:
             aprop.set_unit(latin1(unit))
-        if min is not None:
-            aprop.set_min_value(str(min))
-        if max is not None:
-            aprop.set_max_value(str(max))
+        if minValue is not None:
+            aprop.set_min_value(str(minValue))
+        if maxValue is not None:
+            aprop.set_max_value(str(maxValue))
         if format is not None:
             attrStruct = self.impl._getAttrStruct(name)
             attrStruct['format'] = str(format)
@@ -192,7 +193,8 @@ class AttrList(object):
                      meanings=None, qualities=None, events=None,
                      formula=None, l=None, d=None,
                      readback=None, setpoint=None, switch=None,
-                     IamChecker=None, **kwargs):
+                     IamChecker=None, minValue=None, maxValue=None,
+                     *args, **kwargs):
         '''This method is a most general builder of dynamic attributes, for RO
            as well as for RW depending on if it's provided a write address.
            There are other optional parameters to configure some special
@@ -268,7 +270,8 @@ class AttrList(object):
                                writeAddr=write_addr, formula=formula,
                                readback=readback, setpoint=setpoint,
                                switch=switch, label=l, description=d,
-                               **kwargs)
+                               minValue=minValue, maxValue=maxValue,
+                               *args, **kwargs)
         self._prepareEvents(name, events)
         if IamChecker is not None:
             try:
@@ -284,14 +287,16 @@ class AttrList(object):
             return self._prepareAttrWithQualities(name, tango_T, qualities,
                                                   rfun, wfun, l=l, **kwargs)
         else:
-            return self.add_Attr(name, tango_T, rfun, wfun, **kwargs)
+            return self.add_Attr(name, tango_T, rfun, wfun, minValue=minValue,
+                                 maxValue=maxValue, **kwargs)
 
     def add_AttrAddrBit(self, name, read_addr=None, read_bit=0,
                         write_addr=None, write_bit=None, meanings=None,
                         qualities=None, events=None, isRst=False,
                         activeRst_t=None, formula=None, switchDescriptor=None,
-                        readback=None, setpoint=None, record=None, 
-                        l=None, d=None, **kwargs):
+                        readback=None, setpoint=None, record=None,
+                        l=None, d=None, minValue=None, maxValue=None,
+                        *args, **kwargs):
         '''This method is a builder of a boolean dynamic attribute, even for RO
            than for RW. There are many optional parameters.
 
@@ -349,8 +354,8 @@ class AttrList(object):
            setpoint and if the element is switch on or off.
         '''
 
-        if write_bit is None:
-            write_bit = read_bit
+        #if write_bit is None:
+        #    write_bit = read_bit
 
         rfun = self.__getAttrMethod('read', name, isBit=True)
 
@@ -365,7 +370,8 @@ class AttrList(object):
                                readBit=read_bit, writeAddr=write_addr,
                                writeBit=write_bit, formula=formula,
                                readback=readback, setpoint=setpoint, 
-                               label=l, description=d, **kwargs)
+                               label=l, description=d, minValue=minValue,
+                               maxValue=maxValue, *args, **kwargs)
         if isRst:
             self.impl._plcAttrs[name][ISRESET] = True
             self.impl._plcAttrs[name][RESETTIME] = None
@@ -392,6 +398,7 @@ class AttrList(object):
                                                 **kwargs)
         else:
             return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun,
+                                 minValue=minValue, maxValue=maxValue,
                                  **kwargs)
 
     def add_AttrGrpBit(self, name, read_addr_bit_pairs=[],
@@ -435,7 +442,8 @@ class AttrList(object):
 
     def add_AttrRampeable(self, name, T, read_addr, write_addr, l, unit,
                           rampsDescriptor, events=None, qualities=None,
-                          readback=None, switch=None, d=None, **kwargs):
+                          readback=None, switch=None, d=None, minValue=None,
+                          maxValue=None, *args, **kwargs):
         '''Given 2 plc memory positions (for read and write), with this method
            build a RW attribute that looks like the other RWs but it includes
            ramping features.
@@ -493,7 +501,9 @@ class AttrList(object):
         tango_T = self.__mapTypes(T)
         self._prepareAttribute(name, T, readAddr=read_addr,
                                writeAddr=write_addr, readback=readback,
-                               switch=switch, label=l, description=d, **kwargs)
+                               switch=switch, label=l, description=d, 
+                               minValue=minValue, maxValue=maxValue,
+                               *args, **kwargs)
         self._prepareEvents(name, events)
         if qualities is not None:
             rampeableAttr = self._prepareAttrWithQualities(name, tango_T,
@@ -501,6 +511,7 @@ class AttrList(object):
                                                            wfun, l=l, **kwargs)
         else:
             rampeableAttr = self.add_Attr(name, tango_T, rfun, wfun, l,
+                                          minValue=minValue, maxValue=maxValue,
                                           **kwargs)
         # until here, it's not different than another attribute
         # Next is specific for rampeable attributes
@@ -735,7 +746,8 @@ class AttrList(object):
     def _prepareAttribute(self, attrName, attrType, readAddr, readBit=None,
                           writeAddr=None, writeBit=None, formula=None,
                           readback=None, setpoint=None, switch=None,
-                          label=None, description=None, **kwargs):
+                          label=None, description=None,
+                          minValue=None, maxValue=None, **kwargs):
         '''This is a constructor of the item in the dictionary of attributes
            related with PLC memory locations. At least they have a read address
            and a type. The booleans also needs a read bit. For writable
@@ -758,7 +770,8 @@ class AttrList(object):
                           writeAddr=writeAddr, writeBit=writeBit,
                           formula=formula,
                           readback=readback, setpoint=setpoint, switch=switch,
-                          label=label, description=description)
+                          label=label, description=description,
+                          minValue=minValue, maxValue=maxValue)
         self.impl._plcAttrs[attrName] = attrObj
 
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
@@ -1650,40 +1663,42 @@ class LinacData(PyTango.Device_4Impl):
         def _evalLogical(self, attrName):
             '''
             '''
-            if attrName in self._internalAttrs and \
-                    hasattr(self._internalAttrs[attrName], 'logic'):
-                attrStruct = self._internalAttrs[attrName]
-                logic = attrStruct.logicObj.logic
-                values = []
-                self.info_stream("Evaluate %s LogicAttr" % attrName)
-                for key in logic.keys():
-                    try:
-                        if type(logic[key]) == dict:
-                            values.append(self.__evaluateDict(key, logic[key]))
-                        elif type(logic[key]) == list:
-                            values.append(self.__evaluateList(key, logic[key]))
-                        else:
-                            self.warn_stream("step less to evaluate %s for "
-                                             "key %s unmanaged content type"
-                                             % (attrName, key))
-                    except Exception as e:
-                        self.error_stream("cannot eval logic attr %s for key %s: "
-                                          "%s" % (attrName, key, e))
-                        traceback.print_exc()
-                if attrStruct.logicObj.operator == 'or':
-                    ret = any(values)
-                elif attrStruct.logicObj.operator == 'and':
-                    ret = all(values)
-                attrStruct.read_t = time.time()
-                if attrStruct.logicObj.inverted:
-                    ret = not ret
-                    self.info_stream("For %s: values %s (%s) (inverted) answer %s"
-                                     % (attrName, values, attrStruct.operator, ret))
-                else:
-                    self.info_stream("For %s: values %s (%s) answer %s"
-                                     % (attrName, values, attrStruct.operator, ret))
-                attrStruct.read_value = ret
-                return ret
+            if attrName not in self._internalAttrs:
+                return
+            attrStruct = self._internalAttrs[attrName]
+            if attrStruct.logicObj is None:
+                return
+            logic = attrStruct.logicObj.logic
+            values = []
+            self.info_stream("Evaluate %s LogicAttr" % attrName)
+            for key in logic.keys():
+                try:
+                    if type(logic[key]) == dict:
+                        values.append(self.__evaluateDict(key, logic[key]))
+                    elif type(logic[key]) == list:
+                        values.append(self.__evaluateList(key, logic[key]))
+                    else:
+                        self.warn_stream("step less to evaluate %s for "
+                                         "key %s unmanaged content type"
+                                         % (attrName, key))
+                except Exception as e:
+                    self.error_stream("cannot eval logic attr %s for key %s: "
+                                      "%s" % (attrName, key, e))
+                    traceback.print_exc()
+            if attrStruct.logicObj.operator == 'or':
+                ret = any(values)
+            elif attrStruct.logicObj.operator == 'and':
+                ret = all(values)
+            attrStruct.read_t = time.time()
+            if attrStruct.logicObj.inverted:
+                ret = not ret
+                self.info_stream("For %s: values %s (%s) (inverted) answer %s"
+                                 % (attrName, values, attrStruct.operator, ret))
+            else:
+                self.info_stream("For %s: values %s (%s) answer %s"
+                                 % (attrName, values, attrStruct.operator, ret))
+            attrStruct.read_value = ret
+            return ret
 
         def __evaluateDict(self, attrName, dict2eval):
             """
@@ -1725,7 +1740,6 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
-                                                            LogicAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1927,7 +1941,6 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
-                                                            LogicAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,
@@ -1962,7 +1975,6 @@ class LinacData(PyTango.Device_4Impl):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
-                                                            LogicAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutostopAttr,

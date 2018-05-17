@@ -85,6 +85,8 @@ class LinacAttr(object):
 
     _readValue = None
     _writeValue = None
+    _minValue = None
+    _maxValue = None
 
     _device = None
     _keysLst = None
@@ -105,7 +107,7 @@ class LinacAttr(object):
     _memorisedLst = None
 
     def __init__(self, name, valueType, device=None, memorized=False,
-                 events=None, *args, **kwargs):
+                 events=None, minValue=None, maxValue=None, *args, **kwargs):
         # meanings must be is a subclass of LinacAttr or
         # generates a circular import because MeaningAttr
         # inherits from LinacAttr.
@@ -139,6 +141,10 @@ class LinacAttr(object):
             self._noneValue = None
         else:
             self._noneValue = '0'
+        if minValue:
+            self._minValue = minValue
+        if maxValue:
+            self._maxValue = maxValue
 
     def __str__(self):
         return "%s (%s)" % (self.name, self.__class__.__name__)
@@ -219,6 +225,14 @@ class LinacAttr(object):
     @property
     def type(self):
         return self._type
+
+    @property
+    def minValue(self):
+        return self._minValue
+
+    @property
+    def maxValue(self):
+        return self._maxValue
 
     @property
     def noneValue(self):

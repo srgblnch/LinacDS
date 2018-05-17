@@ -39,8 +39,8 @@ __license__ = "GPLv3+"
 
    kwargs: l=None,       :label of the attribute
            d=None,       :description of the attribute
-           min=None,     :minimum value allowed
-           max=None,     :maximum value allowed
+           minValue=None,     :minimum value allowed
+           maxValue=None,     :maximum value allowed
            unit=None,    :attribute unit
            format=None   :In the number case (int/float) its precision
            events={}     :dictionary where its existence will set up attr
@@ -56,7 +56,7 @@ __license__ = "GPLv3+"
 Attr('GUN_Filament_V',
      PyTango.DevFloat, 0,  # RO
      l='e-gun filament voltage monitor',
-     format='%4.1f', min=0, max=10, unit='V',
+     format='%4.1f', minValue=0, maxValue=10, unit='V',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0.0}}},
      setpoint='GUN_Filament_V_setpoint',
@@ -66,7 +66,7 @@ Attr('GUN_Filament_V',
 Attr('GUN_Filament_I',
      PyTango.DevFloat, 4,  # RO
      l='e-gun filament current',
-     format='%4.1f', min=0, max=5, unit='A',
+     format='%4.1f', minValue=0, maxValue=5, unit='A',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0.0}}})
 
@@ -74,7 +74,7 @@ Attr('GUN_Filament_I',
 Attr('GUN_Kathode_V',
      PyTango.DevFloat, 8,  # RO
      l='e-gun cathode voltage monitor',
-     format='%4.1f', min=0, max=50, unit='V',
+     format='%4.1f', minValue=0, maxValue=50, unit='V',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0.0}}})
 
@@ -82,7 +82,7 @@ Attr('GUN_Kathode_V',
 Attr('GUN_Kathode_T',
      PyTango.DevFloat, 12,  # RO
      l='e-gun cathode temperature',
-     format='%4.1f', min=0, max=50, unit='degC',
+     format='%4.1f', minValue=0, maxValue=50, unit='degC',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 25.0,
                                      ABOVE: 41.0}}})
@@ -97,7 +97,7 @@ Attr('GUN_HV_V',
      PyTango.DevFloat, 32,  # RO
      l='HV PS Voltage',
      d='high voltage PS voltage',
-     format='%4.1f', min=-100, max=0, unit='kV',
+     format='%4.1f', minValue=-100, maxValue=0, unit='kV',
      events={THRESHOLD: 0.01},
      setpoint='GUN_HV_V_setpoint',
      switch='GUN_HV_ONC')
@@ -107,7 +107,7 @@ Attr('GUN_HV_I',
      PyTango.DevFloat, 36,  # RO
      l='High voltage PS current',
      d='high voltage PS current (leakage current)',
-     format='%4.1f', min=-600, max=1, unit='μA',
+     format='%4.1f', minValue=-600, maxValue=1, unit='μA',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {ABOVE: 1.0,
                                      BELOW: -20.0}}},
@@ -119,7 +119,7 @@ Attr('GUN_HV_I',
 Attr('PHS1_Phase',
      PyTango.DevFloat, 40,  # RO
      l='Phase shifter 1 phase monitor',
-     format='%4.1f', min=0, max=160, unit='⁰',
+     format='%4.1f', minValue=0, maxValue=160, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R044 @Spare_1: CH3 spare ---
@@ -128,7 +128,7 @@ Attr('PHS1_Phase',
 Attr('SF6_P1',
      PyTango.DevFloat, 48,  # RO
      l='SF6 pressure 1',
-     format='%4.2f', min=-1, max=5, unit='bar',
+     format='%4.2f', minValue=-1, maxValue=5, unit='bar',
      events={THRESHOLD: 0.001},
      qualities={WARNING: {ABSOLUTE: {BELOW: 2.9,
                                      ABOVE: 3.05}}})
@@ -137,7 +137,7 @@ Attr('SF6_P1',
 Attr('SF6_P2',
      PyTango.DevFloat, 52,  # RO
      l='SF6 pressure 2',
-     format='%4.2f', min=-1, max=5, unit='bar',
+     format='%4.2f', minValue=-1, maxValue=5, unit='bar',
      events={THRESHOLD: 0.001},
      qualities={WARNING: {ABSOLUTE: {BELOW: 2.9,
                                      ABOVE: 3.05}}})
@@ -146,7 +146,7 @@ Attr('SF6_P2',
 Attr('PHS2_Phase',
      PyTango.DevFloat, 56,  # RO
      l='Phase shifter 2 phase monitor',
-     format='%4.1f', min=0, max=380, unit='⁰',
+     format='%4.1f', minValue=0, maxValue=380, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R060 @ATT2_PM ---
@@ -154,7 +154,7 @@ Attr('ATT2_P',
      PyTango.DevFloat, 60,  # RO
      l='Attenuator 2 monitor',
      d='Attenuator 2 monitor attenuation (PB2)',
-     format='%4.1f', min=-10, max=10, unit='dB',
+     format='%4.1f', minValue=-10, maxValue=10, unit='dB',
      events={THRESHOLD: 0.01})
 
 # R064 @AI_15: free ---
@@ -537,7 +537,7 @@ AttrLogic('att2_ready',
 AttrRampeable('GUN_Filament_V_setpoint',
               PyTango.DevFloat, 84, 0,  # RW
               l='e-gun filament voltage setpoint',
-              format='%4.1f', min=0, max=10, unit='V',
+              format='%4.1f', minValue=0, maxValue=10, unit='V',
               events={THRESHOLD: 0.01},
               qualities={WARNING: {ABSOLUTE: {BELOW: 0}}},
               rampsDescriptor={DESCENDING: {STEP: 1,  # V
@@ -555,7 +555,7 @@ AttrRampeable('GUN_Filament_V_setpoint',
 Attr('GUN_Kathode_V_setpoint',
      PyTango.DevFloat, 88, 4,  # RW
      l='e-gun cathode voltage setpoint',
-     format='%4.1f', min=0, max=50, unit='V',
+     format='%4.1f', minValue=0, maxValue=50, unit='V',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0}}})
 
@@ -567,7 +567,7 @@ AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
               PyTango.DevFloat, 100, 16,  # RW
               l='HV PS Voltage Setpoint',
               d='high voltage PS voltage',
-              format='%4.1f', min=-90, max=0, unit='kV',
+              format='%4.1f', minValue=-90, maxValue=0, unit='kV',
               events={THRESHOLD: 0.01},
               rampsDescriptor={DESCENDING: {STEP: 1,  # kV
                                             STEPTIME: 1,  # s
@@ -588,22 +588,22 @@ AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
 Attr('TB_GPA',
      PyTango.DevFloat, 104, 20,  # RW
      l='timer gun pulses attenuation',
-     format='%4.1f', min=-40, max=0, unit='dB',
+     format='%4.1f', minValue=-40, maxValue=0, unit='dB',
      events={THRESHOLD: 0.005}, record=True)
 
 # R108 W024 @PHS1_PS ---
 Attr('PHS1_Phase_setpoint',
      PyTango.DevFloat, 108, 24,  # RW
      l='Phase shifter 1 phase setpoint',
-     format='%3.0f', min=0, max=160, unit='⁰',
+     format='%3.0f', minValue=0, maxValue=160, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R112 W028 @A0_OP ---
 Attr('A0_OP',
      PyTango.DevFloat, 112, 28,  # RW
      l='A0 output power',
-     format='%3.0f', min=75, max=760, unit='W',
-     # specs say max=840, user explicitly reduces it
+     format='%3.0f', minValue=75, maxValue=760, unit='W',
+     # specs say maxValue=840, user explicitly reduces it
      events={THRESHOLD: 0.01})
 
 # R116 W032 @TPS0_P ---
@@ -619,7 +619,7 @@ for idx, x in enumerate((0, 1, 2, 'X')):
          PyTango.DevFloat,
          116+4*idx, 32+4*idx,  # RW
          l='time phase shifter %s phase' % (x),
-         format=format, min=0, max=380, unit='⁰',
+         format=format, minValue=0, maxValue=380, unit='⁰',
          events={THRESHOLD: 0.01})
 
 # R132 W048 @AO_12 ---
@@ -629,62 +629,64 @@ for idx, x in enumerate((0, 1, 2, 'X')):
 Attr('PHS2_Phase_setpoint',
      PyTango.DevFloat, 140, 56,  # RW
      l='Phase shifter 2 phase setpoint',
-     format='%3.0f', min=0, max=380, unit='⁰', events={THRESHOLD: 0.01})
+     format='%3.0f', minValue=0, maxValue=380, unit='⁰',
+     events={THRESHOLD: 0.01})
 
 # R144 W060 @ATT2_PS ---
 Attr('ATT2_P_setpoint',
      PyTango.DevFloat, 144, 60,  # RW
      l='Attenuator 2',
      d='Attenuator 2 attenuation (PB2)',
-     format='%3.1f', min=-10, max=0, unit='dB', events={THRESHOLD: 0.01})
+     format='%3.1f', minValue=-10, maxValue=0, unit='dB',
+     events={THRESHOLD: 0.01})
 
 # R148 W064 @TB_KAD1 ---
 Attr('TB_KA1_Delay',
      PyTango.DevShort, 148, 64,  # RW
      l='timer klystron amplifier 1 delay',
-     min=1, max=56, unit='ns', events={}, format="%2d")
+     minValue=1, maxValue=56, unit='ns', events={}, format="%2d")
 
 # R150 W066 @TB_KAD2 ---
 Attr('TB_KA2_Delay',
      PyTango.DevShort, 150, 66,  # RW
      l='timer klystron amplifier 2 delay',
      d='timer klystron amplifier 2 delay (step 32 ns)',
-     min=544, max=4096, unit='ns', events={}, format="%4d")
+     minValue=544, maxValue=4096, unit='ns', events={}, format="%4d")
 
 # R152 W068 @TB_RF2D ---
 Attr('TB_RF2_Delay',
      PyTango.DevShort, 152, 68,  # RW
      l='timer RF2 delay',
      d='timer RF2 delay (step 8 ns)',
-     min=512, max=1920, unit='ns', events={}, format="%4d")
+     minValue=512, maxValue=1920, unit='ns', events={}, format="%4d")
 
 # R154 W070 @TB_EGD ---
 Attr('TB_Gun_Delay',
      PyTango.DevShort, 154, 70,  # RW
      l='timer e-gun delay',
      d='timer e-gun delay (step 32 ns)',
-     min=32, max=4096, unit='ns', events={}, format="%4d")
+     minValue=32, maxValue=4096, unit='ns', events={}, format="%4d")
 
 # R156 W072 @TB_GPI ---
 Attr('TB_GPI',
      PyTango.DevShort, 156, 72,  # RW
      l='timer e-gun pulse',
      d='timer e-gun pulse interval (SBM) / width (MBM)',
-     min=6, max=1054, unit='ns', events={}, format="%4d")
+     minValue=6, maxValue=1054, unit='ns', events={}, format="%4d")
 
 # R158 W074 @TB_GPN ---
 Attr('TB_GPN',
      PyTango.DevShort, 158, 74,  # RW
      l='number of pulses',
      d='number of pulses in SBM (not use in MBM)',
-     min=1, max=16, events={}, format="%2d")
+     minValue=1, maxValue=16, events={}, format="%2d")
 
 # R160 W076 @TB_GPM ---
 Attr('TB_GPM',
      PyTango.DevShort, 160, 76,  # RW
      l='timer gated pulse mode',
      d='timer gated pulse mode: 0:beam on, 1:mix, 2:beam off',
-     min=0, max=2,
+     minValue=0, maxValue=2,
      meanings={0: "beam on",
                1: "mix",
                2: "beam off"},
