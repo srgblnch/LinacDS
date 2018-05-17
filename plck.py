@@ -17,42 +17,12 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import plchelp  # there is the help about how to follow this builder
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
-
-'''Schema of the attributes:
-   Attr(name,             :Name of the dynamic attribute
-        T,                :Tango type of the attribute
-        read_addr=None,   :PLC register address for read operation
-        write_addr=None,  :PLC register address for write operation
-        isa=None,         :??TODO
-        **kwargs          :
-
-   AttrBit(name,            :Name of the dynamic attribute
-           read_addr=None,  :PLC register address for read operation
-           bitno=0,         :Bit of the read word representing this boolean
-           write_addr=None, :PLC register address for write operation
-           write_bit=None,  :Bit to the write in the word for this boolean
-           **kwargs         :
-
-   kwargs: l=None,       :label of the attribute
-           d=None,       :description of the attribute
-           minValue=None,     :minimum value allowed
-           maxValue=None,     :maximum value allowed
-           unit=None,    :attribute unit
-           format=None   :In the number case (int/float) its precision
-           events={}     :dictionary where its existence will set up attr
-                          events and its content will configure their behaviour
-           qualities={}  :dictionary where the key represents the available
-                          qualities and the items the conditions to set them.
-                          Important: alarm > warning > changing
-           formula={}    :dictionary with keys 'read' and 'write' were they
-                          contain an string that could be introduced in
-                          an eval() call with the keyword VALUE as the read or
-                          write transformation.
-'''
 
 # def jin(*args):
 #     return john(args)
