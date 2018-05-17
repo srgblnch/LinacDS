@@ -135,6 +135,8 @@ class LinacAttr(object):
             self._noneValue = float('NaN')
         elif self._type in [('h', 2), ('B', 1)]:
             self._noneValue = 0
+        elif self._type == DevBoolean:
+            self._noneValue = None
         else:
             self._noneValue = '0'
 
@@ -230,8 +232,11 @@ class LinacAttr(object):
     ##########################
     # Tango attribute area ---
     def isAllowed(self):
-        return self._noneValue
-        # FIXME: this doesn't have much sense, or at least explain
+        if self.device is None:
+            return True
+        if self.device.get_state in [DevState.FAULT]:
+            return False
+        return True
 
     def isReadAllowed(self):
         return self.isAllowed()
