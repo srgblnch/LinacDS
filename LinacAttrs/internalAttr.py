@@ -28,15 +28,6 @@ from .LinacFeatures import Logic
 
 class InternalAttr(LinacAttr):
 
-    _logic = None
-    _operator = None
-    _inverted = None
-
-    _mean = None
-    _std = None
-
-    _triggered = None
-
     _readSet = None
     _writeSet = None
 
