@@ -102,3 +102,9 @@ class InternalAttr(LinacAttr):
     def recoverDynMemorized(self, mainName, suffix):
         if self._memorised:
             self._memorised.recover(suffix)
+
+    #############################################################
+    # Dependencies between attributes and changes propagation ---
+    def evaluateAttrValue(self):
+        if self._logicObj is not None:
+            self._logicObj._evalLogical()

@@ -35,6 +35,7 @@ import sys
 from copy import copy
 from ctypes import c_uint16, c_uint8, c_float, c_int16
 import fcntl
+import json  # FIXME: temporal to dump dictionary on the relations collection
 from numpy import uint16, uint8, float32, int16
 import pprint
 import Queue
@@ -101,6 +102,7 @@ class AttrList(object):
         self.impl = device
         self.alist = list()
         self.locals_ = {}
+        self._relations = {}
 
         self.globals_ = globals()
         self.globals_.update({
@@ -272,6 +274,13 @@ class AttrList(object):
                                switch=switch, label=l, description=d,
                                minValue=minValue, maxValue=maxValue,
                                *args, **kwargs)
+        # TODO: they are not necessary right now
+        #if readback is not None:
+        #    self.append2relations(name, READBACK, readback)
+        #if setpoint is not None:
+        #    self.append2relations(name, SETPOINT, setpoint)
+        #if switch is not None:
+        #    self.append2relations(name, SWITCH, switch)
         self._prepareEvents(name, events)
         if IamChecker is not None:
             try:
@@ -437,6 +446,8 @@ class AttrList(object):
         self.impl.info_stream("%s logic: %s" % (name, logic))
         self._prepareInternalAttribute(name, PyTango.DevBoolean, logic=logic,
                                        operator=operator, inverted=inverted)
+        for key in logic:
+            self.append2relations(name, LOGIC, key)
         self._prepareEvents(name, events)
         return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun, l, **kwargs)
 
@@ -517,6 +528,7 @@ class AttrList(object):
         # Next is specific for rampeable attributes
         rampAttributes = []
         # FIXME: temporally disabled all the ramps
+        # TODO: review if the callback functionality can be usefull here
 #         self.impl._plcAttrs[name][RAMP] = rampsDescriptor
 #         self.impl._plcAttrs[name][RAMPDEST] = None
 #         for rampDirection in rampsDescriptor.keys():
@@ -686,6 +698,26 @@ class AttrList(object):
             self.impl.error_stream("AttrList.parse_file Exception: %s\n%s"
                                    % (e, traceback.format_exc()))
         self.impl.debug_stream('Parse attrFile done.')
+        # Here, I can be sure that all the objects are build,
+        # then any none existing object reports a configuration
+        # mistake in the parsed file.
+        for origName in self._relations:
+            try:
+                origObj = self.impl._getAttrStruct(origName)
+                for tag in self._relations[origName]:
+                    for destName in self._relations[origName][tag]:
+                        try:
+                            destObj = self.impl._getAttrStruct(destName)
+                            origObj.addReportTo(destObj)
+                        except Exception as e:
+                            self.impl.error_stream("Exception managing the "
+                                                   "relation between %s and "
+                                                   "%s: %s" % (origName,
+                                                               destName, e))
+            except Exception as e:
+                self.impl.error_stream("Exception managing %s relations: %s"
+                                       % (origName, e))
+                traceback.print_exc()
 
     def parse(self, text):
         exec text in self.globals_, self.locals_
@@ -817,6 +849,8 @@ class AttrList(object):
             meaningAttrName = attrName.replace('_ST', '_Status')
         else:
             meaningAttrName = "%s_Status" % (attrName)
+        # TODO: meaningAttr can be stored as internal attr
+        #       and use the callbacks instead of review twice the same register
         self.impl._plcAttrs[meaningAttrName] = attrStruct._meaningsObj
         self.impl._plcAttrs[meaningAttrName].meanings = meanings
         self.impl._plcAttrs[meaningAttrName].alias = meaningAttrName
@@ -873,6 +907,7 @@ class AttrList(object):
 
     def _buildAutoStopAttributes(self, baseName, baseLabel, attrType,
                                  autoStopDesc):
+        # TODO: review if the callback between attributes can be usefull here
         attrs = []
         autostopperName = "%s_%s" % (baseName, AUTOSTOP)
         autostopperLabel = "%s %s" % (baseLabel, AUTOSTOP)
@@ -967,6 +1002,12 @@ class AttrList(object):
                              wfun=conditioner.write_attr,
                              l=conditionLabel)
 
+    def append2relations(self, origin, tag, dependency):
+        if dependency not in self._relations:
+            self._relations[dependency] = {}
+        if tag not in self._relations[dependency]:
+            self._relations[dependency][tag] = []
+        self._relations[dependency][tag].append(origin)
 
 def get_ip(iface='eth0'):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

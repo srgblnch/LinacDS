@@ -23,7 +23,7 @@ __license__ = "GPLv3+"
 
 
 import functools
-from LinacFeatures import Events, Memorised
+from LinacFeatures import Events, Memorised, ChangeReporter
 from LinacFeatures import CircularBuffer, HistoryBuffer
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
 from PyTango import DevBoolean, DevString
@@ -105,6 +105,8 @@ class LinacAttr(object):
 
     _memorised = None
     _memorisedLst = None
+
+    _changeReporter = None
 
     def __init__(self, name, valueType, device=None, memorized=False,
                  events=None, minValue=None, maxValue=None, *args, **kwargs):
@@ -544,6 +546,11 @@ class LinacAttr(object):
             self._meaningsObj.event_t = \
                 self._eventsObj.fireEvent(name, value, timestamp,
                                           quality)
+        # FIXME: migrate the meaning feature to the callback system will
+        #        simplify this method (because the meaning attribute will be
+        #        reported and will be itself the one that emits the event).
+        if self._changeReporter is not None:
+            self._changeReporter.report()
 
     @property
     def lastEventQuality(self):
@@ -610,6 +617,17 @@ class LinacAttr(object):
         if self.isMemorised():
             return self._memorised.recover(suffix)
         return False
+
+    #############################################################
+    # Dependencies between attributes and changes propagation ---
+    def addReportTo(self, obj):
+        if self._changeReporter is None:
+            self._changeReporter = ChangeReporter(self)
+        self._changeReporter.addDestination(obj)
+
+    @property
+    def reporter(self):
+        return self._changeReporter
 
     ############################
     # First descending level ---

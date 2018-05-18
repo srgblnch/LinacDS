@@ -88,7 +88,7 @@ class PLCAttr(LinacAttr):
 
     @property
     def description(self):
-        return self._description
+        return "%r" % self._description
 
     #@description.setter
     #def description(self, value):

@@ -17,6 +17,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from feature import _LinacFeature
+from time import time
+import traceback
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -59,3 +61,64 @@ class Logic(_LinacFeature):
     #@property
     #def inverted(self):
     #    return self._inverted
+
+    def _evalLogical(self):
+        values = []
+        for key in self._logic.keys():
+            try:
+                if type(self._logic[key]) == dict:
+                    values.append(self.__evalDct(key, self._logic[key]))
+                elif type(self._logic[key]) == list:
+                    values.append(self.__evalLst(key, self._logic[key]))
+                else:
+                    self.warn("step less to evaluate %s for key %s unmanaged "
+                              "content type" % (self.owner, key))
+            except Exception as e:
+                self.error("cannot eval logic attr %s for key %s: %s"
+                           % (self.owner, key, e))
+                traceback.print_exc()
+        if self._operator == 'or':
+            result = any(values)
+        elif self._operator == 'and':
+            result = all(values)
+        self.owner.read_t = time()
+        if self._inverted:
+            result = not result
+            self.debug("For %s: values %s (%s) (inverted) answer %s"
+                      % (self.owner, values, self._operator, result))
+        else:
+            self.debug("For %s: values %s (%s) answer %s"
+                      % (self.owner, values, self._operator, result))
+        if result != self.owner.read_value:
+            if self.owner.read_value is not None:
+                self.info("value change")
+                # FIXME: when change propagation done,
+                #        this message can be removed
+            self.owner.read_value = result
+            self.owner.launchEvents()
+            
+
+    def __evalDct(self, name, dct):
+        """
+        """
+        self.debug("%s dict2eval: %s" % (name, dct))
+        for key in dct.keys():
+            if key == QUALITIES:
+                return self.__evaluateQuality(name, dct[key])
+
+    def __evalLst(self, name, lst):
+        """
+        """
+        self.debug("%s list2eval: %r" % (name, lst))
+        value = self.owner.read_value
+        self.debug("%s value: %r" % (name, value))
+        return value in lst
+
+    def __evalQuality(self, name, lst):
+        """
+        """
+        attrStruct = self.owner.device._getAttrStruct(name)
+        if LASTEVENTQUALITY in attrStruct:
+            quality = attrStruct[LASTEVENTQUALITY]
+            return quality in lst
+        return False
