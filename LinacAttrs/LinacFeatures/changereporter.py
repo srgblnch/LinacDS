@@ -55,5 +55,4 @@ class ChangeReporter(_LinacFeature):
                            % (self.owner, obj.name, e))
                 traceback.print_exc()
             else:
-                # FIXME: when done, this should be a debug message
-                self.info("%s change reported to %s" % (self.owner, obj.name))
+                self.debug("%s change reported to %s" % (self.owner, obj.name))
