@@ -22,6 +22,7 @@ __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
+from .abstract import _AbstractAttrLog, _AbstractAttrDict
 import functools
 from LinacFeatures import Events, Memorised, ChangeReporter
 from LinacFeatures import CircularBuffer, HistoryBuffer
@@ -81,7 +82,7 @@ TYPE_MAP = {DevUChar: ('B', 1),
             }
 
 
-class LinacAttr(object):
+class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
 
     _readValue = None
     _writeValue = None
@@ -89,7 +90,6 @@ class LinacAttr(object):
     _maxValue = None
 
     _device = None
-    _keysLst = None
 
     _qualities = None
 
@@ -317,146 +317,6 @@ class LinacAttr(object):
                 elif len(self._memorisedLst) == 0:
                     self._memorised.store(readValue)
             self._setAttrValue(attr, readValue)
-
-    ######################
-    # Tango log system ---
-    def error(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.device:
-            self.device.error_stream(msg)
-        else:
-            print("ERROR: %s" % (msg))
-
-    def warning(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.device:
-            self.device.warn_stream(msg)
-        else:
-            print("WARN: %s" % (msg))
-
-    def info(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.device:
-            self.device.info_stream(msg)
-        else:
-            print("INFO: %s" % (msg))
-
-    def debug(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.device:
-            self.device.debug_stream(msg)
-        else:
-            print("DEBUG: %s" % (msg))
-
-    #####################################
-    # Dictionary like functionalities ---
-    def __len__(self):
-        return len(self.keys())
-
-    def __getitem__(self, name):
-        try:
-            if name in self.keys():
-                for kls in self.__class__.__mro__:
-                    if name in kls.__dict__.keys():
-                        return kls.__dict__[name].fget(self)
-            else:
-                # self.error("%s not in keys: %s" % (name, self.keys()))
-                return
-        except Exception as e:
-            self.error("Cannot get item for the key %s due to: %s" % (name, e))
-            traceback.print_exc()
-            return None
-
-    def __setitem__(self, name, value):
-        try:
-            if name in self.keys():
-                for kls in self.__class__.__mro__:
-                    if name in kls.__dict__.keys():
-                        if kls.__dict__[name].fset is not None:
-                            kls.__dict__[name].fset(self, value)
-                        else:
-                            self.warning("%s NO setter" % name)
-        except Exception as e:
-            self.error("Cannot set item %s to key %s due to: %s"
-                       % (value, name, e))
-
-    def __delitem__(self, name):
-        self.error("Not allowed delitem operation")
-
-    def has_key(self, key):
-        return key in self.keys()
-
-    def _buildKeysLst(self):
-        # FIXME: should this list be made only once?
-        keys = []
-        discarted = []
-        for kls in self.__class__.__mro__:
-            klskeys = []
-            klsdiscarted = []
-            for key, value in kls.__dict__.iteritems():
-                if isinstance(value, property) and key not in keys:
-                    klskeys += [key]
-                else:
-                    klsdiscarted += [key]
-            # self.info("kls: %s" % (kls))
-            # self.info("\t* kls keys: %s" % (klskeys))
-            # self.info("\t* kls discarted: %s" % (klsdiscarted))
-            keys += klskeys
-            discarted += klsdiscarted
-        # self.info("* keys: %s" % (keys))
-        # self.info("* discarted: %s" % (discarted))
-        return keys
-
-    def keys(self):
-        if self._keysLst is None:
-            self._keysLst = self._buildKeysLst()
-        return self._keysLst[:]
-
-    def values(self):
-        lst = []
-        for key in self.keys():
-            lst.append(self[key])
-        return lst
-
-    def items(self):
-        lst = []
-        for key in self.keys():
-            lst.append((key, self[key]))
-        return lst
-
-    def __iter__(self):
-        return self.iterkeys()
-
-    def iterkeys(self):
-        for name in self.keys():
-            yield name
-
-    def itervalues(self):
-        for name in self.keys():
-            yield self[name]
-
-    def iteritems(self):
-        for name in self.keys():
-            yield name, self[name]
-
-    def __reversed__(self):
-        keys = self.keys()
-        keys.reverse()
-        for name in keys:
-            yield name
-
-    def __missing__(self, key):
-        return key not in self.keys()
-
-    def __contains__(self, key):
-        return key in self.keys() and self[key] is not None
-
-    def pop(self, key):
-        self[key] = None
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
