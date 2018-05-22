@@ -34,10 +34,13 @@ class ChangeReporter(_LinacFeature):
         self.debug("becomes a reporter")
 
     def __str__(self):
-        return "%s" % (self._str_)
+        names = []
+        for each in self._report_to:
+            names.append(each.name)
+        return "%s (to %s)" % (self._str_, names)
 
     def __repr__(self):
-        return "%s (to %s)" % (self.__str__(), self._report_to)
+        return self.__str__()
 
     def addDestination(self, obj):
         self._report_to.append(obj)
