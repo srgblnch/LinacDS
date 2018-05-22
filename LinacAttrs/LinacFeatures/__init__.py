@@ -15,15 +15,14 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-__author__ = "Lothar Krause and Sergi Blanch-Torne"
-__maintainer__ = "Sergi Blanch-Torne"
-__copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
-__license__ = "GPLv3+"
-
-
 from .buffers import CircularBuffer, HistoryBuffer
 from .changereporter import ChangeReporter
 from .events import Events, EventCtr
 from .feature import _LinacFeature
 from .logic import Logic
 from .memorised import Memorised
+
+__author__ = "Lothar Krause and Sergi Blanch-Torne"
+__maintainer__ = "Sergi Blanch-Torne"
+__copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
+__license__ = "GPLv3+"

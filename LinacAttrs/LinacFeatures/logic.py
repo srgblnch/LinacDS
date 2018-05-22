@@ -16,7 +16,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from ..constants import LASTEVENTQUALITY, QUALITIES
-from feature import _LinacFeature
+from .feature import _LinacFeature
 from time import time
 import traceback
 
@@ -37,9 +37,9 @@ class Logic(_LinacFeature):
         super(Logic, self).__init__(owner=owner, *args, **kwargs)
         self._str_ = "%s:Logic" % (self.owner.name)
         self._logic = logic
-        self._operator = operator # FIXME: check if it is a valid operator
+        self._operator = operator  # FIXME: check if it is a valid operator
         self._inverted = inverted
-        # TODO: include the logic evaluation 
+        # TODO: include the logic evaluation
         #       - triggered by callbacks
         #       - with the necessary event emission
 
@@ -50,17 +50,17 @@ class Logic(_LinacFeature):
     def __repr__(self):
         return self.__str__()
 
-    #@property
-    #def logic(self):
-    #    return self._logic
+    # @property
+    # def logic(self):
+    #     return self._logic
 
-    #@property
-    #def operator(self):
-    #    return self._operator
+    # @property
+    # def operator(self):
+    #     return self._operator
 
-    #@property
-    #def inverted(self):
-    #    return self._inverted
+    # @property
+    # def inverted(self):
+    #     return self._inverted
 
     def _evalLogical(self):
         values = []
@@ -85,10 +85,10 @@ class Logic(_LinacFeature):
         if self._inverted:
             result = not result
             self.debug("For %s: values %s (%s) (inverted) answer %s"
-                      % (self.owner, values, self._operator, result))
+                       % (self.owner, values, self._operator, result))
         else:
             self.debug("For %s: values %s (%s) answer %s"
-                      % (self.owner, values, self._operator, result))
+                       % (self.owner, values, self._operator, result))
         if result != self.owner.read_value:
             if self.owner.read_value is not None:
                 self.info("value change")
@@ -96,7 +96,6 @@ class Logic(_LinacFeature):
                 #        this message can be removed
             self.owner.read_value = result
             self.owner.launchEvents()
-            
 
     def __evalDct(self, name, dct):
         """

@@ -20,6 +20,7 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
+
 class _AbstractAttrLog(object):
     def __init__(self, *args, **kwargs):
         super(_AbstractAttrLog, self).__init__(*args, **kwargs)
@@ -58,6 +59,7 @@ class _AbstractAttrLog(object):
             self.device.debug_stream(msg)
         else:
             print("DEBUG: %s" % (msg))
+
 
 class _AbstractAttrDict(object):
 

@@ -15,17 +15,16 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-__author__ = "Lothar Krause and Sergi Blanch-Torne"
-__maintainer__ = "Sergi Blanch-Torne"
-__copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
-__license__ = "GPLv3+"
-
-
 from .linacAttr import LinacAttr
 from .LinacFeatures import CircularBuffer
 from .LinacFeatures import _LinacFeature
 from PyTango import AttrQuality, DevBoolean, DevFloat
 from time import ctime
+
+__author__ = "Lothar Krause and Sergi Blanch-Torne"
+__maintainer__ = "Sergi Blanch-Torne"
+__copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
+__license__ = "GPLv3+"
 
 
 class AutostopAttr(LinacAttr):

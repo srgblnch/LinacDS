@@ -15,17 +15,17 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+# Circular buffer to store last read values and based on it average define ---
+# the attribute quality
+import numpy as np
+from types import MethodType
+from .feature import _LinacFeature
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-
-# Circular buffer to store last read values and based on it average define ---
-# the attribute quality
-import numpy as np
-from types import MethodType
-from feature import _LinacFeature
 
 DEFAULT_SIZE = 10
 

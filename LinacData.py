@@ -121,7 +121,7 @@ class AttrList(object):
             # 'john' : john,
         })
 
-    def add_Attr(self, name, T, rfun=None, wfun=None, l=None, d=None,
+    def add_Attr(self, name, T, rfun=None, wfun=None, label=None, desc=None,
                  minValue=None, maxValue=None, unit=None, format=None,
                  memorized=False,
                  record=None, xdim=0):
@@ -151,10 +151,10 @@ class AttrList(object):
             attrStruct = self.impl._getAttrStruct(name)
             attrStruct['format'] = str(format)
             aprop.set_format(latin1(format))
-        if d is not None:
-            aprop.set_description(latin1(d))
-        if l is not None:
-            aprop.set_label(latin1(l))
+        if desc is not None:
+            aprop.set_description(latin1(desc))
+        if label is not None:
+            aprop.set_label(latin1(label))
         if memorized:
             attr.set_memorized()
             attr.set_memorized_init(True)
@@ -192,7 +192,7 @@ class AttrList(object):
 
     def add_AttrAddr(self, name, T, read_addr=None, write_addr=None,
                      meanings=None, qualities=None, events=None,
-                     formula=None, l=None, d=None,
+                     formula=None, label=None, desc=None,
                      readback=None, setpoint=None, switch=None,
                      IamChecker=None, minValue=None, maxValue=None,
                      *args, **kwargs):
@@ -270,7 +270,7 @@ class AttrList(object):
         self._prepareAttribute(name, T, readAddr=read_addr,
                                writeAddr=write_addr, formula=formula,
                                readback=readback, setpoint=setpoint,
-                               switch=switch, label=l, description=d,
+                               switch=switch, label=label, description=desc,
                                minValue=minValue, maxValue=maxValue,
                                *args, **kwargs)
         # TODO: they are not necessary right now
@@ -293,7 +293,8 @@ class AttrList(object):
                                                 **kwargs)
         elif qualities is not None:
             return self._prepareAttrWithQualities(name, tango_T, qualities,
-                                                  rfun, wfun, l=l, **kwargs)
+                                                  rfun, wfun, label=label,
+                                                  **kwargs)
         else:
             return self.add_Attr(name, tango_T, rfun, wfun, minValue=minValue,
                                  maxValue=maxValue, **kwargs)
@@ -303,7 +304,7 @@ class AttrList(object):
                         qualities=None, events=None, isRst=False,
                         activeRst_t=None, formula=None, switchDescriptor=None,
                         readback=None, setpoint=None, record=None,
-                        l=None, d=None, minValue=None, maxValue=None,
+                        label=None, desc=None, minValue=None, maxValue=None,
                         *args, **kwargs):
         '''This method is a builder of a boolean dynamic attribute, even for RO
            than for RW. There are many optional parameters.
@@ -378,8 +379,9 @@ class AttrList(object):
                                readBit=read_bit, writeAddr=write_addr,
                                writeBit=write_bit, formula=formula,
                                readback=readback, setpoint=setpoint, 
-                               label=l, description=d, minValue=minValue,
-                               maxValue=maxValue, *args, **kwargs)
+                               label=label, description=desc,
+                               minValue=minValue, maxValue=maxValue,
+                               *args, **kwargs)
         if isRst:
             self.impl._plcAttrs[name][ISRESET] = True
             self.impl._plcAttrs[name][RESETTIME] = None
@@ -434,7 +436,7 @@ class AttrList(object):
         newInternalAttr = self.add_Attr(name, PyTango.DevBoolean, rfun, wfun,
                                         **kwargs)
 
-    def add_AttrLogic(self, name, logic, l, d, events=None, operator='and',
+    def add_AttrLogic(self, name, logic, label, desc, events=None, operator='and',
                       inverted=False, **kwargs):
         '''Internal type of attribute made to evaluate a logical formula with
            other attributes owned by the device with a boolean result.
@@ -448,11 +450,11 @@ class AttrList(object):
         for key in logic:
             self.append2relations(name, LOGIC, key)
         self._prepareEvents(name, events)
-        return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun, l, **kwargs)
+        return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun, label, **kwargs)
 
-    def add_AttrRampeable(self, name, T, read_addr, write_addr, l, unit,
+    def add_AttrRampeable(self, name, T, read_addr, write_addr, label, unit,
                           rampsDescriptor, events=None, qualities=None,
-                          readback=None, switch=None, d=None, minValue=None,
+                          readback=None, switch=None, desc=None, minValue=None,
                           maxValue=None, *args, **kwargs):
         '''Given 2 plc memory positions (for read and write), with this method
            build a RW attribute that looks like the other RWs but it includes
@@ -511,16 +513,17 @@ class AttrList(object):
         tango_T = self.__mapTypes(T)
         self._prepareAttribute(name, T, readAddr=read_addr,
                                writeAddr=write_addr, readback=readback,
-                               switch=switch, label=l, description=d, 
+                               switch=switch, label=label, description=desc,
                                minValue=minValue, maxValue=maxValue,
                                *args, **kwargs)
         self._prepareEvents(name, events)
         if qualities is not None:
             rampeableAttr = self._prepareAttrWithQualities(name, tango_T,
                                                            qualities, rfun,
-                                                           wfun, l=l, **kwargs)
+                                                           wfun, label=label,
+                                                           **kwargs)
         else:
-            rampeableAttr = self.add_Attr(name, tango_T, rfun, wfun, l,
+            rampeableAttr = self.add_Attr(name, tango_T, rfun, wfun, label,
                                           minValue=minValue, maxValue=maxValue,
                                           **kwargs)
         # until here, it's not different than another attribute
@@ -571,7 +574,7 @@ class AttrList(object):
             self.impl.read_db.setChecker(self.impl.lock_ST,
                                          ['\x00', '\x01', '\x02'])
         LockAttrs = self.add_AttrAddr('Lock_ST', PyTango.DevUChar, read_addr,
-                                      l=desc, d=desc+john(COMM_STATUS),
+                                      label=desc, desc=desc+john(COMM_STATUS),
                                       meanings=COMM_STATUS,
                                       qualities=COMM_QUALITIES, events={})
         # This UChar is to know what to read from the plc, the AttrAddr,
@@ -583,7 +586,7 @@ class AttrList(object):
     def add_AttrLocking(self, read_addr, read_bit, write_addr, write_bit):
         desc = 'True when attempting to obtain write lock'
         new_attr = self.add_AttrAddrBit('Locking', read_addr, read_bit,
-                                        write_addr, write_bit, d=desc,
+                                        write_addr, write_bit, desc=desc,
                                         events={})
         locking_attr = self.impl.get_device_attr().get_attr_by_name('Locking')
         self.impl.Locking = locking_attr
@@ -606,8 +609,8 @@ class AttrList(object):
     def add_AttrHeartBeat(self, read_addr, read_bit=0):
         self.impl.heartbeat_addr = read_addr
         desc = 'cadence bit going from True to False when PLC is okay'
-        attr = self.add_AttrAddrBit('HeartBeat', read_addr, read_bit, d=desc,
-                                    events={})
+        attr = self.add_AttrAddrBit('HeartBeat', read_addr, read_bit,
+                                    desc=desc, events={})
         self.impl.set_change_event('HeartBeat', True, False)
         return attr
 
@@ -657,7 +660,7 @@ class AttrList(object):
                     else:
                         wfun = None
                     attr = self.add_Attr(name+'_'+suffix, attrType,
-                                         l="%s %s" % (label, suffix),
+                                         label="%s %s" % (label, suffix),
                                          rfun=rfun, wfun=wfun, **kwargs)
                     # FIXME: setup events in the self.add_Attr(...)
                     self.impl.set_change_event(name+'_'+suffix, True, False)
@@ -874,8 +877,8 @@ class AttrList(object):
         return toReturn
 
     def _prepareAttrWithQualities(self, attrName, attrType, qualities,
-                                  rfun, wfun, l=None, unit=None, autoStop=None,
-                                  **kwargs):
+                                  rfun, wfun, label=None, unit=None,
+                                  autoStop=None, **kwargs):
         '''The attributes with qualities definition, but without meanings for
            their possible values, are specifically build to have a
            CircularBuffer as the read element. That is made to collect a small
@@ -894,12 +897,12 @@ class AttrList(object):
         self.impl._plcAttrs[attrName][READVALUE] = \
             CircularBuffer([], owner=self.impl._plcAttrs[attrName])
         self.impl._plcAttrs[attrName][QUALITIES] = qualities
-        toReturn = (self.add_Attr(attrName, attrType, rfun, wfun, l=l,
+        toReturn = (self.add_Attr(attrName, attrType, rfun, wfun, label=label,
                                   unit=unit, **kwargs),)
         if autoStop is not None:
             # FIXME: shall it be in the AttrWithQualities? Or more generic?
-            toReturn += self._buildAutoStopAttributes(attrName, l, attrType,
-                                                      autoStop)
+            toReturn += self._buildAutoStopAttributes(attrName, label,
+                                                      attrType, autoStop)
         return toReturn
 
     # # Builders for subattributes ---
@@ -930,7 +933,7 @@ class AttrList(object):
         self.impl._internalAttrs[autostopperName] = autostopper
         spectrumAttr = self.add_Attr(autostopperName, PyTango.DevDouble,
                                      rfun=autostopper.read_attr, xdim=1000,
-                                     l=autostopperLabel)
+                                     label=autostopperLabel)
         attrs.append(spectrumAttr)
         enableAttr = self._buildAutoStoperAttr(autostopperName,
                                                autostopperLabel, ENABLE,
@@ -986,7 +989,7 @@ class AttrList(object):
         
         return self.add_Attr(attrName, dataType,
                              rfun=rfun, wfun=wfun,
-                             l=attrLabel)
+                             label=attrLabel)
 
     def _buildAutoStopConditionAttr(self, condition, baseName, baseLabel,
                                     autostopper):
@@ -999,7 +1002,7 @@ class AttrList(object):
         return self.add_Attr(conditionName, PyTango.DevDouble,
                              rfun=conditioner.read_attr,
                              wfun=conditioner.write_attr,
-                             l=conditionLabel)
+                             label=conditionLabel)
 
     def append2relations(self, origin, tag, dependency):
         if dependency not in self._relations:

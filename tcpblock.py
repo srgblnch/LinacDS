@@ -15,11 +15,6 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-__author__ = "Lothar Krause and Sergi Blanch-Torne"
-__maintainer__ = "Sergi Blanch-Torne"
-__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
-__license__ = "GPLv3+"
-
 from ctypes import *
 import _ctypes
 import socket
@@ -31,6 +26,12 @@ import select
 from copy import copy
 import traceback
 import threading
+
+__author__ = "Lothar Krause and Sergi Blanch-Torne"
+__maintainer__ = "Sergi Blanch-Torne"
+__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
+__license__ = "GPLv3+"
+
 
 REMOTE = '10.0.7.1'
 
@@ -273,6 +274,7 @@ class Datablock(object):
             self.sock.sendall(write_str)
             self.debug_stream("rewrite send: %s" % (repr(write_str)))
 
+
 # reuse existing connections if possible
 CONN = {
 }
@@ -318,6 +320,7 @@ def close_datablock(db, warn=None):
     except Exception as exc:
         if warn:
             warn(exc)
+
 
 if __name__ == '__main__':
         main()

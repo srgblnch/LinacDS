@@ -15,14 +15,13 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .linacAttr import LinacAttr
+from .LinacFeatures import Logic
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
-
-
-from linacAttr import LinacAttr
-from .LinacFeatures import Logic
 
 
 class InternalAttr(LinacAttr):

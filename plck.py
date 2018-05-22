@@ -28,21 +28,21 @@ __license__ = "GPLv3+"
 
 Attr('Heat_I',
      PyTango.DevFloat, 4,  # RO
-     l='Heating current monitor',
+     label='Heating current monitor',
      unit='A', minValue=0, maxValue=30, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('Heat_V',
      PyTango.DevFloat, 8,  # RO
-     l='Heating voltage monitor',
+     label='Heating voltage monitor',
      unit='V', minValue=0, maxValue=30, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('HVPS_V',
      PyTango.DevFloat, 12,  # RO
-     l='High voltage PS voltage',
+     label='High voltage PS voltage',
      unit='kV', minValue=0, maxValue=40, format='%4.2f',
      events={THRESHOLD: 0.001}, record=True,
      # qualities={CHANGING: {'rel': 0.1}}
@@ -50,7 +50,7 @@ Attr('HVPS_V',
 
 Attr('HVPS_I',
      PyTango.DevFloat, 16,  # RO
-     l='High voltage PS current',
+     label='High voltage PS current',
      unit='mA', minValue=0, maxValue=150, format='%4.1f',
      events={THRESHOLD: 0.01}, record=True,
      # qualities={CHANGING: {'rel': 0.1}}
@@ -58,15 +58,15 @@ Attr('HVPS_I',
 
 Attr('Peak_I',
      PyTango.DevFloat, 20,  # RO
-     l='Peak current',
+     label='Peak current',
      unit='A', minValue=0, maxValue=400, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('Peak_V',
      PyTango.DevFloat, 24,  # RO
-     l='Peak voltage',
-     d='peak voltage (calculated',
+     label='Peak voltage',
+     desc='peak voltage (calculated',
      unit='kV', minValue=0, maxValue=400, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
@@ -90,8 +90,8 @@ LV_J_QUALITIES = {WARNING: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 
 Attr('LV_ST',
      PyTango.DevUChar, 37,  # RO
-     l='Low voltage status',
-     d='low voltage status'+john(LV_J),
+     label='Low voltage status',
+     desc='low voltage status'+john(LV_J),
      meanings=LV_J, qualities=LV_J_QUALITIES, events={})
 
 F_J = {0: 'off',
@@ -106,8 +106,8 @@ F_J_QUALITIES = {WARNING: [0, 2, 3],
 
 Attr('Heat_ST',
      PyTango.DevUChar, 38,  # RO
-     l='Filament heating status',
-     d='filament heating status'+john(F_J),
+     label='Filament heating status',
+     desc='filament heating status'+john(F_J),
      meanings=F_J, qualities=F_J_QUALITIES, events={})
 
 # modify the documented state meaning string to adapt to user meaning.
@@ -127,8 +127,8 @@ HV_J_QUALITIES = {ALARM: [7],
 
 Attr('HVPS_ST',
      PyTango.DevUChar, 39,  # RO
-     l='High voltage PS heating status',
-     d='high voltage PS heating status'+john(HV_J),
+     label='High voltage PS heating status',
+     desc='high voltage PS heating status'+john(HV_J),
      meanings=HV_J, qualities=HV_J_QUALITIES, events={}, record=True)
 
 PL_J = {0: 'off',
@@ -145,22 +145,22 @@ PL_J_QUALITIES = {WARNING: [0, 1, 2, 3, 4, 5, 6, 7]}
 
 Attr('Pulse_ST',
      PyTango.DevUChar, 40,  # RO
-     l='Pulse status',
-     d='pulse status'+john(PL_J),
+     label='Pulse status',
+     desc='pulse status'+john(PL_J),
      meanings=PL_J, qualities=PL_J_QUALITIES, events={}, record=True)
 
 Attr('LV_Time',
      PyTango.DevShort, 42,  # RO
-     l='Voltage slow down time',
-     d='tempo stop low voltage (5 min)',
+     label='Voltage slow down time',
+     desc='tempo stop low voltage (5 min)',
      unit='s', events={},
      qualities={CHANGING: {ABSOLUTE: {ABOVE: 0, BELOW: 300, UNDER: True}}},
      )
 
 Attr('Heat_Time',
      PyTango.DevShort, 44,  # RO
-     l='Heating time',
-     d='heating tempo (20 min)',
+     label='Heating time',
+     desc='heating tempo (20 min)',
      unit='m', events={},
      # FIXME: ---
      # even documentation says this is seconds, its clear that it gives
@@ -177,7 +177,7 @@ Attr('Heat_Time',
 # This two ramp parameters must be also dynattrs.
 AttrRampeable('HVPS_V_setpoint',
               PyTango.DevFloat, 46, 0,  # RW
-              l='High voltage PS voltage setpoint',
+              label='High voltage PS voltage setpoint',
               unit='kV', minValue=0, maxValue=33, format='%4.2f',
               events={THRESHOLD: 0.005}, record=True,
               qualities={CHANGING: {'rel': 0.1}},
@@ -189,14 +189,14 @@ AttrRampeable('HVPS_V_setpoint',
 
 AttrBit('LV_Interlock_RC',
         62, 0, 16,  # RW
-        l='Low voltage reset',
-        d='low voltage reset\nrising edge reset',
+        label='Low voltage reset',
+        desc='low voltage reset\nrising edge reset',
         events={}, isRst=True)
 
 AttrBit('LV_ONC',
         62, 1, 16,  # RW
-        l='Low voltage on',
-        d='low voltage on\nFalse:off\nTrue:on',
+        label='Low voltage on',
+        desc='low voltage on\nFalse:off\nTrue:on',
         events={},
         formula={'read':
                  'VALUE and '
@@ -205,14 +205,14 @@ AttrBit('LV_ONC',
 
 AttrBit('HVPS_Interlock_RC',
         62, 2, 16,  # RW
-        l='High voltage reset',
-        d='high voltage reset\nrising edge reset',
+        label='High voltage reset',
+        desc='high voltage reset\nrising edge reset',
         events={}, isRst=True)
 
 AttrBit('HVPS_ONC',
         62, 3, 16,  # RW
-        l='High voltage on',
-        d='high voltage on\nFalse:off\nTrue:on',
+        label='High voltage on',
+        desc='high voltage on\nFalse:off\nTrue:on',
         events={}, record=True,
         # rampingAttr='HVPS_V_setpoint',
         formula={'read':
@@ -238,14 +238,14 @@ AttrPLC(36, 41, 63, 0, 17, 0)
 
 AttrLogic('lv_ready',
           logic={'LV_ST': [12], 'Heat_ST': [5]},
-          d='Klystron LV ready',
-          l='Klystron LV ready',
+          desc='Klystron LV ready',
+          label='Klystron LV ready',
           events={})
 
 AttrLogic('hvps_ready',
           logic={'HVPS_ST': [8, 9], 'Pulse_ST': [0, 7, 8]},
-          d='High voltage PS ready',
-          l='High voltage PS ready',
+          desc='High voltage PS ready',
+          label='High voltage PS ready',
           events={}, record=True)
 
 AttrEnumeration('tube_u', prefix='KA')

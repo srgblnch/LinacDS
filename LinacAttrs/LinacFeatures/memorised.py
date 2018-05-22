@@ -15,14 +15,14 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .feature import _LinacFeature
+from PyTango import Database
+import traceback
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
-
-from feature import _LinacFeature
-from PyTango import Database
-import traceback
 
 
 defaultFieldName = '__value'

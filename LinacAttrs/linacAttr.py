@@ -15,16 +15,10 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-__author__ = "Lothar Krause and Sergi Blanch-Torne"
-__maintainer__ = "Sergi Blanch-Torne"
-__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
-__license__ = "GPLv3+"
-
-
 from .abstract import _AbstractAttrLog, _AbstractAttrDict
 import functools
-from LinacFeatures import Events, Memorised, ChangeReporter
-from LinacFeatures import CircularBuffer, HistoryBuffer
+from .LinacFeatures import Events, Memorised, ChangeReporter
+from .LinacFeatures import CircularBuffer, HistoryBuffer
 from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
 from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
@@ -33,6 +27,11 @@ from PyTango import DevFloat, DevDouble
 
 from time import time, ctime
 import traceback
+
+__author__ = "Lothar Krause and Sergi Blanch-Torne"
+__maintainer__ = "Sergi Blanch-Torne"
+__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
+__license__ = "GPLv3+"
 
 
 class LinacException(Exception):
@@ -456,7 +455,7 @@ class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
         if not suffix:
             if not self._memorised.recover():
                 self.warning("Cannot recover value %sfrom the database"
-                             % ("for %s " % self.alias 
+                             % ("for %s " % self.alias
                                 if self.alias is not None else ""))
             self._memorisedLst = []
         elif self._memorisedLst and suffix not in self._memorisedLst:

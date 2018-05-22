@@ -15,17 +15,16 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from ast import literal_eval
+from .linacAttr import LinacAttr
+from .LinacFeatures import Memorised
+from PyTango import AttrQuality
+from time import time
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
-
-
-from ast import literal_eval
-from linacAttr import LinacAttr
-from LinacFeatures import Memorised
-from PyTango import AttrQuality
-from time import time
 
 
 class EnumerationAttr(LinacAttr):

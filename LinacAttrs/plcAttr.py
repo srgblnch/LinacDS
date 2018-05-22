@@ -15,14 +15,14 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .linacAttr import LinacAttr
+from .meaningAttr import MeaningAttr
+from PyTango import DevBoolean
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
-
-from linacAttr import LinacAttr
-from meaningAttr import MeaningAttr
-from PyTango import DevBoolean
 
 
 class PLCAttr(LinacAttr):
@@ -81,17 +81,18 @@ class PLCAttr(LinacAttr):
     def label(self):
         return self._label
 
-    #@label.setter
-    #def label(self, value):
-    #    self._label = value
+    # @label.setter
+    # def label(self, value):
+    #     self._label = value
 
     @property
     def description(self):
-        return "%r" % self._description
+        if self._description is not None:
+            return "%r" % self._description
 
-    #@description.setter
-    #def description(self, value):
-    #    self._description = value
+    # @description.setter
+    # def description(self, value):
+    #     self._description = value
 
     #######################################################
     # Dictionary properties for backwards compatibility ---

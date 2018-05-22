@@ -42,5 +42,3 @@ class _LinacFeature(_AbstractFeatureLog):
     @property
     def owner(self):
         return self._owner
-
-

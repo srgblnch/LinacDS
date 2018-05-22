@@ -29,7 +29,7 @@ __license__ = "GPLv3+"
 # R000 @EG_FVM ---
 Attr('GUN_Filament_V',
      PyTango.DevFloat, 0,  # RO
-     l='e-gun filament voltage monitor',
+     label='e-gun filament voltage monitor',
      format='%4.1f', minValue=0, maxValue=10, unit='V',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0.0}}},
@@ -39,7 +39,7 @@ Attr('GUN_Filament_V',
 # R004 @EG_FCM ---
 Attr('GUN_Filament_I',
      PyTango.DevFloat, 4,  # RO
-     l='e-gun filament current',
+     label='e-gun filament current',
      format='%4.1f', minValue=0, maxValue=5, unit='A',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0.0}}})
@@ -47,7 +47,7 @@ Attr('GUN_Filament_I',
 # R008 @EG_KVM ---
 Attr('GUN_Kathode_V',
      PyTango.DevFloat, 8,  # RO
-     l='e-gun cathode voltage monitor',
+     label='e-gun cathode voltage monitor',
      format='%4.1f', minValue=0, maxValue=50, unit='V',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0.0}}})
@@ -55,7 +55,7 @@ Attr('GUN_Kathode_V',
 # R012 @EG_KTM ---
 Attr('GUN_Kathode_T',
      PyTango.DevFloat, 12,  # RO
-     l='e-gun cathode temperature',
+     label='e-gun cathode temperature',
      format='%4.1f', minValue=0, maxValue=50, unit='degC',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 25.0,
@@ -69,8 +69,8 @@ Attr('GUN_Kathode_T',
 # R032 @HVS_VM ---
 Attr('GUN_HV_V',
      PyTango.DevFloat, 32,  # RO
-     l='HV PS Voltage',
-     d='high voltage PS voltage',
+     label='HV PS Voltage',
+     desc='high voltage PS voltage',
      format='%4.1f', minValue=-100, maxValue=0, unit='kV',
      events={THRESHOLD: 0.01},
      setpoint='GUN_HV_V_setpoint',
@@ -79,8 +79,8 @@ Attr('GUN_HV_V',
 # R036 @HVS_CM ---
 Attr('GUN_HV_I',
      PyTango.DevFloat, 36,  # RO
-     l='High voltage PS current',
-     d='high voltage PS current (leakage current)',
+     label='High voltlabel=e PS current',
+     desc='high voltage PS current (leakage current)',
      format='%4.1f', minValue=-600, maxValue=1, unit='μA',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {ABOVE: 1.0,
@@ -92,7 +92,7 @@ Attr('GUN_HV_I',
 # R040 @PHS1_PM ---
 Attr('PHS1_Phase',
      PyTango.DevFloat, 40,  # RO
-     l='Phase shifter 1 phase monitor',
+     label='Phase shifter 1 phase monitor',
      format='%4.1f', minValue=0, maxValue=160, unit='⁰',
      events={THRESHOLD: 0.01})
 
@@ -101,7 +101,7 @@ Attr('PHS1_Phase',
 # R48 @SF6P1M ---
 Attr('SF6_P1',
      PyTango.DevFloat, 48,  # RO
-     l='SF6 pressure 1',
+     label='SF6 pressure 1',
      format='%4.2f', minValue=-1, maxValue=5, unit='bar',
      events={THRESHOLD: 0.001},
      qualities={WARNING: {ABSOLUTE: {BELOW: 2.9,
@@ -110,7 +110,7 @@ Attr('SF6_P1',
 # R052 @SF6P2M ---
 Attr('SF6_P2',
      PyTango.DevFloat, 52,  # RO
-     l='SF6 pressure 2',
+     label='SF6 pressure 2',
      format='%4.2f', minValue=-1, maxValue=5, unit='bar',
      events={THRESHOLD: 0.001},
      qualities={WARNING: {ABSOLUTE: {BELOW: 2.9,
@@ -119,15 +119,15 @@ Attr('SF6_P2',
 # R056 @PHS2_PM ---
 Attr('PHS2_Phase',
      PyTango.DevFloat, 56,  # RO
-     l='Phase shifter 2 phase monitor',
+     label='Phase shifter 2 phase monitor',
      format='%4.1f', minValue=0, maxValue=380, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R060 @ATT2_PM ---
 Attr('ATT2_P',
      PyTango.DevFloat, 60,  # RO
-     l='Attenuator 2 monitor',
-     d='Attenuator 2 monitor attenuation (PB2)',
+     label='Attenuator 2 monitor',
+     desc='Attenuator 2 monitor attenuation (PB2)',
      format='%4.1f', minValue=-10, maxValue=10, unit='dB',
      events={THRESHOLD: 0.01})
 
@@ -136,21 +136,21 @@ Attr('ATT2_P',
 # R068 @DI_0to7 ---
 AttrBit('TB_ST',
         68, 0,  # RO
-        l='Timer Status State',
+        label='Timer Status State',
         meanings={0: 'off',
                   1: 'ready'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('A0_ST',
         68, 4,  # RO
-        l='500MHz amplifier status',
+        label='500MHz amplifier status',
         meanings={0: 'off',
                   1: 'ready'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('RFS_ST',
         68, 5,  # RO
-        l='RF source Status',
+        label='RF source Status',
         meanings={0: 'off',
                   1: 'ready'},
         qualities={WARNING: [0]},
@@ -161,42 +161,42 @@ AttrBit('RFS_ST',
 # R070 @DI_16to23 ---
 AttrBit('EG_ENB',
         70, 0,  # RO
-        l='Electron gun enabled (PSS)',
+        label='Electron gun enabled (PSS)',
         meanings={0: 'disabled',
                   1: 'enabled'},
         qualities={WARNING: [0]},
         events={}, record=True)
 AttrBit('KA_ENB',
         70, 1,  # RO
-        l='Klystron amplifier enabled (PSS)',
+        label='Klystron amplifier enabled (PSS)',
         meanings={0: 'disabled',
                   1: 'enabled'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('TL_VOK',
         70, 2,  # RO
-        l='Transfer line vacuum OK (PSS)',
+        label='Transfer line vacuum OK (PSS)',
         meanings={0: 'bad vacuum',
                   1: 'good vacuum'},
         qualities={WARNING: [0]},
         events={}, record=True)
 AttrBit('IU_RDY',
         70, 5,  # RO
-        l='Interlock unit ready',
+        label='Interlock unit ready',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('W1_UF',
         70, 6,  # RO
-        l='Window 1 underflow state',
+        label='Window 1 underflow state',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('W2_UF',
         70, 7,  # RO
-        l='Window 2 underflow state',
+        label='Window 2 underflow state',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
@@ -205,56 +205,56 @@ AttrBit('W2_UF',
 # R71 @DI_24to31 ---
 AttrBit('W3_UF',
         71, 0,  # RO
-        l='Window 3 underflow state',
+        label='Window 3 underflow state',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('RL1_UF',
         71, 1,  # RO
-        l='Resistor load 1 underflow state',
+        label='Resistor load 1 underflow state',
         meanings={0: 'underflow',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('RL2_UF',
         71, 2,  # RO
-        l='Resistor load 2 underflow state',
+        label='Resistor load 2 underflow state',
         meanings={0: 'underflow',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('RL3_UF',
         71, 3,  # RO
-        l='Resistor load 3 underflow state',
+        label='Resistor load 3 underflow state',
         meanings={0: 'underflow',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('UT_IS',
         71, 4,  # RO
-        l='Utilities Interlock state',
+        label='Utilities Interlock state',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('MG_IS',
         71, 5,  # RO
-        l='Magnet Interlock state',
+        label='Magnet Interlock state',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('GM_DI',
         71, 6,  # RO
-        l='Gun Modulator door interlock',
+        label='Gun Modulator door interlock',
         meanings={0: 'door open',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('LI_VOK',
         71, 7,  # RO
-        l='Linac Vacuum OK',
+        label='Linac Vacuum OK',
         meanings={0: 'bad vacuum',
                   1: 'good vacuum'},
         qualities={WARNING: [0]},
@@ -263,17 +263,17 @@ AttrBit('LI_VOK',
 # R072 @DI_Comm ---
 # AttrBit('HeartBeat',#Heartbeat defined at the end together with lockers
 #         72,0,#RO
-#        d='PLC 1 heart beat')
+#        desc='PLC 1 heart beat')
 AttrBit('PLC1_PR',
         72, 2,  # RO
-        l='PLC1 profibus receive status',
+        label='PLC1 profibus receive status',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('PLC1_PS',
         72, 4,  # RO
-        l='PLC1 profibus send status',
+        label='PLC1 profibus send status',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
@@ -282,41 +282,41 @@ AttrBit('PLC1_PS',
 # R073 @DI_ITLK_K ---
 AttrBit('SF6_P1_ST',
         73, 0,  # RO
-        l='SF6 pressure 1 state',
+        label='SF6 pressure 1 state',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('SF6_P2_ST',
         73, 1,  # RO
-        l='SF6 pressure 2 state',
+        label='SF6 pressure 2 state',
         meanings={0: 'fault',
                   1: 'normal'},
         qualities={WARNING: [0]},
         events={})
 AttrBit('KA1_OK',  # KA1_EN
         73, 2,  # RO
-        l='klystron 1 ready',
+        label='klystron 1 ready',
         events={})
 AttrBit('KA2_OK',  # KA2_EN
         73, 3,  # RO
-        l='klystron 2 ready',
+        label='klystron 2 ready',
         events={})
 AttrBit('LI_OK',  # LI_RDY
         73, 4,  # RO
-        l='Linac system ready',
+        label='Linac system ready',
         events={})
 AttrBit('RF_OK',  # RF_ENB
         73, 5,  # RO
-        l='RF ready',
+        label='RF ready',
         events={})
 
 # R074 @HV_PS_ST ---
 Attr('Gun_HV_ST',
      PyTango.DevUChar, 74,  # RO
-     l='High voltage PS status',
-     d='high voltage PS status: 0:undefined, 1:off, 2:locked, 3: fault, '
-       '4:ready, 5: unlocked',
+     label='High voltage PS status',
+     desc='high voltage PS status: '
+          '0:undefined, 1:off, 2:locked, 3: fault, 4:ready, 5: unlocked',
      meanings={0: 'undefined',
                1: 'off',
                2: 'locked',
@@ -330,11 +330,11 @@ Attr('Gun_HV_ST',
 # R075 @E_GUN_ST ---
 Attr('Gun_ST',
      PyTango.DevUChar, 75,  # RO
-     l='e-gun low voltage status',
-     d='e-gun low voltage status: 0:undefined, 1:off, 2:bad vacuum'
-       '3:cathode voltage fault, 4:filament current fault'
-       '5:heating running, 6:filament voltage fault'
-       '7:cathode over temperature, 8:ready',
+     label='e-gun low voltage status',
+     desc='e-gun low voltage status: '
+          '0:undefined, 1:off, 2:bad vacuum, 3:cathode voltage fault, '
+          '4:filament current fault, 5:heating running, '
+          '6:filament voltage fault, 7:cathode over temperature, 8:ready',
      # modification in the meaning because documentation looks wrong
      meanings={0: 'undefined',
                1: 'off',
@@ -352,24 +352,25 @@ Attr('Gun_ST',
 
 AttrLogic('Gun_ready',
           logic={'Gun_ST': [1, 8]},
-          d='e-gun low voltage ready',
-          l='e-gun low voltage ready',
+          desc='e-gun low voltage ready',
+          label='e-gun low voltage ready',
           events={},
           )
 
 AttrLogic('Gun_HV_ready',
           logic={'GM_DI': [True],
                  'GUN_HV_I_AutoStop_Triggered': [False]},
-          d='e-gun high voltage ready',
-          l='e-gun high voltage ready',
+          desc='e-gun high voltage ready',
+          label='e-gun high voltage ready',
           events={},
           )
 
 # R076 @SCM_1_ST ---
 Attr('SCM1_ST',
      PyTango.DevUChar, 76,  # RO
-     l='fs 1 status',
-     d='screen monitor 1 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault',
+     label='fs 1 status',
+     desc='screen monitor 1 status: '
+          '0:undefined, 1:moving, 2:up, 3:down, 4:fault',
      meanings={0: 'undefined',
                1: 'moving',
                2: 'up',
@@ -382,8 +383,8 @@ Attr('SCM1_ST',
 
 AttrLogic('SCM1_alert',
           logic={'SCM1_ST': [3, 4]},
-          d='screen monitor 1 alert',
-          l='screen monitor 1 alerts',
+          desc='screen monitor 1 alert',
+          label='screen monitor 1 alerts',
           events={},
           )
 
@@ -391,8 +392,9 @@ AttrLogic('SCM1_alert',
 # R077 @SCM_2_ST ---
 Attr('SCM2_ST',
      PyTango.DevUChar, 77,  # RO
-     l='fs 2 status',
-     d='screen monitor 2 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault',
+     label='fs 2 status',
+     desc='screen monitor 2 status: '
+          '0:undefined, 1:moving, 2:up, 3:down, 4:fault',
      meanings={0: 'undefined',
                1: 'moving',
                2: 'up',
@@ -405,16 +407,17 @@ Attr('SCM2_ST',
 
 AttrLogic('SCM2_alert',
           logic={'SCM2_ST': [3, 4]},
-          d='screen monitor 2 alert',
-          l='screen monitor 2 alerts',
+          desc='screen monitor 2 alert',
+          label='screen monitor 2 alerts',
           events={},
           )
 
 # R078 @SCM_3_ST ---
 Attr('SCM3_ST',
      PyTango.DevUChar, 78,  # RO
-     l='fs 3 status',
-     d='screen monitor 3 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault',
+     label='fs 3 status',
+     desc='screen monitor 3 status: '
+          '0:undefined, 1:moving, 2:up, 3:down, 4:fault',
      meanings={0: 'undefined',
                1: 'moving',
                2: 'up',
@@ -427,17 +430,18 @@ Attr('SCM3_ST',
 
 AttrLogic('SCM3_alert',
           logic={'SCM3_ST': [3, 4]},
-          d='screen monitor 3 alert',
-          l='screen monitor 3 alerts',
+          desc='screen monitor 3 alert',
+          label='screen monitor 3 alerts',
           events={},
           )
 
 # R079 @PHS1_ST ---
 Attr('PHS1_ST',
      PyTango.DevUChar, 79,  # RO
-     l='phase shifter 1 status',
-     d='phase shifter 1 status: 0:undefined, 1:unset, 2:ready'
-       '3:in limit fault, 4:out limit fault, 5:timeout fault',
+     label='phase shifter 1 status',
+     desc='phase shifter 1 status: '
+          '0:undefined, 1:unset, 2:ready, 3:in limit fault, '
+          '4:out limit fault, 5:timeout fault',
      meanings={0: 'undefined',
                1: 'unset',
                2: 'ready',
@@ -450,17 +454,18 @@ Attr('PHS1_ST',
 
 AttrLogic('phs1_ready',
           logic={'PHS1_ST': [2]},
-          d='phase shifter 1 ready',
-          l='phase shifter 1 ready',
+          desc='phase shifter 1 ready',
+          label='phase shifter 1 ready',
           events={},
           )
 
 # R080 @PHS2_ST ---
 Attr('PHS2_ST',
      PyTango.DevUChar, 80,  # RO
-     l='phase shifter 2 status',
-     d='phase shifter 2 status: 0:undefined, 1:unset, 2:ready'
-       '3:in limit fault, 4:out limit fault, 5:timeout fault',
+     label='phase shifter 2 status',
+     desc='phase shifter 2 status: 0:undefined, '
+          '1:unset, 2:ready, 3:in limit fault, 4:out limit fault, '
+          '5:timeout fault',
      meanings={0: 'undefined',
                1: 'unset',
                2: 'ready',
@@ -473,17 +478,18 @@ Attr('PHS2_ST',
 
 AttrLogic('phs2_ready',
           logic={'PHS2_ST': [2]},
-          d='phase shifter 2 ready',
-          l='phase shifter 2 ready',
+          desc='phase shifter 2 ready',
+          label='phase shifter 2 ready',
           events={},
           )
 
 # R081 @ATT2_ST ---
 Attr('ATT2_ST',
      PyTango.DevUChar, 81,  # RO
-     l='attenuator 2 status',
-     d='attenuator 2 status: 0:undefined, 1:unset, 2:ready, '
-       '3:in limit fault, 4:out limit fault, 5:timeout fault',
+     label='attenuator 2 status',
+     desc='attenuator 2 status: 0:undefined, '
+          '1:unset, 2:ready, 3:in limit fault, 4:out limit fault, '
+          '5:timeout fault',
      meanings={0: 'undefined',
                1: 'unset',
                2: 'ready',
@@ -496,8 +502,8 @@ Attr('ATT2_ST',
 
 AttrLogic('att2_ready',
           logic={'ATT2_ST': [2]},
-          d='Attenuator 2 ready',
-          l='Attenuator 2 ready',
+          desc='Attenuator 2 ready',
+          label='Attenuator 2 ready',
           events={},
           )
 
@@ -510,7 +516,7 @@ AttrLogic('att2_ready',
 # R084 W000 @EG_FVS ---
 AttrRampeable('GUN_Filament_V_setpoint',
               PyTango.DevFloat, 84, 0,  # RW
-              l='e-gun filament voltage setpoint',
+              label='e-gun filament voltage setpoint',
               format='%4.1f', minValue=0, maxValue=10, unit='V',
               events={THRESHOLD: 0.01},
               qualities={WARNING: {ABSOLUTE: {BELOW: 0}}},
@@ -528,7 +534,7 @@ AttrRampeable('GUN_Filament_V_setpoint',
 # R088 W004 @EG_KVS ---
 Attr('GUN_Kathode_V_setpoint',
      PyTango.DevFloat, 88, 4,  # RW
-     l='e-gun cathode voltage setpoint',
+     label='e-gun cathode voltage setpoint',
      format='%4.1f', minValue=0, maxValue=50, unit='V',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 0}}})
@@ -539,8 +545,8 @@ Attr('GUN_Kathode_V_setpoint',
 # R100 W016 @HVS_VS ---
 AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
               PyTango.DevFloat, 100, 16,  # RW
-              l='HV PS Voltage Setpoint',
-              d='high voltage PS voltage',
+              label='HV PS Voltage Setpoint',
+              desc='high voltage PS voltage',
               format='%4.1f', minValue=-90, maxValue=0, unit='kV',
               events={THRESHOLD: 0.01},
               rampsDescriptor={DESCENDING: {STEP: 1,  # kV
@@ -561,21 +567,21 @@ AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
 # R104 W020 @TB_GPA ---
 Attr('TB_GPA',
      PyTango.DevFloat, 104, 20,  # RW
-     l='timer gun pulses attenuation',
+     label='timer gun pulses attenuation',
      format='%4.1f', minValue=-40, maxValue=0, unit='dB',
      events={THRESHOLD: 0.005}, record=True)
 
 # R108 W024 @PHS1_PS ---
 Attr('PHS1_Phase_setpoint',
      PyTango.DevFloat, 108, 24,  # RW
-     l='Phase shifter 1 phase setpoint',
+     label='Phase shifter 1 phase setpoint',
      format='%3.0f', minValue=0, maxValue=160, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R112 W028 @A0_OP ---
 Attr('A0_OP',
      PyTango.DevFloat, 112, 28,  # RW
-     l='A0 output power',
+     label='A0 output power',
      format='%3.0f', minValue=75, maxValue=760, unit='W',
      # specs say maxValue=840, user explicitly reduces it
      events={THRESHOLD: 0.01})
@@ -592,7 +598,7 @@ for idx, x in enumerate((0, 1, 2, 'X')):
     Attr('TPS%s_Phase' % (x),
          PyTango.DevFloat,
          116+4*idx, 32+4*idx,  # RW
-         l='time phase shifter %s phase' % (x),
+         label='time phase shifter %s phase' % (x),
          format=format, minValue=0, maxValue=380, unit='⁰',
          events={THRESHOLD: 0.01})
 
@@ -602,64 +608,64 @@ for idx, x in enumerate((0, 1, 2, 'X')):
 # R140 W056 @PHS2_PS ---
 Attr('PHS2_Phase_setpoint',
      PyTango.DevFloat, 140, 56,  # RW
-     l='Phase shifter 2 phase setpoint',
+     label='Phase shifter 2 phase setpoint',
      format='%3.0f', minValue=0, maxValue=380, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R144 W060 @ATT2_PS ---
 Attr('ATT2_P_setpoint',
      PyTango.DevFloat, 144, 60,  # RW
-     l='Attenuator 2',
-     d='Attenuator 2 attenuation (PB2)',
+     label='Attenuator 2',
+     desc='Attenuator 2 attenuation (PB2)',
      format='%3.1f', minValue=-10, maxValue=0, unit='dB',
      events={THRESHOLD: 0.01})
 
 # R148 W064 @TB_KAD1 ---
 Attr('TB_KA1_Delay',
      PyTango.DevShort, 148, 64,  # RW
-     l='timer klystron amplifier 1 delay',
+     label='timer klystron amplifier 1 delay',
      minValue=1, maxValue=56, unit='ns', events={}, format="%2d")
 
 # R150 W066 @TB_KAD2 ---
 Attr('TB_KA2_Delay',
      PyTango.DevShort, 150, 66,  # RW
-     l='timer klystron amplifier 2 delay',
-     d='timer klystron amplifier 2 delay (step 32 ns)',
+     label='timer klystron amplifier 2 delay',
+     desc='timer klystron amplifier 2 delay (step 32 ns)',
      minValue=544, maxValue=4096, unit='ns', events={}, format="%4d")
 
 # R152 W068 @TB_RF2D ---
 Attr('TB_RF2_Delay',
      PyTango.DevShort, 152, 68,  # RW
-     l='timer RF2 delay',
-     d='timer RF2 delay (step 8 ns)',
+     label='timer RF2 delay',
+     desc='timer RF2 delay (step 8 ns)',
      minValue=512, maxValue=1920, unit='ns', events={}, format="%4d")
 
 # R154 W070 @TB_EGD ---
 Attr('TB_Gun_Delay',
      PyTango.DevShort, 154, 70,  # RW
-     l='timer e-gun delay',
-     d='timer e-gun delay (step 32 ns)',
+     label='timer e-gun delay',
+     desc='timer e-gun delay (step 32 ns)',
      minValue=32, maxValue=4096, unit='ns', events={}, format="%4d")
 
 # R156 W072 @TB_GPI ---
 Attr('TB_GPI',
      PyTango.DevShort, 156, 72,  # RW
-     l='timer e-gun pulse',
-     d='timer e-gun pulse interval (SBM) / width (MBM)',
+     label='timer e-gun pulse',
+     desc='timer e-gun pulse interval (SBM) / width (MBM)',
      minValue=6, maxValue=1054, unit='ns', events={}, format="%4d")
 
 # R158 W074 @TB_GPN ---
 Attr('TB_GPN',
      PyTango.DevShort, 158, 74,  # RW
-     l='number of pulses',
-     d='number of pulses in SBM (not use in MBM)',
+     label='number of pulses',
+     desc='number of pulses in SBM (not use in MBM)',
      minValue=1, maxValue=16, events={}, format="%2d")
 
 # R160 W076 @TB_GPM ---
 Attr('TB_GPM',
      PyTango.DevShort, 160, 76,  # RW
-     l='timer gated pulse mode',
-     d='timer gated pulse mode: 0:beam on, 1:mix, 2:beam off',
+     label='timer gated pulse mode',
+     desc='timer gated pulse mode: 0:beam on, 1:mix, 2:beam off',
      minValue=0, maxValue=2,
      meanings={0: "beam on",
                1: "mix",
@@ -669,16 +675,16 @@ Attr('TB_GPM',
 # R162 W078 @DO_0to7 ---
 AttrBit('TB_MBM',
         162, 0, 78,  # RW
-        l='timer multi bunch mode',
-        d='timer multi bunch mode enabled; False:SBM, True:MBM',
+        label='timer multi bunch mode',
+        desc='timer multi bunch mode enabled; False:SBM, True:MBM',
         meanings={0: 'SBM',
                   1: 'MBM'},
         qualities={0: PyTango.AttrQuality.ATTR_WARNING},
         events={})
 AttrBit('GUN_HV_ONC',  # HVS_OC
         162, 2, 78,  # RW
-        l='High voltage PS',
-        d='high voltage PS; False:OFF, True:ON',
+        label='High voltage PS',
+        desc='high voltage PS; False:OFF, True:ON',
         meanings={0: 'off',
                   1: 'on'},
         qualities={0: PyTango.AttrQuality.ATTR_WARNING,
@@ -699,15 +705,15 @@ AttrBit('GUN_HV_ONC',  # HVS_OC
         )
 AttrBit('Interlock_RC',  # IU_RST
         162, 3, 78,  # RW
-        l='Reset interlocks',
+        label='Reset interlocks',
         events={},
         isRst=True
         # reset bits are special because their meaning is 'rising edge'
         )
 AttrBit('GUN_LV_ONC',
         162, 5, 78,  # RW
-        l='Gun low voltage',
-        d='gun low voltage: False:OFF, True:ON',
+        label='Gun low voltage',
+        desc='gun low voltage: False:OFF, True:ON',
         meanings={0: 'off',
                   1: 'on'},
         qualities={WARNING: [0]},
@@ -736,40 +742,40 @@ scm_dc_desc = 'screen monitor %d; 0:up, 1:down'
 scm_dc_meanings = {0: 'up', 1: 'down'}
 AttrBit('SCM1_DC',
         163, 0, 79,  # RW
-        l='fs 1 valve',
-        d=scm_dc_desc % 1,
+        label='fs 1 valve',
+        desc=scm_dc_desc % 1,
         meanings=scm_dc_meanings,
         events={})
 AttrBit('SCM2_DC',
         163, 1, 79,  # RW
-        l='fs 2 valve',
-        d=scm_dc_desc % 2,
+        label='fs 2 valve',
+        desc=scm_dc_desc % 2,
         meanings=scm_dc_meanings,
         events={})
 AttrBit('SCM3_DC',
         163, 2, 79,  # RW
-        l='fs 3 valve',
-        d=scm_dc_desc % 3,
+        label='fs 3 valve',
+        desc=scm_dc_desc % 3,
         meanings=scm_dc_meanings,
         events={})
 scm_lc_desc = 'screen light %d 0:off, 1:on'
 scm_lc_meanings = {0: 'off', 1: 'on'}
 AttrBit('SCM1_LC',
         163, 3, 79,  # RW
-        l='fs 1 light',
-        d=scm_lc_desc % 1,
+        label='fs 1 light',
+        desc=scm_lc_desc % 1,
         meanings=scm_lc_meanings,
         events={})
 AttrBit('SCM2_LC',
         163, 4, 79,  # RW
-        l='fs 2 light',
-        d=scm_lc_desc % 2,
+        label='fs 2 light',
+        desc=scm_lc_desc % 2,
         meanings=scm_lc_meanings,
         events={})
 AttrBit('SCM3_LC',
         163, 5, 79,  # RW
-        l='fs 3 light',
-        d=scm_lc_desc % 3,
+        label='fs 3 light',
+        desc=scm_lc_desc % 3,
         meanings=scm_lc_meanings,
         events={})
 
@@ -782,15 +788,15 @@ AttrPLC(72, 82, 164, 0, 80, 0)
 AttrLogic('ka1_ic',
           logic={'SF6_P1_ST': [1], 'W1_UF': [1], 'W2_UF': [1],
                  'RL1_UF': [1], 'RL2_UF': [1]},
-          d='Klystron 1 interlock',
-          l='Klystron 1 interlock',
+          desc='Klystron 1 interlock',
+          label='Klystron 1 interlock',
           events={},
           )
 
 AttrLogic('ka2_ic',
           logic={'SF6_P2_ST': [1], 'W3_UF': [1], 'RL3_UF': [1]},
-          d='Klystron 2 interlock',
-          l='Klystron 2 interlock',
+          desc='Klystron 2 interlock',
+          label='Klystron 2 interlock',
           events={},
           )
 
@@ -809,8 +815,8 @@ AttrLogic('ka2_ic',
 #                  'KA2_OK': [True],
 #                  'KA1_OK': [True],
 #                  'LI_OK': [True]},
-#           d='any interlock is set',
-#           l='any interlock is set',
+#           desc='any interlock is set',
+#           label='any interlock is set',
 #           events={},
 #           )
 

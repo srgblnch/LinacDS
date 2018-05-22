@@ -15,13 +15,14 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from feature import _LinacFeature
+from .feature import _LinacFeature
 import traceback
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
+
 
 class ChangeReporter(_LinacFeature):
     _report_to = None
