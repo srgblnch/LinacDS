@@ -16,6 +16,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from ..constants import LASTEVENTQUALITY, QUALITIES
 from feature import _LinacFeature
 from time import time
 import traceback
@@ -104,7 +105,7 @@ class Logic(_LinacFeature):
         self.debug("%s dict2eval: %s" % (name, dct))
         for key in dct.keys():
             if key == QUALITIES:
-                return self.__evaluateQuality(name, dct[key])
+                return self.__evalQuality(name, dct[key])
 
     def __evalLst(self, name, lst):
         """
