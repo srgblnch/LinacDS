@@ -1,0 +1,2948 @@
+A0_OP (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.62
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.01}
+	format: %3.0f
+	label: A0 output power
+	lastEventQuality: ATTR_VALID
+	maxValue: 760
+	minValue: 75
+	name: A0_OP
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 112
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 475.0
+	rvalue: 475.0
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 475.0
+	vtq: (475.0, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 28
+
+A0_ST (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: 500MHz amplifier status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'ready'}
+	name: A0_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 68
+	read_bit: 4
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+A0_Status (MeaningAttr):
+	alias: A0_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'ready'}
+	name: A0_ST:MeaningAttr
+	noneValue: 0
+	owner: A0_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.24
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: False:off
+	timestamp: 1527063761.48
+	type: DevString
+	value: False:off
+	vtq: ('False:off', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+ATT2_P (PLCAttr):
+	description: 'Attenuator 2 monitor attenuation (PB2)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.22
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: Attenuator 2 monitor
+	lastEventQuality: ATTR_VALID
+	maxValue: 10
+	minValue: -10
+	name: ATT2_P
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 60
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: -0.0123879052699
+	rvalue: -0.0123879052699
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: -0.0123879052699
+	vtq: (-0.012387905269861221, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+ATT2_P_setpoint (PLCAttr):
+	description: 'Attenuator 2 attenuation (PB2)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {'Threshold': 0.01}
+	format: %3.1f
+	label: Attenuator 2
+	lastEventQuality: ATTR_VALID
+	minValue: -10
+	name: ATT2_P_setpoint
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 144
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.0
+	rvalue: 0.0
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.0
+	vtq: (0.0, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 60
+
+ATT2_ST (PLCAttr):
+	description: 'attenuator 2 status: 0:undefined, 1:unset, 2:ready, 3:in limit fault, 4:out limit fault, 5:timeout fault'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: attenuator 2 status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
+	name: ATT2_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 81
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2
+	reporter: ATT2_ST:ChangeReporter (to ['att2_ready'])
+	rvalue: 2
+	timestamp: 1527063761.48
+	type: ('B', 1)
+	value: 2
+	vtq: (2, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+ATT2_Status (MeaningAttr):
+	alias: ATT2_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
+	name: ATT2_ST:MeaningAttr
+	noneValue: 0
+	owner: ATT2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.02
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: 2:ready
+	timestamp: 1527063761.48
+	type: DevString
+	value: 2:ready
+	vtq: ('2:ready', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+EG_ENB (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: Electron gun enabled (PSS)
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'disabled', 1: 'enabled'}
+	name: EG_ENB
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 70
+	read_bit: 0
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+EG_ENB_Status (MeaningAttr):
+	alias: EG_ENB_Status
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'disabled', 1: 'enabled'}
+	name: EG_ENB:MeaningAttr
+	noneValue: 0
+	owner: EG_ENB (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.25
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:enabled
+	timestamp: 1527063761.48
+	type: DevString
+	value: True:enabled
+	vtq: ('True:enabled', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GM_DI (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: Gun Modulator door interlock
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'door open', 1: 'normal'}
+	name: GM_DI
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 6
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	reporter: GM_DI:ChangeReporter (to ['Gun_HV_ready'])
+	rvalue: True
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GM_DI_Status (MeaningAttr):
+	alias: GM_DI_Status
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'door open', 1: 'normal'}
+	name: GM_DI:MeaningAttr
+	noneValue: 0
+	owner: GM_DI (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.57
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.48
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_Filament_I (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.54
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: e-gun filament current
+	lastEventQuality: ATTR_VALID
+	maxValue: 5
+	name: GUN_Filament_I
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 0.0}}}
+	quality: ATTR_VALID
+	read_addr: 4
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [ 0.07303229  0.07303229  0.04691927  0.04691927  0.04691927 -0.00713508
+ -0.00713508 -0.00713508 -0.14009856 -0.14009856]
+	rvalue: -0.140098556876
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: -0.140098556876
+	vtq: (-0.14009855687618256, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_Filament_V (PLCAttr):
+	SwitchAttr: GUN_LV_ONC
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.54
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: e-gun filament voltage monitor
+	lastEventQuality: ATTR_VALID
+	maxValue: 10
+	name: GUN_Filament_V
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 0.0}}}
+	quality: ATTR_VALID
+	read_addr: 0
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [-0.00286286 -0.00286286 -0.02354155 -0.02354155 -0.02354155  0.00885526
+  0.00885526  0.00885526  0.03327052  0.03327052]
+	rvalue: 0.0332705192268
+	setpointAttr: GUN_Filament_V_setpoint
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.0332705192268
+	vtq: (0.033270519226789474, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_Filament_V_setpoint (PLCAttr):
+	SwitchAttr: GUN_LV_ONC
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.54
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: e-gun filament voltage setpoint
+	lastEventQuality: ATTR_VALID
+	maxValue: 10
+	name: GUN_Filament_V_setpoint
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 0}}}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+	readbackAttr: GUN_Filament_V
+	rvalue: 0.0
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.0
+	vtq: (0.0, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 0
+
+GUN_HV_I (PLCAttr):
+	description: 'high voltage PS current (leakage current)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.54
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: High voltlabel=e PS current
+	lastEventQuality: ATTR_VALID
+	maxValue: 1
+	minValue: -600
+	name: GUN_HV_I
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': -20.0, 'Above': 1.0}}}
+	quality: ATTR_VALID
+	read_addr: 36
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [-0.04880056 -0.04880056 -0.01036478 -0.01036478 -0.01036478  0.02749378
+  0.02749378  0.02749378  0.01066394  0.01066394]
+	rvalue: 0.0106639377773
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.0106639377773
+	vtq: (0.010663937777280807, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_ONC (PLCAttr):
+	description: 'high voltage PS; False:OFF, True:ON'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	formula: {'read': "VALUE and self._plcAttrs['Gun_HV_ST']['read_value'] == 4"}
+	label: High voltage PS
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'on'}
+	name: GUN_HV_ONC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 162
+	read_bit: 2
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	readbackAttr: GUN_HV_V
+	rvalue: True
+	setpointAttr: GUN_HV_V_setpoint
+	switchDescriptor: {'attr2ramp': 'GUN_HV_V_setpoint', 'whenOn': {'from': 'GUN_HV_V_setpoint_Descending_Threshold'}, 'AutoStop': 'GUN_HV_I_AutoStop'}
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 78
+
+GUN_HV_ONC_Status (MeaningAttr):
+	alias: GUN_HV_ONC_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'on'}
+	name: GUN_HV_ONC:MeaningAttr
+	noneValue: 0
+	owner: GUN_HV_ONC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.6
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: True:on
+	timestamp: 1527063761.48
+	type: DevString
+	value: True:on
+	vtq: ('True:on', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_V (PLCAttr):
+	SwitchAttr: GUN_HV_ONC
+	description: 'high voltage PS voltage'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.22
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: HV PS Voltage
+	lastEventQuality: ATTR_VALID
+	minValue: -100
+	name: GUN_HV_V
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 32
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.277438759804
+	rvalue: 0.277438759804
+	setpointAttr: GUN_HV_V_setpoint
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.277438759804
+	vtq: (0.27743875980377197, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_V_setpoint (PLCAttr):
+	SwitchAttr: GUN_HV_ONC
+	description: 'high voltage PS voltage'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: HV PS Voltage Setpoint
+	lastEventQuality: ATTR_VALID
+	minValue: -90
+	name: GUN_HV_V_setpoint
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 100
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.0
+	readbackAttr: GUN_HV_V
+	rvalue: 0.0
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.0
+	vtq: (0.0, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 16
+
+GUN_Kathode_T (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.54
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: e-gun cathode temperature
+	lastEventQuality: ATTR_VALID
+	maxValue: 50
+	name: GUN_Kathode_T
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 25.0, 'Above': 41.0}}}
+	quality: ATTR_VALID
+	read_addr: 12
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [ 24.94880486  24.94880486  25.042799    25.042799    25.042799
+  25.02444077  25.02444077  25.02444077  24.97447014  24.97447014]
+	rvalue: 24.9744701385
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 24.9744701385
+	vtq: (24.974470138549805, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_Kathode_V (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.54
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: e-gun cathode voltage monitor
+	lastEventQuality: ATTR_VALID
+	maxValue: 50
+	name: GUN_Kathode_V
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 0.0}}}
+	quality: ATTR_VALID
+	read_addr: 8
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [-0.09908712 -0.09908712  0.09378168  0.09378168  0.09378168 -0.00762058
+ -0.00762058 -0.00762058  0.09627759  0.09627759]
+	rvalue: 0.0962775871158
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.0962775871158
+	vtq: (0.096277587115764618, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_Kathode_V_setpoint (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.54
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: e-gun cathode voltage setpoint
+	lastEventQuality: ATTR_VALID
+	maxValue: 50
+	name: GUN_Kathode_V_setpoint
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 0}}}
+	quality: ATTR_VALID
+	read_addr: 88
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+	rvalue: 0.0
+	timestamp: 1527063761.48
+	type: ('f', 4)
+	value: 0.0
+	vtq: (0.0, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 4
+
+GUN_LV_ONC (PLCAttr):
+	description: 'gun low voltage: False:OFF, True:ON'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	formula: {'read': "VALUE and self._plcAttrs['Gun_ST']['read_value'] in [1,4,7,8]", 'write': "VALUE ^ self._plcAttrs['GUN_HV_ONC']['read_value']", 'write_not_allowed': 'Filament voltage cannot be switch ON/OFF with e-Gun HV ON.'}
+	label: Gun low voltage
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'on'}
+	name: GUN_LV_ONC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 162
+	read_bit: 5
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	readbackAttr: GUN_Filament_V
+	rvalue: True
+	setpointAttr: GUN_Filament_V_setpoint
+	switchDescriptor: {'attr2ramp': 'GUN_Filament_V_setpoint', 'whenOff': {'to': 0}, 'whenOn': {'from': 0}}
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 78
+
+GUN_LV_ONC_Status (MeaningAttr):
+	alias: GUN_LV_ONC_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'on'}
+	name: GUN_LV_ONC:MeaningAttr
+	noneValue: 0
+	owner: GUN_LV_ONC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.64
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: True:on
+	timestamp: 1527063761.48
+	type: DevString
+	value: True:on
+	vtq: ('True:on', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Gun_HV_ST (PLCAttr):
+	description: 'high voltage PS status: 0:undefined, 1:off, 2:locked, 3: fault, 4:ready, 5: unlocked'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: High voltage PS status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'off', 2: 'locked', 3: 'fault', 4: 'ready', 5: 'unlocked'}
+	name: Gun_HV_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 74
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 4
+	rvalue: 4
+	timestamp: 1527063761.48
+	type: ('B', 1)
+	value: 4
+	vtq: (4, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Gun_HV_Status (MeaningAttr):
+	alias: Gun_HV_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'off', 2: 'locked', 3: 'fault', 4: 'ready', 5: 'unlocked'}
+	name: Gun_HV_ST:MeaningAttr
+	noneValue: 0
+	owner: Gun_HV_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.86
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 4:ready
+	timestamp: 1527063761.48
+	type: DevString
+	value: 4:ready
+	vtq: ('4:ready', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Gun_ST (PLCAttr):
+	description: 'e-gun low voltage status: 0:undefined, 1:off, 2:bad vacuum, 3:cathode voltage fault, 4:filament current fault, 5:heating running, 6:filament voltage fault, 7:cathode over temperature, 8:ready'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: e-gun low voltage status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'off', 2: 'bad vacuum', 3: 'cathode voltage fault', 4: 'Heating', 5: 'filament current fault', 6: 'filament voltage fault', 7: 'cathode over temperature', 8: 'ready'}
+	name: Gun_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 75
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 8
+	reporter: Gun_ST:ChangeReporter (to ['Gun_ready'])
+	rvalue: 8
+	timestamp: 1527063761.48
+	type: ('B', 1)
+	value: 8
+	vtq: (8, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Gun_Status (MeaningAttr):
+	alias: Gun_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'off', 2: 'bad vacuum', 3: 'cathode voltage fault', 4: 'Heating', 5: 'filament current fault', 6: 'filament voltage fault', 7: 'cathode over temperature', 8: 'ready'}
+	name: Gun_ST:MeaningAttr
+	noneValue: 0
+	owner: Gun_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.87
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 8:ready
+	timestamp: 1527063761.48
+	type: DevString
+	value: 8:ready
+	vtq: ('8:ready', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+HeartBeat (PLCAttr):
+	description: 'cadence bit going from True to False when PLC is okay'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.16
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	name: HeartBeat
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 72
+	read_bit: 0
+	read_t: 1527063761.16
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.16
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.1602881, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+IU_RDY (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Interlock unit ready
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: IU_RDY
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 70
+	read_bit: 5
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+IU_RDY_Status (MeaningAttr):
+	alias: IU_RDY_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: IU_RDY:MeaningAttr
+	noneValue: 0
+	owner: IU_RDY (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.28
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.48
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Interlock_RC (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	isRst: True
+	label: Reset interlocks
+	lastEventQuality: ATTR_VALID
+	name: Interlock_RC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 162
+	read_bit: 3
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 78
+
+KA1_OK (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: klystron 1 ready
+	lastEventQuality: ATTR_VALID
+	name: KA1_OK
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 73
+	read_bit: 2
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+KA2_OK (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: klystron 2 ready
+	lastEventQuality: ATTR_VALID
+	name: KA2_OK
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 73
+	read_bit: 3
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+KA_ENB (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Klystron amplifier enabled (PSS)
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'disabled', 1: 'enabled'}
+	name: KA_ENB
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 70
+	read_bit: 1
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+KA_ENB_Status (MeaningAttr):
+	alias: KA_ENB_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'disabled', 1: 'enabled'}
+	name: KA_ENB:MeaningAttr
+	noneValue: 0
+	owner: KA_ENB (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.26
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:enabled
+	timestamp: 1527063761.48
+	type: DevString
+	value: True:enabled
+	vtq: ('True:enabled', 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+LI_OK (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Linac system ready
+	lastEventQuality: ATTR_VALID
+	name: LI_OK
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 73
+	read_bit: 4
+	read_t: 1527063761.48
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.48
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.4800129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+LI_VOK (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: Linac Vacuum OK
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
+	name: LI_VOK
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 7
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+LI_VOK_Status (MeaningAttr):
+	alias: LI_VOK_Status
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
+	name: LI_VOK:MeaningAttr
+	noneValue: 0
+	owner: LI_VOK (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.58
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:good vacuum
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:good vacuum
+	vtq: ('True:good vacuum', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Lock_ST (PLCAttr):
+	description: 'lock status plc1\n0:unlocked\n1:local\n2:remote\n'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062674.85
+	event_t_str: Wed May 23 10:04:34 2018
+	events: {}
+	label: lock status plc1
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
+	name: Lock_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 82
+	read_t: 1527062674.85
+	read_t_str: Wed May 23 10:04:34 2018
+	read_value: 0
+	rvalue: 0
+	timestamp: 1527062674.85
+	type: ('B', 1)
+	value: 0
+	vtq: (0, 1527062674.8494699, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Lock_Status (MeaningAttr):
+	alias: Lock_Status
+	event_t: 1527062674.85
+	event_t_str: Wed May 23 10:04:34 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
+	name: Lock_ST:MeaningAttr
+	noneValue: 0
+	owner: Lock_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.71
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: 0:unlocked
+	timestamp: 1527062674.85
+	type: DevString
+	value: 0:unlocked
+	vtq: ('0:unlocked', 1527062674.8494699, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Locking (PLCAttr):
+	description: 'True when attempting to obtain write lock'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062674.85
+	event_t_str: Wed May 23 10:04:34 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	name: Locking
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 164
+	read_bit: 0
+	read_t: 1527062663.72
+	read_t_str: Wed May 23 10:04:23 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062663.72
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062663.7164171, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 80
+	write_bit: 0
+
+MG_IS (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Magnet Interlock state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: MG_IS
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 5
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+MG_IS_Status (MeaningAttr):
+	alias: MG_IS_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: MG_IS:MeaningAttr
+	noneValue: 0
+	owner: MG_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.56
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PHS1_Phase (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.22
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: Phase shifter 1 phase monitor
+	lastEventQuality: ATTR_VALID
+	maxValue: 160
+	name: PHS1_Phase
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 40
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.0454577729106
+	rvalue: 0.0454577729106
+	timestamp: 1527063761.8
+	type: ('f', 4)
+	value: 0.0454577729106
+	vtq: (0.04545777291059494, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PHS1_Phase_setpoint (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.01}
+	format: %3.0f
+	label: Phase shifter 1 phase setpoint
+	lastEventQuality: ATTR_VALID
+	maxValue: 160
+	name: PHS1_Phase_setpoint
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 108
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.0
+	rvalue: 0.0
+	timestamp: 1527063761.8
+	type: ('f', 4)
+	value: 0.0
+	vtq: (0.0, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 24
+
+PHS1_ST (PLCAttr):
+	description: 'phase shifter 1 status: 0:undefined, 1:unset, 2:ready, 3:in limit fault, 4:out limit fault, 5:timeout fault'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: phase shifter 1 status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
+	name: PHS1_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 79
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2
+	reporter: PHS1_ST:ChangeReporter (to ['phs1_ready'])
+	rvalue: 2
+	timestamp: 1527063761.8
+	type: ('B', 1)
+	value: 2
+	vtq: (2, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PHS1_Status (MeaningAttr):
+	alias: PHS1_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
+	name: PHS1_ST:MeaningAttr
+	noneValue: 0
+	owner: PHS1_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.96
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 2:ready
+	timestamp: 1527063761.8
+	type: DevString
+	value: 2:ready
+	vtq: ('2:ready', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PHS2_Phase (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.22
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.01}
+	format: %4.1f
+	label: Phase shifter 2 phase monitor
+	lastEventQuality: ATTR_VALID
+	maxValue: 380
+	name: PHS2_Phase
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 56
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.0162690188736
+	rvalue: 0.0162690188736
+	timestamp: 1527063761.8
+	type: ('f', 4)
+	value: 0.0162690188736
+	vtq: (0.01626901887357235, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PHS2_Phase_setpoint (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {'Threshold': 0.01}
+	format: %3.0f
+	label: Phase shifter 2 phase setpoint
+	lastEventQuality: ATTR_VALID
+	maxValue: 380
+	name: PHS2_Phase_setpoint
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 140
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.0
+	rvalue: 0.0
+	timestamp: 1527063761.8
+	type: ('f', 4)
+	value: 0.0
+	vtq: (0.0, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 56
+
+PHS2_ST (PLCAttr):
+	description: 'phase shifter 2 status: 0:undefined, 1:unset, 2:ready, 3:in limit fault, 4:out limit fault, 5:timeout fault'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: phase shifter 2 status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
+	name: PHS2_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 80
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2
+	reporter: PHS2_ST:ChangeReporter (to ['phs2_ready'])
+	rvalue: 2
+	timestamp: 1527063761.8
+	type: ('B', 1)
+	value: 2
+	vtq: (2, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PHS2_Status (MeaningAttr):
+	alias: PHS2_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
+	name: PHS2_ST:MeaningAttr
+	noneValue: 0
+	owner: PHS2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.01
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: 2:ready
+	timestamp: 1527063761.8
+	type: DevString
+	value: 2:ready
+	vtq: ('2:ready', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PLC1_PR (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: PLC1 profibus receive status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: PLC1_PR
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 72
+	read_bit: 2
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PLC1_PR_Status (MeaningAttr):
+	alias: PLC1_PR_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: PLC1_PR:MeaningAttr
+	noneValue: 0
+	owner: PLC1_PR (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.59
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PLC1_PS (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: PLC1 profibus send status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: PLC1_PS
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 72
+	read_bit: 4
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+PLC1_PS_Status (MeaningAttr):
+	alias: PLC1_PS_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: PLC1_PS:MeaningAttr
+	noneValue: 0
+	owner: PLC1_PS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.6
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RFS_ST (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: RF source Status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'ready'}
+	name: RFS_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 68
+	read_bit: 5
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RFS_Status (MeaningAttr):
+	alias: RFS_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'ready'}
+	name: RFS_ST:MeaningAttr
+	noneValue: 0
+	owner: RFS_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.24
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:ready
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:ready
+	vtq: ('True:ready', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RF_OK (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: RF ready
+	lastEventQuality: ATTR_VALID
+	name: RF_OK
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 73
+	read_bit: 5
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RL1_UF (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: Resistor load 1 underflow state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'underflow', 1: 'normal'}
+	name: RL1_UF
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 1
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	reporter: RL1_UF:ChangeReporter (to ['ka1_ic'])
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RL1_UF_Status (MeaningAttr):
+	alias: RL1_UF_Status
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'underflow', 1: 'normal'}
+	name: RL1_UF:MeaningAttr
+	noneValue: 0
+	owner: RL1_UF (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.52
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RL2_UF (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: Resistor load 2 underflow state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'underflow', 1: 'normal'}
+	name: RL2_UF
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 2
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	reporter: RL2_UF:ChangeReporter (to ['ka1_ic'])
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RL2_UF_Status (MeaningAttr):
+	alias: RL2_UF_Status
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'underflow', 1: 'normal'}
+	name: RL2_UF:MeaningAttr
+	noneValue: 0
+	owner: RL2_UF (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.53
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RL3_UF (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Resistor load 3 underflow state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'underflow', 1: 'normal'}
+	name: RL3_UF
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 3
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	reporter: RL3_UF:ChangeReporter (to ['ka2_ic'])
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+RL3_UF_Status (MeaningAttr):
+	alias: RL3_UF_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'underflow', 1: 'normal'}
+	name: RL3_UF:MeaningAttr
+	noneValue: 0
+	owner: RL3_UF (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.54
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM1_DC (PLCAttr):
+	description: 'screen monitor 1; 0:up, 1:down'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: fs 1 valve
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'up', 1: 'down'}
+	name: SCM1_DC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 163
+	read_bit: 0
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 79
+
+SCM1_DC_Status (MeaningAttr):
+	alias: SCM1_DC_Status
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'up', 1: 'down'}
+	name: SCM1_DC:MeaningAttr
+	noneValue: 0
+	owner: SCM1_DC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.65
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: False:up
+	timestamp: 1527063761.8
+	type: DevString
+	value: False:up
+	vtq: ('False:up', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM1_LC (PLCAttr):
+	description: 'screen light 1 0:off, 1:on'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: fs 1 light
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'on'}
+	name: SCM1_LC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 163
+	read_bit: 3
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 79
+
+SCM1_LC_Status (MeaningAttr):
+	alias: SCM1_LC_Status
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'on'}
+	name: SCM1_LC:MeaningAttr
+	noneValue: 0
+	owner: SCM1_LC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.68
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: False:off
+	timestamp: 1527063761.8
+	type: DevString
+	value: False:off
+	vtq: ('False:off', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM1_ST (PLCAttr):
+	description: 'screen monitor 1 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: fs 1 status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
+	name: SCM1_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 76
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2
+	reporter: SCM1_ST:ChangeReporter (to ['SCM1_alert'])
+	rvalue: 2
+	timestamp: 1527063761.8
+	type: ('B', 1)
+	value: 2
+	vtq: (2, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM1_Status (MeaningAttr):
+	alias: SCM1_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
+	name: SCM1_ST:MeaningAttr
+	noneValue: 0
+	owner: SCM1_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.89
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 2:up
+	timestamp: 1527063761.8
+	type: DevString
+	value: 2:up
+	vtq: ('2:up', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM2_DC (PLCAttr):
+	description: 'screen monitor 2; 0:up, 1:down'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: fs 2 valve
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'up', 1: 'down'}
+	name: SCM2_DC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 163
+	read_bit: 1
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 79
+
+SCM2_DC_Status (MeaningAttr):
+	alias: SCM2_DC_Status
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'up', 1: 'down'}
+	name: SCM2_DC:MeaningAttr
+	noneValue: 0
+	owner: SCM2_DC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.66
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: False:up
+	timestamp: 1527063761.8
+	type: DevString
+	value: False:up
+	vtq: ('False:up', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM2_LC (PLCAttr):
+	description: 'screen light 2 0:off, 1:on'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: fs 2 light
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'on'}
+	name: SCM2_LC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 163
+	read_bit: 4
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 79
+
+SCM2_LC_Status (MeaningAttr):
+	alias: SCM2_LC_Status
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'on'}
+	name: SCM2_LC:MeaningAttr
+	noneValue: 0
+	owner: SCM2_LC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.69
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: False:off
+	timestamp: 1527063761.8
+	type: DevString
+	value: False:off
+	vtq: ('False:off', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM2_ST (PLCAttr):
+	description: 'screen monitor 2 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: fs 2 status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
+	name: SCM2_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 77
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2
+	reporter: SCM2_ST:ChangeReporter (to ['SCM2_alert'])
+	rvalue: 2
+	timestamp: 1527063761.8
+	type: ('B', 1)
+	value: 2
+	vtq: (2, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM2_Status (MeaningAttr):
+	alias: SCM2_Status
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
+	name: SCM2_ST:MeaningAttr
+	noneValue: 0
+	owner: SCM2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.91
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 2:up
+	timestamp: 1527063761.8
+	type: DevString
+	value: 2:up
+	vtq: ('2:up', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM3_DC (PLCAttr):
+	description: 'screen monitor 3; 0:up, 1:down'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: fs 3 valve
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'up', 1: 'down'}
+	name: SCM3_DC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 163
+	read_bit: 2
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 79
+
+SCM3_DC_Status (MeaningAttr):
+	alias: SCM3_DC_Status
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'up', 1: 'down'}
+	name: SCM3_DC:MeaningAttr
+	noneValue: 0
+	owner: SCM3_DC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.67
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: False:up
+	timestamp: 1527063761.8
+	type: DevString
+	value: False:up
+	vtq: ('False:up', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM3_LC (PLCAttr):
+	description: 'screen light 3 0:off, 1:on'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: fs 3 light
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'on'}
+	name: SCM3_LC
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 163
+	read_bit: 5
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 79
+
+SCM3_LC_Status (MeaningAttr):
+	alias: SCM3_LC_Status
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'on'}
+	name: SCM3_LC:MeaningAttr
+	noneValue: 0
+	owner: SCM3_LC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.7
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: False:off
+	timestamp: 1527063761.8
+	type: DevString
+	value: False:off
+	vtq: ('False:off', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM3_ST (PLCAttr):
+	description: 'screen monitor 3 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: fs 3 status
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
+	name: SCM3_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 78
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2
+	reporter: SCM3_ST:ChangeReporter (to ['SCM3_alert'])
+	rvalue: 2
+	timestamp: 1527063761.8
+	type: ('B', 1)
+	value: 2
+	vtq: (2, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM3_Status (MeaningAttr):
+	alias: SCM3_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
+	name: SCM3_ST:MeaningAttr
+	noneValue: 0
+	owner: SCM3_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.94
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 2:up
+	timestamp: 1527063761.8
+	type: DevString
+	value: 2:up
+	vtq: ('2:up', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SF6_P1 (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.86
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.001}
+	format: %4.2f
+	label: SF6 pressure 1
+	lastEventQuality: ATTR_VALID
+	maxValue: 5
+	minValue: -1
+	name: SF6_P1
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 2.8999999999999999, 'Above': 3.0499999999999998}}}
+	quality: ATTR_VALID
+	read_addr: 48
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [ 2.85806704  2.95271373  2.95271373  2.95271373  2.93481517  2.93481517
+  2.93481517  2.90821171  2.90821171  2.90821171]
+	rvalue: 2.90821170807
+	timestamp: 1527063761.8
+	type: ('f', 4)
+	value: 2.90821170807
+	vtq: (2.9082117080688477, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SF6_P1_ST (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: SF6 pressure 1 state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: SF6_P1_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 73
+	read_bit: 0
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	reporter: SF6_P1_ST:ChangeReporter (to ['ka1_ic'])
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SF6_P1_Status (MeaningAttr):
+	alias: SF6_P1_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: SF6_P1_ST:MeaningAttr
+	noneValue: 0
+	owner: SF6_P1_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.6
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SF6_P2 (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527063761.86
+	event_t_str: Wed May 23 10:22:41 2018
+	events: {'Threshold': 0.001}
+	format: %4.2f
+	label: SF6 pressure 2
+	lastEventQuality: ATTR_VALID
+	maxValue: 5
+	minValue: -1
+	name: SF6_P2
+	noneValue: nan
+	qualities: {'warning': {'abs': {'Below': 2.8999999999999999, 'Above': 3.0499999999999998}}}
+	quality: ATTR_VALID
+	read_addr: 52
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: [ 2.81287384  2.8543365   2.8543365   2.8543365   2.84629631  2.84629631
+  2.84629631  2.82102919  2.82102919  2.82102919]
+	rvalue: 2.82102918625
+	timestamp: 1527063761.8
+	type: ('f', 4)
+	value: 2.82102918625
+	vtq: (2.8210291862487793, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SF6_P2_ST (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: SF6 pressure 2 state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: SF6_P2_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 73
+	read_bit: 1
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	reporter: SF6_P2_ST:ChangeReporter (to ['ka2_ic'])
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SF6_P2_Status (MeaningAttr):
+	alias: SF6_P2_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: SF6_P2_ST:MeaningAttr
+	noneValue: 0
+	owner: SF6_P2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.62
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TB_GPA (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.0050000000000000001}
+	format: %4.1f
+	label: timer gun pulses attenuation
+	lastEventQuality: ATTR_VALID
+	minValue: -40
+	name: TB_GPA
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 104
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 0.0
+	rvalue: 0.0
+	timestamp: 1527063761.8
+	type: ('f', 4)
+	value: 0.0
+	vtq: (0.0, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 20
+
+TB_GPI (PLCAttr):
+	description: 'timer e-gun pulse interval (SBM) / width (MBM)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	format: %4d
+	label: timer e-gun pulse
+	lastEventQuality: ATTR_VALID
+	maxValue: 1054
+	minValue: 6
+	name: TB_GPI
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 156
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 64
+	rvalue: 64
+	timestamp: 1527063761.8
+	type: ('h', 2)
+	value: 64
+	vtq: (64, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 72
+
+TB_GPM (PLCAttr):
+	description: 'timer gated pulse mode: 0:beam on, 1:mix, 2:beam off'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	format: %1d
+	label: timer gated pulse mode
+	lastEventQuality: ATTR_VALID
+	maxValue: 2
+	meanings: {0: 'beam on', 1: 'mix', 2: 'beam off'}
+	name: TB_GPM
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 160
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2
+	rvalue: 2
+	timestamp: 1527063761.8
+	type: ('h', 2)
+	value: 2
+	vtq: (2, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 76
+
+TB_GPM_Status (MeaningAttr):
+	alias: TB_GPM_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'beam on', 1: 'mix', 2: 'beam off'}
+	name: TB_GPM:MeaningAttr
+	noneValue: 0
+	owner: TB_GPM (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.59
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: 2:beam off
+	timestamp: 1527063761.8
+	type: DevString
+	value: 2:beam off
+	vtq: ('2:beam off', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TB_GPN (PLCAttr):
+	description: 'number of pulses in SBM (not use in MBM)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	format: %2d
+	label: number of pulses
+	lastEventQuality: ATTR_VALID
+	maxValue: 16
+	minValue: 1
+	name: TB_GPN
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 158
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 8
+	rvalue: 8
+	timestamp: 1527063761.8
+	type: ('h', 2)
+	value: 8
+	vtq: (8, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 74
+
+TB_Gun_Delay (PLCAttr):
+	description: 'timer e-gun delay (step 32 ns)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	format: %4d
+	label: timer e-gun delay
+	lastEventQuality: ATTR_VALID
+	maxValue: 4096
+	minValue: 32
+	name: TB_Gun_Delay
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 154
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 3168
+	rvalue: 3168
+	timestamp: 1527063761.8
+	type: ('h', 2)
+	value: 3168
+	vtq: (3168, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 70
+
+TB_KA1_Delay (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	format: %2d
+	label: timer klystron amplifier 1 delay
+	lastEventQuality: ATTR_VALID
+	maxValue: 56
+	minValue: 1
+	name: TB_KA1_Delay
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 148
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 49
+	rvalue: 49
+	timestamp: 1527063761.8
+	type: ('h', 2)
+	value: 49
+	vtq: (49, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 64
+
+TB_KA2_Delay (PLCAttr):
+	description: 'timer klystron amplifier 2 delay (step 32 ns)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	format: %4d
+	label: timer klystron amplifier 2 delay
+	lastEventQuality: ATTR_VALID
+	maxValue: 4096
+	minValue: 544
+	name: TB_KA2_Delay
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 150
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 2720
+	rvalue: 2720
+	timestamp: 1527063761.8
+	type: ('h', 2)
+	value: 2720
+	vtq: (2720, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 66
+
+TB_MBM (PLCAttr):
+	description: 'timer multi bunch mode enabled; False:SBM, True:MBM'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: timer multi bunch mode
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'SBM', 1: 'MBM'}
+	name: TB_MBM
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 162
+	read_bit: 0
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 78
+
+TB_MBM_Status (MeaningAttr):
+	alias: TB_MBM_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'SBM', 1: 'MBM'}
+	name: TB_MBM:MeaningAttr
+	noneValue: 0
+	owner: TB_MBM (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062663.6
+	read_t_str: Wed May 23 10:04:23 2018
+	rvalue: True:MBM
+	timestamp: 1527063761.8
+	type: DevString
+	value: True:MBM
+	vtq: ('True:MBM', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TB_RF2_Delay (PLCAttr):
+	description: 'timer RF2 delay (step 8 ns)'
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.65
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	format: %4d
+	label: timer RF2 delay
+	lastEventQuality: ATTR_VALID
+	maxValue: 1920
+	minValue: 512
+	name: TB_RF2_Delay
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 152
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: 1920
+	rvalue: 1920
+	timestamp: 1527063761.8
+	type: ('h', 2)
+	value: 1920
+	vtq: (1920, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 68
+
+TB_ST (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Timer Status State
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'off', 1: 'ready'}
+	name: TB_ST
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 68
+	read_bit: 0
+	read_t: 1527063761.8
+	read_t_str: Wed May 23 10:22:41 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527063761.8
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TB_Status (MeaningAttr):
+	alias: TB_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'off', 1: 'ready'}
+	name: TB_ST:MeaningAttr
+	noneValue: 0
+	owner: TB_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.23
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: False:off
+	timestamp: 1527063761.8
+	type: DevString
+	value: False:off
+	vtq: ('False:off', 1527063761.8003199, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TL_VOK (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Transfer line vacuum OK (PSS)
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
+	name: TL_VOK
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 70
+	read_bit: 2
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063762.12
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TL_VOK_Status (MeaningAttr):
+	alias: TL_VOK_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
+	name: TL_VOK:MeaningAttr
+	noneValue: 0
+	owner: TL_VOK (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.27
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:good vacuum
+	timestamp: 1527063762.12
+	type: DevString
+	value: True:good vacuum
+	vtq: ('True:good vacuum', 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TPS0_Phase (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.01}
+	format: %3.1f
+	label: time phase shifter 0 phase
+	lastEventQuality: ATTR_VALID
+	maxValue: 380
+	name: TPS0_Phase
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 116
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: 192.0
+	rvalue: 192.0
+	timestamp: 1527063762.12
+	type: ('f', 4)
+	value: 192.0
+	vtq: (192.0, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 32
+
+TPS1_Phase (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.01}
+	format: %3.0f
+	label: time phase shifter 1 phase
+	lastEventQuality: ATTR_VALID
+	maxValue: 380
+	name: TPS1_Phase
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 120
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: 112.0
+	rvalue: 112.0
+	timestamp: 1527063762.12
+	type: ('f', 4)
+	value: 112.0
+	vtq: (112.0, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 36
+
+TPS2_Phase (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.01}
+	format: %3.0f
+	label: time phase shifter 2 phase
+	lastEventQuality: ATTR_VALID
+	maxValue: 380
+	name: TPS2_Phase
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 124
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: 151.0
+	rvalue: 151.0
+	timestamp: 1527063762.12
+	type: ('f', 4)
+	value: 151.0
+	vtq: (151.0, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 40
+
+TPSX_Phase (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {'Threshold': 0.01}
+	format: %3.0f
+	label: time phase shifter X phase
+	lastEventQuality: ATTR_VALID
+	maxValue: 380
+	name: TPSX_Phase
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 128
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: 145.0
+	rvalue: 145.0
+	timestamp: 1527063762.12
+	type: ('f', 4)
+	value: 145.0
+	vtq: (145.0, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+	write_addr: 44
+
+UT_IS (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Utilities Interlock state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: UT_IS
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 4
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1527063762.12
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+UT_IS_Status (MeaningAttr):
+	alias: UT_IS_Status
+	event_t: 1527062675.64
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: UT_IS:MeaningAttr
+	noneValue: 0
+	owner: UT_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.55
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063762.12
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+W1_UF (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: Window 1 underflow state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: W1_UF
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 70
+	read_bit: 6
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: True
+	reporter: W1_UF:ChangeReporter (to ['ka1_ic'])
+	rvalue: True
+	timestamp: 1527063762.12
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+W1_UF_Status (MeaningAttr):
+	alias: W1_UF_Status
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: W1_UF:MeaningAttr
+	noneValue: 0
+	owner: W1_UF (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.49
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063762.12
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+W2_UF (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	label: Window 2 underflow state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: W2_UF
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 70
+	read_bit: 7
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: True
+	reporter: W2_UF:ChangeReporter (to ['ka1_ic'])
+	rvalue: True
+	timestamp: 1527063762.12
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+W2_UF_Status (MeaningAttr):
+	alias: W2_UF_Status
+	event_t: 1527062675.63
+	event_t_str: Wed May 23 10:04:35 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: W2_UF:MeaningAttr
+	noneValue: 0
+	owner: W2_UF (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.5
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063762.12
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+W3_UF (PLCAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	label: Window 3 underflow state
+	lastEventQuality: ATTR_VALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: W3_UF
+	noneValue: 0
+	quality: ATTR_VALID
+	read_addr: 71
+	read_bit: 0
+	read_t: 1527063762.12
+	read_t_str: Wed May 23 10:22:42 2018
+	read_value: True
+	reporter: W3_UF:ChangeReporter (to ['ka2_ic'])
+	rvalue: True
+	timestamp: 1527063762.12
+	type: DevBoolean
+	value: True
+	vtq: (True, 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+W3_UF_Status (MeaningAttr):
+	alias: W3_UF_Status
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_INVALID
+	meanings: {0: 'fault', 1: 'normal'}
+	name: W3_UF:MeaningAttr
+	noneValue: 0
+	owner: W3_UF (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.51
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True:normal
+	timestamp: 1527063762.12
+	type: DevString
+	value: True:normal
+	vtq: ('True:normal', 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+A0_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	meaning: None
+	name: A0_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1527062663.8
+	read_t_str: Wed May 23 10:04:23 2018
+	timestamp: 1527062663.8
+	vtq: (None, 1527062663.7952199, PyTango._PyTango.AttrQuality.ATTR_INVALID)
+
+ATT2_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	meaning: None
+	name: ATT2_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1527062663.73
+	read_t_str: Wed May 23 10:04:23 2018
+	timestamp: 1527062663.73
+	vtq: (None, 1527062663.7319429, PyTango._PyTango.AttrQuality.ATTR_INVALID)
+
+GUN_CDB_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	meaning: None
+	name: GUN_CDB_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1527062663.76
+	read_t_str: Wed May 23 10:04:23 2018
+	timestamp: 1527062663.76
+	vtq: (None, 1527062663.7552509, PyTango._PyTango.AttrQuality.ATTR_INVALID)
+
+GUN_Cathode_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	meaning: None
+	name: GUN_Cathode_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1527062663.74
+	read_t_str: Wed May 23 10:04:23 2018
+	timestamp: 1527062663.74
+	vtq: (None, 1527062663.7440541, PyTango._PyTango.AttrQuality.ATTR_INVALID)
+
+GUN_HV_I_AutoStop (AutostopAttr):
+	above: inf
+	below: -20.0
+	device: LinacData(li/ct/plc1)
+	enable: True
+	events: {}
+	integr_t: 2.0
+	lastEventQuality: ATTR_INVALID
+	mean: 0.0120426381938
+	name: GUN_HV_I_AutoStop
+	noneValue: nan
+	quality: ATTR_VALID
+	read_t: 1527062662.16
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: [-0.01036478 -0.01036478 -0.01036478  0.02749378  0.02749378  0.02749378
+  0.01066394  0.01066394  0.01066394  0.03704755]
+	std: 0.0168921230596
+	switch: GUN_HV_ONC (PLCAttr)
+	timestamp: 1527063762.12
+	triggered: False
+	type: ('f', 4)
+	value: [-0.01036478 -0.01036478 -0.01036478  0.02749378  0.02749378  0.02749378
+  0.01066394  0.01066394  0.01066394  0.03704755]
+	vtq: (array([-0.01036478, -0.01036478, -0.01036478,  0.02749378,  0.02749378,
+        0.02749378,  0.01066394,  0.01066394,  0.01066394,  0.03704755]), 1527063762.1202459, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_I_AutoStop_Below_Threshold (AutoStopParameter):
+	alias: GUN_HV_I_AutoStop_Below_Threshold
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	name: GUN_HV_I_AutoStop:AutoStopParameter
+	noneValue: 0
+	owner: GUN_HV_I_AutoStop (AutostopAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.16
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: -20.0
+	timestamp: 1527062662.16
+	type: <type 'float'>
+	value: -20.0
+	vtq: (-20.0, 1527062662.1617129, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_I_AutoStop_Enable (AutoStopParameter):
+	alias: GUN_HV_I_AutoStop_Enable
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	name: GUN_HV_I_AutoStop:AutoStopParameter
+	noneValue: 0
+	owner: GUN_HV_I_AutoStop (AutostopAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.16
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: True
+	timestamp: 1527062662.16
+	type: <type 'bool'>
+	value: True
+	vtq: (True, 1527062662.1597509, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_I_AutoStop_IntegrationTime (AutoStopParameter):
+	alias: GUN_HV_I_AutoStop_IntegrationTime
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	name: GUN_HV_I_AutoStop:AutoStopParameter
+	noneValue: 0
+	owner: GUN_HV_I_AutoStop (AutostopAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.17
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 2.0
+	timestamp: 1527062662.17
+	type: <type 'float'>
+	value: 2.0
+	vtq: (2.0, 1527062662.165498, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_I_AutoStop_Mean (AutoStopParameter):
+	alias: GUN_HV_I_AutoStop_Mean
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	name: GUN_HV_I_AutoStop:AutoStopParameter
+	noneValue: 0
+	owner: GUN_HV_I_AutoStop (AutostopAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.17
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 0.0120426381938
+	timestamp: 1527062662.17
+	type: <type 'float'>
+	value: 0.0120426381938
+	vtq: (0.012042638193815947, 1527062662.1672111, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_I_AutoStop_Std (AutoStopParameter):
+	alias: GUN_HV_I_AutoStop_Std
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	name: GUN_HV_I_AutoStop:AutoStopParameter
+	noneValue: 0
+	owner: GUN_HV_I_AutoStop (AutostopAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.17
+	read_t_str: Wed May 23 10:04:22 2018
+	rvalue: 0.0168921230596
+	timestamp: 1527062662.17
+	type: <type 'float'>
+	value: 0.0168921230596
+	vtq: (0.016892123059599317, 1527062662.169085, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HV_I_AutoStop_Triggered (AutoStopParameter):
+	alias: GUN_HV_I_AutoStop_Triggered
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	name: GUN_HV_I_AutoStop:AutoStopParameter
+	noneValue: 0
+	owner: GUN_HV_I_AutoStop (AutostopAttr)
+	quality: ATTR_VALID
+	read_t: 1527062662.17
+	read_t_str: Wed May 23 10:04:22 2018
+	reporter: GUN_HV_I_AutoStop:AutoStopParameter:ChangeReporter (to ['Gun_HV_ready'])
+	rvalue: False
+	timestamp: 1527062662.17
+	type: <type 'bool'>
+	value: False
+	vtq: (False, 1527062662.1727381, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+GUN_HVps_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	meaning: None
+	name: GUN_HVps_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1527062663.77
+	read_t_str: Wed May 23 10:04:23 2018
+	timestamp: 1527062663.77
+	vtq: (None, 1527062663.766881, PyTango._PyTango.AttrQuality.ATTR_INVALID)
+
+Gun_HV_ready (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: Gun_HV_ready:Logic ({'GUN_HV_I_AutoStop_Triggered': [False], 'GM_DI': [True]}, and, normal)
+	name: Gun_HV_ready
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062669.55
+	read_t_str: Wed May 23 10:04:29 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062669.55
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062669.54987, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+Gun_ready (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: Gun_ready:Logic ({'Gun_ST': [1, 8]}, and, normal)
+	name: Gun_ready
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.64
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.64
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.6412151, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+LLRF_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	meaning: None
+	name: LLRF_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1527062663.81
+	read_t_str: Wed May 23 10:04:23 2018
+	timestamp: 1527062663.81
+	vtq: (None, 1527062663.808372, PyTango._PyTango.AttrQuality.ATTR_INVALID)
+
+SCM1_alert (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: SCM1_alert:Logic ({'SCM1_ST': [3, 4]}, and, normal)
+	name: SCM1_alert
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.63
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.63
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.6286221, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM2_alert (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.57
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: SCM2_alert:Logic ({'SCM2_ST': [3, 4]}, and, normal)
+	name: SCM2_alert
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.65
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.65
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.6481719, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+SCM3_alert (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.54
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: SCM3_alert:Logic ({'SCM3_ST': [3, 4]}, and, normal)
+	name: SCM3_alert
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.63
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.63
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.6267869, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+TU_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc1)
+	lastEventQuality: ATTR_INVALID
+	meaning: None
+	name: TU_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1527062663.78
+	read_t_str: Wed May 23 10:04:23 2018
+	timestamp: 1527062663.78
+	vtq: (None, 1527062663.7807109, PyTango._PyTango.AttrQuality.ATTR_INVALID)
+
+att2_ready (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.56
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: att2_ready:Logic ({'ATT2_ST': [2]}, and, normal)
+	name: att2_ready
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.64
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.64
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.6383021, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+ka1_ic (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.55
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: ka1_ic:Logic ({'RL1_UF': [1], 'SF6_P1_ST': [1], 'RL2_UF': [1], 'W2_UF': [1], 'W1_UF': [1]}, and, normal)
+	name: ka1_ic
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.64
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.64
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.6399779, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+ka2_ic (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.57
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: ka2_ic:Logic ({'SF6_P2_ST': [1], 'W3_UF': [1], 'RL3_UF': [1]}, and, normal)
+	name: ka2_ic
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.65
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.65
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.6450169, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+phs1_ready (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.58
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: phs1_ready:Logic ({'PHS1_ST': [2]}, and, normal)
+	name: phs1_ready
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.65
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.65
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.650821, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
+phs2_ready (InternalAttr):
+	device: LinacData(li/ct/plc1)
+	event_t: 1527062669.57
+	event_t_str: Wed May 23 10:04:29 2018
+	events: {}
+	lastEventQuality: ATTR_VALID
+	logicObj: phs2_ready:Logic ({'PHS2_ST': [2]}, and, normal)
+	name: phs2_ready
+	noneValue: 0
+	quality: ATTR_VALID
+	read_t: 1527062675.64
+	read_t_str: Wed May 23 10:04:35 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1527062675.64
+	type: DevBoolean
+	value: False
+	vtq: (False, 1527062675.643996, PyTango._PyTango.AttrQuality.ATTR_VALID)
+
