@@ -63,6 +63,7 @@ class Logic(_LinacFeature):
     #     return self._inverted
 
     def _evalLogical(self):
+        was = self.owner.read_value
         values = []
         for key in self._logic.keys():
             try:
@@ -81,7 +82,6 @@ class Logic(_LinacFeature):
             result = any(values)
         elif self._operator == 'and':
             result = all(values)
-        self.owner.read_t = time()
         if self._inverted:
             result = not result
             self.debug("For %s: values %s (%s) (inverted) answer %s"
@@ -89,11 +89,10 @@ class Logic(_LinacFeature):
         else:
             self.debug("For %s: values %s (%s) answer %s"
                        % (self.owner, values, self._operator, result))
-        if result != self.owner.read_value:
-            if self.owner.read_value is not None:
-                self.info("value change")
-                # FIXME: when change propagation done,
-                #        this message can be removed
+        self.owner.read_t = time()  # when has been re-evaluated
+        if result != was:
+            self.info("value change to %s (was %s)" % (result, was))
+            # FIXME: when change propagation done, this message can be removed
             self.owner.read_value = result
             self.owner.launchEvents()
 
