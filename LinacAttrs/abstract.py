@@ -15,10 +15,52 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import functools
+from .LinacFeatures import Memorised
+from PyTango import Database
+
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
+
+
+class LinacException(Exception):
+    pass
+
+
+def CommandExc(f):
+    '''Decorates commands so that the exception is logged and also raised.
+    '''
+    def g(self, *args, **kwargs):
+        inst = self  # < for pychecker
+        try:
+            return f(inst, *args, **kwargs)
+        except LinacException:
+            raise
+        except Exception, exc:
+            traceback.print_exc(exc)
+            self._trace = traceback.format_exc(exc)
+            raise
+    functools.update_wrapper(g, f)
+    return g
+
+
+def AttrExc(f):
+    '''Decorates commands so that the exception is logged and also raised.
+    '''
+    def g(self, attr, *args, **kwargs):
+        inst = self  # < for pychecker
+        try:
+            return f(inst, attr, *args, **kwargs)
+        except LinacException:
+            raise
+        except Exception, exc:
+            traceback.print_exc(exc)
+            self._trace = traceback.format_exc(exc)
+            raise
+    functools.update_wrapper(g, f)
+    return g
 
 
 class _AbstractAttrLog(object):
@@ -171,3 +213,137 @@ class _AbstractAttrDict(object):
 
     def pop(self, key):
         self[key] = None
+
+class _AbstractAttrTango(object):
+
+    _device = None
+
+    _memorised = None
+    _memorisedLst = None
+
+    def __init__(self, device=None, memorized=False, *args, **kwargs):
+        super(_AbstractAttrTango, self).__init__(*args, **kwargs)
+        self.device = device
+        if memorized:
+            self.setMemorised()
+#             self._memorised = Memorised(owner=self)
+#             if not self._memorised.recover():
+#                 self.warning("Cannot recover value from the database")
+#             self._memorisedLst = []
+
+    @property
+    def device(self):
+        return self._device
+
+    @device.setter
+    def device(self, value):
+        if value is not None:
+            # self.debug("Link to the device %s" % value)
+            self._device = value
+        self._tangodb = Database()
+        if self._memorisedLst:
+            for suffix in self._memorisedLst:
+                self._memorised.recover(suffix)
+
+    def isAllowed(self):
+        if self.device is None:
+            return True
+        if self.device.get_state in [DevState.FAULT]:
+            return False
+        return True
+
+    def isReadAllowed(self):
+        return self.isAllowed()
+
+    def isWriteAllowed(self, attr=None):
+        if attr is not None:
+            if not attr.get_writable() in [AttrWriteType.READ_WRITE]:
+                return False
+        return self.isAllowed()
+
+    @AttrExc
+    def read_attr(self, attr):
+        if not self.isReadAllowed():
+            return
+        if attr is not None:
+            attrName = self._getAttrName(attr)
+            self.debug("Received a read request for %s" % attrName)
+#             suffix = self._getSuffix(attrName)
+#             print suffix
+#             print "%r"%self
+#             if not hasattr(self, suffix):
+#                 # FIXME: no way to read, raise exception
+#                 self.warning("No way to read %s" % suffix)
+#                 return  # raise ValueError("Can NOT read %s" % suffix)
+#             readValue = getattr(self, suffix)
+            self._setAttrValue(attr, self.value)
+
+    @AttrExc
+    def write_attr(self, attr, value=None):
+        if not self.isWriteAllowed():
+            return
+        if attr is not None:
+            # stablish the data to be written
+            if hasattr(attr, 'get_write_value'):
+                data = []
+                attr.get_write_value(data)
+                writeValue = data[0]
+            elif value is not None:
+                writeValue = value
+            else:
+                self.warning("No value to write")
+                return
+            # then work with the attribute
+            attrName = self._getAttrName(attr)
+            self.info("Received a write request for %s, value %s"
+                      % (attrName, writeValue))
+            suffix = self._getSuffix(attrName)
+            if self.alias == attrName:
+                self.rvalue = writeValue
+                readValue = self.value
+            elif not hasattr(self, suffix):
+                # FIXME: no way to read, raise exception
+                self.warning("No way to write %s for %s"
+                             % (suffix, self.alias))
+                return  # raise ValueError("Can NOT write %s" % suffix)
+            else:
+                self.__class__.__dict__[suffix].fset(self, writeValue)
+                readValue = getattr(self, suffix)
+            if self._memorisedLst is not None:
+                if suffix in self._memorisedLst:
+                    self._memorised.store(readValue, suffix)
+                elif len(self._memorisedLst) == 0:
+                    self._memorised.store(readValue)
+            self._setAttrValue(attr, readValue)
+
+    @property
+    def memorisedLst(self):
+        if self._memorisedLst:
+            return self._memorisedLst[:]
+
+    def setMemorised(self, suffix=None):
+        if not self._memorised:
+            self._memorised = Memorised(owner=self)
+        if not suffix:
+            if not self._memorised.recover():
+                self.warning("Cannot recover value %sfrom the database"
+                             % ("for %s " % self.alias
+                                if self.alias is not None else ""))
+            self._memorisedLst = []
+        elif self._memorisedLst and suffix not in self._memorisedLst:
+            self._memorisedLst.append(suffix)
+            if self.device is not None:
+                self._memorised.recover(suffix)
+
+    def isMemorised(self):
+        return self._memorised is not None
+
+    def store(self, value, suffix=None):
+        if self.isMemorised():
+            return self._memorised.store(value, suffix)
+        return False
+
+    def recover(self, suffix=None):
+        if self.isMemorised():
+            return self._memorised.recover(suffix)
+        return False

@@ -15,10 +15,11 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .abstract import LinacException, CommandExc, AttrExc
 from .autostopAttr import AutostopAttr, AutoStopParameter
 from .enumAttr import EnumerationAttr
 from .internalAttr import InternalAttr
-from .linacAttr import LinacAttr, LinacException, CommandExc, AttrExc
+from .linacAttr import LinacAttr
 from .logicAttr import LogicAttr
 from .meaningAttr import MeaningAttr
 from .plcAttr import PLCAttr

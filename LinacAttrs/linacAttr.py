@@ -15,11 +15,10 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .abstract import _AbstractAttrLog, _AbstractAttrDict
-import functools
-from .LinacFeatures import Events, Memorised, ChangeReporter
+from .abstract import _AbstractAttrLog, _AbstractAttrDict, _AbstractAttrTango
+from .LinacFeatures import Events, ChangeReporter
 from .LinacFeatures import CircularBuffer, HistoryBuffer
-from PyTango import AttrQuality, Database, DevFailed, DevState, AttrWriteType
+from PyTango import AttrQuality, DevFailed, DevState, AttrWriteType
 from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
 from PyTango import DevLong, DevLong64, DevULong, DevULong64
@@ -34,44 +33,6 @@ __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-class LinacException(Exception):
-    pass
-
-
-def CommandExc(f):
-    '''Decorates commands so that the exception is logged and also raised.
-    '''
-    def g(self, *args, **kwargs):
-        inst = self  # < for pychecker
-        try:
-            return f(inst, *args, **kwargs)
-        except LinacException:
-            raise
-        except Exception, exc:
-            traceback.print_exc(exc)
-            self._trace = traceback.format_exc(exc)
-            raise
-    functools.update_wrapper(g, f)
-    return g
-
-
-def AttrExc(f):
-    '''Decorates commands so that the exception is logged and also raised.
-    '''
-    def g(self, attr, *args, **kwargs):
-        inst = self  # < for pychecker
-        try:
-            return f(inst, attr, *args, **kwargs)
-        except LinacException:
-            raise
-        except Exception, exc:
-            traceback.print_exc(exc)
-            self._trace = traceback.format_exc(exc)
-            raise
-    functools.update_wrapper(g, f)
-    return g
-
-
 TYPE_MAP = {DevUChar: ('B', 1),
             DevShort: ('h', 2),
             DevFloat: ('f', 4),
@@ -80,14 +41,12 @@ TYPE_MAP = {DevUChar: ('B', 1),
             }
 
 
-class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
+class LinacAttr(_AbstractAttrLog, _AbstractAttrDict, _AbstractAttrTango):
 
     _readValue = None
     _writeValue = None
     _minValue = None
     _maxValue = None
-
-    _device = None
 
     _qualities = None
 
@@ -101,13 +60,9 @@ class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
     _AutoStop = None
     _switchDescriptor = None
 
-    _memorised = None
-    _memorisedLst = None
-
     _changeReporter = None
 
-    def __init__(self, name, valueType, device=None, memorized=False,
-                 events=None, minValue=None, maxValue=None, *args, **kwargs):
+    def __init__(self, name, valueType, events=None, minValue=None, maxValue=None, *args, **kwargs):
         # meanings must be is a subclass of LinacAttr or
         # generates a circular import because MeaningAttr
         # inherits from LinacAttr.
@@ -123,14 +78,7 @@ class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
             self._type = TYPE_MAP[valueType]
         if events is not None:
             self.events = events
-        if memorized:
-            self.setMemorised()
-#             self._memorised = Memorised(owner=self)
-#             if not self._memorised.recover():
-#                 self.warning("Cannot recover value from the database")
-#             self._memorisedLst = []
         self._tangodb = None
-        self.device = device
         self._timestamp = time()
         self._quality = AttrQuality.ATTR_VALID
         if self._type == ('f', 4):
@@ -177,20 +125,6 @@ class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
     def alias(self, value):
         if isinstance(value, str):
             self._alias = value
-
-    @property
-    def device(self):
-        return self._device
-
-    @device.setter
-    def device(self, value):
-        if value is not None:
-            # self.debug("Link to the device %s" % value)
-            self._device = value
-        self._tangodb = Database()
-        if self._memorisedLst:
-            for suffix in self._memorisedLst:
-                self._memorised.recover(suffix)
 
     @property
     def value(self):
@@ -245,76 +179,7 @@ class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
 
     ##########################
     # Tango attribute area ---
-    def isAllowed(self):
-        if self.device is None:
-            return True
-        if self.device.get_state in [DevState.FAULT]:
-            return False
-        return True
 
-    def isReadAllowed(self):
-        return self.isAllowed()
-
-    def isWriteAllowed(self, attr=None):
-        if attr is not None:
-            if not attr.get_writable() in [AttrWriteType.READ_WRITE]:
-                return False
-        return self.isAllowed()
-
-    @AttrExc
-    def read_attr(self, attr):
-        if not self.isReadAllowed():
-            return
-        if attr is not None:
-            attrName = self._getAttrName(attr)
-            self.debug("Received a read request for %s" % attrName)
-#             suffix = self._getSuffix(attrName)
-#             print suffix
-#             print "%r"%self
-#             if not hasattr(self, suffix):
-#                 # FIXME: no way to read, raise exception
-#                 self.warning("No way to read %s" % suffix)
-#                 return  # raise ValueError("Can NOT read %s" % suffix)
-#             readValue = getattr(self, suffix)
-            self._setAttrValue(attr, self.value)
-
-    @AttrExc
-    def write_attr(self, attr, value=None):
-        if not self.isWriteAllowed():
-            return
-        if attr is not None:
-            # stablish the data to be written
-            if hasattr(attr, 'get_write_value'):
-                data = []
-                attr.get_write_value(data)
-                writeValue = data[0]
-            elif value is not None:
-                writeValue = value
-            else:
-                self.warning("No value to write")
-                return
-            # then work with the attribute
-            attrName = self._getAttrName(attr)
-            self.info("Received a write request for %s, value %s"
-                      % (attrName, writeValue))
-            suffix = self._getSuffix(attrName)
-            if self.alias == attrName:
-                self.rvalue = writeValue
-                readValue = self.value
-            elif not hasattr(self, suffix):
-                # FIXME: no way to read, raise exception
-                self.warning("No way to write %s for %s"
-                             % (suffix, self.alias))
-                return  # raise ValueError("Can NOT write %s" % suffix)
-            else:
-                self.__class__.__dict__[suffix].fset(self, writeValue)
-                readValue = getattr(self, suffix)
-            if self._memorisedLst is not None:
-                if suffix in self._memorisedLst:
-                    self._memorised.store(readValue, suffix)
-                elif len(self._memorisedLst) == 0:
-                    self._memorised.store(readValue)
-            self._setAttrValue(attr, readValue)
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
@@ -441,40 +306,6 @@ class LinacAttr(_AbstractAttrLog, _AbstractAttrDict):
     @baseSet.setter
     def baseSet(self, value):
         self._baseSet = value
-
-    ########################################
-    # Tango memorized dynamic attributes ---
-    @property
-    def memorisedLst(self):
-        if self._memorisedLst:
-            return self._memorisedLst[:]
-
-    def setMemorised(self, suffix=None):
-        if not self._memorised:
-            self._memorised = Memorised(owner=self)
-        if not suffix:
-            if not self._memorised.recover():
-                self.warning("Cannot recover value %sfrom the database"
-                             % ("for %s " % self.alias
-                                if self.alias is not None else ""))
-            self._memorisedLst = []
-        elif self._memorisedLst and suffix not in self._memorisedLst:
-            self._memorisedLst.append(suffix)
-            if self.device is not None:
-                self._memorised.recover(suffix)
-
-    def isMemorised(self):
-        return self._memorised is not None
-
-    def store(self, value, suffix=None):
-        if self.isMemorised():
-            return self._memorised.store(value, suffix)
-        return False
-
-    def recover(self, suffix=None):
-        if self.isMemorised():
-            return self._memorised.recover(suffix)
-        return False
 
     #############################################################
     # Dependencies between attributes and changes propagation ---
