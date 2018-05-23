@@ -18,7 +18,7 @@
 from .abstract import _AbstractAttrLog, _AbstractAttrDict, _AbstractAttrTango
 from .LinacFeatures import Events, ChangeReporter
 from .LinacFeatures import CircularBuffer, HistoryBuffer
-from PyTango import AttrQuality, DevFailed, DevState, AttrWriteType
+from PyTango import AttrQuality
 from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
 from PyTango import DevLong, DevLong64, DevULong, DevULong64
