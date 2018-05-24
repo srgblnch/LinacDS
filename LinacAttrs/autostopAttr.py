@@ -73,6 +73,9 @@ class AutoStopAttr(LinacAttr):
         self._std.rvalue = float('nan')
         self._triggered.rvalue = False
         self._plcAttr.read_value.append_cb(self.newvaluecb)
+        self._integr_t.hook = self.integr_t_changed
+        self._mean.hook = self.mean_changed
+        self._triggered.hook = self.triggered_changed
         self.info("Build %s between (%s,%s)" % (self.name, self._below.value,
                                                 self._above.value))
 
@@ -118,11 +121,33 @@ class AutoStopAttr(LinacAttr):
     def integr_t(self):
         return self._integr_t.value
 
+    def integr_t_changed(self):
+        period = self._plcAttr._device._getPlcUpdatePeriod()
+        samples = round(self._integr_t.value / period)
+        if self._plcAttr.read_value.maxSize() != samples:
+            self.info("Modify the buffer size")
+            self._plcAttr.read_value.resize(samples)
+
     @property
     def mean(self):
-        if self._enable.value:
+        if self.enable:
             return self._mean.value
         return float('nan')
+
+    def mean_changed(self):
+        if not self.triggered and self._triggerCondition():
+            self._triggered.rvalue = True
+
+    def _triggerCondition(self):
+        if self.mean > self.above:
+            self.info("mean value above the threshold! (%e > %e)"
+                      % (self.mean, self.above))
+            return True
+        elif self.mean < self.below:
+            self.info("mean value below the threshold! (%e < %e)"
+                      % (self.mean, self.below))
+            return True
+        return False
 
     @property
     def std(self):
@@ -134,6 +159,16 @@ class AutoStopAttr(LinacAttr):
     def triggered(self):
         return self._triggered.value
 
+    def triggered_changed(self):
+        if self.enable:
+            if not self.triggered:
+                self.info("AutoStop triggered! Stop the switch")
+
+    def trigger_reset(self):
+        if self.triggered:
+            self.info("AutoStop trigger reset")
+            self._triggered.rvalue = False
+
 
 class AutoStopParameter(_LinacFeature, LinacAttr):
 
@@ -141,14 +176,16 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
     _type = None
     _value = None
     _write_t = None
+    _hook = None
 
     def __init__(self, owner, tag, dataType, *args, **kwargs):
         super(AutoStopParameter, self).__init__(owner=owner,
-                                                name="%s:fsda"
-                                                % (owner.name),
+                                                name="%s:%s"
+                                                % (owner.name, tag),
                                                 valueType=dataType,
                                                 *args, **kwargs)
         self._tag = tag
+        self._name = "%s(%s)" % (self._name, self._tag)
         if dataType == DevFloat:
             self._type = float
         elif dataType == DevBoolean:
@@ -173,16 +210,27 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
             if self._value != value:
                 self._write_t = time()
                 self._value = value
-                # self.__event(self._tag, self._value, self._write_t)
+                self.__event(self._tag, self._value, self._write_t)
+                if self.hook:
+                    self._hook()
         else:
             try:
                 self.rvalue = eval("%s(%s)" % (self._type.__name__, value))
             except:
                 self.warning("rvalue assignment failed in the eval() section")
 
+    @property
+    def hook(self):
+        return self._hook is not None
+
+    @hook.setter
+    def hook(self, func):
+        self._hook = func
+
     def __event(self, suffix, value, timestamp):
         if self._owner and self._owner._eventsObj:
             attrName = "%s_%s" % (self._owner.name, suffix)
             eventsObj = self._owner._eventsObj
+            # self.info("fireEvent(%s, %s,...)" % (attrName, value))
             eventsObj.fireEvent(attrName, value, timestamp,
                                 AttrQuality.ATTR_VALID)
