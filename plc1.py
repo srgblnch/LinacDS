@@ -79,7 +79,7 @@ Attr('GUN_HV_V',
 # R036 @HVS_CM ---
 Attr('GUN_HV_I',
      PyTango.DevFloat, 36,  # RO
-     label='High voltlabel=e PS current',
+     label='High voltage PS current',
      desc='high voltage PS current (leakage current)',
      format='%4.1f', minValue=-600, maxValue=1, unit='μA',
      events={THRESHOLD: 0.01},
