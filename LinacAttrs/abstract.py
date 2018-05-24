@@ -19,6 +19,7 @@ import functools
 from .LinacFeatures import Memorised
 from PyTango import DevState, AttrWriteType
 from PyTango import Database
+import traceback
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
