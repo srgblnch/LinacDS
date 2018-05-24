@@ -107,9 +107,9 @@ class Logic(_LinacFeature):
     def __evalLst(self, name, lst):
         """
         """
-        self.debug("%s list2eval: %r" % (name, lst))
-        value = self.owner.read_value
-        self.debug("%s value: %r" % (name, value))
+        attrStruct = self.owner.device._getAttrStruct(name)
+        value = attrStruct.rvalue
+        self.info("%s %s in %s = %s" % (name, value, lst, value in lst))
         return value in lst
 
     def __evalQuality(self, name, lst):
@@ -118,5 +118,7 @@ class Logic(_LinacFeature):
         attrStruct = self.owner.device._getAttrStruct(name)
         if LASTEVENTQUALITY in attrStruct:
             quality = attrStruct[LASTEVENTQUALITY]
+            self.info("%s %s in %s = %s"
+                      % (name, quality, lst, quality in lst))
             return quality in lst
         return False
