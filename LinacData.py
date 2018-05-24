@@ -50,7 +50,7 @@ from types import StringType
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
 from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
-                        AutostopAttr, AutoStopParameter)
+                        AutoStopAttr, AutoStopParameter)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -390,7 +390,7 @@ class AttrList(object):
         if type(switchDescriptor) == dict:
             self.impl._plcAttrs[name][SWITCHDESCRIPTOR] = switchDescriptor
             self.impl._plcAttrs[name][SWITCHDEST] = None
-            # in the construction of the AutostopAttr() the current switch
+            # in the construction of the AutoStopAttr() the current switch
             # may not be build yet. Then now they must be linked together.
             if AUTOSTOP in switchDescriptor:
                 autostopAttrName = switchDescriptor[AUTOSTOP]
@@ -920,7 +920,7 @@ class AttrList(object):
             # build yet. That's why the name (as string) is stored.
             # Later, when the switch (AttrAddrBit) is build, this assignment
             # will be completed.
-        autostopper = AutostopAttr(name=autostopperName,
+        autostopper = AutoStopAttr(name=autostopperName,
                                    valueType=attrType,
                                    device=self.impl,
                                    plcAttr=self.impl._plcAttrs[baseName],
@@ -1622,7 +1622,7 @@ class LinacData(PyTango.Device_4Impl):
                                                             InternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
-                                                            AutostopAttr,
+                                                            AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
                 attrStruct.read_attr(attr)
@@ -1672,7 +1672,7 @@ class LinacData(PyTango.Device_4Impl):
                                                             InternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
-                                                            AutostopAttr,
+                                                            AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
                 attrStruct.read_attr(attr)
@@ -1785,7 +1785,7 @@ class LinacData(PyTango.Device_4Impl):
                                                             InternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
-                                                            AutostopAttr,
+                                                            AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
                 attrStruct.read_attr(attr)
@@ -1986,7 +1986,7 @@ class LinacData(PyTango.Device_4Impl):
                                                             InternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
-                                                            AutostopAttr,
+                                                            AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
                 attrStruct.write_attr(attr)
@@ -2011,16 +2011,16 @@ class LinacData(PyTango.Device_4Impl):
                 return  # raise AttributeError("Not available in fault state!")
             name = attr.get_name()
             write_value = self.prepare_write(attr)
-            self.doWriteAttrBit(name, write_value)
+            self.doWriteAttrBit(attr, name, write_value)
             self.__doTraceAttr(name, "write_attr_bit")
 
-        def doWriteAttrBit(self, name, write_value):
+        def doWriteAttrBit(self, attr, name, write_value):
             attrStruct = self._getAttrStruct(name)
             if any([isinstance(attrStruct, kls) for kls in [PLCAttr,
                                                             InternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
-                                                            AutostopAttr,
+                                                            AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
                 attrStruct.read_attr(attr)

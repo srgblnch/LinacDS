@@ -19,7 +19,7 @@ from .linacAttr import LinacAttr
 from .LinacFeatures import CircularBuffer
 from .LinacFeatures import _LinacFeature
 from PyTango import AttrQuality, DevBoolean, DevFloat
-from time import ctime
+from time import time
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -27,7 +27,7 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-class AutostopAttr(LinacAttr):
+class AutoStopAttr(LinacAttr):
     # TODO: when internalAttr becomes more generic (logicAttr, grpAttr)
     #       make this class inherit from internalAttr.
 
@@ -40,7 +40,7 @@ class AutostopAttr(LinacAttr):
 
     def __init__(self, plcAttr, below=None, above=None, switchAttr=None,
                  integr_t=None, *args, **kwargs):
-        super(AutostopAttr, self).__init__(*args, **kwargs)
+        super(AutoStopAttr, self).__init__(*args, **kwargs)
         self._plcAttr = plcAttr
         self._switchAttr = switchAttr
         self._enable = AutoStopParameter(tag="Enable", dataType=DevBoolean,
@@ -171,7 +171,7 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
     def rvalue(self, value):
         if isinstance(value, self._type):
             if self._value != value:
-                self._write_t = ctime()
+                self._write_t = time()
                 self._value = value
                 # self.__event(self._tag, self._value, self._write_t)
         else:

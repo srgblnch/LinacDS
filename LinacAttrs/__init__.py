@@ -16,7 +16,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from .abstract import LinacException, CommandExc, AttrExc
-from .autostopAttr import AutostopAttr, AutoStopParameter
+from .autostopAttr import AutoStopAttr, AutoStopParameter
 from .enumAttr import EnumerationAttr
 from .internalAttr import InternalAttr
 from .linacAttr import LinacAttr
