@@ -1516,15 +1516,29 @@ class LinacData(PyTango.Device_4Impl):
             '''Given an attribute name, return the internal structure that
                defines its behaviour.
             '''
-            if attrName in self._plcAttrs:
-                return self._plcAttrs[attrName]
-            elif attrName in self._internalAttrs:
-                return self._internalAttrs[attrName]
+            try:
+                return self._plcAttrs[
+                    self.__getDctCaselessKey(attrName, self._plcAttrs)]
+            except ValueError as e:
+                pass  # simply was not in the plcAttrs
+            try:
+                return self._internalAttrs[
+                    self.__getDctCaselessKey(attrName, self._internalAttrs)]
+            except ValueError as e:
+                pass  # simply was not in the internalAttrs
             if attrName.count('_'):
                 mainName, suffix = attrName.rsplit('_', 1)
-                if mainName in self._internalAttrs:
-                    return self._internalAttrs[mainName]
+                try:
+                    return self._internalAttrs[
+                        self.__getDctCaselessKey(mainName,
+                                                 self._internalAttrs)]
+                except ValueError as e:
+                    pass  # simply was not in the internalAttrs
             return None
+
+        def __getDctCaselessKey(self, key, dct):
+            position = [e.lower() for e in dct].index(key.lower())
+            return dct.keys()[position]
 
         def __solveFormula(self, attrName, VALUE, formula):
             '''Some attributes can have a formula to interpret or modify the
