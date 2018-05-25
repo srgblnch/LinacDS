@@ -105,7 +105,7 @@ class _AbstractAttrLog(object):
             print("DEBUG: %s" % (msg))
 
 
-class _AbstractAttrDict(object):
+class _AbstractAttrDict(_AbstractAttrLog):
 
     _keysLst = None
 
@@ -216,7 +216,7 @@ class _AbstractAttrDict(object):
     def pop(self, key):
         self[key] = None
 
-class _AbstractAttrTango(object):
+class _AbstractAttrTango(_AbstractAttrLog):
 
     _device = None
 

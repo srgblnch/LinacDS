@@ -15,7 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .abstract import _AbstractAttrLog, _AbstractAttrDict, _AbstractAttrTango
+from .abstract import _AbstractAttrDict, _AbstractAttrTango
 from .LinacFeatures import Events, ChangeReporter
 from .LinacFeatures import CircularBuffer, HistoryBuffer
 from PyTango import AttrQuality
@@ -41,7 +41,7 @@ TYPE_MAP = {DevUChar: ('B', 1),
             }
 
 
-class LinacAttr(_AbstractAttrLog, _AbstractAttrDict, _AbstractAttrTango):
+class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
 
     _readValue = None
     _writeValue = None
