@@ -15,9 +15,10 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .linacAttr import LinacAttr
+from .abstract import LinacException
+from .linacAttr import LinacAttr, TYPE_MAP
 from .meaningAttr import MeaningAttr
-from PyTango import DevBoolean
+from PyTango import DevBoolean, DevUChar
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -68,6 +69,10 @@ class PLCAttr(LinacAttr):
         # self.debug("%s PLCAttr build" % self.name)
 
     def hardwareRead(self, datablock):
+        if datablock is None:
+            self.warning("Not ready to read from hardware")
+            return
+        # self.info("Hardware read (%s)" % self.rValue)
         if self.type == DevBoolean:
             value = datablock.bit(self._readAddr, self._readBit)
         else:
@@ -76,6 +81,41 @@ class PLCAttr(LinacAttr):
             self.read_value = value
             self._timestamp = self._device.last_update_time
         return value
+
+    def hardwareWrite(self, datablock):
+        if datablock is None:
+            self.warning("Not ready to write on hardware")
+            return
+        self.info("Hardware write (%s)" % self.wvalue)
+        # TODO: check the Locking bit to know if the write control has gained
+        if self.type == DevBoolean:
+            rbyte = datablock.b(self._readAddr)
+            if self._writeValue:
+                # sets bit 'bitno' of b
+                toWrite = rbyte | (int(1) << self._writeBit)
+                # a byte of 0s with a unique 1 in the place to set this 1
+            else:
+                # clears bit 'bitno' of b
+                toWrite = rbyte & ((0xFF) ^ (1 << self._writeBit))
+                # a byte of 1s with a unique 0 in the place to set this 0
+            datablock.write(self._writeAddr, toWrite, TYPE_MAP[DevUChar])
+            reRead = datablock.b(self._readAddr)
+            self.info("Writing boolean (%d.%d) byte was %s; write %s; now %s"
+                      % (self._writeAddr, self._writeBit, bin(rbyte),
+                         bin(toWrite), bin(reRead)))
+        else:
+            datablock.write(self._writeAddr, self._writeValue, self.type)
+
+#     # TODO: move this to a formula feature
+#     def __solveFormula(self, attrName, VALUE, formula):
+#         '''Some attributes can have a formula to interpret or modify the
+#            value given from the PLC to the value reported by the device.
+#         '''
+#         result = eval(formula)
+#         # self.debug_stream("%s formula eval(\"%s\") = %s" % (attrName,
+#         #                                                     formula,
+#         #                                                     result))
+#         return result
 
     @property
     def label(self):

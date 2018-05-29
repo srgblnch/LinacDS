@@ -199,6 +199,7 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
             self._readValue.append(value)
             self.launchEvents()
         elif self._readValue != value:
+            self.debug("value change from %s to %s" % (self._readValue, value))
             self._readValue = value
             self.launchEvents()
 
@@ -210,6 +211,8 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
     def write_value(self, value):
         if self._writeValue != value:
             self._writeValue = value
+            if hasattr(self, 'hardwareWrite'):
+                self.hardwareWrite(self.device.write_db)
 
     @property
     def read_t(self):
@@ -317,58 +320,3 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
     @property
     def reporter(self):
         return self._changeReporter
-
-    ############################
-    # First descending level ---
-    def _getAttrName(self, attr):
-        if type(attr) == str:
-            return attr
-        else:
-            return attr.get_name()
-
-    def _getSuffix(self, attrName):
-        if not ((self.alias and attrName.startswith(self.alias)) or
-                attrName.startswith(self.name)):
-            # FIXME: review naming, but it shall raise an exception
-            self.warning("attrName %s is not starting with %s%s"
-                         % (attrName, self.name,
-                            " or %s" % self.alias if self.alias else ""))
-            return
-        if attrName == self.name:
-            # TODO: there shall be a default behaviour for attrs with no suffix
-            return ''
-        if attrName.count('_') == 0:
-            self.warning("No separable name to distinguish suffix (%s)"
-                         % (attrName))
-            return ''
-        else:
-            _, suffix = attrName.rsplit('_', 1)
-            return suffix
-
-    def _setAttrValue(self, attr, readValue):
-        attrName = self._getAttrName(attr)
-        self.debug("_setAttrValue(%s, %s, %s, %s)"
-                   % (attrName, readValue, self.timestamp, self.quality))
-        if type(attr) != str:
-            # If its an attribute, part of a device, do the corresponding set
-            # print("type(attr) = %s" % type(attr))
-            try:
-                if self.isWriteAllowed(attr):
-                    attr.set_write_value(readValue)
-                attr.set_value_date_quality(readValue, self.timestamp,
-                                            self.quality)
-            except Exception as e:
-                self.error("_setAttrValue(%s, %s, %s, %s) exception %s"
-                           % (attrName, readValue, self.timestamp,
-                              self.quality, e))
-                data_type = attr.get_data_type()
-                if data_type in [DevString]:
-                    value = ''
-                elif data_type in [DevDouble, DevFloat, DevLong, DevLong64,
-                                   DevULong, DevULong64, DevShort, DevUShort,
-                                   DevUChar]:
-                    value = 0
-                else:
-                    value = None
-                attr.set_value_date_quality(value, self.timestamp,
-                                            AttrQuality.ATTR_INVALID)

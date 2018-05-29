@@ -91,7 +91,7 @@ class Logic(_LinacFeature):
                        % (self.owner, values, self._operator, result))
         self.owner.read_t = time()  # when has been re-evaluated
         if result != was:
-            self.info("value change to %s (was %s)" % (result, was))
+            self.debug("value change to %s (was %s)" % (result, was))
             # FIXME: when change propagation done, this message can be removed
             self.owner.read_value = result
             self.owner.launchEvents()
@@ -109,7 +109,7 @@ class Logic(_LinacFeature):
         """
         attrStruct = self.owner.device._getAttrStruct(name)
         value = attrStruct.rvalue
-        self.info("%s %s in %s = %s" % (name, value, lst, value in lst))
+        self.debug("%s %s in %s = %s" % (name, value, lst, value in lst))
         return value in lst
 
     def __evalQuality(self, name, lst):
@@ -118,7 +118,7 @@ class Logic(_LinacFeature):
         attrStruct = self.owner.device._getAttrStruct(name)
         if LASTEVENTQUALITY in attrStruct:
             quality = attrStruct[LASTEVENTQUALITY]
-            self.info("%s %s in %s = %s"
-                      % (name, quality, lst, quality in lst))
+            self.debug("%s %s in %s = %s"
+                       % (name, quality, lst, quality in lst))
             return quality in lst
         return False

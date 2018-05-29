@@ -113,9 +113,9 @@ class AttrList(object):
             'GrpBit': self.add_AttrGrpBit,
             'AttrLogic': self.add_AttrLogic,
             'AttrRampeable': self.add_AttrRampeable,
-            'AttrLock_ST': self.add_AttrLock_ST,
-            'AttrLocking': self.add_AttrLocking,
-            'AttrHeartBeat': self.add_AttrHeartBeat,
+            #'AttrLock_ST': self.add_AttrLock_ST,
+            #'AttrLocking': self.add_AttrLocking,
+            #'AttrHeartBeat': self.add_AttrHeartBeat,
             'AttrPLC': self.add_AttrPLC,
             'AttrEnumeration': self.add_AttrEnumeration,
             # 'john' : john,
@@ -560,6 +560,14 @@ class AttrList(object):
         rampAttributes.insert(0, rampeableAttr)
         return tuple(rampAttributes)
 
+    def add_AttrPLC(self, heart, lockst, read_lockingAddr, read_lockingBit,
+                    write_lockingAddr, write_lockingBit):
+        heartbeat = self.add_AttrHeartBeat(heart)
+        lockState, lockStatus = self.add_AttrLock_ST(lockst)
+        locking = self.add_AttrLocking(read_lockingAddr, read_lockingBit,
+                                       write_lockingAddr, write_lockingBit)
+        return (heartbeat, lockState, lockStatus, locking)
+
     def add_AttrLock_ST(self, read_addr):
         COMM_STATUS = {0: 'unlocked', 1: 'local', 2: 'remote'}
         COMM_QUALITIES = {0: PyTango.AttrQuality.ATTR_ALARM,
@@ -613,14 +621,6 @@ class AttrList(object):
                                     desc=desc, events={})
         self.impl.set_change_event('HeartBeat', True, False)
         return attr
-
-    def add_AttrPLC(self, heart, lockst, read_lockingAddr, read_lockingBit,
-                    write_lockingAddr, write_lockingBit):
-        heartbeat = self.add_AttrHeartBeat(heart)
-        lockState, lockStatus = self.add_AttrLock_ST(lockst)
-        locking = self.add_AttrLocking(read_lockingAddr, read_lockingBit,
-                                       write_lockingAddr, write_lockingBit)
-        return (heartbeat, lockState, lockStatus, locking)
 
     def add_AttrEnumeration(self, name, prefix=None, suffixes=None,
                             *args, **kwargs):
@@ -2004,6 +2004,11 @@ class LinacData(PyTango.Device_4Impl):
                                                             AutoStopParameter
                                                             ]]):
                 attrStruct.write_attr(attr)
+                self.info_stream(".")
+                if any([isinstance(attrStruct, kls) for kls in [PLCAttr]]):
+                    self.info_stream("..")
+                    attrStruct.hardwareWrite(attr)
+                    self.info_stream("...")
                 return
             self.warn_stream("DEPRECATED write_attr for %s" % (name))
             attrType = attrStruct[TYPE]
@@ -2037,7 +2042,7 @@ class LinacData(PyTango.Device_4Impl):
                                                             AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
-                attrStruct.read_attr(attr)
+                attrStruct.write_attr(attr)
                 return
             self.warn_stream("DEPRECATED write_attr_bit for %s" % (name))
             read_addr = attrStruct[READADDR]
@@ -2163,49 +2168,52 @@ class LinacData(PyTango.Device_4Impl):
         def write_lock(self, value):
             '''
             '''
+            
             if self.get_state() == PyTango.DevState.FAULT or \
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
-            if self.locking_raddr and self.locking_waddr:
-                rbyte = self.read_db.b(self.locking_raddr)
-                wbyte = self.write_db.b(self.locking_waddr)
-                if value:
-                    # sets bit 'bitno' of b
-                    toWrite = rbyte | (int(value) << self.locking_wbit)
-                    # a byte of 0s with a unique 1 in the place to set this 1
-                else:
-                    # clears bit 'bitno' of b
-                    toWrite = rbyte & (0xFF) ^ (1 << self.locking_wbit)
-                    # a byte of 1s with a unique 0 in the place to set this 0
-                self.write_db.write(self.locking_waddr, toWrite,
-                                    TYPE_MAP[PyTango.DevUChar])
-                reRead = self.read_db.b(self.locking_raddr)
-                self.debug_stream("Writing Locking boolean to %s (%d.%d) byte "
-                                  "was %s; write %s; now %s"
-                                  % ("  lock" if value else "unlock",
-                                     self.locking_raddr, self.locking_rbit,
-                                     bin(rbyte), bin(toWrite), bin(reRead)))
-                self._plcAttrs['Locking'][WRITEVALUE] = value
+            if 'Locking' in self._plcAttrs:
+                self._plcAttrs['Locking'].write_value = value
+#             if self.locking_raddr and self.locking_waddr:
+#                 rbyte = self.read_db.b(self.locking_raddr)
+#                 wbyte = self.write_db.b(self.locking_waddr)
+#                 if value:
+#                     # sets bit 'bitno' of b
+#                     toWrite = rbyte | (int(value) << self.locking_wbit)
+#                     # a byte of 0s with a unique 1 in the place to set this 1
+#                 else:
+#                     # clears bit 'bitno' of b
+#                     toWrite = rbyte & (0xFF) ^ (1 << self.locking_wbit)
+#                     # a byte of 1s with a unique 0 in the place to set this 0
+#                 self.write_db.write(self.locking_waddr, toWrite,
+#                                     TYPE_MAP[PyTango.DevUChar])
+#                 reRead = self.read_db.b(self.locking_raddr)
+#                 self.debug_stream("Writing Locking boolean to %s (%d.%d) byte "
+#                                   "was %s; write %s; now %s"
+#                                   % ("  lock" if value else "unlock",
+#                                      self.locking_raddr, self.locking_rbit,
+#                                      bin(rbyte), bin(toWrite), bin(reRead)))
+#                 self._plcAttrs['Locking'][WRITEVALUE] = value
 
-        @AttrExc
-        def write_Locking(self, attr):
-            '''
-            '''
-            if self.get_state() == PyTango.DevState.FAULT or \
-                    not self.has_data_available():
-                return  # raise AttributeError("Not available in fault state!")
-            try:
-                self.write_lock(attr.get_write_value())
-            except:
-                self.error_stream('Trying to write %s/%s and looks to be not '
-                                  'well connected to the plc.'
-                                  % (self.get_name(), attr.get_name()))
+#         @AttrExc
+#         def write_Locking(self, attr):
+#             '''
+#             '''
+#             if self.get_state() == PyTango.DevState.FAULT or \
+#                     not self.has_data_available():
+#                 return  # raise AttributeError("Not available in fault state!")
+#             try:
+#                 self.write_lock(attr.get_write_value())
+#             except:
+#                 self.error_stream('Trying to write %s/%s and looks to be not '
+#                                   'well connected to the plc.'
+#                                   % (self.get_name(), attr.get_name()))
 
-        def check_lock(self):
-            '''Drops lock if write_value is True, but did not receive
-               lock_state if re
-            '''
-            pass
+#         def check_lock(self):
+#             '''Drops lock if write_value is True, but did not receive
+#                lock_state if re
+#             '''
+#             pass
 
         # # autostop area ---
 #         def _refreshInternalAutostopParams(self, attrName):
@@ -3538,6 +3546,7 @@ class LinacData(PyTango.Device_4Impl):
                     start_t = time.time()
                     if self.is_connected():
                         self.readPlcRegisters()
+                        
                         diff_t = time.time() - start_t
                         if diff_t > EXPECTED_UPDATE_TIME:
                             if self._getPlcUpdatePeriod() < \
@@ -3621,14 +3630,14 @@ class LinacData(PyTango.Device_4Impl):
                     return
             # relock if auto-recover from fault ---
             if self._deviceIsInLocal and 'Locking' in self._plcAttrs \
-                    and not self._plcAttrs['Locking'][READVALUE]:
+                    and not self._plcAttrs['Locking'].rvalue:
                 self.relock()
             try:
                 up = self.read_db.readall()  # The real reading to the hardware
                 if up:
                     self.last_update_time = time.time()
-                    self.check_lock()
-                    self.plcBasicAttrEvents()
+                    #self.check_lock()
+                    #self.plcBasicAttrEvents()
                     if self.get_state() == PyTango.DevState.ALARM:
                         # This warning would be because attributes with
                         # this quality, don't log because it happens too often.
@@ -3690,6 +3699,12 @@ class LinacData(PyTango.Device_4Impl):
                 self.disconnect()
                 self.last_update_time = time.time()
                 traceback.print_exc()
+                
+        def propagateNewValues(self):
+            for attrName in self._plcAttrs:
+                attrStruct = self._plcAttrs[attrName]
+                if hasattr(attrStruct, 'hardwareRead'):
+                    attrStruct.hardwareRead(self.read_db)
             # PROTECTED REGION END --- LinacData.Update
 
 
