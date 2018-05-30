@@ -65,44 +65,80 @@ def AttrExc(f):
     return g
 
 
+logLevelsLst = ['silence', 'error', 'warning', 'info', 'debug', 'trace']
+
+
 class _AbstractAttrLog(object):
+
+    _logLevel = None
+    # By default do not log info and debug for all the attributes,
+    # but they can be configured individually to include its own logs:
+    # >>> devProxy.Exec("self._getAttrStruct(attrName).logLevel = 'info'")
+    # With this the logs can be controlled better to show what one is looking.
+
     def __init__(self, *args, **kwargs):
         super(_AbstractAttrLog, self).__init__(*args, **kwargs)
+        self._logLevel = logLevelsLst.index('warning')
 
     def __checkDevice__(self):
         return hasattr(self, 'device') and self.device is not None
 
+    @property
+    def logLevel(self):
+        return logLevelsLst[self._logLevel]
+
+    @logLevel.setter
+    def logLevel(self, value):
+        if isinstance(value, str):
+            if value.lower() not in logLevelsLst:
+                raise AssertionError("Unrecognised %s logLevel" % (value))
+            self._logLevel = logLevelsLst.index(value.lower())
+
     def error(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.__checkDevice__() and hasattr(self.device, 'error_stream'):
-            self.device.error_stream(msg)
-        else:
-            print("ERROR: %s" % (msg))
+        if self._logLevel > logLevelsLst.index('error'):
+            if tagName:
+                msg = "[%s] %s" % (self.name, msg)
+            if self.__checkDevice__() and hasattr(self.device, 'error_stream'):
+                self.device.error_stream(msg)
+            else:
+                print("ERROR: %s" % (msg))
 
     def warning(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.__checkDevice__() and hasattr(self.device, 'warn_stream'):
-            self.device.warn_stream(msg)
-        else:
-            print("WARN: %s" % (msg))
+        if self._logLevel > logLevelsLst.index('warning'):
+            if tagName:
+                msg = "[%s] %s" % (self.name, msg)
+            if self.__checkDevice__() and hasattr(self.device, 'warn_stream'):
+                self.device.warn_stream(msg)
+            else:
+                print("WARN: %s" % (msg))
 
     def info(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.__checkDevice__() and hasattr(self.device, 'info_stream'):
-            self.device.info_stream(msg)
-        else:
-            print("INFO: %s" % (msg))
+        if self._logLevel > logLevelsLst.index('info'):
+            if tagName:
+                msg = "[%s] %s" % (self.name, msg)
+            if self.__checkDevice__() and hasattr(self.device, 'info_stream'):
+                self.device.info_stream(msg)
+            else:
+                print("INFO: %s" % (msg))
 
     def debug(self, msg, tagName=True):
-        if tagName:
-            msg = "[%s] %s" % (self.name, msg)
-        if self.__checkDevice__() and hasattr(self.device, 'debug_stream'):
-            self.device.debug_stream(msg)
-        else:
-            print("DEBUG: %s" % (msg))
+        if self._logLevel > logLevelsLst.index('debug'):
+            if tagName:
+                msg = "[%s] %s" % (self.name, msg)
+            if self.__checkDevice__() and hasattr(self.device, 'debug_stream'):
+                self.device.debug_stream(msg)
+            else:
+                print("DEBUG: %s" % (msg))
+
+    def trace(self, msg, tagName=True):
+        if self._logLevel > logLevelsLst.index('trace'):
+            if tagName:
+                msg = "[%s] %s" % (self.name, msg)
+            msg = "TRACE: %s" % (msg)
+            if self.__checkDevice__() and hasattr(self.device, 'debug_stream'):
+                self.device.debug_stream(msg)
+            else:
+                print(msg)
 
 
 class _AbstractAttrDict(_AbstractAttrLog):

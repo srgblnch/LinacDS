@@ -123,8 +123,7 @@ class AttrList(object):
 
     def add_Attr(self, name, T, rfun=None, wfun=None, label=None, desc=None,
                  minValue=None, maxValue=None, unit=None, format=None,
-                 memorized=False,
-                 record=None, xdim=0):
+                 memorized=False, logLevel=None, xdim=0):
         if wfun:
             if xdim == 0:
                 attr = PyTango.Attr(name, T, PyTango.READ_WRITE)
@@ -138,8 +137,8 @@ class AttrList(object):
                 attr = PyTango.Attr(name, T, PyTango.READ)
             else:
                 attr = PyTango.SpectrumAttr(name, T, PyTango.READ, xdim)
-        if record:
-            self.impl._traceAttrs.append(name)
+        if logLevel is not None:
+            self.impl._getAttrStruct(name).logLevel = logLevel
         aprop = PyTango.UserDefaultAttrProp()
         if unit is not None:
             aprop.set_unit(latin1(unit))
@@ -303,7 +302,7 @@ class AttrList(object):
                         write_addr=None, write_bit=None, meanings=None,
                         qualities=None, events=None, isRst=False,
                         activeRst_t=None, formula=None, switchDescriptor=None,
-                        readback=None, setpoint=None, record=None,
+                        readback=None, setpoint=None, logLevel=None,
                         label=None, desc=None, minValue=None, maxValue=None,
                         *args, **kwargs):
         '''This method is a builder of a boolean dynamic attribute, even for RO
@@ -399,8 +398,8 @@ class AttrList(object):
                     if autostopper.switch == name:
                         autostopper._switchAttr = self.impl._plcAttrs[name]
         self._prepareEvents(name, events)
-        if record:
-            self.impl._traceAttrs.append(name)
+        if logLevel is not None:
+            self.impl._getAttrStruct(name).logLevel = logLevel
         if meanings is not None:
             return self._prepareAttrWithMeaning(name, PyTango.DevBoolean,
                                                 meanings, qualities, rfun,
@@ -1074,9 +1073,9 @@ class LinacData(PyTango.Device_4Impl):
         # FIXME: remove the expert attributes! ---
 
         # special event emition trace
-        _traceAttrs = []
-        _tracedAttrsHistory = {}
-        _historySize = 100
+        #_traceAttrs = []
+        #_tracedAttrsHistory = {}
+        #_historySize = 100
 
         _traceTooClose = []
 
@@ -1249,27 +1248,27 @@ class LinacData(PyTango.Device_4Impl):
             self.set_status("")
         # done state/status manager methods ---
 
-        def __doTraceAttr(self, attrName, tag):
-            if attrName in self._traceAttrs:
-                attrStruct = self._getAttrStruct(attrName)
-                readValue = attrStruct[READVALUE]
-                if WRITEVALUE in attrStruct:
-                    writeValue = attrStruct[WRITEVALUE]
-                else:
-                    writeValue = float('NaN')
-                quality = "%s" % attrStruct[LASTEVENTQUALITY]
-                timestamp = time.ctime(attrStruct[READTIME])
-                if attrName not in self._tracedAttrsHistory:
-                    self._tracedAttrsHistory[attrName] = []
-                self._tracedAttrsHistory[attrName].append(
-                    [tag, readValue, writeValue, quality, timestamp])
-                self.debug_stream("Traceing %s with %s tag: "
-                                  "read = %s, write = %s (%s,%s)"
-                                  % (attrName, tag, readValue, writeValue,
-                                     quality, timestamp))
-                while len(self._tracedAttrsHistory[attrName]) > \
-                        self._historySize:
-                    self._tracedAttrsHistory[attrName].pop(0)
+#         def __doTraceAttr(self, attrName, tag):
+#             if attrName in self._traceAttrs:
+#                 attrStruct = self._getAttrStruct(attrName)
+#                 readValue = attrStruct[READVALUE]
+#                 if WRITEVALUE in attrStruct:
+#                     writeValue = attrStruct[WRITEVALUE]
+#                 else:
+#                     writeValue = float('NaN')
+#                 quality = "%s" % attrStruct[LASTEVENTQUALITY]
+#                 timestamp = time.ctime(attrStruct[READTIME])
+#                 if attrName not in self._tracedAttrsHistory:
+#                     self._tracedAttrsHistory[attrName] = []
+#                 self._tracedAttrsHistory[attrName].append(
+#                     [tag, readValue, writeValue, quality, timestamp])
+#                 self.debug_stream("Traceing %s with %s tag: "
+#                                   "read = %s, write = %s (%s,%s)"
+#                                   % (attrName, tag, readValue, writeValue,
+#                                      quality, timestamp))
+#                 while len(self._tracedAttrsHistory[attrName]) > \
+#                         self._historySize:
+#                     self._tracedAttrsHistory[attrName].pop(0)
 
         ####
         # event methods ---
@@ -1286,7 +1285,7 @@ class LinacData(PyTango.Device_4Impl):
                 quality = attrEventStruct[2]
             else:
                 quality = PyTango.AttrQuality.ATTR_VALID
-            self.__doTraceAttr(attrName, "fireEvent(%s)" % attrValue)
+            # self.__doTraceAttr(attrName, "fireEvent(%s)" % attrValue)
             if self.__isHistoryBuffer(attrName):
                 attrValue = self.__buildHistoryBufferString(attrName)
                 self.push_change_event(attrName, attrValue, timestamp, quality)
@@ -2018,7 +2017,7 @@ class LinacData(PyTango.Device_4Impl):
                 write_value = self.__solveFormula(name, write_value,
                                                   attrStruct[FORMULA]['write'])
             attrStruct[WRITEVALUE] = write_value
-            self.__doTraceAttr(name, "write_attr")
+            # self.__doTraceAttr(name, "write_attr")
             self.write_db.write(write_addr, write_value, attrType)
 
         @AttrExc
@@ -2031,7 +2030,7 @@ class LinacData(PyTango.Device_4Impl):
             name = attr.get_name()
             write_value = self.prepare_write(attr)
             self.doWriteAttrBit(attr, name, write_value)
-            self.__doTraceAttr(name, "write_attr_bit")
+            # self.__doTraceAttr(name, "write_attr_bit")
 
         def doWriteAttrBit(self, attr, name, write_value):
             attrStruct = self._getAttrStruct(name)

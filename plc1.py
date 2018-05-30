@@ -165,7 +165,7 @@ AttrBit('EG_ENB',
         meanings={0: 'disabled',
                   1: 'enabled'},
         qualities={WARNING: [0]},
-        events={}, record=True)
+        events={}, logLevel='debug')
 AttrBit('KA_ENB',
         70, 1,  # RO
         label='Klystron amplifier enabled (PSS)',
@@ -179,7 +179,7 @@ AttrBit('TL_VOK',
         meanings={0: 'bad vacuum',
                   1: 'good vacuum'},
         qualities={WARNING: [0]},
-        events={}, record=True)
+        events={}, logLevel='debug')
 AttrBit('IU_RDY',
         70, 5,  # RO
         label='Interlock unit ready',
@@ -569,7 +569,7 @@ Attr('TB_GPA',
      PyTango.DevFloat, 104, 20,  # RW
      label='timer gun pulses attenuation',
      format='%4.1f', minValue=-40, maxValue=0, unit='dB',
-     events={THRESHOLD: 0.005}, record=True)
+     events={THRESHOLD: 0.005}, logLevel='debug')
 
 # R108 W024 @PHS1_PS ---
 Attr('PHS1_Phase_setpoint',
@@ -670,7 +670,7 @@ Attr('TB_GPM',
      meanings={0: "beam on",
                1: "mix",
                2: "beam off"},
-     events={}, record=True, format="%1d")
+     events={}, logLevel='debug', format="%1d")
 
 # R162 W078 @DO_0to7 ---
 AttrBit('TB_MBM',
