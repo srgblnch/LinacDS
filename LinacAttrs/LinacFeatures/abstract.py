@@ -28,6 +28,28 @@ class _AbstractFeatureLog(object):
     def __checkOwner__(self):
         return hasattr(self, 'owner') and self.owner is not None
 
+    @property
+    def logLevel(self):
+        if self.__checkOwner__():
+            return self.owner.logLevel
+
+    @logLevel.setter
+    def logLevel(self, value):
+        if self.__checkOwner__():
+            self.log("change log level from %s to %s" % (self.owner.logLevel, value))
+            self.owner.logLevel = value
+        else:
+            raise ReferenceError("owner mandatory to set up the loglevel")
+
+    def log(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
+        if self.__checkOwner__() and hasattr(self.owner, 'log'):
+            self.owner.log(msg, tagName=False)
+        else:
+            print("log: %s" % (msg))
+
+
     def error(self, msg, tagName=True):
         if tagName:
             msg = "[%s] %s" % (self.name, msg)
@@ -59,3 +81,11 @@ class _AbstractFeatureLog(object):
             self.owner.debug(msg, tagName=False)
         else:
             print("DEBUG: %s" % (msg))
+
+    def trace(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
+        if self.__checkOwner__() and hasattr(self.owner, 'trace'):
+            self.owner.trace(msg, tagName=False)
+        else:
+            print("TRACE: %s" % (msg))

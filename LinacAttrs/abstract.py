@@ -92,7 +92,16 @@ class _AbstractAttrLog(object):
         if isinstance(value, str):
             if value.lower() not in logLevelsLst:
                 raise AssertionError("Unrecognised %s logLevel" % (value))
+            self.log("change log level from %s to %s" % (self.logLevel, value))
             self._logLevel = logLevelsLst.index(value.lower())
+
+    def log(self, msg, tagName=True):
+        if tagName:
+            msg = "[%s] %s" % (self.name, msg)
+        if self.__checkDevice__() and hasattr(self.device, 'info_stream'):
+            self.device.info_stream(msg)
+        else:
+            print("LOG: %s" % (msg))
 
     def error(self, msg, tagName=True):
         if self._logLevel > logLevelsLst.index('error'):
