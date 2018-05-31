@@ -74,7 +74,8 @@ Attr('GUN_HV_V',
      format='%4.1f', minValue=-100, maxValue=0, unit='kV',
      events={THRESHOLD: 0.01},
      setpoint='GUN_HV_V_setpoint',
-     switch='GUN_HV_ONC')
+     switch='GUN_HV_ONC',
+     logLevel='debug')
 
 # R036 @HVS_CM ---
 Attr('GUN_HV_I',
@@ -87,7 +88,8 @@ Attr('GUN_HV_I',
                                      BELOW: -20.0}}},
      autoStop={BELOW: -20.0,
                INTEGRATIONTIME: 1,  # s
-               SWITCHDESCRIPTOR: 'GUN_HV_ONC'})
+               SWITCHDESCRIPTOR: 'GUN_HV_ONC'},
+     logLevel='debug')
 
 # R040 @PHS1_PM ---
 Attr('PHS1_Phase',
@@ -363,7 +365,7 @@ AttrLogic('Gun_HV_ready',
           desc='e-gun high voltage ready',
           label='e-gun high voltage ready',
           events={},
-          )
+          logLevel='debug')
 
 # R076 @SCM_1_ST ---
 Attr('SCM1_ST',
@@ -559,10 +561,10 @@ AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
                                #             SWITCH: 'GUN_HV_ONC'}
                                },
               readback='GUN_HV_V',
-              switch='GUN_HV_ONC'
+              switch='GUN_HV_ONC',
               # User request (back) to limit the device setpoint to avoid
               # below -90kV.
-              )
+              logLevel='debug')
 
 # R104 W020 @TB_GPA ---
 Attr('TB_GPA',
@@ -701,7 +703,8 @@ AttrBit('GUN_HV_ONC',  # HVS_OC
                           # to know where it has the autostop feature
                           },
         readback='GUN_HV_V',
-        setpoint='GUN_HV_V_setpoint'
+        setpoint='GUN_HV_V_setpoint',
+        logLevel='debug'
         )
 AttrBit('Interlock_RC',  # IU_RST
         162, 3, 78,  # RW

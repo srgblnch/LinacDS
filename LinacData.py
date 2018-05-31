@@ -901,13 +901,14 @@ class AttrList(object):
         if autoStop is not None:
             # FIXME: shall it be in the AttrWithQualities? Or more generic?
             toReturn += self._buildAutoStopAttributes(attrName, label,
-                                                      attrType, autoStop)
+                                                      attrType, autoStop,
+                                                      **kwargs)
         return toReturn
 
     # # Builders for subattributes ---
 
     def _buildAutoStopAttributes(self, baseName, baseLabel, attrType,
-                                 autoStopDesc):
+                                 autoStopDesc, logLevel, **kwargs):
         # TODO: review if the callback between attributes can be usefull here
         attrs = []
         autostopperName = "%s_%s" % (baseName, AUTOSTOP)
@@ -969,6 +970,10 @@ class AttrList(object):
                                                   PyTango.DevBoolean,
                                                   memorised=True)
         attrs.append(triggeredAttr)
+        if logLevel is not None:
+            autostopper.logLevel = logLevel
+            # it is only necessary to set it in one of them (here is the main
+            # one), but can be any because they share their logLevel.
         return tuple(attrs)
 
     def _buildAutoStoperAttr(self, baseName, baseLabel, suffix,
