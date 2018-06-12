@@ -62,7 +62,8 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
 
     _changeReporter = None
 
-    def __init__(self, name, valueType, events=None, minValue=None, maxValue=None, *args, **kwargs):
+    def __init__(self, name, valueType, events=None, minValue=None,
+                 maxValue=None, *args, **kwargs):
         # meanings must be is a subclass of LinacAttr or
         # generates a circular import because MeaningAttr
         # inherits from LinacAttr.
@@ -210,6 +211,8 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
     @write_value.setter
     def write_value(self, value):
         if self._writeValue != value:
+            self.debug("value change from %s to %s"
+                       % (self._writeValue, value))
             self._writeValue = value
             if hasattr(self, 'hardwareWrite'):
                 self.hardwareWrite(self.device.write_db)

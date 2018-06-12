@@ -100,10 +100,12 @@ class PLCAttr(LinacAttr):
                 # a byte of 1s with a unique 0 in the place to set this 0
             datablock.write(self._writeAddr, toWrite, TYPE_MAP[DevUChar])
             reRead = datablock.b(self._readAddr)
-            self.info("Writing boolean (%d.%d) byte was %s; write %s; now %s"
-                      % (self._writeAddr, self._writeBit, bin(rbyte),
-                         bin(toWrite), bin(reRead)))
+            self.debug("Writing boolean (%d.%d) byte was %s; write %s; now %s"
+                       % (self._writeAddr, self._writeBit, bin(rbyte),
+                          bin(toWrite), bin(reRead)))
         else:
+            self.debug("Write value (%d) to %s" % (self._writeAddr,
+                                                   self._writeValue))
             datablock.write(self._writeAddr, self._writeValue, self.type)
 
 #     # TODO: move this to a formula feature

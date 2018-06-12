@@ -362,13 +362,12 @@ class AttrList(object):
            setpoint and if the element is switch on or off.
         '''
 
-        #if write_bit is None:
-        #    write_bit = read_bit
-
         rfun = self.__getAttrMethod('read', name, isBit=True)
 
         if write_addr is not None:
             wfun = self.__getAttrMethod('write', name, isBit=True)
+            if write_bit is None:
+                write_bit = read_bit
         else:
             wfun = None
         self.__traceAttrAddr(name, PyTango.DevBoolean, readAddr=read_addr,
@@ -2008,11 +2007,6 @@ class LinacData(PyTango.Device_4Impl):
                                                             AutoStopParameter
                                                             ]]):
                 attrStruct.write_attr(attr)
-                self.info_stream(".")
-                if any([isinstance(attrStruct, kls) for kls in [PLCAttr]]):
-                    self.info_stream("..")
-                    attrStruct.hardwareWrite(attr)
-                    self.info_stream("...")
                 return
             self.warn_stream("DEPRECATED write_attr for %s" % (name))
             attrType = attrStruct[TYPE]

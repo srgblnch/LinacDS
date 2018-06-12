@@ -17,7 +17,7 @@
 
 import functools
 from .LinacFeatures import Memorised
-from PyTango import DevState, AttrWriteType, Attribute, WAttribute
+from PyTango import DevState, AttrWriteType, Attribute, WAttribute, AttrQuality
 from PyTango import Database
 import traceback
 
