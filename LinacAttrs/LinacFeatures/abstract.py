@@ -36,8 +36,10 @@ class _AbstractFeatureLog(object):
     @logLevel.setter
     def logLevel(self, value):
         if self.__checkOwner__():
-            self.log("change log level from %s to %s" % (self.owner.logLevel, value))
-            self.owner.logLevel = value
+            if value != self.owner.logLevel:
+                self.log("change log level from %s to %s"
+                         % (self.owner.logLevel, value))
+                self.owner.logLevel = value
         else:
             raise ReferenceError("owner mandatory to set up the loglevel")
 
