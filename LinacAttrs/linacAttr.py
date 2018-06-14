@@ -52,8 +52,6 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
 
     _events = None
     _eventsObj = None
-    _event_t = None
-    _lastEventQuality = AttrQuality.ATTR_INVALID
 
     _baseSet = None
 
@@ -200,7 +198,6 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
             self._readValue.append(value)
             self.launchEvents()
         elif self._readValue != value:
-            self.debug("value change from %s to %s" % (self._readValue, value))
             self._readValue = value
             self.launchEvents()
 
@@ -241,34 +238,21 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
 
     @property
     def events(self):
-        return self._events
+        if self._eventsObj is not None:
+            return self._eventsObj
+        return False
 
     @events.setter
     def events(self, value):
         if value is not None:
-            self._eventsObj = Events(owner=self)
+            self._eventsObj = Events(owner=self, conditions=value)
         else:
             self._eventsObj = None
         self._events = value
 
-    @property
-    def event_t(self):
-        return self._event_t
-
-    @event_t.setter
-    def event_t(self, value):
-        self._event_t = value
-
-    @property
-    def event_t_str(self):
-        if self._event_t:
-            return ctime(self._event_t)
-        return None
-
     def launchEvents(self):
         if self._eventsObj:
-            # TODO: thresholds for events emissions
-            self.event_t = self._eventsObj.fireEvent()
+            self._eventsObj.fireEvent()
         if hasattr(self, '_meaningsObj') and self._meaningsObj:
             name = self._meaningsObj.alias
             value, timestamp, quality = self._meaningsObj.vtq
@@ -280,14 +264,6 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
         #        reported and will be itself the one that emits the event).
         if self._changeReporter is not None:
             self._changeReporter.report()
-
-    @property
-    def lastEventQuality(self):
-        return self._lastEventQuality
-
-    @lastEventQuality.setter
-    def lastEventQuality(self, value):
-        self._lastEventQuality = value
 
     @property
     def AutoStop(self):

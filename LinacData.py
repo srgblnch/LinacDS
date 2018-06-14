@@ -2605,8 +2605,8 @@ class LinacData(PyTango.Device_4Impl):
                 self._tangoEventsJoiner = threading.Event()
                 self._tangoEventsJoiner.clear()
                 # Threads declaration ---
-                self._tangoEventsThread = \
-                    threading.Thread(target=self.eventGeneratorThread)
+                #self._tangoEventsThread = \
+                #    threading.Thread(target=self.eventGeneratorThread)
                 self._tangoEventsTime = \
                     CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
                 self._tangoEventsNumber = \
@@ -2614,12 +2614,12 @@ class LinacData(PyTango.Device_4Impl):
                 self._plcUpdateThread = \
                     threading.Thread(target=self.plcUpdaterThread)
                 # Threads configuration ---
-                self._tangoEventsThread.setDaemon(True)
+                #self._tangoEventsThread.setDaemon(True)
                 self._plcUpdateThread.setDaemon(True)
                 self._plcUpdatePeriod = PLC_MAX_UPDATE_PERIOD
                 # Launch those threads ---
                 self._plcUpdateThread.start()
-                self._tangoEventsThread.start()
+                #self._tangoEventsThread.start()
                 # self.prepareSayAgain()
                 self.info_stream("All threads launched")
                 # When the device starts from scratch in local mode, ---
@@ -3084,138 +3084,138 @@ class LinacData(PyTango.Device_4Impl):
             # PROTECTED REGION END --- LinacData.ResetState
 
         # To be moved ---
-        def plcBasicAttrEvents(self):
-            '''This method is used, after all reading from the PLC to update
-               the most basic attributes to indicate everything is fine.
-               Those attributes are:
-               - lastUpdate{,Status}
-               - HeartBeat
-               - Lock_{ST,Status}
-               - Locking
-            '''
-            # Heartbit
-            if self.heartbeat_addr:
-                self.read_heartbeat_attr =\
-                    self.read_db.bit(self.heartbeat_addr, 0)
-                HeartBeatStruct = self._plcAttrs['HeartBeat']
-                if not self.read_heartbeat_attr == HeartBeatStruct[READVALUE]:
-                    HeartBeatStruct[READTIME] = time.time()
-                    HeartBeatStruct[READVALUE] = self.read_heartbeat_attr
-            # Locks
-            if self.lock_ST:
-                self.read_lock_ST_attr = self.read_db.get(self.lock_ST, 'B', 1)
-                # lock_str, lock_quality = self.convert_Lock_ST()
-                if self.read_lock_ST_attr not in [0, 1, 2]:
-                    self.warn_stream("<<<Invalid locker code %d>>>"
-                                     % (self.read_lock_ST_attr))
-                Lock_STStruct = self._getAttrStruct('Lock_ST')
-                if not self.read_lock_ST_attr == Lock_STStruct[READVALUE]:
-                    # or (now - Lock_STStruct[READTIME]) > PERIODIC_EVENT:
-                    Lock_STStruct[READTIME] = time.time()
-                    Lock_STStruct[READVALUE] = self.read_lock_ST_attr
-                # Lock_StatusStruct = self._getAttrStruct('Lock_Status')
-                # if not lock_str == Lock_StatusStruct[READVALUE]:
-                #     or (now - Lock_StatusStruct[READTIME]) > PERIODIC_EVENT:
-                #     Lock_StatusStruct[READTIME] = time.time()
-                #     Lock_StatusStruct[READVALUE] = lock_str
-                # locking = self.read_lock()
-                LockingStruct = self._getAttrStruct('Locking')
-                self._checkLocking()
-                # if not self.is_lockedByTango == LockingStruct[READVALUE]:
-                #     # or (now - LockingStruct[READTIME]) > PERIODIC_EVENT:
-                #     LockingStruct[READTIME] = time.time()
-                #     LockingStruct[READVALUE] = self.is_lockedByTango
+#         def plcBasicAttrEvents(self):
+#             '''This method is used, after all reading from the PLC to update
+#                the most basic attributes to indicate everything is fine.
+#                Those attributes are:
+#                - lastUpdate{,Status}
+#                - HeartBeat
+#                - Lock_{ST,Status}
+#                - Locking
+#             '''
+#             # Heartbit
+#             if self.heartbeat_addr:
+#                 self.read_heartbeat_attr =\
+#                     self.read_db.bit(self.heartbeat_addr, 0)
+#                 HeartBeatStruct = self._plcAttrs['HeartBeat']
+#                 if not self.read_heartbeat_attr == HeartBeatStruct[READVALUE]:
+#                     HeartBeatStruct[READTIME] = time.time()
+#                     HeartBeatStruct[READVALUE] = self.read_heartbeat_attr
+#             # Locks
+#             if self.lock_ST:
+#                 self.read_lock_ST_attr = self.read_db.get(self.lock_ST, 'B', 1)
+#                 # lock_str, lock_quality = self.convert_Lock_ST()
+#                 if self.read_lock_ST_attr not in [0, 1, 2]:
+#                     self.warn_stream("<<<Invalid locker code %d>>>"
+#                                      % (self.read_lock_ST_attr))
+#                 Lock_STStruct = self._getAttrStruct('Lock_ST')
+#                 if not self.read_lock_ST_attr == Lock_STStruct[READVALUE]:
+#                     # or (now - Lock_STStruct[READTIME]) > PERIODIC_EVENT:
+#                     Lock_STStruct[READTIME] = time.time()
+#                     Lock_STStruct[READVALUE] = self.read_lock_ST_attr
+#                 # Lock_StatusStruct = self._getAttrStruct('Lock_Status')
+#                 # if not lock_str == Lock_StatusStruct[READVALUE]:
+#                 #     or (now - Lock_StatusStruct[READTIME]) > PERIODIC_EVENT:
+#                 #     Lock_StatusStruct[READTIME] = time.time()
+#                 #     Lock_StatusStruct[READVALUE] = lock_str
+#                 # locking = self.read_lock()
+#                 LockingStruct = self._getAttrStruct('Locking')
+#                 self._checkLocking()
+#                 # if not self.is_lockedByTango == LockingStruct[READVALUE]:
+#                 #     # or (now - LockingStruct[READTIME]) > PERIODIC_EVENT:
+#                 #     LockingStruct[READTIME] = time.time()
+#                 #     LockingStruct[READVALUE] = self.is_lockedByTango
 
-        def __attrHasEvents(self, attrName):
-            '''
-            '''
-            attrStruct = self._getAttrStruct(attrName)
-            if attrStruct._eventsObj:
-                return True
-            return False
-            # if attrName in self._plcAttrs and \
-            #         EVENTS in self._plcAttrs[attrName]:
-            #     return True
-            # elif attrName in self._internalAttrs and \
-            #         EVENTS in self._internalAttrs[attrName].keys():
-            #     return True
-            # return False
+#         def __attrHasEvents(self, attrName):
+#             '''
+#             '''
+#             attrStruct = self._getAttrStruct(attrName)
+#             if attrStruct._eventsObj:
+#                 return True
+#             return False
+#             # if attrName in self._plcAttrs and \
+#             #         EVENTS in self._plcAttrs[attrName]:
+#             #     return True
+#             # elif attrName in self._internalAttrs and \
+#             #         EVENTS in self._internalAttrs[attrName].keys():
+#             #     return True
+#             # return False
 
-        def __getAttrReadValue(self, attrName):
-            '''
-            '''
-            attrStruct = self._getAttrStruct(attrName)
-            if READVALUE in attrStruct:
-                if type(attrStruct[READVALUE]) == CircularBuffer:
-                    return attrStruct[READVALUE].value
-                elif type(attrStruct[READVALUE]) == HistoryBuffer:
-                    return attrStruct[READVALUE].array
-                return attrStruct[READVALUE]
-            return None
+#         def __getAttrReadValue(self, attrName):
+#             '''
+#             '''
+#             attrStruct = self._getAttrStruct(attrName)
+#             if READVALUE in attrStruct:
+#                 if type(attrStruct[READVALUE]) == CircularBuffer:
+#                     return attrStruct[READVALUE].value
+#                 elif type(attrStruct[READVALUE]) == HistoryBuffer:
+#                     return attrStruct[READVALUE].array
+#                 return attrStruct[READVALUE]
+#             return None
 
-        def eventGeneratorThread(self):
-            '''
-            '''
-            self.info_stream("Starting event generator thread")
-            time.sleep(self._getPlcUpdatePeriod()*2)
-            # with in the start up procedure, if the device is running in local
-            # mode, it tries to lock the PLC control for itself by writing the
-            # Locking flag.
-            if self._deviceIsInLocal:
-                self.write_lock(True)
-            eventCtr = EventCtr()
-            while not self._tangoEventsJoiner.isSet():
-                try:
-                    start_t = time.time()
-                    if self.has_data_available():
-                        self.plcGeneralAttrEvents()
-                        t1 = time.time()
-                        self.debug_stream("%3.6f for plcGeneralAttrEvents()"
-                                          % (t1 - start_t))
-#                         self.internalAttrEvents()
-#                         self.debug_stream("%3.6f for internalAttrEvents()"
-#                                           % (time.time() - t1))
-                        diff_t = time.time() - start_t
-                        nEvents = eventCtr.ctr
-                        eventCtr.clear()
-                        self._tangoEventsTime.append(diff_t)
-                        self._tangoEventsNumber.append(nEvents)
-                        self.debug_stream("eventGeneratorThread() "
-                                          "it has take %3.6f seconds for %d "
-                                          "events"
-                                          % (diff_t, nEvents))
-                        # TODO: ---
-                        # collect this pairs (diff,nEvents) for statistics
-                        if diff_t <= EVENT_THREAD_PERIOD:
-                            time.sleep(EVENT_THREAD_PERIOD-diff_t)
-                    else:
-                        time.sleep(self.ReconnectWait)
-                        # self.reconnect()
-                except Exception as e:
-                    self.error_stream("In eventGeneratorThread() "
-                                      "exception: %s" % (e))
-                    traceback.print_exc()
-
-        def __lastEventHasChangingQuality(self, attrName):
-            attrStruct = self._getAttrStruct(attrName)
-            if MEANINGS in attrStruct or ISRESET in attrStruct:
-                # To these attributes this doesn't apply
-                return False
-            if LASTEVENTQUALITY in attrStruct:
-                if attrStruct[LASTEVENTQUALITY] == \
-                        PyTango.AttrQuality.ATTR_CHANGING:
-                    return True
-                else:
-                    return False
-            else:
-                return False
-
-        def __attrValueHasThreshold(self, attrName):
-            if EVENTS in self._getAttrStruct(attrName) and \
-                    THRESHOLD in self._getAttrStruct(attrName)[EVENTS]:
-                return True
-            else:
-                return False
+#         def eventGeneratorThread(self):
+#             '''
+#             '''
+#             self.info_stream("Starting event generator thread")
+#             time.sleep(self._getPlcUpdatePeriod()*2)
+#             # with in the start up procedure, if the device is running in local
+#             # mode, it tries to lock the PLC control for itself by writing the
+#             # Locking flag.
+#             if self._deviceIsInLocal:
+#                 self.write_lock(True)
+#             eventCtr = EventCtr()
+#             while not self._tangoEventsJoiner.isSet():
+#                 try:
+#                     start_t = time.time()
+#                     if self.has_data_available():
+#                         self.plcGeneralAttrEvents()
+#                         t1 = time.time()
+#                         self.debug_stream("%3.6f for plcGeneralAttrEvents()"
+#                                           % (t1 - start_t))
+# #                         self.internalAttrEvents()
+# #                         self.debug_stream("%3.6f for internalAttrEvents()"
+# #                                           % (time.time() - t1))
+#                         diff_t = time.time() - start_t
+#                         nEvents = eventCtr.ctr
+#                         eventCtr.clear()
+#                         self._tangoEventsTime.append(diff_t)
+#                         self._tangoEventsNumber.append(nEvents)
+#                         self.debug_stream("eventGeneratorThread() "
+#                                           "it has take %3.6f seconds for %d "
+#                                           "events"
+#                                           % (diff_t, nEvents))
+#                         # TODO: ---
+#                         # collect this pairs (diff,nEvents) for statistics
+#                         if diff_t <= EVENT_THREAD_PERIOD:
+#                             time.sleep(EVENT_THREAD_PERIOD-diff_t)
+#                     else:
+#                         time.sleep(self.ReconnectWait)
+#                         # self.reconnect()
+#                 except Exception as e:
+#                     self.error_stream("In eventGeneratorThread() "
+#                                       "exception: %s" % (e))
+#                     traceback.print_exc()
+  
+#         def __lastEventHasChangingQuality(self, attrName):
+#             attrStruct = self._getAttrStruct(attrName)
+#             if MEANINGS in attrStruct or ISRESET in attrStruct:
+#                 # To these attributes this doesn't apply
+#                 return False
+#             if LASTEVENTQUALITY in attrStruct:
+#                 if attrStruct[LASTEVENTQUALITY] == \
+#                         PyTango.AttrQuality.ATTR_CHANGING:
+#                     return True
+#                 else:
+#                     return False
+#             else:
+#                 return False
+  
+#         def __attrValueHasThreshold(self, attrName):
+#             if EVENTS in self._getAttrStruct(attrName) and \
+#                     THRESHOLD in self._getAttrStruct(attrName)[EVENTS]:
+#                 return True
+#             else:
+#                 return False
 
         def __isRstAttr(self, attrName):
             if attrName.startswith('lastUpdate'):
@@ -3225,148 +3225,148 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 return False
 
-        def __checkAttrEmissionParams(self, attrName, newValue):
-            if not self.__attrHasEvents(attrName):
-                self.warn_stream("No events for the attribute %s" % (attrName))
-                return False
-            lastValue = self.__getAttrReadValue(attrName)
-            if lastValue is None:
-                # If there is no previous read, it has to be emitted
-                return True
-            # after that we know the values are different
-            if self.__isRstAttr(attrName):
-                writeValue = self._getAttrStruct(attrName)[WRITEVALUE]
-                rst_t = self._getAttrStruct(attrName)[RESETTIME]
-                if newValue and not lastValue and writeValue and \
-                        rst_t is not None:
-                    return True
-                elif not newValue and lastValue and not writeValue \
-                        and rst_t is None:
-                    return True
-                else:
-                    return False
-            if self.__attrValueHasThreshold(attrName):
-                diff = abs(lastValue - newValue)
-                threshold = self._getAttrStruct(attrName)[EVENTS][THRESHOLD]
-                if diff > threshold:
-                    return True
-                elif self.__lastEventHasChangingQuality(attrName):
-                    # below the threshold and last quality changing is an
-                    # indicative that a movement has finish, then it's time
-                    # to emit an event with a quality valid.
-                    return True
-                else:
-                    return False
-            if self.__isHistoryBuffer(attrName):
-                if len(lastValue) == 0 or \
-                        newValue != lastValue[len(lastValue)-1]:
-                    return True
-                else:
-                    return False
-            # At this point any special case has been treated, only avoid
-            # to emit if value doesn't change
-            if newValue != lastValue:
-                return True
-            # when non case before, no event
-            return False
+#         def __checkAttrEmissionParams(self, attrName, newValue):
+#             if not self.__attrHasEvents(attrName):
+#                 self.warn_stream("No events for the attribute %s" % (attrName))
+#                 return False
+#             lastValue = self.__getAttrReadValue(attrName)
+#             if lastValue is None:
+#                 # If there is no previous read, it has to be emitted
+#                 return True
+#             # after that we know the values are different
+#             if self.__isRstAttr(attrName):
+#                 writeValue = self._getAttrStruct(attrName)[WRITEVALUE]
+#                 rst_t = self._getAttrStruct(attrName)[RESETTIME]
+#                 if newValue and not lastValue and writeValue and \
+#                         rst_t is not None:
+#                     return True
+#                 elif not newValue and lastValue and not writeValue \
+#                         and rst_t is None:
+#                     return True
+#                 else:
+#                     return False
+#             if self.__attrValueHasThreshold(attrName):
+#                 diff = abs(lastValue - newValue)
+#                 threshold = self._getAttrStruct(attrName)[EVENTS][THRESHOLD]
+#                 if diff > threshold:
+#                     return True
+#                 elif self.__lastEventHasChangingQuality(attrName):
+#                     # below the threshold and last quality changing is an
+#                     # indicative that a movement has finish, then it's time
+#                     # to emit an event with a quality valid.
+#                     return True
+#                 else:
+#                     return False
+#             if self.__isHistoryBuffer(attrName):
+#                 if len(lastValue) == 0 or \
+#                         newValue != lastValue[len(lastValue)-1]:
+#                     return True
+#                 else:
+#                     return False
+#             # At this point any special case has been treated, only avoid
+#             # to emit if value doesn't change
+#             if newValue != lastValue:
+#                 return True
+#             # when non case before, no event
+#             return False
 
-        def plcGeneralAttrEvents(self):
-            '''This method is used to periodically loop to review the list of
-               attribute (above the basics) and check if they need event
-               emission.
-            '''
-            now = time.time()
-            # attributeList = []
-            # for attrName in self._plcAttrs.keys():
-            #     if attrName not in ['HeartBeat', 'Lock_ST', 'Lock_Status',
-            #                         'Locking']:
-            #         attributeList.append(attrName)
-            attributeList = self._plcAttrs.keys()
-            for exclude in ['HeartBeat', 'Lock_ST', 'Lock_Status', 'Locking']:
-                if attributeList.count(exclude):
-                    attributeList.pop(attributeList.index(exclude))
-            # Iterate the remaining to know if they need something to be done
-            for attrName in attributeList:
-                self.checkResetAttr(attrName)
-                attrStruct = self._plcAttrs[attrName]
-                if hasattr(attrStruct, 'hardwareRead'):
-                    attrStruct.hardwareRead(self.read_db)
-                
-                
-                # First check if for this element, it's prepared for events
-#                 if self.__attrHasEvents(attrName):
-#                     try:
-#                         attrStruct = self._plcAttrs[attrName]
-#                         attrType = attrStruct[TYPE]
-#                         # lastValue = self.__getAttrReadValue(attrName)
-#                         last_read_t = attrStruct[READTIME]
-#                         if READADDR in attrStruct:
-#                             # read_addr = attrStruct[READADDR]
-#                             # if READBIT in attrStruct:
-#                             #     read_bit = attrStruct[READBIT]
-#                             #     newValue = self.read_db.bit(read_addr,
-#                             #                                 read_bit)
-#                             # else:
-#                             #     newValue = self.read_db.get(read_addr,
-#                             #                                 *attrType)
-#                             newValue = attrStruct.hardwareRead(self.read_db)
-#                             if FORMULA in attrStruct and \
-#                                     'read' in attrStruct[FORMULA]:
-#                                 newValue = \
-#                                     self.__solveFormula(attrName, newValue,
-#                                                         attrStruct[FORMULA]
-#                                                         ['read'])
-#                         if self.__checkAttrEmissionParams(attrName, newValue):
-#                             self.__applyReadValue(attrName, newValue,
-#                                                   self.last_update_time)
-#                             if MEANINGS in attrStruct:
-#                                 if BASESET in attrStruct:
-#                                     attrValue = attrStruct[READVALUE].array
-#                                 else:
-#                                     attrValue = \
-#                                         self.__buildAttrMeaning(attrName,
-#                                                                 newValue)
-#                                 attrQuality = \
-#                                     self.__buildAttrQuality(attrName, newValue)
-#                             elif QUALITIES in attrStruct:
-#                                 attrValue = newValue
-#                                 attrQuality = \
-#                                     self.__buildAttrQuality(attrName,
-#                                                             attrValue)
-#                             elif AUTOSTOP in attrStruct:
-#                                 attrValue = attrStruct[READVALUE].array
-#                                 attrQuality = PyTango.AttrQuality.ATTR_VALID
-#                                 self._checkAutoStopConditions(attrName)
-#                             else:
-#                                 attrValue = newValue
-#                                 attrQuality = PyTango.AttrQuality.ATTR_VALID
-#                             # store the current quality to know an end of
-#                             # a movement: quality from changing to valid
-#                             attrStruct[LASTEVENTQUALITY] = attrQuality
-#                             # collect to launch fire event
-#                             self.__doTraceAttr(attrName,
-#                                                "plcGeneralAttrEvents(%s)"
-#                                                % (attrValue))
-#                         # elif self.__checkEventReEmission(attrName):
-#                             #  Even there is no condition to emit an event
-#                             #  Check the RE_EVENTS_PERIOD to know if a refresh
-#                             #  would be nice
-#                         #     self.__eventReEmission(attrName)
-#                         #     attr2Reemit += 1
-#                     except Exception as e:
-#                         self.warn_stream("In plcGeneralAttrEvents(), "
-#                                          "exception in attribute %s: %s"
-#                                          % (attrName, e))
-#                         traceback.print_exc()
-            # if len(attr2Event) > 0:
-            #     self.fireEventsList(attr2Event, timestamp=now, log=True)
-#             if attr2Reemit > 0:
-#                 self.debug_stream("%d events due to periodic reemission"
-#                                   % attr2Reemit)
-#             self.debug_stream("plcGeneralAttrEvents(): %d events from %d "
-#                               "attributes" % (len(attr2Event),
-#                                               len(attributeList)))
-
+#         def plcGeneralAttrEvents(self):
+#             '''This method is used to periodically loop to review the list of
+#                attribute (above the basics) and check if they need event
+#                emission.
+#             '''
+#             now = time.time()
+#             # attributeList = []
+#             # for attrName in self._plcAttrs.keys():
+#             #     if attrName not in ['HeartBeat', 'Lock_ST', 'Lock_Status',
+#             #                         'Locking']:
+#             #         attributeList.append(attrName)
+#             attributeList = self._plcAttrs.keys()
+#             for exclude in ['HeartBeat', 'Lock_ST', 'Lock_Status', 'Locking']:
+#                 if attributeList.count(exclude):
+#                     attributeList.pop(attributeList.index(exclude))
+#             # Iterate the remaining to know if they need something to be done
+#             for attrName in attributeList:
+#                 self.checkResetAttr(attrName)
+#                 attrStruct = self._plcAttrs[attrName]
+#                 if hasattr(attrStruct, 'hardwareRead'):
+#                     attrStruct.hardwareRead(self.read_db)
+#                 
+#                 
+#                 # First check if for this element, it's prepared for events
+# #                 if self.__attrHasEvents(attrName):
+# #                     try:
+# #                         attrStruct = self._plcAttrs[attrName]
+# #                         attrType = attrStruct[TYPE]
+# #                         # lastValue = self.__getAttrReadValue(attrName)
+# #                         last_read_t = attrStruct[READTIME]
+# #                         if READADDR in attrStruct:
+# #                             # read_addr = attrStruct[READADDR]
+# #                             # if READBIT in attrStruct:
+# #                             #     read_bit = attrStruct[READBIT]
+# #                             #     newValue = self.read_db.bit(read_addr,
+# #                             #                                 read_bit)
+# #                             # else:
+# #                             #     newValue = self.read_db.get(read_addr,
+# #                             #                                 *attrType)
+# #                             newValue = attrStruct.hardwareRead(self.read_db)
+# #                             if FORMULA in attrStruct and \
+# #                                     'read' in attrStruct[FORMULA]:
+# #                                 newValue = \
+# #                                     self.__solveFormula(attrName, newValue,
+# #                                                         attrStruct[FORMULA]
+# #                                                         ['read'])
+# #                         if self.__checkAttrEmissionParams(attrName, newValue):
+# #                             self.__applyReadValue(attrName, newValue,
+# #                                                   self.last_update_time)
+# #                             if MEANINGS in attrStruct:
+# #                                 if BASESET in attrStruct:
+# #                                     attrValue = attrStruct[READVALUE].array
+# #                                 else:
+# #                                     attrValue = \
+# #                                         self.__buildAttrMeaning(attrName,
+# #                                                                 newValue)
+# #                                 attrQuality = \
+# #                                     self.__buildAttrQuality(attrName, newValue)
+# #                             elif QUALITIES in attrStruct:
+# #                                 attrValue = newValue
+# #                                 attrQuality = \
+# #                                     self.__buildAttrQuality(attrName,
+# #                                                             attrValue)
+# #                             elif AUTOSTOP in attrStruct:
+# #                                 attrValue = attrStruct[READVALUE].array
+# #                                 attrQuality = PyTango.AttrQuality.ATTR_VALID
+# #                                 self._checkAutoStopConditions(attrName)
+# #                             else:
+# #                                 attrValue = newValue
+# #                                 attrQuality = PyTango.AttrQuality.ATTR_VALID
+# #                             # store the current quality to know an end of
+# #                             # a movement: quality from changing to valid
+# #                             attrStruct[LASTEVENTQUALITY] = attrQuality
+# #                             # collect to launch fire event
+# #                             self.__doTraceAttr(attrName,
+# #                                                "plcGeneralAttrEvents(%s)"
+# #                                                % (attrValue))
+# #                         # elif self.__checkEventReEmission(attrName):
+# #                             #  Even there is no condition to emit an event
+# #                             #  Check the RE_EVENTS_PERIOD to know if a refresh
+# #                             #  would be nice
+# #                         #     self.__eventReEmission(attrName)
+# #                         #     attr2Reemit += 1
+# #                     except Exception as e:
+# #                         self.warn_stream("In plcGeneralAttrEvents(), "
+# #                                          "exception in attribute %s: %s"
+# #                                          % (attrName, e))
+# #                         traceback.print_exc()
+#             # if len(attr2Event) > 0:
+#             #     self.fireEventsList(attr2Event, timestamp=now, log=True)
+# #             if attr2Reemit > 0:
+# #                 self.debug_stream("%d events due to periodic reemission"
+# #                                   % attr2Reemit)
+# #             self.debug_stream("plcGeneralAttrEvents(): %d events from %d "
+# #                               "attributes" % (len(attr2Event),
+# #                                               len(attributeList)))
+ 
 #         def internalAttrEvents(self):
 #             '''
 #             '''
@@ -3544,7 +3544,7 @@ class LinacData(PyTango.Device_4Impl):
                     start_t = time.time()
                     if self.is_connected():
                         self.readPlcRegisters()
-                        
+                        self.propagateNewValues()
                         diff_t = time.time() - start_t
                         if diff_t > EXPECTED_UPDATE_TIME:
                             if self._getPlcUpdatePeriod() < \
@@ -3697,12 +3697,22 @@ class LinacData(PyTango.Device_4Impl):
                 self.disconnect()
                 self.last_update_time = time.time()
                 traceback.print_exc()
-                
+
         def propagateNewValues(self):
-            for attrName in self._plcAttrs:
+            eventCtr = EventCtr()
+            start_t = time.time()
+            attrs = self._plcAttrs.keys()[:]
+            for attrName in attrs:
                 attrStruct = self._plcAttrs[attrName]
                 if hasattr(attrStruct, 'hardwareRead'):
                     attrStruct.hardwareRead(self.read_db)
+            diff_t = time.time() - start_t
+            nEvents = eventCtr.ctr
+            eventCtr.clear()
+            self._tangoEventsTime.append(diff_t)
+            self._tangoEventsNumber.append(nEvents)
+            self.debug_stream("propagateNewValues() it has take %3.6f seconds "
+                              "for %d events" % (diff_t, nEvents))
             # PROTECTED REGION END --- LinacData.Update
 
 

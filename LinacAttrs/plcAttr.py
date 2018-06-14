@@ -72,7 +72,6 @@ class PLCAttr(LinacAttr):
         if datablock is None:
             self.warning("Not ready to read from hardware")
             return
-        # self.info("Hardware read (%s)" % self.rValue)
         if self.type == DevBoolean:
             value = datablock.bit(self._readAddr, self._readBit)
         else:
