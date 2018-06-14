@@ -74,8 +74,7 @@ Attr('GUN_HV_V',
      format='%4.1f', minValue=-100, maxValue=0, unit='kV',
      events={THRESHOLD: 0.01},
      setpoint='GUN_HV_V_setpoint',
-     switch='GUN_HV_ONC',
-     logLevel='debug')
+     switch='GUN_HV_ONC')
 
 # R036 @HVS_CM ---
 Attr('GUN_HV_I',
@@ -89,7 +88,7 @@ Attr('GUN_HV_I',
      autoStop={BELOW: -20.0,
                INTEGRATIONTIME: 1,  # s
                SWITCHDESCRIPTOR: 'GUN_HV_ONC'},
-     logLevel='debug')
+     logLevel='warning')
 
 # R040 @PHS1_PM ---
 Attr('PHS1_Phase',
@@ -167,7 +166,7 @@ AttrBit('EG_ENB',
         meanings={0: 'disabled',
                   1: 'enabled'},
         qualities={WARNING: [0]},
-        events={}, logLevel='debug')
+        events={})
 AttrBit('KA_ENB',
         70, 1,  # RO
         label='Klystron amplifier enabled (PSS)',
@@ -181,7 +180,7 @@ AttrBit('TL_VOK',
         meanings={0: 'bad vacuum',
                   1: 'good vacuum'},
         qualities={WARNING: [0]},
-        events={}, logLevel='debug')
+        events={})
 AttrBit('IU_RDY',
         70, 5,  # RO
         label='Interlock unit ready',
@@ -364,8 +363,7 @@ AttrLogic('Gun_HV_ready',
                  'GUN_HV_I_AutoStop_Triggered': [False]},
           desc='e-gun high voltage ready',
           label='e-gun high voltage ready',
-          events={},
-          logLevel='debug')
+          events={})
 
 # R076 @SCM_1_ST ---
 Attr('SCM1_ST',
@@ -561,17 +559,16 @@ AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
                                #             SWITCH: 'GUN_HV_ONC'}
                                },
               readback='GUN_HV_V',
-              switch='GUN_HV_ONC',
+              switch='GUN_HV_ONC')
               # User request (back) to limit the device setpoint to avoid
               # below -90kV.
-              logLevel='debug')
 
 # R104 W020 @TB_GPA ---
 Attr('TB_GPA',
      PyTango.DevFloat, 104, 20,  # RW
      label='timer gun pulses attenuation',
      format='%4.1f', minValue=-40, maxValue=0, unit='dB',
-     events={THRESHOLD: 0.005}, logLevel='debug')
+     events={THRESHOLD: 0.005})
 
 # R108 W024 @PHS1_PS ---
 Attr('PHS1_Phase_setpoint',
@@ -672,7 +669,7 @@ Attr('TB_GPM',
      meanings={0: "beam on",
                1: "mix",
                2: "beam off"},
-     events={}, logLevel='debug', format="%1d")
+     events={}, format="%1d")
 
 # R162 W078 @DO_0to7 ---
 AttrBit('TB_MBM',
@@ -683,6 +680,7 @@ AttrBit('TB_MBM',
                   1: 'MBM'},
         qualities={0: PyTango.AttrQuality.ATTR_WARNING},
         events={})
+
 AttrBit('GUN_HV_ONC',  # HVS_OC
         162, 2, 78,  # RW
         label='High voltage PS',
@@ -703,9 +701,8 @@ AttrBit('GUN_HV_ONC',  # HVS_OC
                           # to know where it has the autostop feature
                           },
         readback='GUN_HV_V',
-        setpoint='GUN_HV_V_setpoint',
-        logLevel='debug'
-        )
+        setpoint='GUN_HV_V_setpoint')
+
 AttrBit('Interlock_RC',  # IU_RST
         162, 3, 78,  # RW
         label='Reset interlocks',
@@ -732,13 +729,12 @@ AttrBit('GUN_LV_ONC',
                           WHENON: {FROM: 0},
                           WHENOFF: {TO: 0}},
         readback='GUN_Filament_V',
-        setpoint='GUN_Filament_V_setpoint',
+        setpoint='GUN_Filament_V_setpoint')
         # formula['write'] condition: avoid LV on/off when HV is on
         # that is: allow to turn LV off when HV is off => 0 xor 0: 0
         #          avoid to turn LV off when HV is on  => 0 xor 1: 1
         #          allow to turn LV on  when HV is off => 1 xor 0: 1
         #          avoid to turn LV on  when HV is on  => 1 xor 1: 0
-        )
 
 # R163 W079 @DO_8to15 ---
 scm_dc_desc = 'screen monitor %d; 0:up, 1:down'

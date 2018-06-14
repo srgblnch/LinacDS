@@ -44,7 +44,7 @@ Attr('HVPS_V',
      PyTango.DevFloat, 12,  # RO
      label='High voltage PS voltage',
      unit='kV', minValue=0, maxValue=40, format='%4.2f',
-     events={THRESHOLD: 0.001}, logLevel='debug',
+     events={THRESHOLD: 0.001},
      # qualities={CHANGING: {'rel': 0.1}}
      )
 
@@ -52,7 +52,7 @@ Attr('HVPS_I',
      PyTango.DevFloat, 16,  # RO
      label='High voltage PS current',
      unit='mA', minValue=0, maxValue=150, format='%4.1f',
-     events={THRESHOLD: 0.01}, logLevel='debug',
+     events={THRESHOLD: 0.01},
      # qualities={CHANGING: {'rel': 0.1}}
      )
 
@@ -129,7 +129,7 @@ Attr('HVPS_ST',
      PyTango.DevUChar, 39,  # RO
      label='High voltage PS heating status',
      desc='high voltage PS heating status'+john(HV_J),
-     meanings=HV_J, qualities=HV_J_QUALITIES, events={}, logLevel='debug')
+     meanings=HV_J, qualities=HV_J_QUALITIES, events={})
 
 PL_J = {0: 'off',
         1: 'focusing B1 undercurrent',
@@ -147,7 +147,7 @@ Attr('Pulse_ST',
      PyTango.DevUChar, 40,  # RO
      label='Pulse status',
      desc='pulse status'+john(PL_J),
-     meanings=PL_J, qualities=PL_J_QUALITIES, events={}, logLevel='debug')
+     meanings=PL_J, qualities=PL_J_QUALITIES, events={})
 
 Attr('LV_Time',
      PyTango.DevShort, 42,  # RO
@@ -179,7 +179,7 @@ AttrRampeable('HVPS_V_setpoint',
               PyTango.DevFloat, 46, 0,  # RW
               label='High voltage PS voltage setpoint',
               unit='kV', minValue=0, maxValue=33, format='%4.2f',
-              events={THRESHOLD: 0.005}, logLevel='debug',
+              events={THRESHOLD: 0.005},
               qualities={CHANGING: {'rel': 0.1}},
               rampsDescriptor={ASCENDING: {STEP: 0.5,  # kV
                                            STEPTIME: 1,  # s
@@ -213,7 +213,7 @@ AttrBit('HVPS_ONC',
         62, 3, 16,  # RW
         label='High voltage on',
         desc='high voltage on\nFalse:off\nTrue:on',
-        events={}, logLevel='debug',
+        events={},
         # rampingAttr='HVPS_V_setpoint',
         formula={'read':
                  'VALUE and '
@@ -246,7 +246,7 @@ AttrLogic('hvps_ready',
           logic={'HVPS_ST': [8, 9], 'Pulse_ST': [0, 7, 8]},
           desc='High voltage PS ready',
           label='High voltage PS ready',
-          events={}, logLevel='debug')
+          events={})
 
 AttrEnumeration('tube_u', prefix='KA')
 AttrEnumeration('thyratron_u', prefix='KA')
