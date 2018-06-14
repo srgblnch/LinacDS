@@ -92,8 +92,11 @@ class _AbstractAttrLog(object):
         if isinstance(value, str):
             if value.lower() not in logLevelsLst:
                 raise AssertionError("Unrecognised %s logLevel" % (value))
-            self.log("change log level from %s to %s" % (self.logLevel, value))
-            self._logLevel = logLevelsLst.index(value.lower())
+            newLogLevel = logLevelsLst.index(value.lower())
+            if newLogLevel != self._logLevel:
+                self.log("change log level from %s to %s"
+                         % (self.logLevel, value))
+                self._logLevel = newLogLevel
 
     def log(self, msg, tagName=True):
         if tagName:
@@ -104,7 +107,7 @@ class _AbstractAttrLog(object):
             print("LOG: %s" % (msg))
 
     def error(self, msg, tagName=True):
-        if self._logLevel > logLevelsLst.index('error'):
+        if self._logLevel >= logLevelsLst.index('error'):
             if tagName:
                 msg = "[%s] %s" % (self.name, msg)
             if self.__checkDevice__() and hasattr(self.device, 'error_stream'):
@@ -113,7 +116,7 @@ class _AbstractAttrLog(object):
                 print("ERROR: %s" % (msg))
 
     def warning(self, msg, tagName=True):
-        if self._logLevel > logLevelsLst.index('warning'):
+        if self._logLevel >= logLevelsLst.index('warning'):
             if tagName:
                 msg = "[%s] %s" % (self.name, msg)
             if self.__checkDevice__() and hasattr(self.device, 'warn_stream'):
@@ -122,7 +125,7 @@ class _AbstractAttrLog(object):
                 print("WARN: %s" % (msg))
 
     def info(self, msg, tagName=True):
-        if self._logLevel > logLevelsLst.index('info'):
+        if self._logLevel >= logLevelsLst.index('info'):
             if tagName:
                 msg = "[%s] %s" % (self.name, msg)
             if self.__checkDevice__() and hasattr(self.device, 'info_stream'):
@@ -131,7 +134,7 @@ class _AbstractAttrLog(object):
                 print("INFO: %s" % (msg))
 
     def debug(self, msg, tagName=True):
-        if self._logLevel > logLevelsLst.index('debug'):
+        if self._logLevel >= logLevelsLst.index('debug'):
             if tagName:
                 msg = "[%s] %s" % (self.name, msg)
             if self.__checkDevice__() and hasattr(self.device, 'debug_stream'):
@@ -140,7 +143,7 @@ class _AbstractAttrLog(object):
                 print("DEBUG: %s" % (msg))
 
     def trace(self, msg, tagName=True):
-        if self._logLevel > logLevelsLst.index('trace'):
+        if self._logLevel >= logLevelsLst.index('trace'):
             if tagName:
                 msg = "[%s] %s" % (self.name, msg)
             msg = "TRACE: %s" % (msg)
@@ -260,6 +263,7 @@ class _AbstractAttrDict(_AbstractAttrLog):
 
     def pop(self, key):
         self[key] = None
+
 
 class _AbstractAttrTango(_AbstractAttrLog):
 
