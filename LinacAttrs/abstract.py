@@ -70,6 +70,7 @@ logLevelsLst = ['silence', 'error', 'warning', 'info', 'debug', 'trace']
 
 class _AbstractAttrLog(object):
 
+    _name = None
     _logLevel = None
     # By default do not log info and debug for all the attributes,
     # but they can be configured individually to include its own logs:
@@ -268,6 +269,7 @@ class _AbstractAttrDict(_AbstractAttrLog):
 class _AbstractAttrTango(_AbstractAttrLog):
 
     _device = None
+    _attr = None
 
     _memorised = None
     _memorisedLst = None
@@ -295,6 +297,11 @@ class _AbstractAttrTango(_AbstractAttrLog):
         if self._memorisedLst:
             for suffix in self._memorisedLst:
                 self._memorised.recover(suffix)
+
+    def _buildAttrObj(self):
+        if self._name is not None and self._device is not None:
+            multiattr = self._device.get_device_attr()
+            self._attr = multiattr.get_attr_by_name(self._name)
 
     def isAllowed(self):
         if self.device is None:
@@ -334,7 +341,7 @@ class _AbstractAttrTango(_AbstractAttrLog):
             self.info("Received a write request for %s, value %s"
                       % (attrName, writeValue))
             self.write_value = writeValue
-            self._setTangoAttrWriteValue(attr, writeValue)
+            # self._setTangoAttrWriteValue(attr, writeValue)
 
     @property
     def memorisedLst(self):
@@ -423,25 +430,25 @@ class _AbstractAttrTango(_AbstractAttrLog):
             # FIXME: check dimensions if the readValue have
             #        set the paramenter
 
-    def _setTangoAttrWriteValue(self, attr, writeValue):
-        attrName = self._getAttrName(attr)
-        self.debug("_setTangoAttrWriteValue(%s, %s, %s, %s)"
-                   % (attrName, writeValue, self.timestamp, self.quality))
-        if not any([isinstance(attr, kls) for kls in [WAttribute]]):
-            self.warning("Cannot set attribute write value "
-                         "for a non Tango WAttribute")
-            return
-        try:
-            attr.set_write_value(writeValue)
-        except Exception as e:
-            self.error("_setTangoAttrWriteValue(%s, %s, %s, %s) exception %s"
-                       % (attrName, writeValue, self.timestamp,
-                          self.quality, e))
-            if hasattr(self, 'noneValue'):
-                value = self.noneValue
-            else:
-                value = self._getTangoAttrNoneValue(attr)
-            attr.set_write_value(value)
+#     def _setTangoAttrWriteValue(self, attr, writeValue):
+#         attrName = self._getAttrName(attr)
+#         self.debug("_setTangoAttrWriteValue(%s, %s, %s, %s)"
+#                    % (attrName, writeValue, self.timestamp, self.quality))
+#         if not any([isinstance(attr, kls) for kls in [WAttribute]]):
+#             self.warning("Cannot set attribute write value "
+#                          "for a non Tango WAttribute")
+#             return
+#         try:
+#             attr.set_write_value(writeValue)
+#         except Exception as e:
+#             self.error("_setTangoAttrWriteValue(%s, %s, %s, %s) exception %s"
+#                        % (attrName, writeValue, self.timestamp,
+#                           self.quality, e))
+#             if hasattr(self, 'noneValue'):
+#                 value = self.noneValue
+#             else:
+#                 value = self._getTangoAttrNoneValue(attr)
+#             attr.set_write_value(value)
 
     def _getTangoAttrNoneValue(self, attr):
         data_type = attr.get_data_type()

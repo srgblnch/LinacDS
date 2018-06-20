@@ -213,6 +213,10 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
             self._writeValue = value
             if hasattr(self, 'hardwareWrite'):
                 self.hardwareWrite(self.device.write_db)
+            if self._attr is None:
+                self._buildAttrObj()
+            if self._attr is not None:
+                self._attr.set_write_value(value)
 
     @property
     def read_t(self):

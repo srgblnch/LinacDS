@@ -3273,8 +3273,11 @@ class LinacData(PyTango.Device_4Impl):
         def newValuesThread(self):
             '''
             '''
+            self.info_stream("Build event generator thread")
+            while not self.has_data_available():
+                time.sleep(self._getPlcUpdatePeriod()*2)
+                self.debug_stream("Event generator thread wait for connection")
             self.info_stream("Starting event generator thread")
-            time.sleep(self._getPlcUpdatePeriod()*2)
             # with in the start up procedure, if the device is running in local
             # mode, it tries to lock the PLC control for itself by writing the
             # Locking flag.
