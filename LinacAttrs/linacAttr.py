@@ -195,8 +195,10 @@ class LinacAttr(_AbstractAttrDict, _AbstractAttrTango):
             self._readValue = value
             self.launchEvents()
         elif isinstance(self._readValue, CircularBuffer):
+            previousValue = self._readValue.value
             self._readValue.append(value)
-            self.launchEvents()
+            if previousValue != value:
+                self.launchEvents()
         elif self._readValue != value:
             self._readValue = value
             self.launchEvents()
