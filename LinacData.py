@@ -1997,7 +1997,11 @@ class LinacData(PyTango.Device_4Impl):
             data = []
             self.Locking.get_write_value(data)
             val = data[0]
-            if not self.read_lock():
+            if attr.get_name().lower() in ['locking']:
+                self.debug_stream("Do not do the write checks, when what is "
+                                  "wanted is to write the locker")
+                # FIXME: perhaps check if it is already lock by another program
+            elif not self.read_lock():
                 try:
                     exceptionMsg = 'first required to set Locking flag on '\
                         '%s device' % self.get_name()
@@ -2625,33 +2629,7 @@ class LinacData(PyTango.Device_4Impl):
                 self.info_stream('initialized')
                 self.set_state(PyTango.DevState.UNKNOWN)
 
-                # Threading joiners ---
-                self._plcUpdateJoiner = threading.Event()
-                self._plcUpdateJoiner.clear()
-                self._tangoEventsJoiner = threading.Event()
-                self._tangoEventsJoiner.clear()
-                # Threads declaration ---
-                #self._tangoEventsThread = \
-                #    threading.Thread(target=self.eventGeneratorThread)
-                self._tangoEventsTime = \
-                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
-                self._tangoEventsNumber = \
-                    CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
-                self._plcUpdateThread = \
-                    threading.Thread(target=self.plcUpdaterThread)
-                # Threads configuration ---
-                #self._tangoEventsThread.setDaemon(True)
-                self._plcUpdateThread.setDaemon(True)
-                self._plcUpdatePeriod = PLC_MAX_UPDATE_PERIOD
-                # Launch those threads ---
-                self._plcUpdateThread.start()
-                #self._tangoEventsThread.start()
-                # self.prepareSayAgain()
-                self.info_stream("All threads launched")
-                # When the device starts from scratch in local mode, ---
-                # try to lock the PLC control
-                # if _deviceIsInLocal:
-                #     self.write_lock(True)
+                self._threadingBuilder()
             except Exception:
                 self.error_stream('initialization failed')
                 self.debug_stream(traceback.format_exc())
@@ -3110,6 +3088,230 @@ class LinacData(PyTango.Device_4Impl):
             # PROTECTED REGION END --- LinacData.ResetState
 
         # To be moved ---
+        def _threadingBuilder(self):
+            # Threading joiners ---
+            self._plcUpdateJoiner = threading.Event()
+            self._plcUpdateJoiner.clear()
+            self._tangoEventsJoiner = threading.Event()
+            self._tangoEventsJoiner.clear()
+            # Threads declaration ---
+            self._plcUpdateThread = \
+                threading.Thread(target=self.plcUpdaterThread)
+            self._tangoEventsThread = \
+                threading.Thread(target=self.newValuesThread)
+            self._tangoEventsTime = \
+                CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
+            self._tangoEventsNumber = \
+                CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
+            # Threads configuration ---
+            self._plcUpdateThread.setDaemon(True)
+            self._tangoEventsThread.setDaemon(True)
+            self._plcUpdatePeriod = PLC_MAX_UPDATE_PERIOD
+            # Launch those threads ---
+            self._plcUpdateThread.start()
+            self._tangoEventsThread.start()
+            self.info_stream("All threads launched")
+
+        def plcUpdaterThread(self):
+            '''
+            '''
+            time.sleep(self._getPlcUpdatePeriod())
+            while not self._plcUpdateJoiner.isSet():
+                try:
+                    start_t = time.time()
+                    if self.is_connected():
+                        self._readPlcRegisters()
+                        self._addaptPeriod(time.time()-start_t)
+                    else:
+                        if self._plcUpdateJoiner.isSet():
+                            return
+                        self.info_stream('plc not connected')
+                        self.reconnect()
+                        time.sleep(self.ReconnectWait)
+                except Exception as e:
+                    self.error_stream("In plcUpdaterThread() "
+                                      "exception: %s" % (e))
+                    traceback.print_exc()
+
+        def _readPlcRegisters(self):
+            """ Do a read of all the registers in the plc and update the
+                mirrored memory
+
+            :param argin:
+            :type: PyTango.DevVoid
+            :return:
+            :rtype: PyTango.DevVoid """
+
+            # faults are critical and can not be recovered by restarting things
+            # INIT states mean something is going is on that interferes with
+            #      updating, such as connecting
+            start_update_time = time.time()
+            if (self.get_state() == PyTango.DevState.FAULT) or \
+                    not self.is_connected():
+                if start_update_time - self.last_update_time \
+                        < self.ReconnectWait:
+                    return
+                else:
+                    if self.connect():
+                        self.set_state(PyTango.DevState.UNKNOWN)
+                    return
+            # relock if auto-recover from fault ---
+            if self._deviceIsInLocal and 'Locking' in self._plcAttrs \
+                    and not self._plcAttrs['Locking'].rvalue:
+                self.relock()
+            try:
+                up = self.read_db.readall()  # The real reading to the hardware
+                if up:
+                    self.last_update_time = time.time()
+                    if self.get_state() == PyTango.DevState.ALARM:
+                        # This warning would be because attributes with
+                        # this quality, don't log because it happens too often.
+                        self.set_state(PyTango.DevState.ON, log=False)
+                    if not self.get_state() in [PyTango.DevState.ON]:
+                        # Recover a ON state when it is responding and the
+                        # state was showing something different.
+                        self.set_state(PyTango.DevState.ON)
+                else:
+                    self.set_state(PyTango.DevState.FAULT)
+                    self.set_status("No data received from the PLC")
+                end_update_t = time.time()
+                diff_t = (end_update_t - start_update_time)
+                if end_update_t-self.last_update_time > self.TimeoutAlarm:
+                    self.set_state(PyTango.DevState.ALARM)
+                    self.set_status("Timeout alarm!")
+                    return
+                # disconnect if no new information is send after long time
+                if end_update_t-self.last_update_time > self.TimeoutConnection:
+                    self.disconnect()
+                    self.set_state(PyTango.DevState.FAULT)
+                    self.set_status("Timeout connection!")
+                    return
+                self.read_lastUpdate_attr = diff_t
+                timeFormated = time.strftime('%F %T')
+                self.read_lastUpdateStatus_attr = "last updated at %s in %f s"\
+                                                  % (timeFormated, diff_t)
+                attr2Event = [['lastUpdate', self.read_lastUpdate_attr],
+                              ['lastUpdateStatus',
+                               self.read_lastUpdateStatus_attr]]
+                self.fireEventsList(attr2Event,
+                                    timestamp=self.last_update_time)
+                # when an update goes fine, the period is reduced one step
+                # until the minumum
+                if self._getPlcUpdatePeriod() > PLC_MIN_UPDATE_PERIOD:
+                    self._setPlcUpdatePeriod(self._plcUpdatePeriod -
+                                             PLC_STEP_UPDATE_PERIOD)
+            except tcpblock.Shutdown, exc:
+                self.set_state(PyTango.DevState.FAULT)
+                msg = 'communication shutdown requested '\
+                      'at '+time.strftime('%F %T')
+                self.set_status(msg)
+                self.error_stream(msg)
+                self.disconnect()
+            except socket.error, exc:
+                self.set_state(PyTango.DevState.FAULT)
+                msg = 'broken socket at %s\n%s' % (time.strftime('%F %T'),
+                                                   str(exc))
+                self.set_status(msg)
+                self.error_stream(msg)
+                self.disconnect()
+            except Exception, exc:
+                self.set_state(PyTango.DevState.FAULT)
+                msg = 'update failed at %s\n%s: %s' % (time.strftime('%F %T'),
+                                                       str(type(exc)),
+                                                       str(exc))
+                self.set_status(msg)
+                self.error_stream(msg)
+                self.disconnect()
+                self.last_update_time = time.time()
+                traceback.print_exc()
+
+        def _addaptPeriod(self, diff_t):
+            current_p = self._getPlcUpdatePeriod()
+            max_t = PLC_MAX_UPDATE_PERIOD
+            step_t = PLC_STEP_UPDATE_PERIOD
+            if diff_t > max_t:
+                if current_p < max_t:
+                    self.warn_stream(
+                        "plcUpdaterThread() has take too much time "
+                        "(%3.3f seconds)" % (diff_t))
+                    self._setPlcUpdatePeriod(current_p+step_t)
+                else:
+                    self.error_stream(
+                        "plcUpdaterThread() has take too much time "
+                        "(%3.3f seconds), but period cannot be increased more "
+                        "than %3.3f seconds" % (diff_t, current_p))
+            elif diff_t > current_p:
+                exceed_t = diff_t-current_p
+                factor = int(exceed_t/step_t)
+                increment_t = step_t+(step_t*factor)
+                if current_p+increment_t >= max_t:
+                    self.error_stream(
+                        "plcUpdaterThread() it has take %3.6f seconds "
+                        "(%3.6f more than expected) and period will be "
+                        "increased to the maximum (%3.6f)"
+                        % (diff_t, exceed_t, max_t))
+                    self._setPlcUpdatePeriod(max_t)
+                else:
+                    self.warn_stream(
+                        "plcUpdaterThread() it has take %3.6f seconds, "
+                        "%f over the expected, increase period "
+                        "(%3.3f + %3.3f seconds)" % (diff_t, exceed_t,
+                                                     current_p, increment_t))
+                    self._setPlcUpdatePeriod(current_p+increment_t)
+            else:
+                self.debug_stream(
+                    "plcUpdaterThread() it has take %3.6f seconds, going to "
+                    "sleep %3.3f seconds (update period %3.3f seconds)"
+                    % (diff_t, current_p-diff_t, current_p))
+                time.sleep(current_p-diff_t)
+
+        def newValuesThread(self):
+            '''
+            '''
+            self.info_stream("Starting event generator thread")
+            time.sleep(self._getPlcUpdatePeriod()*2)
+            # with in the start up procedure, if the device is running in local
+            # mode, it tries to lock the PLC control for itself by writing the
+            # Locking flag.
+            if self._deviceIsInLocal:
+                self.write_lock(True)
+            eventCtr = EventCtr()
+            while not self._tangoEventsJoiner.isSet():
+                try:
+                    start_t = time.time()
+                    if self.has_data_available():
+                        self.propagateNewValues()
+                        t1 = time.time()
+                        self.debug_stream(
+                            "%3.6f for plcGeneralAttrEvents()"
+                            % (t1 - start_t))
+                        diff_t = time.time() - start_t
+                        nEvents = eventCtr.ctr
+                        eventCtr.clear()
+                        self._tangoEventsTime.append(diff_t)
+                        self._tangoEventsNumber.append(nEvents)
+                        self.debug_stream(
+                            "newValuesThread() it has take %3.6f seconds for "
+                            "%d events" % (diff_t, nEvents))
+                        # TODO:
+                        # collect this pairs (diff,nEvents) for statistics
+                        if diff_t <= EVENT_THREAD_PERIOD:
+                            time.sleep(EVENT_THREAD_PERIOD-diff_t)
+                    else:
+                        time.sleep(self.ReconnectWait)
+                        # self.reconnect()
+                except Exception as e:
+                    self.error_stream(
+                        "In newValuesThread() exception: %s" % (e))
+                    traceback.print_exc()
+
+        def propagateNewValues(self):
+            attrs = self._plcAttrs.keys()[:]
+            for attrName in attrs:
+                attrStruct = self._plcAttrs[attrName]
+                if hasattr(attrStruct, 'hardwareRead'):
+                    attrStruct.hardwareRead(self.read_db)
+
 #         def plcBasicAttrEvents(self):
 #             '''This method is used, after all reading from the PLC to update
 #                the most basic attributes to indicate everything is fine.
@@ -3179,49 +3381,8 @@ class LinacData(PyTango.Device_4Impl):
 #                 return attrStruct[READVALUE]
 #             return None
 
-#         def eventGeneratorThread(self):
-#             '''
-#             '''
-#             self.info_stream("Starting event generator thread")
-#             time.sleep(self._getPlcUpdatePeriod()*2)
-#             # with in the start up procedure, if the device is running in local
-#             # mode, it tries to lock the PLC control for itself by writing the
-#             # Locking flag.
-#             if self._deviceIsInLocal:
-#                 self.write_lock(True)
-#             eventCtr = EventCtr()
-#             while not self._tangoEventsJoiner.isSet():
-#                 try:
-#                     start_t = time.time()
-#                     if self.has_data_available():
-#                         self.plcGeneralAttrEvents()
-#                         t1 = time.time()
-#                         self.debug_stream("%3.6f for plcGeneralAttrEvents()"
-#                                           % (t1 - start_t))
-# #                         self.internalAttrEvents()
-# #                         self.debug_stream("%3.6f for internalAttrEvents()"
-# #                                           % (time.time() - t1))
-#                         diff_t = time.time() - start_t
-#                         nEvents = eventCtr.ctr
-#                         eventCtr.clear()
-#                         self._tangoEventsTime.append(diff_t)
-#                         self._tangoEventsNumber.append(nEvents)
-#                         self.debug_stream("eventGeneratorThread() "
-#                                           "it has take %3.6f seconds for %d "
-#                                           "events"
-#                                           % (diff_t, nEvents))
-#                         # TODO: ---
-#                         # collect this pairs (diff,nEvents) for statistics
-#                         if diff_t <= EVENT_THREAD_PERIOD:
-#                             time.sleep(EVENT_THREAD_PERIOD-diff_t)
-#                     else:
-#                         time.sleep(self.ReconnectWait)
-#                         # self.reconnect()
-#                 except Exception as e:
-#                     self.error_stream("In eventGeneratorThread() "
-#                                       "exception: %s" % (e))
-#                     traceback.print_exc()
-  
+
+
 #         def __lastEventHasChangingQuality(self, attrName):
 #             attrStruct = self._getAttrStruct(attrName)
 #             if MEANINGS in attrStruct or ISRESET in attrStruct:
@@ -3561,186 +3722,13 @@ class LinacData(PyTango.Device_4Impl):
             '''
             if self._plcAttrs['Locking'][WRITEVALUE]:
                 self.write_lock(True)
-        # end "To be moved" section ---
-
-        def plcUpdaterThread(self):
-            '''
-            '''
-            time.sleep(self._getPlcUpdatePeriod())
-            while not self._plcUpdateJoiner.isSet():
-                try:
-                    start_t = time.time()
-                    if self.is_connected():
-                        self.readPlcRegisters()
-                        self.propagateNewValues()
-                        diff_t = time.time() - start_t
-                        if diff_t > EXPECTED_UPDATE_TIME:
-                            if self._getPlcUpdatePeriod() < \
-                                    PLC_MAX_UPDATE_PERIOD:
-                                self.warn_stream("plcUpdaterThread() "
-                                                 "it has take %3.6f seconds, "
-                                                 "more than expected, "
-                                                 "increase period (%3.3f + "
-                                                 "%3.3f seconds)"
-                                                 % (diff_t,
-                                                    self._plcUpdatePeriod,
-                                                    10*PLC_STEP_UPDATE_PERIOD))
-                                self._setPlcUpdatePeriod(
-                                    self._plcUpdatePeriod +
-                                    10*PLC_STEP_UPDATE_PERIOD)
-                            else:
-                                self.error_stream("plcUpdaterThread() "
-                                                  "it has take %3.6f seconds,"
-                                                  " more than expected and "
-                                                  "period cannot be increased"
-                                                  " (%3.3f seconds)"
-                                                  % (diff_t,
-                                                     self._plcUpdatePeriod))
-                        elif diff_t > self._plcUpdatePeriod:
-                            self.warn_stream("plcUpdaterThread() has take "
-                                             "too much time (%3.3f seconds)"
-                                             % (diff_t))
-                            if self._getPlcUpdatePeriod() < \
-                                    PLC_MAX_UPDATE_PERIOD:
-                                self._setPlcUpdatePeriod(
-                                    self._plcUpdatePeriod +
-                                    10*PLC_STEP_UPDATE_PERIOD)
-                        else:
-                            self.debug_stream("plcUpdaterThread() "
-                                              "it has take %3.6f seconds, "
-                                              "going to sleep %3.3f seconds "
-                                              "(update period %3.3f seconds)"
-                                              % (diff_t,
-                                                 self._plcUpdatePeriod-diff_t,
-                                                 self._plcUpdatePeriod))
-                            time.sleep(self._getPlcUpdatePeriod()-diff_t)
-                    else:
-                        if self._plcUpdateJoiner.isSet():
-                            return
-                        self.info_stream('plc not connected')
-                        self.reconnect()
-                        time.sleep(self.ReconnectWait)
-                except Exception as e:
-                    self.error_stream("In plcUpdaterThread() "
-                                      "exception: %s" % (e))
-                    traceback.print_exc()
+        # end "To be moved" section
 
         @CommandExc
         def Update(self):
             '''Deprecated
             '''
             pass
-
-        def readPlcRegisters(self):
-            """ Do a read of all the registers in the plc and update the
-                mirrored memory
-
-            :param argin:
-            :type: PyTango.DevVoid
-            :return:
-            :rtype: PyTango.DevVoid """
-
-            # PROTECTED REGION ID(LinacData.Update) ---
-            # faults are critical and can not be recovered by restarting things
-            # INIT states mean something is going is on that interferes with
-            #      updating, such as connecting
-            start_update_time = time.time()
-            if (self.get_state() == PyTango.DevState.FAULT) or \
-                    not self.is_connected():
-                if start_update_time - self.last_update_time \
-                        < self.ReconnectWait:
-                    return
-                else:
-                    if self.connect():
-                        self.set_state(PyTango.DevState.UNKNOWN)
-                    return
-            # relock if auto-recover from fault ---
-            if self._deviceIsInLocal and 'Locking' in self._plcAttrs \
-                    and not self._plcAttrs['Locking'].rvalue:
-                self.relock()
-            try:
-                up = self.read_db.readall()  # The real reading to the hardware
-                if up:
-                    self.last_update_time = time.time()
-                    #self.check_lock()
-                    #self.plcBasicAttrEvents()
-                    if self.get_state() == PyTango.DevState.ALARM:
-                        # This warning would be because attributes with
-                        # this quality, don't log because it happens too often.
-                        self.set_state(PyTango.DevState.ON, log=False)
-                    if not self.get_state() in [PyTango.DevState.ON]:
-                        # Recover a ON state when it is responding and the
-                        # state was showing something different.
-                        self.set_state(PyTango.DevState.ON)
-                else:
-                    self.set_state(PyTango.DevState.FAULT)
-                    self.set_status("No data received from the PLC")
-                end_update_t = time.time()
-                diff_t = (end_update_t - start_update_time)
-                if end_update_t-self.last_update_time > self.TimeoutAlarm:
-                    self.set_state(PyTango.DevState.ALARM)
-                    self.set_status("Timeout alarm!")
-                    return
-                # disconnect if no new information is send after long time
-                if end_update_t-self.last_update_time > self.TimeoutConnection:
-                    self.disconnect()
-                    self.set_state(PyTango.DevState.FAULT)
-                    self.set_status("Timeout connection!")
-                    return
-                self.read_lastUpdate_attr = diff_t
-                timeFormated = time.strftime('%F %T')
-                self.read_lastUpdateStatus_attr = "last updated at %s in %f s"\
-                                                  % (timeFormated, diff_t)
-                attr2Event = [['lastUpdate', self.read_lastUpdate_attr],
-                              ['lastUpdateStatus',
-                               self.read_lastUpdateStatus_attr]]
-                self.fireEventsList(attr2Event,
-                                    timestamp=self.last_update_time)
-                # when an update goes fine, the period is reduced one step
-                # until the minumum
-                if self._getPlcUpdatePeriod() > PLC_MIN_UPDATE_PERIOD:
-                    self._setPlcUpdatePeriod(self._plcUpdatePeriod -
-                                             PLC_STEP_UPDATE_PERIOD)
-            except tcpblock.Shutdown, exc:
-                self.set_state(PyTango.DevState.FAULT)
-                msg = 'communication shutdown requested '\
-                      'at '+time.strftime('%F %T')
-                self.set_status(msg)
-                self.error_stream(msg)
-                self.disconnect()
-            except socket.error, exc:
-                self.set_state(PyTango.DevState.FAULT)
-                msg = 'broken socket at %s\n%s' % (time.strftime('%F %T'),
-                                                   str(exc))
-                self.set_status(msg)
-                self.error_stream(msg)
-                self.disconnect()
-            except Exception, exc:
-                self.set_state(PyTango.DevState.FAULT)
-                msg = 'update failed at %s\n%s: %s' % (time.strftime('%F %T'),
-                                                       str(type(exc)),
-                                                       str(exc))
-                self.set_status(msg)
-                self.error_stream(msg)
-                self.disconnect()
-                self.last_update_time = time.time()
-                traceback.print_exc()
-
-        def propagateNewValues(self):
-            eventCtr = EventCtr()
-            start_t = time.time()
-            attrs = self._plcAttrs.keys()[:]
-            for attrName in attrs:
-                attrStruct = self._plcAttrs[attrName]
-                if hasattr(attrStruct, 'hardwareRead'):
-                    attrStruct.hardwareRead(self.read_db)
-            diff_t = time.time() - start_t
-            nEvents = eventCtr.ctr
-            eventCtr.clear()
-            self._tangoEventsTime.append(diff_t)
-            self._tangoEventsNumber.append(nEvents)
-            self.debug_stream("propagateNewValues() it has take %3.6f seconds "
-                              "for %d events" % (diff_t, nEvents))
             # PROTECTED REGION END --- LinacData.Update
 
 
