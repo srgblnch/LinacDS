@@ -2468,6 +2468,7 @@ class LinacData(PyTango.Device_4Impl):
                 self.info_stream('deleting device '+self.get_name())
                 self._plcUpdateJoiner.set()
                 self._tangoEventsJoiner.set()
+                self._newDataAvailable.set()
                 self.attr_list.remove_all()
 
         def init_device(self):
@@ -3112,6 +3113,8 @@ class LinacData(PyTango.Device_4Impl):
             self._plcUpdateThread.setDaemon(True)
             self._tangoEventsThread.setDaemon(True)
             self._plcUpdatePeriod = PLC_MAX_UPDATE_PERIOD
+            self._newDataAvailable = threading.Event()
+            self._newDataAvailable.clear()
             # Launch those threads ---
             self._plcUpdateThread.start()
             self._tangoEventsThread.start()
@@ -3200,6 +3203,7 @@ class LinacData(PyTango.Device_4Impl):
                                self.read_lastUpdateStatus_attr]]
                 self.fireEventsList(attr2Event,
                                     timestamp=self.last_update_time)
+                self._newDataAvailable.set()
                 # when an update goes fine, the period is reduced one step
                 # until the minumum
                 if self._getPlcUpdatePeriod() > PLC_MIN_UPDATE_PERIOD:
@@ -3286,13 +3290,10 @@ class LinacData(PyTango.Device_4Impl):
             eventCtr = EventCtr()
             while not self._tangoEventsJoiner.isSet():
                 try:
-                    start_t = time.time()
-                    if self.has_data_available():
+                    if self._newDataAvailable.isSet():
+                        start_t = time.time()
                         self.propagateNewValues()
                         t1 = time.time()
-                        self.debug_stream(
-                            "%3.6f for plcGeneralAttrEvents()"
-                            % (t1 - start_t))
                         diff_t = time.time() - start_t
                         nEvents = eventCtr.ctr
                         eventCtr.clear()
@@ -3301,20 +3302,9 @@ class LinacData(PyTango.Device_4Impl):
                         self.debug_stream(
                             "newValuesThread() it has take %3.6f seconds for "
                             "%d events" % (diff_t, nEvents))
-                        # TODO:
-                        # collect this pairs (diff,nEvents) for statistics
-                        if diff_t <= EVENT_THREAD_PERIOD:
-                            time.sleep(EVENT_THREAD_PERIOD-diff_t)
-                        else:
-                            self.warn_stream("newValuesThread() required "
-                                             "%3.6f seconds (%3.6f above the "
-                                             "period of %3.6f) for %d events"
-                                             % (diff_t,
-                                                diff_t-EVENT_THREAD_PERIOD,
-                                                EVENT_THREAD_PERIOD, nEvents))
+                        self._newDataAvailable.clear()
                     else:
-                        time.sleep(self.ReconnectWait)
-                        # self.reconnect()
+                        self._newDataAvailable.wait()
                 except Exception as e:
                     self.error_stream(
                         "In newValuesThread() exception: %s" % (e))
