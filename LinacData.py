@@ -1336,7 +1336,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Hide the internal differences of the stored attribute struct
                and return the last value read from the PLC for a certain attr.
             '''
-            self.warn_stream("DEPRECATED: __applyReadValue()")
+            self.warn_stream("DEPRECATED: __applyReadValue(%s)" % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             if timestamp is None:
                 timestamp = time.time()
@@ -1355,7 +1355,8 @@ class LinacData(PyTango.Device_4Impl):
                No data shall be collected when it is already off (and the
                autostop will not stop anything).
             '''
-            self.warn_stream("DEPRECATED: __filterAutoStopCollection()")
+            self.warn_stream("DEPRECATED: __filterAutoStopCollection(%s)"
+                             % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             if AUTOSTOP in attrStruct and \
                     SWITCHDESCRIPTOR in attrStruct[AUTOSTOP]:
@@ -1376,7 +1377,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Hide the internal attribute struct representation and give an
                interface to set a value to be written.
             '''
-            self.warn_stream("DEPRECATED: __applyWriteValue()")
+            self.warn_stream("DEPRECATED: __applyWriteValue(%s)" % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             if WRITEVALUE in attrStruct:
                 attrStruct[WRITEVALUE] = attrValue
@@ -1386,7 +1387,7 @@ class LinacData(PyTango.Device_4Impl):
                status-like attribute that reports what the documentation
                assign to the enumeration.
             '''
-            self.warn_stream("DEPRECATED: __buildAttrMeaning()")
+            self.warn_stream("DEPRECATED: __buildAttrMeaning(%s)" % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             meanings = attrStruct[MEANINGS]
             if attrValue in meanings:
@@ -1397,7 +1398,7 @@ class LinacData(PyTango.Device_4Impl):
         def __buildAttrQuality(self, attrName, attrValue):
             '''Resolve the quality the an specific value has for an attribute.
             '''
-            self.warn_stream("DEPRECATED: __buildAttrQuality()")
+            self.warn_stream("DEPRECATED: __buildAttrQuality(%s)" % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             if QUALITIES in attrStruct:
                 qualities = attrStruct[QUALITIES]
@@ -1421,7 +1422,7 @@ class LinacData(PyTango.Device_4Impl):
                     setpoint = \
                         self._getAttrStruct(setpointAttrName)[READVALUE].value
                     if setpoint is not None:
-                        if self.__tooFar(setpoint, readback):
+                        if self.__tooFar(attrName, setpoint, readback):
                             if attrName in self._traceTooClose:
                                 self.warn_stream("Found %s readback (%6.3f) "
                                                  "too far from setpoint "
@@ -1441,7 +1442,7 @@ class LinacData(PyTango.Device_4Impl):
                     return PyTango.AttrQuality.ATTR_INVALID
             return PyTango.AttrQuality.ATTR_VALID
 
-        def __tooFar(self, setpoint, readback):
+        def __tooFar(self, attrName, setpoint, readback):
             '''
                 Definition of 'too far': when the readback and the setpoint
                 differ more than a certain percentage, the quality of the
@@ -1458,7 +1459,7 @@ class LinacData(PyTango.Device_4Impl):
                   made also with additive notation using a multiplication
                   factor.
             '''
-            self.warn_stream("DEPRECATED: __tooFar()")
+            self.warn_stream("DEPRECATED: __tooFar(%s)" % (attrName))
             if (-CLOSE_ZERO < setpoint < CLOSE_ZERO) or readback == 0:
                 diff = abs(setpoint - readback)
                 if (diff > CLOSE_ZERO):
@@ -1474,7 +1475,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Check if this attrName with the give attrValue is with in the
                threshold of the give quality
             '''
-            self.warn_stream("DEPRECATED: __checkQuality()")
+            self.warn_stream("DEPRECATED: __checkQuality(%s)" % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             qualities = attrStruct[QUALITIES]
             if qualityInQuery in qualities:
@@ -1497,7 +1498,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Check if the a value is with in any of the configured absolute
                ranges for the specific configuration with in an attribute.
             '''
-            self.warn_stream("DEPRECATED: __checkAbsoluteRango()")
+            # self.warn_stream("DEPRECATED: __checkAbsoluteRango()")
             if ABSOLUTE in qualityDict:
                 if ABOVE in qualityDict[ABSOLUTE]:
                     above = qualityDict[ABSOLUTE][ABOVE]
@@ -1520,7 +1521,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Check if the a value is with in any of the configured relative
                ranges for the specific configuration with in an attribute.
             '''
-            self.warn_stream("DEPRECATED: __checkRelativeRange()")
+            # self.warn_stream("DEPRECATED: __checkRelativeRange()")
             if RELATIVE in qualityDict and isintance(buffer, CircularBuffer):
                 if buffer.std >= qualityDict[RELATIVE]:
                     return True
@@ -1558,7 +1559,7 @@ class LinacData(PyTango.Device_4Impl):
             '''Some attributes can have a formula to interpret or modify the
                value given from the PLC to the value reported by the device.
             '''
-            self.warn_stream("DEPRECATED: __solveFormula()")
+            self.warn_stream("DEPRECATED: __solveFormula(%s)" % (attrName))
             result = eval(formula)
             # self.debug_stream("%s formula eval(\"%s\") = %s" % (attrName,
             #                                                     formula,
@@ -1569,7 +1570,7 @@ class LinacData(PyTango.Device_4Impl):
                            timestamp):
             '''
             '''
-            self.warn_stream("DEPRECATED: __setAttrValue()")
+            self.warn_stream("DEPRECATED: __setAttrValue(%s)" % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             self.__applyReadValue(attrName, attrValue, timestamp)
             if attrValue is None:
@@ -1723,7 +1724,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_logical_attr(self, attr):
             '''
             '''
-            self.warn_stream("DEPRECATED: read_logical_attr()")
+            self.warn_stream("DEPRECATED: read_logical_attr(%s)"
+                             % attr.get_name())
             if self.get_state() == PyTango.DevState.FAULT or \
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
@@ -1737,7 +1739,7 @@ class LinacData(PyTango.Device_4Impl):
         def _evalLogical(self, attrName):
             '''
             '''
-            self.warn_stream("DEPRECATED: _evalLogical()")
+            self.warn_stream("DEPRECATED: _evalLogical(%s)" % (attrName))
             if attrName not in self._internalAttrs:
                 return
             attrStruct = self._internalAttrs[attrName]
@@ -1778,7 +1780,7 @@ class LinacData(PyTango.Device_4Impl):
         def __evaluateDict(self, attrName, dict2eval):
             """
             """
-            self.warn_stream("DEPRECATED: __evaluateDict()")
+            self.warn_stream("DEPRECATED: __evaluateDict(%s)" % (attrName))
             self.info_stream("%s dict2eval: %s" % (attrName, dict2eval))
             for key in dict2eval.keys():
                 if key == QUALITIES:
@@ -1787,7 +1789,7 @@ class LinacData(PyTango.Device_4Impl):
         def __evaluateList(self, attrName, list2eval):
             """
             """
-            self.warn_stream("DEPRECATED: __evaluateList()")
+            self.warn_stream("DEPRECATED: __evaluateList(%s)" % (attrName))
             self.info_stream("%s list2eval: %r" % (attrName, list2eval))
             value = self.__getAttrReadValue(attrName)
             self.info_stream("%s value: %r" % (attrName, value))
@@ -1796,7 +1798,7 @@ class LinacData(PyTango.Device_4Impl):
         def __evaluateQuality(self, attrName, searchList):
             """
             """
-            self.warn_stream("DEPRECATED: __evaluateQuality()")
+            self.warn_stream("DEPRECATED: __evaluateQuality(%s)" % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             if LASTEVENTQUALITY in attrStruct:
                 quality = attrStruct[LASTEVENTQUALITY]
@@ -1858,7 +1860,8 @@ class LinacData(PyTango.Device_4Impl):
         def read_attrGrpBit(self, attr):
             '''
             '''
-            self.warn_stream("DEPRECATED: read_attrGrpBit()")
+            self.warn_stream("DEPRECATED: read_attrGrpBit(%s)"
+                             % (attr.get_name()))
             if self.get_state() == PyTango.DevState.FAULT or \
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
@@ -1883,7 +1886,7 @@ class LinacData(PyTango.Device_4Impl):
         def __getGrpBitValue(self, attrName, addrSet, memSegment):
             '''
             '''
-            self.warn_stream("DEPRECATED: __getGrpBitValue()")
+            self.warn_stream("DEPRECATED: __getGrpBitValue(%s)" % (attrName))
             try:
                 bitSet = []
                 for addr, bit in addrSet:
@@ -1928,7 +1931,7 @@ class LinacData(PyTango.Device_4Impl):
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
             attrName = attr.get_name()
-            self.info_stream('reading %s' % (attrName))
+            self.info_stream('DEPRECATED: reading %s' % (attrName))
             value, timestamp, quality = self._plcAttrs[attrName].vtq
             attr.set_value_date_quality(value, timestamp, quality)
 
@@ -1943,24 +1946,22 @@ class LinacData(PyTango.Device_4Impl):
                 self._plcAttrs['Lock_ST'].rvalue == 1
 
         def _isRemoteLocked(self):
-            return self._deviceIsInLocal and \
+            return self._deviceIsInRemote and \
                 self._plcAttrs['Lock_ST'].rvalue == 2
 
         def _lockingChange(self, newLockValue):
-            '''
-            '''
             if self.is_lockedByTango != newLockValue:
-                self.is_lockedByTango = newLockValue
-                # self.fireEventsList([['Locking', self.is_lockedByTango]])
                 if 'Locking' in self._plcAttrs:
                     self._plcAttrs['Locking'].read_value = newLockValue
+                self.is_lockedByTango = newLockValue
 
         @AttrExc
         def read_internal_attr(self, attr):
             '''this is referencing to a device attribute that doesn't
                 have plc representation
             '''
-            self.warn_stream("DEPRECATED: read_internal_attr()")
+            self.warn_stream("DEPRECATED: read_internal_attr(%s)"
+                             % (attr.get_name()))
             if self.get_state() == PyTango.DevState.FAULT or \
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
@@ -1993,7 +1994,8 @@ class LinacData(PyTango.Device_4Impl):
         def prepare_write(self, attr):
             '''
             '''
-            self.warn_stream("DEPRECATED: prepare_write()")
+            self.warn_stream(": prepare_write(%s)"
+                             % (attr.get_name()))
             data = []
             self.Locking.get_write_value(data)
             val = data[0]
@@ -2126,7 +2128,8 @@ class LinacData(PyTango.Device_4Impl):
             '''This will clean the buffer with autostop condition collected
                data and also the triggered boolean if it was raised.
             '''
-            self.warn_stream("DEPRECATED: __cleanAutoStopCollection()")
+            self.warn_stream("DEPRECATED: __cleanAutoStopCollection(%s)"
+                             % (attrName))
             attrStruct = self._getAttrStruct(attrName)
             if READVALUE in attrStruct and len(attrStruct[READVALUE]) != 0:
                 self.info_stream("Clean up the buffer because collected data "
@@ -2160,7 +2163,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_attrGrpBit(self, attr):
             '''
             '''
-            self.warn_stream("DEPRECATED: write_attrGrpBit()")
+            self.warn_stream("DEPRECATED: write_attrGrpBit(%s)"
+                             % (attr.get_name()))
             if self.get_state() == PyTango.DevState.FAULT or \
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
@@ -2175,7 +2179,7 @@ class LinacData(PyTango.Device_4Impl):
         def __setGrpBitValue(self, addrSet, memSegment, value):
             '''
             '''
-            self.warn_stream("DEPRECATED: __setGrpBitValue()")
+            # self.warn_stream("DEPRECATED: __setGrpBitValue()")
             try:
                 for addr, bit in addrSet:
                     rbyte = self.read_db.b(self.offset_sp+addr)
@@ -2405,7 +2409,8 @@ class LinacData(PyTango.Device_4Impl):
         def write_internal_attr(self, attr):
             '''this is referencing to a device attribute that doesn't
                have plc representation'''
-            self.warn_stream("DEPRECATED: write_internal_attr()")
+            self.warn_stream("DEPRECATED: write_internal_attr(%s)"
+                             % (attr.get_name()))
             if self.get_state() == PyTango.DevState.FAULT or \
                     not self.has_data_available():
                 return  # raise AttributeError("Not available in fault state!")
@@ -3297,6 +3302,13 @@ class LinacData(PyTango.Device_4Impl):
                         # collect this pairs (diff,nEvents) for statistics
                         if diff_t <= EVENT_THREAD_PERIOD:
                             time.sleep(EVENT_THREAD_PERIOD-diff_t)
+                        else:
+                            self.warn_stream("newValuesThread() required "
+                                             "%3.6f seconds (%3.6f above the "
+                                             "period of %3.6f) for %d events"
+                                             % (diff_t,
+                                                diff_t-EVENT_THREAD_PERIOD,
+                                                EVENT_THREAD_PERIOD, nEvents))
                     else:
                         time.sleep(self.ReconnectWait)
                         # self.reconnect()
@@ -3306,6 +3318,12 @@ class LinacData(PyTango.Device_4Impl):
                     traceback.print_exc()
 
         def propagateNewValues(self):
+            """
+Check the attributes that comes directly from the PLC registers, to check if
+the information stored in the device needs to be refresh, events emitted, as
+well as for each of them, inter-attribute dependencies are required to be
+triggered.
+            """
             attrs = self._plcAttrs.keys()[:]
             for attrName in attrs:
                 attrStruct = self._plcAttrs[attrName]
@@ -3405,7 +3423,7 @@ class LinacData(PyTango.Device_4Impl):
 #                 return False
 
         def __isRstAttr(self, attrName):
-            self.warn_stream("DEPRECATED: __isRstAttr()")
+            self.warn_stream("DEPRECATED: __isRstAttr(%s)" % (attrName))
             if attrName.startswith('lastUpdate'):
                 return False
             if ISRESET in self._getAttrStruct(attrName):
@@ -3666,7 +3684,7 @@ class LinacData(PyTango.Device_4Impl):
         def checkResetAttr(self, attrName):
             '''
             '''
-            self.warn_stream("DEPRECATED: checkResetAttr()")
+            self.warn_stream("DEPRECATED: checkResetAttr(%s)" % (attrName))
             if not self.__isRstAttr(attrName):
                 return
             # FIXME: ---
