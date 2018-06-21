@@ -50,7 +50,7 @@ from types import StringType
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
 from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
-                        AutoStopAttr, AutoStopParameter)
+                        AutoStopAttr, AutoStopParameter, HistoryAttr)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -131,7 +131,7 @@ class AttrList(object):
                 self.impl.error_stream("Not supported write attribute in "
                                        "SPECTRUMs. %s will be readonly."
                                        % (name))
-                attr = PyTango.SpectrumAttr(name, T, PyTango.READ, xdim)
+                attr = PyTango.SpectrumAttr(name, T, PyTango.READ_WRITE, xdim)
         else:
             if xdim == 0:
                 attr = PyTango.Attr(name, T, PyTango.READ)
@@ -258,12 +258,6 @@ class AttrList(object):
            values, add to the tcpblock reader to decide if a received block
            has a valid structure or not.
         '''
-        rfun = self.__getAttrMethod('read', name)
-
-        if write_addr is not None:
-            wfun = self.__getAttrMethod('write', name)
-        else:
-            wfun = None
         self.__traceAttrAddr(name, T, readAddr=read_addr, writeAddr=write_addr)
         tango_T = self.__mapTypes(T)
         self._prepareAttribute(name, T, readAddr=read_addr,
@@ -272,6 +266,12 @@ class AttrList(object):
                                switch=switch, label=label, description=desc,
                                minValue=minValue, maxValue=maxValue,
                                *args, **kwargs)
+        rfun = self.__getAttrMethod('read', name)
+
+        if write_addr is not None:
+            wfun = self.__getAttrMethod('write', name)
+        else:
+            wfun = None
         # TODO: they are not necessary right now
         #if readback is not None:
         #    self.append2relations(name, READBACK, readback)
@@ -361,15 +361,6 @@ class AttrList(object):
            setpoint sets. Also this readback may like to know about the
            setpoint and if the element is switch on or off.
         '''
-
-        rfun = self.__getAttrMethod('read', name, isBit=True)
-
-        if write_addr is not None:
-            wfun = self.__getAttrMethod('write', name, isBit=True)
-            if write_bit is None:
-                write_bit = read_bit
-        else:
-            wfun = None
         self.__traceAttrAddr(name, PyTango.DevBoolean, readAddr=read_addr,
                              readBit=read_bit, writeAddr=write_addr,
                              writeBit=write_bit)
@@ -380,6 +371,14 @@ class AttrList(object):
                                label=label, description=desc,
                                minValue=minValue, maxValue=maxValue,
                                *args, **kwargs)
+        rfun = self.__getAttrMethod('read', name, isBit=True)
+
+        if write_addr is not None:
+            wfun = self.__getAttrMethod('write', name, isBit=True)
+            if write_bit is None:
+                write_bit = read_bit
+        else:
+            wfun = None
         if isRst:
             self.impl._plcAttrs[name][ISRESET] = True
             self.impl._plcAttrs[name][RESETTIME] = None
@@ -418,15 +417,18 @@ class AttrList(object):
                     the write value, is applied to _all_ of them
                     (almost) at the same time.
         '''
-        rfun = self.__getAttrMethod('read', name, isGroup=True)
         if len(write_addr_bit_pairs) > 0:
-            wfun = self.__getAttrMethod('write', name, isGroup=True)
             writable = True
         else:
-            wfun = None
+            writable = False
         self.__traceAttrAddr(name, PyTango.DevBoolean, internal=True)
         self._prepareInternalAttribute(name, PyTango.DevBoolean,
                                        isWritable=writable)
+        rfun = self.__getAttrMethod('read', name, isGroup=True)
+        if len(write_addr_bit_pairs) > 0:
+            wfun = self.__getAttrMethod('write', name, isGroup=True)
+        else:
+            wfun = None
         self._prepareEvents(name, events)
         attrDescr = self.impl._internalAttrs[name]
         attrDescr['read_set'] = read_addr_bit_pairs
@@ -439,12 +441,12 @@ class AttrList(object):
         '''Internal type of attribute made to evaluate a logical formula with
            other attributes owned by the device with a boolean result.
         '''
-        rfun = self.__getAttrMethod('read', name, isLogical=True)
-        wfun = None  # this kind can only be ReadOnly
         self.__traceAttrAddr(name, PyTango.DevBoolean, internalRO=True)
         self.impl.info_stream("%s logic: %s" % (name, logic))
         self._prepareInternalAttribute(name, PyTango.DevBoolean, logic=logic,
                                        operator=operator, inverted=inverted)
+        rfun = self.__getAttrMethod('read', name, isLogical=True)
+        wfun = None  # this kind can only be ReadOnly
         for key in logic:
             self.append2relations(name, LOGIC, key)
         self._prepareEvents(name, events)
@@ -505,8 +507,6 @@ class AttrList(object):
            setpoint sets. Also this readback may like to know about the
            setpoint and if the element is switch on or off.
         '''
-        rfun = self.__getAttrMethod('read', name)
-        wfun = self.__getAttrMethod('write', name, rampeable=True)
         self.__traceAttrAddr(name, T, readAddr=read_addr, writeAddr=write_addr)
         tango_T = self.__mapTypes(T)
         self._prepareAttribute(name, T, readAddr=read_addr,
@@ -514,6 +514,8 @@ class AttrList(object):
                                switch=switch, label=label, description=desc,
                                minValue=minValue, maxValue=maxValue,
                                *args, **kwargs)
+        rfun = self.__getAttrMethod('read', name)
+        wfun = self.__getAttrMethod('write', name, rampeable=True)
         self._prepareEvents(name, events)
         if qualities is not None:
             rampeableAttr = self._prepareAttrWithQualities(name, tango_T,
@@ -728,24 +730,26 @@ class AttrList(object):
                         rampeable=False, internal=False, isGroup=False,
                         isLogical=False):
         # if exist an specific method
-        if hasattr(self.impl, "%s_%s" % (operation, attrName)):
-            return getattr(self.impl, "%s_%s" % (operation, attrName))
-        # or use the generic method for its type
-        elif isBit:
-            return getattr(self.impl, "%s_attr_bit" % (operation))
-        elif operation == 'write' and rampeable:
-            # no sense with read operation
-            # FIXME: temporally disabled all the ramps
-            # return getattr(self.impl,"write_attr_with_ramp")
-            return getattr(self.impl, "write_attr")
-        elif isGroup:
-            return getattr(self.impl, '%s_attrGrpBit' % (operation))
-        elif internal:
-            return getattr(self.impl, "%s_internal_attr" % (operation))
-        elif isLogical:
-            return getattr(self.impl, "%s_logical_attr" % (operation))
-        else:
-            return getattr(self.impl, "%s_attr" % (operation))
+        attrStruct = self.impl._getAttrStruct(attrName)
+        return getattr(attrStruct, "%s_attr" % (operation))
+#         if hasattr(self.impl, "%s_%s" % (operation, attrName)):
+#             return getattr(self.impl, "%s_%s" % (operation, attrName))
+#         # or use the generic method for its type
+#         elif isBit:
+#             return getattr(self.impl, "%s_attr_bit" % (operation))
+#         elif operation == 'write' and rampeable:
+#             # no sense with read operation
+#             # FIXME: temporally disabled all the ramps
+#             # return getattr(self.impl,"write_attr_with_ramp")
+#             return getattr(self.impl, "write_attr")
+#         elif isGroup:
+#             return getattr(self.impl, '%s_attrGrpBit' % (operation))
+#         elif internal:
+#             return getattr(self.impl, "%s_internal_attr" % (operation))
+#         elif isLogical:
+#             return getattr(self.impl, "%s_logical_attr" % (operation))
+#         else:
+#             return getattr(self.impl, "%s_attr" % (operation))
 
     def __traceAttrAddr(self, attrName, attrType, readAddr=None, readBit=None,
                         writeAddr=None, writeBit=None, internal=False,
@@ -849,8 +853,6 @@ class AttrList(object):
             meaningAttrName = attrName.replace('_ST', '_Status')
         else:
             meaningAttrName = "%s_Status" % (attrName)
-        # TODO: meaningAttr can be stored as internal attr
-        #       and use the callbacks instead of review twice the same register
         self.impl._plcAttrs[meaningAttrName] = attrStruct._meaningsObj
         self.impl._plcAttrs[meaningAttrName].meanings = meanings
         self.impl._plcAttrs[meaningAttrName].alias = meaningAttrName
@@ -859,18 +861,30 @@ class AttrList(object):
         toReturn = (attrState, meaningAttr)
         if historyBuffer is not None:
             attrHistoryName = "%s_History" % (meaningAttrName)
-            historyDescription = copy(attrStruct)
-            self.impl._plcAttrs[attrHistoryName] = historyDescription
-            self.impl._plcAttrs[attrHistoryName][READVALUE] =\
-                HistoryBuffer(historyBuffer[BASESET], maxlen=HISTORYLENGTH,
-                              owner=self.impl._plcAttrs[attrHistoryName])
-            self.impl._plcAttrs[attrHistoryName][BASESET] =\
-                historyBuffer[BASESET]
-            xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
+            attrStruct.history = historyBuffer
+            historyStruct = attrStruct._historyObj
+            historyStruct.history = historyBuffer
+            historyStruct.alias = attrHistoryName
+            attrStruct.read_value = HistoryBuffer(
+                cleaners=historyBuffer[BASESET], maxlen=HISTORYLENGTH,
+                owner=attrStruct)
+            xdim = attrStruct.read_value.maxSize()
+            self.impl._plcAttrs[attrHistoryName] = historyStruct
             attrHistory = self.add_Attr(attrHistoryName, PyTango.DevString,
-                                        # attrType,
-                                        rfun=self.impl.read_spectrumAttr,
+                                        rfun=historyStruct.read_attr,
                                         xdim=xdim, **kwargs)
+#             historyDescription = copy(attrStruct)
+#             self.impl._plcAttrs[attrHistoryName] = historyDescription
+#             self.impl._plcAttrs[attrHistoryName][READVALUE] =\
+#                 HistoryBuffer(historyBuffer[BASESET], maxlen=HISTORYLENGTH,
+#                               owner=self.impl._plcAttrs[attrHistoryName])
+#             self.impl._plcAttrs[attrHistoryName][BASESET] =\
+#                 historyBuffer[BASESET]
+#             xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
+#             attrHistory = self.add_Attr(attrHistoryName, PyTango.DevString,
+#                                         # attrType,
+#                                         rfun=self.impl.read_spectrumAttr,
+#                                         xdim=xdim, **kwargs)
             toReturn += (attrHistory,)
         return toReturn
 
@@ -1653,6 +1667,7 @@ class LinacData(PyTango.Device_4Impl):
                                                             InternalAttr,
                                                             EnumerationAttr,
                                                             MeaningAttr,
+                                                            HistoryAttr,
                                                             AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
@@ -1706,7 +1721,7 @@ class LinacData(PyTango.Device_4Impl):
                                                             AutoStopAttr,
                                                             AutoStopParameter
                                                             ]]):
-                attrStruct.read_attr(attr)
+                attrStruct.read_spectrumAttr(attr)
                 return
             self.warn_stream("DEPRECATED read_spectrumAttr for %s" % (name))
             if BASESET in attrStruct:
