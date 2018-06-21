@@ -26,6 +26,7 @@ __license__ = "GPLv3+"
         T,               :Tango type of the attribute
         read_addr,       :PLC register address for read operation
         write_addr=None, :PLC register address for write operation
+        historyBuffer={} :Produce an auxiliar attribute with a buffer of values
         **kwargs)
 
    AttrBit(name,            :Name of the dynamic attribute
@@ -122,4 +123,10 @@ __license__ = "GPLv3+"
               INTEGRATIONTIME=seconds
               SWITCHDESCRIPTOR='name'
              }
+             
+    historyBuffer={'BASESET: [values]} :When the new value added is in the
+                                        list, clean the buffer and start
+                                        accumulating from scratch. This is
+                                        useful to trace sequence of states in
+                                        a trip, and clean the itlk are reset.
 '''
