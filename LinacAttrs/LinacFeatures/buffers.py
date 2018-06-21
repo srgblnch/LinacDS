@@ -156,5 +156,7 @@ class HistoryBuffer(CircularBuffer):
     def append(self, newElement):
         if newElement in self._cleaners:
             self._buffer = np.array([newElement])
-        else:
+        elif newElement != self._buffer[-1]:
             CircularBuffer.append(self, newElement)
+        else:
+            pass
