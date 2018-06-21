@@ -18,8 +18,10 @@
 from .abstract import LinacException, CommandExc, AttrExc
 from .autostopAttr import AutoStopAttr, AutoStopParameter
 from .enumAttr import EnumerationAttr
+from .historyAttr import HistoryAttr
 from .internalAttr import InternalAttr
 from .linacAttr import LinacAttr
+from .linacAttrBase import LinacAttrBase
 from .logicAttr import LogicAttr
 from .meaningAttr import MeaningAttr
 from .plcAttr import PLCAttr
