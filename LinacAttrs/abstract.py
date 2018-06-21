@@ -378,10 +378,12 @@ class _AbstractAttrTango(_AbstractAttrLog):
     ############################
     # First descending level ---
     def _getAttrName(self, attr):
+        if hasattr(attr, 'get_name'):
+            return attr.get_name()
         if type(attr) == str:
             return attr
         else:
-            return attr.get_name()
+            self._name
 
 #     def _getSuffix(self, attrName):
 #         if not ((self.alias and attrName.startswith(self.alias)) or
@@ -408,7 +410,8 @@ class _AbstractAttrTango(_AbstractAttrLog):
                    % (attrName, readValue, self.timestamp, self.quality))
         if not any([isinstance(attr, kls) for kls in [Attribute, WAttribute]]):
             self.warning("Cannot set attribute read value "
-                         "for a non Tango Attribute")
+                         "for a non Tango Attribute (%s)"
+                         % (attr.__class__.__mro__))
             return
         try:
             #if self.isWriteAllowed(attr):
