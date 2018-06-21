@@ -16,7 +16,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from .abstract import LinacException
-from .linacAttr import LinacAttr, TYPE_MAP
+from .linacAttr import LinacAttr
+from .linacAttrBase import TYPE_MAP
 from .meaningAttr import MeaningAttr
 from PyTango import DevBoolean, DevUChar
 
