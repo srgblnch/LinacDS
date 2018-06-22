@@ -948,11 +948,11 @@ class AttrList(object):
                                      rfun=autostopper.read_attr, xdim=1000,
                                      label=autostopperLabel)
         attrs.append(spectrumAttr)
-        enableAttr = self._buildAutoStoperAttr(autostopperName,
-                                               autostopperLabel, ENABLE,
-                                               autostopper._enable,
-                                               PyTango.DevBoolean,
-                                               memorised=True, writable=True)
+        enableAttr = self._buildAutoStopperAttr(autostopperName,
+                                                autostopperLabel, ENABLE,
+                                                autostopper._enable,
+                                                PyTango.DevBoolean,
+                                                memorised=True, writable=True)
         attrs.append(enableAttr)
         for condition in [BELOW, ABOVE]:
             if condition in autoStopDesc:
@@ -961,27 +961,27 @@ class AttrList(object):
                                                             autostopperLabel,
                                                             autostopper)
                 attrs.append(condAttr)
-        integrAttr = self._buildAutoStoperAttr(autostopperName,
-                                               autostopperLabel,
-                                               INTEGRATIONTIME,
-                                               autostopper._integr_t,
-                                               PyTango.DevDouble,
-                                               memorised=True, writable=True)
-        meanAttr = self._buildAutoStoperAttr(autostopperName,
-                                             autostopperLabel, MEAN,
-                                             autostopper._mean,
-                                             PyTango.DevDouble)
+        integrAttr = self._buildAutoStopperAttr(autostopperName,
+                                                autostopperLabel,
+                                                INTEGRATIONTIME,
+                                                autostopper._integr_t,
+                                                PyTango.DevDouble,
+                                                memorised=True, writable=True)
+        meanAttr = self._buildAutoStopperAttr(autostopperName,
+                                              autostopperLabel, MEAN,
+                                              autostopper._mean,
+                                              PyTango.DevDouble)
         attrs.append(meanAttr)
-        stdAttr = self._buildAutoStoperAttr(autostopperName,
-                                            autostopperLabel, STD,
-                                            autostopper._std,
-                                            PyTango.DevDouble)
+        stdAttr = self._buildAutoStopperAttr(autostopperName,
+                                             autostopperLabel, STD,
+                                             autostopper._std,
+                                             PyTango.DevDouble)
         attrs.append(stdAttr)
-        triggeredAttr = self._buildAutoStoperAttr(autostopperName,
-                                                  autostopperLabel, TRIGGERED,
-                                                  autostopper._triggered,
-                                                  PyTango.DevBoolean,
-                                                  memorised=True)
+        triggeredAttr = self._buildAutoStopperAttr(autostopperName,
+                                                   autostopperLabel, TRIGGERED,
+                                                   autostopper._triggered,
+                                                   PyTango.DevBoolean,
+                                                   memorised=True)
         attrs.append(triggeredAttr)
         if logLevel is not None:
             autostopper.logLevel = logLevel
@@ -989,9 +989,9 @@ class AttrList(object):
             # one), but can be any because they share their logLevel.
         return tuple(attrs)
 
-    def _buildAutoStoperAttr(self, baseName, baseLabel, suffix,
-                             autostopperComponent, dataType, memorised=False,
-                             writable=False):
+    def _buildAutoStopperAttr(self, baseName, baseLabel, suffix,
+                              autostopperComponent, dataType, memorised=False,
+                              writable=False):
         attrName = "%s_%s" % (baseName, suffix)
         attrLabel = "%s %s" % (baseLabel, suffix)
         autostopperComponent.alias = attrName
@@ -1003,7 +1003,6 @@ class AttrList(object):
         else:
             wfun = None
         self.impl._internalAttrs[attrName] = autostopperComponent
-        
         return self.add_Attr(attrName, dataType,
                              rfun=rfun, wfun=wfun,
                              label=attrLabel)
