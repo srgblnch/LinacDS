@@ -38,6 +38,8 @@ class AutoStopAttr(LinacAttr):
     _above = None
     _integr_t = None
 
+    _plcUpdatePeriod = None
+
     def __init__(self, plcAttr, below=None, above=None, switchAttr=None,
                  integr_t=None, *args, **kwargs):
         super(AutoStopAttr, self).__init__(*args, **kwargs)
@@ -52,6 +54,7 @@ class AutoStopAttr(LinacAttr):
         self._above = AutoStopParameter(tag="Above_Threshold",
                                         dataType=DevFloat, owner=self,
                                         device=self._plcAttr.device)
+        self._plcUpdatePeriod = self.device._getPlcUpdatePeriod()
         self._integr_t = AutoStopParameter(tag="IntegrationTime",
                                            dataType=DevFloat, owner=self,
                                            device=self._plcAttr.device)
@@ -100,6 +103,9 @@ class AutoStopAttr(LinacAttr):
             self._std.rvalue = self._plcAttr.read_value.std
             if self._above.rvalue < self._mean.rvalue < self._below.rvalue:
                 self._triggered.rvalue = True
+            if self._plcUpdatePeriod != self.device._getPlcUpdatePeriod():
+                self._plcUpdatePeriod = self.device._getPlcUpdatePeriod()
+                self.integr_t_changed()
 
     @property
     def enable(self):
@@ -122,10 +128,12 @@ class AutoStopAttr(LinacAttr):
         return self._integr_t.value
 
     def integr_t_changed(self):
-        period = self._plcAttr._device._getPlcUpdatePeriod()
+        period = self._plcUpdatePeriod
         samples = round(self._integr_t.value / period)
-        if self._plcAttr.read_value.maxSize() != samples:
-            self.info("Modify the buffer size")
+        bufferSize = self._plcAttr.read_value.maxSize()
+        if bufferSize != samples:
+            self.info("Modify the buffer size (from %d to %d)"
+                      % (bufferSize, samples))
             self._plcAttr.read_value.resize(samples)
 
     @property
