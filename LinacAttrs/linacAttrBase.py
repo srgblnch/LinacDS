@@ -43,6 +43,8 @@ TYPE_MAP = {DevUChar: ('B', 1),
 
 class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
+    _components = None
+
     _readValue = None
     _writeValue = None
     _minValue = None
@@ -91,9 +93,16 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     def __repr__(self):
         repr = "%s:\n" % self
-        compoments = self.keys()
-        compoments.sort()
-        for each in compoments:
+        if self._components is None:
+            # only the first time requested, and once all the inits have end
+            components = list(self.keys())
+            components.sort()
+            if 'value' in components and 'rvalue' in components:
+                components.pop(components.index('value'))
+            if 'vtq' in components:
+                components.pop(components.index('vtq'))
+            self._components = components
+        for each in self._components:
             if self[each] is None:
                 pass  # ignore
             elif type(self[each]) is list and len(self[each]) == 0:
