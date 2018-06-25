@@ -299,9 +299,13 @@ class _AbstractAttrTango(_AbstractAttrLog):
                 self._memorised.recover(suffix)
 
     def _buildAttrObj(self):
-        if self._name is not None and self._device is not None:
-            multiattr = self._device.get_device_attr()
-            self._attr = multiattr.get_attr_by_name(self._name)
+        if self._device is not None:
+            if hasattr(self, 'owner') and self.owner is not None:
+                multiattr = self._device.get_device_attr()
+                self._attr = multiattr.get_attr_by_name(self._alias)
+            elif self._name is not None:
+                multiattr = self._device.get_device_attr()
+                self._attr = multiattr.get_attr_by_name(self._name)
 
     def isAllowed(self):
         if self.device is None:
