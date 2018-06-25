@@ -54,7 +54,7 @@ class PLCAttr(LinacAttr):
         self._readAddr = readAddr
         self._readBit = readBit
         self._writeAddr = writeAddr
-        self._writeBit = writeBit
+        self._writeBit = writeBit or readBit
         self._formula = formula
 
         self._label = label
