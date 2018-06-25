@@ -47,18 +47,16 @@ class ChangeReporter(_LinacFeature):
     def __repr__(self):
         return self.__str__()
 
-    def addDestination(self, obj):
-        self._report_to.append(obj)
-        self.debug("has new destination to report: %s" % (obj.name))
+    def addDestination(self, obj, methodName):
+        self._report_to.append([obj, methodName])
+        self.debug("has new destination to report: %s with %s"
+                   % (obj.name, methodName))
 
     def report(self):
-        for obj in self._report_to:
+        for obj, methodName in self._report_to:
             try:
-                if hasattr(obj, 'evaluateAttrValue'):
-                    obj.evaluateAttrValue()
-                else:
-                    self.warning("%s cannot report to %s"
-                                 % (self.owner, obj.name))
+                method = getattr(obj, methodName)
+                method()
             except Exception as e:
                 self.error("%s fail to report to %s: %s"
                            % (self.owner, obj.name, e))

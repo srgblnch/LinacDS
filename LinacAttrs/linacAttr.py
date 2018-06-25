@@ -85,10 +85,11 @@ class LinacAttr(LinacAttrBase):
 
     #############################################################
     # Dependencies between attributes and changes propagation ---
-    def addReportTo(self, obj):
+    def addReportTo(self, obj, methodName=None):
         if self._changeReporter is None:
             self._changeReporter = ChangeReporter(self)
-        self._changeReporter.addDestination(obj)
+        self._changeReporter.addDestination(obj,
+                                            methodName or 'evaluateAttrValue')
 
     @property
     def reporter(self):
