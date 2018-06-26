@@ -20,6 +20,7 @@ from .feature import _LinacFeature
 from numpy import isnan
 from PyTango import AttrQuality, DevFailed
 from time import time, ctime
+import traceback
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -112,15 +113,19 @@ class Events(_LinacFeature):
             self.warning("Cannot emit events outside a tango device server")
             return False
         try:
-            name = name or self._owner.name
-            value = value or self._owner.rvalue
-            timestamp = timestamp or self._owner.timestamp
+            if name is None:
+                name = name or self._owner.name
+            if value is None:
+                value = self._owner.rvalue
+            if timestamp is None:
+                timestamp = self._owner.timestamp
             if value is None:
                 value = self._owner.noneValue
                 self._owner.device.push_change_event(name, value, timestamp,
                                                      AttrQuality.ATTR_INVALID)
                 self.lastEventQuality = AttrQuality.ATTR_INVALID
-            quality = quality or self._owner.quality
+            if quality is None:
+                quality = self._owner.quality
             if self._checkConditions(name, value, quality):
                 self._owner.device.push_change_event(name, value, timestamp,
                                                      quality)
@@ -137,8 +142,9 @@ class Events(_LinacFeature):
             self.warning("DevFailed in event %s emit: %s"
                          % (self.name, e[0].desc))
         except Exception as e:
-            self.error("Event for %s (with value %s) not emitted due to: %s"
-                       % (self.name, value, e))
+            self.error("Event for %s (with name %s and value %s) not emitted "
+                       "due to: %s" % (self.name, name, value, e))
+            traceback.print_stack()
         return None
 
     def _checkConditions(self, name, value, quality):
