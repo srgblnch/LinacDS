@@ -19,6 +19,10 @@ import functools
 from .LinacFeatures import Memorised
 from PyTango import DevState, AttrWriteType, Attribute, WAttribute, AttrQuality
 from PyTango import Database
+from PyTango import DevBoolean, DevString
+from PyTango import DevUChar, DevShort, DevUShort, DevInt
+from PyTango import DevLong, DevLong64, DevULong, DevULong64
+from PyTango import DevFloat, DevDouble
 import traceback
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
@@ -432,8 +436,11 @@ class _AbstractAttrTango(_AbstractAttrLog):
                 value = self.noneValue
             else:
                 value = self._getTangoAttrNoneValue(attr)
-            attr.set_value_date_quality(value, self.timestamp,
-                                        AttrQuality.ATTR_INVALID)
+            try:
+                attr.set_value_date_quality(value, self.timestamp,
+                                            AttrQuality.ATTR_INVALID)
+            except Exception as e:
+                self.error("neither None value")
             # FIXME: check dimensions if the readValue have
             #        set the paramenter
 
@@ -458,6 +465,8 @@ class _AbstractAttrTango(_AbstractAttrLog):
 #             attr.set_write_value(value)
 
     def _getTangoAttrNoneValue(self, attr):
+        if attr.get_data_size() > 1:
+            return []
         data_type = attr.get_data_type()
         if data_type in [DevString]:
             value = ''
