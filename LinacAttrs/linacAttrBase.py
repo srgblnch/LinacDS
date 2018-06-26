@@ -181,6 +181,8 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
             return float('NaN')
         elif self._type in [('h', 2), ('B', 1)]:
             return 0
+        elif self._type in [DevBoolean]:
+            return None
         else:
             return '0'
 
@@ -219,6 +221,9 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     @write_value.setter
     def write_value(self, value):
+        self.doWriteValue(value)
+
+    def doWriteValue(self, value):
         if self._writeValue != value:
             self.debug("value change from %s to %s"
                        % (self._writeValue, value))
