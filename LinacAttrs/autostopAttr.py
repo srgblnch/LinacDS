@@ -40,6 +40,8 @@ class AutoStopAttr(LinacAttr):
 
     _plcUpdatePeriod = None
 
+    _buffer = None
+
     def __init__(self, plcAttr, below=None, above=None, switchAttr=None,
                  integr_t=None, *args, **kwargs):
         super(AutoStopAttr, self).__init__(*args, **kwargs)
@@ -47,44 +49,72 @@ class AutoStopAttr(LinacAttr):
         self._switchAttr = switchAttr
         self._enable = AutoStopParameter(tag="Enable", dataType=DevBoolean,
                                          owner=self,
-                                         device=self._plcAttr.device)
+                                         device=self._plcAttr.device,
+                                         hook=self.enable_changed)
         self._below = AutoStopParameter(tag="Below_Threshold",
                                         dataType=DevFloat, owner=self,
-                                        device=self._plcAttr.device)
+                                        device=self._plcAttr.device,
+                                        hook=self.below_changed)
         self._above = AutoStopParameter(tag="Above_Threshold",
                                         dataType=DevFloat, owner=self,
-                                        device=self._plcAttr.device)
+                                        device=self._plcAttr.device,
+                                        hook=self.above_changed)
         self._plcUpdatePeriod = self.device._getPlcUpdatePeriod()
         self._integr_t = AutoStopParameter(tag="IntegrationTime",
                                            dataType=DevFloat, owner=self,
-                                           device=self._plcAttr.device)
+                                           device=self._plcAttr.device,
+                                           hook=self.integr_t_changed)
         # also the mean, std and triggered
         self._mean = AutoStopParameter(tag="Mean", dataType=DevFloat,
                                        owner=self,
-                                       device=self._plcAttr.device)
+                                       device=self._plcAttr.device,
+                                       hook=self.mean_changed)
         self._std = AutoStopParameter(tag="Std", dataType=DevFloat, owner=self,
                                       device=self._plcAttr.device)
         self._triggered = AutoStopParameter(tag="Triggered",
                                             dataType=DevBoolean, owner=self,
-                                            device=self._plcAttr.device)
-        self._enable.rvalue = False
-        self._below.rvalue = below or float('-Inf')
-        self._above.rvalue = above or float('Inf')
-        # TODO: initialisation of the integr_t
-        self._integr_t.rvalue = integr_t or float('Inf')
-        self._mean.rvalue = float('nan')
-        self._std.rvalue = float('nan')
-        self._triggered.rvalue = False
-        self._plcAttr.read_value.append_cb(self.newvaluecb)
-        self._integr_t.hook = self.integr_t_changed
-        self._mean.hook = self.mean_changed
-        self._triggered.hook = self.triggered_changed
+                                            device=self._plcAttr.device,
+                                            hook=self.triggered_changed)
+        self._initialiseValues(below, above, integr_t)
         self.info("Build %s between (%s,%s)" % (self.name, self._below.value,
                                                 self._above.value))
 
+    def _initialiseValues(self, below, above, integr_t):
+        self._enable.rvalue = self._enable._writeValue = False
+        self._below.rvalue = self._below._writeValue = below or float('-Inf')
+        self._above.rvalue = self._above._writeValue = above or float('Inf')
+        self._integr_t.rvalue = self._integr_t._writeValue = \
+            integr_t or float('Inf')
+        self._mean.rvalue = float('nan')
+        self._std.rvalue = float('nan')
+        self._triggered.rvalue = False
+        bufferSize = round(self._integr_t.value/self._plcUpdatePeriod)
+        self._buffer = CircularBuffer([], owner=self)
+        self._buffer.resize(bufferSize)
+        self._plcAttr.read_value.append_cb(self.newvalue_cb)
+
+    def _proceedConditions(self):
+        if self._enable.value and \
+                hasattr(self._switchAttr, 'rvalue') and \
+                self._switchAttr.rvalue:
+            return True
+        return False
+
+    def _disableCondition(self):
+        if self._mean:
+            self._mean.rvalue = float('NaN')
+        if self._std:
+            self._std.rvalue = float('NaN')
+
     @property
     def rvalue(self):
-        return self._plcAttr.read_value.array
+        if self._buffer:
+            return self._buffer.array
+        return []
+
+    @property
+    def noneValue(self):
+        return []
 
     @property
     def timestamp(self):
@@ -94,47 +124,83 @@ class AutoStopAttr(LinacAttr):
     def quality(self):
         return self._plcAttr.quality
 
-    def newvaluecb(self):
-        if self._enable.value:
-            self.debug("New Value Callback from %s" % (self._plcAttr))
+    def newvalue_cb(self):
+        if self._proceedConditions():
+            self._buffer.append(self._plcAttr.read_value.value)
+            self.reviewPlcPeriod()
             if self._eventsObj:
                 self._eventsObj.fireEvent()
-            self._mean.rvalue = self._plcAttr.read_value.mean
-            self._std.rvalue = self._plcAttr.read_value.std
-            if self._above.rvalue < self._mean.rvalue < self._below.rvalue:
-                self._triggered.rvalue = True
-            if self._plcUpdatePeriod != self.device._getPlcUpdatePeriod():
-                self._plcUpdatePeriod = self.device._getPlcUpdatePeriod()
-                self.integr_t_changed()
+            self._mean.rvalue = self._buffer.mean
+            self._std.rvalue = self._buffer.std
 
     @property
     def enable(self):
         return self._enable.value
 
+    def enable_changed(self):
+        self.info("Feature %s"
+                  % ("enabled" if self._enable.value else "disabled"))
+        if self._buffer:
+            self._buffer.resetBuffer()
+            if self._eventsObj:
+                self._eventsObj.fireEvent()
+        if not self._enable.value:
+            self._disableCondition()
+
     @property
     def switch(self):
         return self._switchAttr
 
+    def switch_cb(self):
+        if self._proceedConditions():
+            self._triggered.rvalue = False
+        if len(self._buffer) > 0:
+            self._buffer.resetBuffer()
+            if self._eventsObj:
+                self._eventsObj.fireEvent()
+        if not self._switchAttr.rvalue:
+            self._disableCondition()
+
+    def setSwitchAttr(self, obj):
+        self._switchAttr = obj
+        self._switchAttr.addReportTo(self, 'switch_cb')
+
     @property
     def below(self):
-        return self._below.value
+        if self.enable:
+            return self._below.value
+        return float('Inf')
+
+    def below_changed(self):
+        self.info("below_changed to %s" % (self.below))
 
     @property
     def above(self):
-        return self._above.value
+        if self.enable:
+            return self._above.value
+        return float('Inf')
+
+    def above_changed(self):
+        self.info("above_changed to %s" % (self.above))
 
     @property
     def integr_t(self):
         return self._integr_t.value
 
     def integr_t_changed(self):
-        period = self._plcUpdatePeriod
-        samples = round(self._integr_t.value / period)
-        bufferSize = self._plcAttr.read_value.maxSize()
-        if bufferSize != samples:
-            self.info("Modify the buffer size (from %d to %d)"
-                      % (bufferSize, samples))
-            self._plcAttr.read_value.resize(samples)
+        if self._buffer:
+            period = self._plcUpdatePeriod
+            samples = round(self._integr_t.value / period)
+            bufferSize = self._buffer.maxSize()
+            if bufferSize != samples:
+                self.info("Modify the buffer size (from %d to %d)"
+                          % (bufferSize, samples))
+                self._buffer.resize(samples)
+
+    def reviewPlcPeriod(self):
+        if self._plcUpdatePeriod != self.device._getPlcUpdatePeriod():
+            self._plcUpdatePeriod = self.device._getPlcUpdatePeriod()
+            self.integr_t_changed()
 
     @property
     def mean(self):
@@ -144,22 +210,23 @@ class AutoStopAttr(LinacAttr):
 
     def mean_changed(self):
         if not self.triggered and self._triggerCondition():
+            mean, std = self.mean, self.std
             self._triggered.rvalue = True
 
     def _triggerCondition(self):
         if self.mean > self.above:
-            self.info("mean value above the threshold! (%e > %e)"
+            self.info("mean value above the threshold! (%g > %g)"
                       % (self.mean, self.above))
             return True
         elif self.mean < self.below:
-            self.info("mean value below the threshold! (%e < %e)"
+            self.info("mean value below the threshold! (%g < %g)"
                       % (self.mean, self.below))
             return True
         return False
 
     @property
     def std(self):
-        if self._enable.value:
+        if self.enable:
             return self._std.value
         return float('nan')
 
@@ -169,13 +236,11 @@ class AutoStopAttr(LinacAttr):
 
     def triggered_changed(self):
         if self.enable:
-            if not self.triggered:
-                self.info("AutoStop triggered! Stop the switch")
-
-    def trigger_reset(self):
-        if self.triggered:
-            self.info("AutoStop trigger reset")
-            self._triggered.rvalue = False
+            if self.triggered:
+                self.warning("AutoStop triggered! Stop the switch")
+                self._switchAttr.write_value = False
+            else:
+                self.info("Rearm the AutoStop")
 
 
 class AutoStopParameter(_LinacFeature, LinacAttr):
@@ -186,7 +251,7 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
     _write_t = None
     _hook = None
 
-    def __init__(self, owner, tag, dataType, *args, **kwargs):
+    def __init__(self, owner, tag, dataType, hook=None, *args, **kwargs):
         super(AutoStopParameter, self).__init__(owner=owner,
                                                 name="%s:%s"
                                                 % (owner.name, tag),
@@ -200,6 +265,7 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
             self._type = bool
         else:
             self._type = dataType
+        self.hook = hook
 
     def __str__(self):
         return "%s (%s)" % (self.alias, self.__class__.__name__)
@@ -216,9 +282,9 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
     def rvalue(self, value):
         if isinstance(value, self._type):
             if self._value != value:
-                self._write_t = time()
                 self._value = value
-                self.__event(self._tag, self._value, self._write_t)
+                self._timestamp = time()
+                self.__event(self._tag, self._value, self._timestamp)
                 if self.hook:
                     self._hook()
         else:
@@ -227,18 +293,26 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
             except:
                 self.warning("rvalue assignment failed in the eval() section")
 
+    def doWriteValue(self, value):
+        super(AutoStopParameter, self).doWriteValue(value)
+        self._write_t = time()
+        self.rvalue = value  # propagate (including the hook)
+        if self._memorised is not None:
+            self._memorised.store("%s" % self.rvalue)
+
     @property
     def hook(self):
         return self._hook is not None
 
     @hook.setter
     def hook(self, func):
-        self._hook = func
+        if callable(func):
+            self._hook = func
 
     def __event(self, suffix, value, timestamp):
         if self._owner and self._owner._eventsObj:
             attrName = "%s_%s" % (self._owner.name, suffix)
             eventsObj = self._owner._eventsObj
-            # self.info("fireEvent(%s, %s,...)" % (attrName, value))
-            eventsObj.fireEvent(attrName, value, timestamp,
-                                AttrQuality.ATTR_VALID)
+            eventsObj.fireEvent(name=attrName, value=value,
+                                timestamp=timestamp,
+                                quality=AttrQuality.ATTR_VALID)
