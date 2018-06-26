@@ -37,6 +37,25 @@ class Memorised(_LinacFeature):
         super(Memorised, self).__init__(*args, **kwargs)
         self._tangodb = Database()
 
+    def __str__(self):
+        if self.owner.alias:
+            name = "%s (Memorised)" % self.owner.alias
+        else:
+            name = "%s (Memorised)" % self.owner.name
+        return name
+
+    def __repr__(self):
+        content = ""
+        if len(self._recoverValue) > 0:
+            content = "%s\n\tRecover:" % (content)
+            for key in self._recoverValue:
+                content = "%s %s:%s" % (content, key, self._recoverValue[key])
+        if len(self._storeValue) > 0:
+            content = "%s \n\tStore:" % (content)
+            for key in self._storeValue:
+                content = "%s %s:%s" % (content, key, self._storeValue[key])
+        return "%s%s" % (self.__str__(), content)
+
     def store(self, value, suffix=None):
         if self._owner is None or self._owner.device is None:
             self.warning("Cannot memorise values %soutside a "
