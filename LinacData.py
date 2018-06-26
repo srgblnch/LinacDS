@@ -394,7 +394,7 @@ class AttrList(object):
                 if autostopAttrName in self.impl._internalAttrs:
                     autostopper = self.impl._internalAttrs[autostopAttrName]
                     if autostopper.switch == name:
-                        autostopper._switchAttr = self.impl._plcAttrs[name]
+                        autostopper.setSwitchAttr(self.impl._plcAttrs[name])
         self._prepareEvents(name, events)
         if logLevel is not None:
             self.impl._getAttrStruct(name).logLevel = logLevel
@@ -980,8 +980,7 @@ class AttrList(object):
         triggeredAttr = self._buildAutoStopperAttr(autostopperName,
                                                    autostopperLabel, TRIGGERED,
                                                    autostopper._triggered,
-                                                   PyTango.DevBoolean,
-                                                   memorised=True)
+                                                   PyTango.DevBoolean)
         attrs.append(triggeredAttr)
         if logLevel is not None:
             autostopper.logLevel = logLevel
@@ -1026,6 +1025,7 @@ class AttrList(object):
         if tag not in self._relations[dependency]:
             self._relations[dependency][tag] = []
         self._relations[dependency][tag].append(origin)
+
 
 def get_ip(iface='eth0'):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
