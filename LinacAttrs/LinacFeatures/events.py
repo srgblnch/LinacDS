@@ -174,10 +174,9 @@ class Events(_LinacFeature):
                 # change, then for sure emit an event with the new quality info
                 return True
             else:
-                #self.info("Value change to small (%g > %g) to emit event"
-                #          % (diff, threshold))
                 return False
         return False
+
 
 class EventCtr(object):
 

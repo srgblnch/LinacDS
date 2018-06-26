@@ -28,7 +28,6 @@ class ChangeReporter(_LinacFeature):
 
     _report_to = None
 
-    # TODO: those changes report may come from more attributes than Logic
     # TODO: those changes may be triggered from read or write operations
     #       and may trigger different operations in the reported attr.
 

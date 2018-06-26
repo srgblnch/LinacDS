@@ -50,18 +50,6 @@ class Logic(_LinacFeature):
     def __repr__(self):
         return self.__str__()
 
-    # @property
-    # def logic(self):
-    #     return self._logic
-
-    # @property
-    # def operator(self):
-    #     return self._operator
-
-    # @property
-    # def inverted(self):
-    #     return self._inverted
-
     def _evalLogical(self):
         was = self.owner.read_value
         values = []

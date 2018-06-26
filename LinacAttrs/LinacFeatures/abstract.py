@@ -51,7 +51,6 @@ class _AbstractFeatureLog(object):
         else:
             print("log: %s" % (msg))
 
-
     def error(self, msg, tagName=True):
         if tagName:
             msg = "[%s] %s" % (self.name, msg)

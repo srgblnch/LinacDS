@@ -28,15 +28,13 @@ __license__ = "GPLv3+"
 
 class LinacAttr(LinacAttrBase):
 
-    #_baseSet = None
-    #_history = None
     _historyObj = None
 
     _AutoStop = None
     _switchDescriptor = None
 
     _changeReporter = None
-    
+
     def __init__(self, *args, **kwargs):
         super(LinacAttr, self).__init__(*args, **kwargs)
 
@@ -56,14 +54,6 @@ class LinacAttr(LinacAttrBase):
     def switchDescriptor(self, value):
         self._switchDescriptor = value
 
-#     @property
-#     def baseSet(self):
-#         return self._baseSet
-# 
-#     @baseSet.setter
-#     def baseSet(self, value):
-#         self._baseSet = value
-
     @property
     def history(self):
         if hasattr(self, '_historyObj') and self._historyObj:
@@ -78,7 +68,6 @@ class LinacAttr(LinacAttrBase):
                     self._historyObj.baseSet = value[BASESET]
         else:
             self._historyObj = None
-        #self._history = value
 
     # FIXME: other features in plcAttr can be moved here to be available for
     #        internal attributes also.

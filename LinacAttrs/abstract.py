@@ -213,13 +213,8 @@ class _AbstractAttrDict(_AbstractAttrLog):
                     klskeys += [key]
                 else:
                     klsdiscarted += [key]
-            # self.info("kls: %s" % (kls))
-            # self.info("\t* kls keys: %s" % (klskeys))
-            # self.info("\t* kls discarted: %s" % (klsdiscarted))
             keys += klskeys
             discarted += klsdiscarted
-        # self.info("* keys: %s" % (keys))
-        # self.info("* discarted: %s" % (discarted))
         return keys
 
     def keys(self):
@@ -283,10 +278,6 @@ class _AbstractAttrTango(_AbstractAttrLog):
         self.device = device
         if memorized:
             self.setMemorised()
-#             self._memorised = Memorised(owner=self)
-#             if not self._memorised.recover():
-#                 self.warning("Cannot recover value from the database")
-#             self._memorisedLst = []
 
     @property
     def device(self):
@@ -295,7 +286,6 @@ class _AbstractAttrTango(_AbstractAttrLog):
     @device.setter
     def device(self, value):
         if value is not None:
-            # self.debug("Link to the device %s" % value)
             self._device = value
         self._tangodb = Database()
         if self._memorisedLst:
@@ -349,7 +339,6 @@ class _AbstractAttrTango(_AbstractAttrLog):
             self.info("Received a write request for %s, value %s"
                       % (attrName, writeValue))
             self.write_value = writeValue
-            # self._setTangoAttrWriteValue(attr, writeValue)
 
     @property
     def memorisedLst(self):
@@ -393,25 +382,6 @@ class _AbstractAttrTango(_AbstractAttrLog):
         else:
             self._name
 
-#     def _getSuffix(self, attrName):
-#         if not ((self.alias and attrName.startswith(self.alias)) or
-#                 attrName.startswith(self.name)):
-#             # FIXME: review naming, but it shall raise an exception
-#             self.warning("attrName %s is not starting with %s%s"
-#                          % (attrName, self.name,
-#                             " or %s" % self.alias if self.alias else ""))
-#             return
-#         if attrName == self.name:
-#             # TODO: there shall be a default behaviour for attrs with no suffix
-#             return ''
-#         if attrName.count('_') == 0:
-#             self.warning("No separable name to distinguish suffix (%s)"
-#                          % (attrName))
-#             return ''
-#         else:
-#             _, suffix = attrName.rsplit('_', 1)
-#             return suffix
-
     def _setTangoAttrReadValue(self, attr, readValue):
         attrName = self._getAttrName(attr)
         self.debug("_setTangoAttrReadValue(%s, %s, %s, %s)"
@@ -422,8 +392,6 @@ class _AbstractAttrTango(_AbstractAttrLog):
                          % (attr.__class__.__mro__))
             return
         try:
-            #if self.isWriteAllowed(attr):
-            #    attr.set_write_value(readValue)
             attr.set_value_date_quality(readValue, self.timestamp,
                                         self.quality)
             # FIXME: check dimensions if the readValue have
@@ -443,26 +411,6 @@ class _AbstractAttrTango(_AbstractAttrLog):
                 self.error("neither None value")
             # FIXME: check dimensions if the readValue have
             #        set the paramenter
-
-#     def _setTangoAttrWriteValue(self, attr, writeValue):
-#         attrName = self._getAttrName(attr)
-#         self.debug("_setTangoAttrWriteValue(%s, %s, %s, %s)"
-#                    % (attrName, writeValue, self.timestamp, self.quality))
-#         if not any([isinstance(attr, kls) for kls in [WAttribute]]):
-#             self.warning("Cannot set attribute write value "
-#                          "for a non Tango WAttribute")
-#             return
-#         try:
-#             attr.set_write_value(writeValue)
-#         except Exception as e:
-#             self.error("_setTangoAttrWriteValue(%s, %s, %s, %s) exception %s"
-#                        % (attrName, writeValue, self.timestamp,
-#                           self.quality, e))
-#             if hasattr(self, 'noneValue'):
-#                 value = self.noneValue
-#             else:
-#                 value = self._getTangoAttrNoneValue(attr)
-#             attr.set_write_value(value)
 
     def _getTangoAttrNoneValue(self, attr):
         if attr.get_data_size() > 1:

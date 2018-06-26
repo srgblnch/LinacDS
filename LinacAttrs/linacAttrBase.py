@@ -186,10 +186,6 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
         else:
             return '0'
 
-    ##########################
-    # Tango attribute area ---
-
-
     #######################################################
     # Dictionary properties for backwards compatibility ---
     @property
@@ -284,7 +280,6 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
         if hasattr(self, '_historyObj') and self._historyObj:
             name = self._historyObj.alias
             value, timestamp, quality = self._historyObj.vtq
-            self.info("preparing to emit (%s, %s, %s)" % (value, timestamp, quality))
             self._historyObj.event_t = \
                 self._eventsObj.fireEvent(name, value, timestamp, quality)
         # FIXME: migrate the meaning feature to the callback system will
