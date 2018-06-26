@@ -112,12 +112,16 @@ class Datablock(object):
     def readall(self):
         E = ()  # FIXME: what does it means?
         ready = ([], [], [])
+        ctr = 0
         while not ready[0]:
             ready = select.select([self.sock.fileno()], E, E, 0)
             if not ready[0]:
-                self.error_stream("In readall(): not ready, select "
-                                  "returns '%s'" % (str(ready)))
-                time.sleep(0.1)  # return False
+                ctr += 1
+                time.sleep(0.1)
+                if ctr == 30:
+                    self.error_stream("In readall(): not ready, select "
+                                      "returns '%s'" % (str(ready)))
+                    return False
             else:
                 pass  # self.debug_stream("ready = %s" % (str(ready)))
         retries = 0
