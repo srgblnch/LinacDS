@@ -40,8 +40,8 @@ class ChangeReporter(_LinacFeature):
 
     def __str__(self):
         names = []
-        for each in self._report_to:
-            names.append(each.name)
+        for obj, methodName in self._report_to:
+            names.append(obj.name)
         return "%s (to %s)" % (self._str_, names)
 
     def __repr__(self):
