@@ -442,7 +442,7 @@ class AttrList(object):
            other attributes owned by the device with a boolean result.
         '''
         self.__traceAttrAddr(name, PyTango.DevBoolean, internalRO=True)
-        self.impl.info_stream("%s logic: %s" % (name, logic))
+        self.impl.debug_stream("%s logic: %s" % (name, logic))
         self._prepareInternalAttribute(name, PyTango.DevBoolean, logic=logic,
                                        operator=operator, inverted=inverted)
         rfun = self.__getAttrMethod('read', name, isLogical=True)
@@ -711,6 +711,9 @@ class AttrList(object):
                         try:
                             destObj = self.impl._getAttrStruct(destName)
                             origObj.addReportTo(destObj)
+                            self.impl.debug_stream("Linking %s with %s (%s)"
+                                                  % (origName, destName, tag))
+                            origObj.reporter.report()
                         except Exception as e:
                             self.impl.error_stream("Exception managing the "
                                                    "relation between %s and "
@@ -1020,6 +1023,8 @@ class AttrList(object):
                              label=conditionLabel)
 
     def append2relations(self, origin, tag, dependency):
+        self.impl.debug_stream("%s depends on %s (%s)"
+                               % (origin, dependency, tag))
         if dependency not in self._relations:
             self._relations[dependency] = {}
         if tag not in self._relations[dependency]:

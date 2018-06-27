@@ -285,6 +285,7 @@ class AutoStopParameter(_LinacFeature, LinacAttr):
                 self.__event(self._tag, self._value, self._timestamp)
                 if self.hook:
                     self._hook()
+                self.launchEvents()
         else:
             try:
                 self.rvalue = eval("%s(%s)" % (self._type.__name__, value))
