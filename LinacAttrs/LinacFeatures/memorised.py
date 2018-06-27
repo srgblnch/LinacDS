@@ -30,12 +30,14 @@ defaultFieldName = '__value'
 
 class Memorised(_LinacFeature):
 
-    _storeValue = {}
-    _recoverValue = {}
+    _storeValue = None
+    _recoverValue = None
 
     def __init__(self, *args, **kwargs):
         super(Memorised, self).__init__(*args, **kwargs)
         self._tangodb = Database()
+        self._storeValue = {}
+        self._recoverValue = {}
 
     def __str__(self):
         if self.owner.alias:
