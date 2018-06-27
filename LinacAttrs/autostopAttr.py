@@ -154,12 +154,10 @@ class AutoStopAttr(LinacAttr):
     def switch_cb(self):
         if self._proceedConditions():
             self._triggered.rvalue = False
-        if len(self._buffer) > 0:
+        if self._switchAttr.rvalue and len(self._buffer) > 0:
             self._buffer.resetBuffer()
             if self._eventsObj:
                 self._eventsObj.fireEvent()
-        if not self._switchAttr.rvalue:
-            self._disableCondition()
 
     def setSwitchAttr(self, obj):
         self._switchAttr = obj
