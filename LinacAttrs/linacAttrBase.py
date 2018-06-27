@@ -55,6 +55,8 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
     _events = None
     _eventsObj = None
 
+    _changeReporter = None
+
     def __init__(self, name, valueType, events=None, minValue=None,
                  maxValue=None, *args, **kwargs):
         # meanings must be is a subclass of LinacAttr or
@@ -287,3 +289,15 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
         #        reported and will be itself the one that emits the event).
         if hasattr(self, '_changeReporter') and self._changeReporter:
             self._changeReporter.report()
+
+    #############################################################
+    # Dependencies between attributes and changes propagation ---
+    def addReportTo(self, obj, methodName=None):
+        if self._changeReporter is None:
+            self._changeReporter = ChangeReporter(self)
+        self._changeReporter.addDestination(obj,
+                                            methodName or 'evaluateAttrValue')
+
+    @property
+    def reporter(self):
+        return self._changeReporter

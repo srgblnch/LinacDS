@@ -17,7 +17,8 @@
 
 from .linacAttr import LinacAttr
 from .LinacFeatures import CircularBuffer
-from .LinacFeatures import _LinacFeature
+#from .LinacFeatures import _LinacFeature
+from .linacFeatureAttr import _LinacFeatureAttr
 from PyTango import AttrQuality, DevBoolean, DevFloat
 from time import time
 
@@ -241,7 +242,7 @@ class AutoStopAttr(LinacAttr):
                 self.info("Rearm the AutoStop")
 
 
-class AutoStopParameter(_LinacFeature, LinacAttr):
+class AutoStopParameter(_LinacFeatureAttr):
 
     _tag = None
     _type = None

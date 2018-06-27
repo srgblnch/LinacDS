@@ -15,8 +15,9 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .linacAttr import LinacAttr
-from .LinacFeatures import _LinacFeature
+#from .linacAttr import LinacAttr
+#from .LinacFeatures import _LinacFeature
+from .linacFeatureAttr import _LinacFeatureAttr
 from PyTango import DevString
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
@@ -25,7 +26,7 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-class MeaningAttr(_LinacFeature, LinacAttr):
+class MeaningAttr(_LinacFeatureAttr):
     _meanings = {}
 
     def __init__(self, owner, *args, **kwargs):

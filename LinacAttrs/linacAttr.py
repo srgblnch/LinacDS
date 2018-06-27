@@ -17,7 +17,7 @@
 
 from .historyAttr import HistoryAttr, BASESET
 from .linacAttrBase import LinacAttrBase
-from .LinacFeatures import Events, ChangeReporter
+from .LinacFeatures import Events
 from .LinacFeatures import HistoryBuffer
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
@@ -32,8 +32,6 @@ class LinacAttr(LinacAttrBase):
 
     _AutoStop = None
     _switchDescriptor = None
-
-    _changeReporter = None
 
     def __init__(self, *args, **kwargs):
         super(LinacAttr, self).__init__(*args, **kwargs)
@@ -71,15 +69,3 @@ class LinacAttr(LinacAttrBase):
 
     # FIXME: other features in plcAttr can be moved here to be available for
     #        internal attributes also.
-
-    #############################################################
-    # Dependencies between attributes and changes propagation ---
-    def addReportTo(self, obj, methodName=None):
-        if self._changeReporter is None:
-            self._changeReporter = ChangeReporter(self)
-        self._changeReporter.addDestination(obj,
-                                            methodName or 'evaluateAttrValue')
-
-    @property
-    def reporter(self):
-        return self._changeReporter

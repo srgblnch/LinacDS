@@ -15,8 +15,9 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .linacAttrBase import LinacAttrBase
-from .LinacFeatures import _LinacFeature
+#from .linacAttrBase import LinacAttrBase
+#from .LinacFeatures import _LinacFeature
+from .linacFeatureAttr import _LinacFeatureAttr
 from PyTango import DevString
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
@@ -28,7 +29,7 @@ __license__ = "GPLv3+"
 BASESET = 'baseSet'
 
 
-class HistoryAttr(_LinacFeature, LinacAttrBase):
+class HistoryAttr(_LinacFeatureAttr):
 
     _cleanerSet = None
 
