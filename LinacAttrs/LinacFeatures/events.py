@@ -130,15 +130,17 @@ class Events(_LinacFeature):
                 self._owner.device.push_change_event(name, value, timestamp,
                                                      quality)
                 self.lastEventQuality = quality
-                self.info("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name,
-                                                            value, timestamp,
-                                                            quality))
+                self.debug("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name,
+                                                             value, timestamp,
+                                                             quality))
                 self._ctr += 1
             if name != self._owner.name:
                 return time()
             self._event_t = time()
             return self._event_t
         except DevFailed as e:
+            if e[0].reason == 'API_AttrNotFound':
+                return
             self.warning("DevFailed in event %s emit: %s"
                          % (self.name, e[0].desc))
         except Exception as e:
@@ -152,7 +154,7 @@ class Events(_LinacFeature):
             Check if the conditions to emit an event match.
         """
         if name is not None and name.lower() != self.owner.name.lower():
-            self.info("Delegated emission for %s" % (name))
+            self.debug("Delegated emission for %s" % (name))
             return True  # check doesn't apply
         if self._conditions is None or len(self._conditions.keys()) == 0:
             return True
@@ -160,13 +162,13 @@ class Events(_LinacFeature):
             threshold = self._conditions[THRESHOLD]
             if self._lastEventValue is None:
                 self._lastEventValue = value
-                self.info("No previous event to check threshold condition")
+                self.debug("No previous event to check threshold condition")
                 return True
             diff = abs(self._lastEventValue - value)
             if isnan(diff) or diff > threshold:
                 self._lastEventValue = value
-                self.info("Value change bigger or equal to the threshold "
-                          "(%g > %g)" % (diff, threshold))
+                self.debug("Value change bigger or equal to the threshold "
+                           "(%g > %g)" % (diff, threshold))
                 return True
             elif self.lastEventQuality == AttrQuality.ATTR_CHANGING and \
                     self.lastEventQuality != quality:
