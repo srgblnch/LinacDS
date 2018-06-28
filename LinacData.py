@@ -282,9 +282,9 @@ class AttrList(object):
         self._prepareEvents(name, events)
         if IamChecker is not None:
             try:
-                self.impl.read_db.setChecker(read_addr, IamChecker)
+                self.impl.setChecker(read_addr, IamChecker)
             except Exception as e:
-                self.impl.error_stream("%s cannot be added in the checker set"
+                self.impl.error_stream("%s cannot be added in the checker set "
                                        "due to:\n%s" % (name, e))
         if meanings is not None:
             return self._prepareAttrWithMeaning(name, tango_T, meanings,
@@ -578,9 +578,7 @@ class AttrList(object):
         # This attr was a number but for the user what shows the ----
         # information is an string
         self.impl.lock_ST = read_addr
-        if hasattr(self.impl, 'read_db') and self.impl.read_db is not None:
-            self.impl.read_db.setChecker(self.impl.lock_ST,
-                                         ['\x00', '\x01', '\x02'])
+        self.impl.setChecker(self.impl.lock_ST, ['\x00', '\x01', '\x02'])
         LockAttrs = self.add_AttrAddr('Lock_ST', PyTango.DevUChar, read_addr,
                                       label=desc, desc=desc+john(COMM_STATUS),
                                       meanings=COMM_STATUS,
@@ -603,14 +601,12 @@ class AttrList(object):
         self.impl.locking_rbit = read_bit
         # TODO: adding this checker, it works worst
         # if hasattr(self.impl,'read_db') and self.impl.read_db si not None:
-        #    self.impl.read_db.setChecker(self.impl.locking_raddr,
-        #                                 ['\x00', '\x01'])
+        #    self.impl.setChecker(self.impl.locking_raddr, ['\x00', '\x01'])
         self.impl.locking_waddr = write_addr
         self.impl.locking_wbit = write_bit
         # TODO: adding this checker, it works worst
         # if hasattr(self.impl,'read_db') and self.impl.read_db is not None:
-        #    self.impl.read_db.setChecker(self.impl.locking_waddr,
-        #                                 ['\x00','\x01'])
+        #    self.impl.setChecker(self.impl.locking_waddr, ['\x00','\x01'])
         self.impl.set_change_event('Locking', True, False)
         return new_attr
 
@@ -723,6 +719,7 @@ class AttrList(object):
                 self.impl.error_stream("Exception managing %s relations: %s"
                                        % (origName, e))
                 traceback.print_exc()
+        self.impl.applyCheckers()
 
     def parse(self, text):
         exec text in self.globals_, self.locals_
@@ -1131,6 +1128,7 @@ class LinacData(PyTango.Device_4Impl):
                 self.info_stream('connected')
                 self.set_state(PyTango.DevState.ON)
                 self.set_status('connected')
+                self.applyCheckers()
                 return True
             except Exception as e:
                 self.error_stream('connection failed exception: %s'
@@ -1174,6 +1172,43 @@ class LinacData(PyTango.Device_4Impl):
             '''
             return self.is_connected() and \
                 len(self.read_db.buf) == self.ReadSize
+
+        def setChecker(self, addr, values):
+            if not hasattr(self, '_checks'):
+                self.debug_stream("Initialise checks dict")
+                self._checks = {}
+            if isinstance(addr, int) and isinstance(values, list):
+                self.debug_stream("Adding a checker for address %d "
+                                 "with values %s" % (addr, values))
+                self._checks[addr] = values
+                return True
+            return False
+
+        def applyCheckers(self):
+            if hasattr(self, '_checks') and isinstance(self._checks, dict) and \
+                    hasattr(self, 'read_db') and isinstance(self.read_db,
+                                                            tcpblock.Datablock):
+                try:
+                    had = len(self.read_db._checks.keys())
+                    for addr in self._checks:
+                        if not addr in self.read_db._checks:
+                            self.debug_stream(
+                                "\tfor addr %d insert %s"
+                                % (addr, self._checks[addr]))
+                            self.read_db.setChecker(addr, self._checks[addr])
+                        else:
+                            lst = self.read_db.getChecker(addr)
+                            for value in self._checks[addr]:
+                                if value not in lst:
+                                    self.debug_stream(
+                                        "\tin addr  %d append %s"
+                                        % (addr, self._checks[addr]))
+                                    self.read_db._checks.append(value)
+                    now = len(self.read_db._checks.keys())
+                    if had != now:
+                        self.debug_stream("From %d to %d checkers" % (had, now))
+                except Exception as e:
+                    self.error_stream("Incomplete applyCheckers: %s" % (e))
 
         def forceWriteAttrs(self):
             '''There are certain situations, like the PLC shutdown, that

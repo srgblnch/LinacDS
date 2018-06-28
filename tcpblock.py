@@ -67,8 +67,8 @@ class Datablock(object):
 
     def isGoodBlock(self, reading):
         if len(reading) != self.read_size:
-            self.debug_stream("checking block %d!=%d"
-                              % (len(reading), self.read_size))
+            self.warn_stream("checking block %d!=%d"
+                             % (len(reading), self.read_size))
             return False
         return self.doChecks(reading)
 
