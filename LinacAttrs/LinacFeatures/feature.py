@@ -27,11 +27,36 @@ class _LinacFeature(_AbstractFeatureLog):
 
     _name = None
     _owner = None
+    _components = None
 
     def __init__(self, owner, *args, **kwargs):
         super(_LinacFeature, self).__init__(*args, **kwargs)
         self._name = self.__class__.__name__
         self._owner = owner
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+    def __repr__(self):
+        repr = "%s:\n" % self
+        if self._components is None:
+            # only the first time requested, and once all the inits have end
+            components = []
+            for kls in self.__class__.__mro__:
+                for key, value in kls.__dict__.iteritems():
+                    if isinstance(value, property) and key not in components:
+                        components += [key]
+            components.sort()
+            self._components = components
+        for each in self._components:
+            attrgetter = getattr(self, each)
+            if attrgetter is None:
+                pass  # ignore
+            elif type(attrgetter) is list and len(attrgetter) == 0:
+                pass  # ignore
+            else:
+                repr += "\t%s: %s\n" % (each, attrgetter)
+        return repr
 
     @property
     def name(self):
