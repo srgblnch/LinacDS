@@ -17,8 +17,6 @@
 
 from .historyAttr import HistoryAttr, BASESET
 from .linacAttrBase import LinacAttrBase
-from .LinacFeatures import Events
-from .LinacFeatures import HistoryBuffer
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"

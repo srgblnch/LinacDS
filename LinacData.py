@@ -1659,6 +1659,14 @@ class LinacData(PyTango.Device_4Impl):
                             self.error_stream("Cannot solve formula for the "
                                               "attribute %s: %s" % (attrName,
                                                                     e))
+                    # if attrStruct.formula is not None:
+                    #     try:
+                    #         writeValue = attrStruct.formula.writeHook(
+                    #             writeValue)
+                    #     except Exception as e:
+                    #         self.error_stream("Cannot solve formula for the "
+                    #                           "attribute %s: %s" % (attrName,
+                    #                                                 e))
                     if 'format' in attrStruct:
                         try:
                             format = attrStruct['format']
@@ -1668,8 +1676,8 @@ class LinacData(PyTango.Device_4Impl):
                                 writeValue = float(format % writeValue)
                         except Exception as e:
                             self.error_stream("Cannot format value for the "
-                                              "attribute %s: %s" % (attrName,
-                                                                    e))
+                                              "attribute %s: %s"
+                                              % (attrName, e))
                 self.__applyWriteValue(attrName, writeValue)
                 try:
                     attr.set_write_value(writeValue)

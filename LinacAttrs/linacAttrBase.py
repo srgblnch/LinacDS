@@ -16,8 +16,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from .abstract import _AbstractAttrDict, _AbstractAttrTango
-from .LinacFeatures import Events, ChangeReporter
-from .LinacFeatures import CircularBuffer, HistoryBuffer
+from .LinacFeatures import Events, ChangeReporter, Formula
+from .LinacFeatures import CircularBuffer
 from PyTango import AttrQuality
 from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
@@ -43,6 +43,11 @@ TYPE_MAP = {DevUChar: ('B', 1),
 
 class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
+    _name = None
+    _type = None
+    _label = None
+    _description = None
+
     _components = None
 
     _readValue = None
@@ -57,8 +62,12 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     _changeReporter = None
 
-    def __init__(self, name, valueType, events=None, minValue=None,
-                 maxValue=None, *args, **kwargs):
+    _formula = None
+    _formulaObj = None
+
+    def __init__(self, name, valueType, label=None, description=None,
+                 events=None, minValue=None, maxValue=None, formula=None,
+                 *args, **kwargs):
         # meanings must be is a subclass of LinacAttr or
         # generates a circular import because MeaningAttr
         # inherits from LinacAttr.
@@ -72,6 +81,8 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
             self._type = valueType
         else:
             self._type = TYPE_MAP[valueType]
+        self._label = label
+        self._description = description
         if events is not None:
             self.events = events
         self._tangodb = None
@@ -89,6 +100,7 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
             self._minValue = minValue
         if maxValue:
             self._maxValue = maxValue
+        self.setFormula(formula)
 
     def __str__(self):
         return "%s (%s)" % (self.name, self.__class__.__name__)
@@ -128,6 +140,23 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
     def alias(self, value):
         if isinstance(value, str):
             self._alias = value
+
+    @property
+    def label(self):
+        return self._label
+
+    # @label.setter
+    # def label(self, value):
+    #     self._label = value
+
+    @property
+    def description(self):
+        if self._description is not None:
+            return "%r" % self._description
+
+    # @description.setter
+    # def description(self, value):
+    #     self._description = value
 
     @property
     def value(self):
@@ -301,3 +330,24 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
     @property
     def reporter(self):
         return self._changeReporter
+
+    @property
+    def formula(self):
+        return self._formula
+
+    def setFormula(self, value):
+        if value is not None:
+            kwargs = {'owner': self}
+            #kwargs = {**kwargs, **value}
+            kwargs.update(value)
+            self.warning("Formula(...)")
+            for key in kwargs:
+                self.warning("\t%s: %s" % (key, kwargs[key]))
+            try:
+                self._formulaObj = Formula(**kwargs)
+            except Exception as e:
+                self.error("Impossible to build Formula(): %s" % (e))
+                traceback.print_exc()
+        else:
+            self._formulaObj = None
+        self._formula = value

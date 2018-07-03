@@ -29,21 +29,30 @@ __license__ = "GPLv3+"
 
 class PLCAttr(LinacAttr):
 
-    _rst_t = None
+    _format = None
 
-    _label = None
-    _description = None
+    _readAddr = None
+    _readBit = None
+    _writeAddr = None
+    _writeBit = None
 
     _meanings = None
     _meaningsObj = None
+    _qualities = None
+
+    _readbackAttrName = None
+    _setpointAttrName = None
+    _switchAttrName = None
+
+    _isRst = None
+    _rst_t = None
 
     def __init__(self, valueFormat=None,
                  readAddr=None, readBit=None,
                  writeAddr=None, writeBit=None,
-                 formula=None, meanings=None, qualities=None,
+                 meanings=None, qualities=None,
                  readback=None, setpoint=None, switch=None,
                  IamChecker=None, isRst=None,
-                 label=None, description=None,
                  *args, **kwargs):
         """
             Class to describe an attribute that references information from
@@ -55,10 +64,6 @@ class PLCAttr(LinacAttr):
         self._readBit = readBit
         self._writeAddr = writeAddr
         self._writeBit = writeBit or readBit
-        self._formula = formula
-
-        self._label = label
-        self._description = description
 
         self.meanings = meanings
         self._qualities = qualities
@@ -118,23 +123,6 @@ class PLCAttr(LinacAttr):
 #         #                                                     formula,
 #         #                                                     result))
 #         return result
-
-    @property
-    def label(self):
-        return self._label
-
-    # @label.setter
-    # def label(self, value):
-    #     self._label = value
-
-    @property
-    def description(self):
-        if self._description is not None:
-            return "%r" % self._description
-
-    # @description.setter
-    # def description(self, value):
-    #     self._description = value
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
