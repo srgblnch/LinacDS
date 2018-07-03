@@ -62,7 +62,7 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     _changeReporter = None
 
-    _formula = None
+    # _formula = None
     _formulaObj = None
 
     def __init__(self, name, valueType, label=None, description=None,
@@ -333,21 +333,15 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     @property
     def formula(self):
-        return self._formula
+        if self._formulaObj is not None:
+            return "%s" % (self._formulaObj)
 
     def setFormula(self, value):
         if value is not None:
             kwargs = {'owner': self}
             #kwargs = {**kwargs, **value}
             kwargs.update(value)
-            self.warning("Formula(...)")
-            for key in kwargs:
-                self.warning("\t%s: %s" % (key, kwargs[key]))
-            try:
-                self._formulaObj = Formula(**kwargs)
-            except Exception as e:
-                self.error("Impossible to build Formula(): %s" % (e))
-                traceback.print_exc()
+            self._formulaObj = Formula(**kwargs)
         else:
             self._formulaObj = None
-        self._formula = value
+        # self._formula = value

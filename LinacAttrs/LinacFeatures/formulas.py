@@ -30,16 +30,23 @@ class Formula(_LinacFeature):
     def __init__(self, owner, read=None, write=None, write_not_allowed=None,
                  *args, **kwargs):
         super(Formula, self).__init__(owner=owner, *args, **kwargs)
-        self.log("has formula: read: %s, write: %s" % (read, write))
         if read is not None:
             self._read = read
-        else:
-            self._read = 'VALUE'
+        # else:
+        #     self._read = 'VALUE'
         if write is not None:
             self._write = write
-        else:
-            self._write = 'VALUE'
+        # else:
+        #     self._write = 'VALUE'
         self._write_not_allowed = write_not_allowed
+
+    def __str__(self):
+        _str_ = "%s {" % (self.name)
+        for each in ['read', 'write', 'write_not_allowed']:
+            value = self._getComponentValue(each)
+            if value is not None:
+                _str_ += "%s, " % (value)
+        return _str_[:-2]+"}"
 
     @property
     def read(self):
@@ -61,7 +68,7 @@ class Formula(_LinacFeature):
 
     def _solve(self, VALUE, formula):
         result = eval(formula)
-        self.info("solve eval(\"%s\") = %s" % (formula, result))
+        self.debug("solve eval(\"%s\") = %s" % (formula, result))
         return result
 
 

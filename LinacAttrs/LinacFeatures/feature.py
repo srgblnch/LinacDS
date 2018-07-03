@@ -38,7 +38,15 @@ class _LinacFeature(_AbstractFeatureLog):
         return "%s" % (self.name)
 
     def __repr__(self):
-        repr = "%s:\n" % self
+        repr = "%s:\n" % (self.name)
+        self._buildComponents()
+        for each in self._components:
+            value = self._getComponentValue(each)
+            if value is not None:
+                repr += "\t%s\n" % (value)
+        return repr
+
+    def _buildComponents(self):
         if self._components is None:
             # only the first time requested, and once all the inits have end
             components = []
@@ -48,15 +56,15 @@ class _LinacFeature(_AbstractFeatureLog):
                         components += [key]
             components.sort()
             self._components = components
-        for each in self._components:
-            attrgetter = getattr(self, each)
-            if attrgetter is None:
-                pass  # ignore
-            elif type(attrgetter) is list and len(attrgetter) == 0:
-                pass  # ignore
-            else:
-                repr += "\t%s: %s\n" % (each, attrgetter)
-        return repr
+
+    def _getComponentValue(self, component):
+        attrgetter = getattr(self, component)
+        if attrgetter is None:
+            pass  # ignore
+        elif type(attrgetter) is list and len(attrgetter) == 0:
+            pass  # ignore
+        else:
+            return "%s: \"%s\"" % (component, attrgetter)
 
     @property
     def name(self):

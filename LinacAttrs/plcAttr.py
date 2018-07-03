@@ -124,16 +124,8 @@ class PLCAttr(LinacAttr):
 #         #                                                     result))
 #         return result
 
-    #######################################################
-    # Dictionary properties for backwards compatibility ---
-    @property
-    def read_addr(self):
-        return self._readAddr
-
-    @property
-    def read_bit(self):
-        return self._readBit
-
+    ###########################
+    # Dictionary properties ---
     @property
     def format(self):
         return self._format
@@ -143,8 +135,12 @@ class PLCAttr(LinacAttr):
         self._format = value
 
     @property
-    def formula(self):
-        return self._formula
+    def read_addr(self):
+        return self._readAddr
+
+    @property
+    def read_bit(self):
+        return self._readBit
 
     @property
     def write_addr(self):
