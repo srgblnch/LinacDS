@@ -22,9 +22,13 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
+ATTR='Attr'
+
 class Formula(_LinacFeature):
     _read = None
+    _readAttrs = None
     _write = None
+    _writeAttr = None
     _write_not_allowed = None
 
     def __init__(self, owner, read=None, write=None, write_not_allowed=None,
@@ -32,12 +36,16 @@ class Formula(_LinacFeature):
         super(Formula, self).__init__(owner=owner, *args, **kwargs)
         if read is not None:
             self._read = read
-        # else:
-        #     self._read = 'VALUE'
+            self.log("configured read formula: %s" % (self._read))
+            self._readAttrs = self._parse4Attr(self._read)
+            self.log("found those attributes in the read formula: %s"
+                     % (self._readAttrs))
         if write is not None:
             self._write = write
-        # else:
-        #     self._write = 'VALUE'
+            self.log("configured write formula: %s" % (self._read))
+            self._writeAttr = self._parse4Attr(self._write)
+            self.log("found those attributes in the write formula: %s"
+                     % (self._readAttrs))
         self._write_not_allowed = write_not_allowed
 
     def __str__(self):
@@ -53,14 +61,22 @@ class Formula(_LinacFeature):
         return self._read
 
     def readHook(self, value):
-        return self._solve(value, self._read)
+        formula = self._read
+        modified = self._replaceAttrs4Values(formula, self._readAttrs)
+        solution = self._solve(value, modified)
+        self.log("with VALUE=%s, %r means %s" % (value, formula, solution))
+        return solution
 
     @property
     def write(self):
         return self._write
 
     def writeHook(self, value):
-        return self._solve(value, self._write)
+        formula = self._write
+        modified = self._replaceAttrs4Values(formula, self._writeAttr)
+        solution = self._solve(value, modified)
+        self.log("with VALUE=%s, %r means %s" % (value, formula, solution))
+        return solution
 
     @property
     def write_not_allowed(self):
@@ -71,4 +87,43 @@ class Formula(_LinacFeature):
         self.debug("solve eval(\"%s\") = %s" % (formula, result))
         return result
 
+    def _parse4Attr(self, formula):
+        attrs = {}
+        self.log("parsing %r formula" % (formula))
+        for pattern in formula.split(' '):
+            self.log("\tprocessing %r" % (pattern))
+            if pattern.startswith(ATTR):
+                self.log("\t\tit starts with %s" % (ATTR))
+                name = pattern.partition('[')[-1].rpartition(']')[0]
+                self.log("\t\tunderstood %s as attr name" % (name))
+                method = pattern.split('.')[1]
+                self.log("\t\tunderstood %s as the method" % (method))
+                # TODO: check that the attr name exist and the method
+                #       will be callable to replace the given value
+                #       in the formula
+                # TODO: monitor! addReportTo(...) to reevalueate the formula
+                #       if an attribute in here has change its value
+                attrs[name] = pattern
+            else:
+                self.log("\t\tNothing to do")
+        return attrs
 
+    def _getAttrObj(self, name):
+        try:
+            return self.owner.device._getAttrStruct(name)
+        except Exception as e:
+            self.error("Cannot get the attrStruct for %s: %s" % (name, e))
+            return None
+
+    def _replaceAttrs4Values(self, formula, attrs):
+        for name, pattern in self._readAttrs.iteritems():
+            obj = self._getAttrObj(name)
+            method = pattern.split('.')[1]
+            if obj is not None and hasattr(obj, method):
+                self.log("working with the obj %s and method %s" % (obj, method))
+                value = str(getattr(obj, method))
+                self.log("gives the value %s" % (value))
+                new = formula.replace(pattern, value)
+                self.log("formula was %r and now %r" % (formula, new))
+                formula = new
+        return formula

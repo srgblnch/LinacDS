@@ -267,8 +267,7 @@ AttrBit('VCV_ONC',
         label='collimator valve open',
         meanings={0: 'close', 1: 'open'},
         qualities={WARNING: [0]}, events={},
-        formula={'read': 'VALUE and '
-                         'not self._plcAttrs[\'VCV_ST\'][\'read_value\'] == 4'}
+        formula={'read': 'VALUE and not Attr[VCV_ST].rvalue == 4'}
         )
 
 for i in range(7):
@@ -278,9 +277,8 @@ for i in range(7):
             label='vacuum valve %d open' % (number),
             meanings={0: 'close', 1: 'open'},
             qualities={WARNING: [0]}, events={},
-            formula={'read': 'VALUE and '
-                     'not self._plcAttrs[\'VV%d_ST\'][\'read_value\'] == 4'
-                     % (number)})
+            formula={'read': 'VALUE and not Attr[VV%d_ST].rvalue == 4'
+                             % (number)})
 
 GrpBit('VVall_OC',
        read_addr_bit_pairs=[(116, 1), (116, 2), (116, 3), (116, 4), (116, 5),
@@ -311,9 +309,8 @@ for i in range(3):
             label='cooling loop %d on' % (number),
             meanings={0: 'off', 1: 'on'},
             qualities={WARNING: [0]}, events={},
-            formula={'read': 'VALUE and '
-                     'self._internalAttrs[\'cl%d_ready\'][\'read_value\'] '
-                     '== True' % (number)})
+            formula={'read': 'VALUE and Attr[cl%d_ready].rvalue == True'
+                             % (number)})
 
 # R118 W018 @DO_16to23: free ---
 # R119 W019 @DO_24to31: free ---

@@ -690,8 +690,7 @@ AttrBit('GUN_HV_ONC',  # HVS_OC
         qualities={0: PyTango.AttrQuality.ATTR_WARNING,
                    1: PyTango.AttrQuality.ATTR_VALID},
         events={},
-        formula={'read': 'VALUE and '
-                 'self._plcAttrs[\'Gun_HV_ST\'][\'read_value\'] == 4'},
+        formula={'read': 'VALUE and Attr[Gun_HV_ST].rvalue == 4'},
         switchDescriptor={ATTR2RAMP: 'GUN_HV_V_setpoint',
                           WHENON:
                           {FROM: 'GUN_HV_V_setpoint_Descending_Threshold'},
@@ -719,12 +718,12 @@ AttrBit('GUN_LV_ONC',
         qualities={WARNING: [0]},
         events={},
         formula={'read':
-                 'VALUE and '
-                 'self._plcAttrs[\'Gun_ST\'][\'read_value\'] in [1,4,7,8]',
+                 'VALUE and Attr[Gun_ST].rvalue in [1,4,7,8]',
                  'write':
-                 'VALUE ^ self._plcAttrs[\'GUN_HV_ONC\'][\'read_value\']',
-                 'write_not_allowed': 'Filament voltage cannot be switch '
-                 'ON/OFF with e-Gun HV ON.'},
+                 'VALUE ^ Attr[GUN_HV_ONC].rvalue',
+                 'write_not_allowed':
+                     'Filament voltage cannot be switch ON/OFF '
+                     'with e-Gun HV ON.'},
         switchDescriptor={ATTR2RAMP: 'GUN_Filament_V_setpoint',
                           WHENON: {FROM: 0},
                           WHENOFF: {TO: 0}},

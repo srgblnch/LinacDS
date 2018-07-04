@@ -167,20 +167,35 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
         if isinstance(self._readValue, CircularBuffer):
             if self.type == ('f', 4):
                 try:
-                    return float(self.read_value)
+                    rvalue = float(self.read_value)
                 except:
-                    return float('NaN')
+                    rvalue = float('NaN')
             else:
                 try:
-                    return int(self.read_value)
+                    rvalue = int(self.read_value)
                 except:
-                    return None
-        return self.read_value
+                    rvalue = None
+        else:
+            rvalue = self.read_value
+        try:
+            if self._formulaObj is not None and \
+                    self._formulaObj.read is not None:
+                rvalue = self._formulaObj.readHook(rvalue)
+        except Exception as e:
+            self.error("Exception solving read formula: %s" % (e))
+        return rvalue
 
     @property
     def wvalue(self):
         if hasattr(self, 'write_value'):
-            return self.write_value
+            wvalue = self.write_value
+            try:
+                if self._formulaObj is not None and \
+                        self._formulaObj.write is not None:
+                    wvalue = self._formulaObj.writeHook(wvalue)
+            except Exception as e:
+                self.error("Exception solving write formula: %s" % (e))
+            return wvalue
 
     @property
     def timestamp(self):

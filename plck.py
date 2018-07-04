@@ -198,9 +198,7 @@ AttrBit('LV_ONC',
         label='Low voltage on',
         desc='low voltage on\nFalse:off\nTrue:on',
         events={},
-        formula={'read':
-                 'VALUE and '
-                 'self._internalAttrs[\'lv_ready\'][\'read_value\'] == True'},
+        formula={'read': 'VALUE and Attr[lv_ready].rvalue == True'},
         )
 
 AttrBit('HVPS_Interlock_RC',
@@ -216,13 +214,11 @@ AttrBit('HVPS_ONC',
         events={},
         # rampingAttr='HVPS_V_setpoint',
         formula={'read':
-                 'VALUE and '
-                 'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] == 9 and '
-                 'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] == 8',
+                 'VALUE and Attr[HVPS_ST].rvalue == 9 and '
+                 'Attr[Pulse_ST].rvalue == 8',
                  'write':
-                 'VALUE and '
-                 'self._plcAttrs[\'HVPS_ST\'][\'read_value\'] in [8,9] and '
-                 'self._plcAttrs[\'Pulse_ST\'][\'read_value\'] in [7,8]'
+                 'VALUE and Attr[HVPS_ST].rvalue in [8,9] and '
+                 'Attr[Pulse_ST].rvalue in [7,8]'
                  },
         switchDescriptor={ATTR2RAMP: 'HVPS_V_setpoint',
                           WHENON: {FROM:
