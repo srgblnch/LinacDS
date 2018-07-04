@@ -41,9 +41,10 @@ class _LinacFeature(_AbstractFeatureLog):
         repr = "%s:\n" % (self.name)
         self._buildComponents()
         for each in self._components:
-            value = self._getComponentValue(each)
-            if value is not None:
-                repr += "\t%s\n" % (value)
+            if each != 'name':
+                value = self._getComponentValue(each)
+                if value is not None:
+                    repr += "\t%s\n" % (value)
         return repr
 
     def _buildComponents(self):

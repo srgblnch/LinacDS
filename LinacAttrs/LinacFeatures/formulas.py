@@ -28,7 +28,7 @@ class Formula(_LinacFeature):
     _read = None
     _readAttrs = None
     _write = None
-    _writeAttr = None
+    _writeAttrs = None
     _write_not_allowed = None
 
     def __init__(self, owner, read=None, write=None, write_not_allowed=None,
@@ -43,7 +43,7 @@ class Formula(_LinacFeature):
         if write is not None:
             self._write = write
             self.log("configured write formula: %s" % (self._read))
-            self._writeAttr = self._parse4Attr(self._write)
+            self._writeAttrs = self._parse4Attr(self._write)
             self.log("found those attributes in the write formula: %s"
                      % (self._readAttrs))
         self._write_not_allowed = write_not_allowed
@@ -68,15 +68,23 @@ class Formula(_LinacFeature):
         return solution
 
     @property
+    def readAttrs(self):
+        return self._readAttrs
+
+    @property
     def write(self):
         return self._write
 
     def writeHook(self, value):
         formula = self._write
-        modified = self._replaceAttrs4Values(formula, self._writeAttr)
+        modified = self._replaceAttrs4Values(formula, self._writeAttrs)
         solution = self._solve(value, modified)
         self.log("with VALUE=%s, %r means %s" % (value, formula, solution))
         return solution
+
+    @property
+    def writeAttrs(self):
+        return self._writeAttrs
 
     @property
     def write_not_allowed(self):
