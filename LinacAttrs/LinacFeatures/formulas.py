@@ -16,6 +16,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from .feature import _LinacFeature
+from PyTango import Except as PyTangoExcept
+from PyTango import ErrSeverity
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -69,7 +71,9 @@ class Formula(_LinacFeature):
 
     @property
     def readAttrs(self):
-        return self._readAttrs
+        if isinstance(self._readAttrs, dict):
+            if len(self._readAttrs.keys()) > 0:
+                return self._readAttrs
 
     @property
     def write(self):
@@ -80,11 +84,19 @@ class Formula(_LinacFeature):
         modified = self._replaceAttrs4Values(formula, self._writeAttrs)
         solution = self._solve(value, modified)
         self.log("with VALUE=%s, %r means %s" % (value, formula, solution))
+        if self.write_not_allowed is not None:
+            if value != solution:
+                PyTangoExcept.throw_exception("Write %s not allowed" % value,
+                                              self.write_not_allowed,
+                                              self.owner.name,
+                                              ErrSeverity.WARN)
         return solution
 
     @property
     def writeAttrs(self):
-        return self._writeAttrs
+        if isinstance(self._writeAttrs, dict):
+            if len(self._writeAttrs.keys()) > 0:
+                return self._writeAttrs
 
     @property
     def write_not_allowed(self):
