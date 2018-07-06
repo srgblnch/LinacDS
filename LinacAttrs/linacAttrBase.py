@@ -354,9 +354,9 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
     def setFormula(self, value):
         if value is not None:
             kwargs = {'owner': self}
-            #kwargs = {**kwargs, **value}
-            kwargs.update(value)
+            kwargs.update(value)  # kwargs = {**kwargs, **value}
             self._formulaObj = Formula(**kwargs)
         else:
             self._formulaObj = None
-        # self._formula = value
+
+
