@@ -46,15 +46,20 @@ class ChangeReporter(_LinacFeature):
     def __repr__(self):
         return self.__str__()
 
-    def addDestination(self, obj, methodName):
-        self._report_to.append([obj, methodName])
+    def addDestination(self, obj, method):
+        if callable(method):
+            methodName = method.__name__
+        else:
+            methodName = method
+        self._report_to.append([obj, method])
         self.debug("has new destination to report: %s with %s"
                    % (obj.name, methodName))
 
     def report(self):
-        for obj, methodName in self._report_to:
+        for obj, method in self._report_to:
             try:
-                method = getattr(obj, methodName)
+                if not callable(method):
+                    method = getattr(obj, method)
                 method()
             except Exception as e:
                 self.error("%s fail to report to %s: %s"
