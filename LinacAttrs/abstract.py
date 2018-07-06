@@ -292,6 +292,10 @@ class _AbstractAttrTango(_AbstractAttrLog):
             for suffix in self._memorisedLst:
                 self._memorised.recover(suffix)
 
+    def _getOtherAttrObj(self, name):
+        if self.device is not None:
+            return self.device._getAttrStruct(name)
+
     def _buildAttrObj(self):
         if self._device is not None:
             if hasattr(self, 'owner') and self.owner is not None:
