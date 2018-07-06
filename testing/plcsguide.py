@@ -16,7 +16,10 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from os import path
-import tango
+try:
+    import tango
+except:
+    import PyTango as tango
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -101,3 +104,4 @@ def restartAll():
 
 if __name__ == '__main__':
     dumpPlcAttrs()
+
