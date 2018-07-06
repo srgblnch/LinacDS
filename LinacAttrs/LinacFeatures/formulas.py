@@ -38,16 +38,16 @@ class Formula(_LinacFeature):
         super(Formula, self).__init__(owner=owner, *args, **kwargs)
         if read is not None:
             self._read = read
-            self.log("configured read formula: %s" % (self._read))
+            self.info("configured read formula: %s" % (self._read))
             self._readAttrs = self._parse4Attr(self._read)
-            self.log("found those attributes in the read formula: %s"
-                     % (self._readAttrs))
+            self.info("found those attributes in the read formula: %s"
+                      % (self._readAttrs))
         if write is not None:
             self._write = write
-            self.log("configured write formula: %s" % (self._read))
+            self.info("configured write formula: %s" % (self._read))
             self._writeAttrs = self._parse4Attr(self._write)
-            self.log("found those attributes in the write formula: %s"
-                     % (self._readAttrs))
+            self.info("found those attributes in the write formula: %s"
+                      % (self._readAttrs))
         self._write_not_allowed = write_not_allowed
 
     def __str__(self):
@@ -66,7 +66,7 @@ class Formula(_LinacFeature):
         formula = self._read
         modified = self._replaceAttrs4Values(formula, self._readAttrs)
         solution = self._solve(value, modified)
-        self.log("with VALUE=%s, %r means %s" % (value, formula, solution))
+        self.debug("with VALUE=%s, %r means %s" % (value, formula, solution))
         return solution
 
     @property
@@ -83,7 +83,7 @@ class Formula(_LinacFeature):
         formula = self._write
         modified = self._replaceAttrs4Values(formula, self._writeAttrs)
         solution = self._solve(value, modified)
-        self.log("with VALUE=%s, %r means %s" % (value, formula, solution))
+        self.debug("with VALUE=%s, %r means %s" % (value, formula, solution))
         if self.write_not_allowed is not None:
             if value != solution:
                 PyTangoExcept.throw_exception("Write %s not allowed" % value,
@@ -109,23 +109,21 @@ class Formula(_LinacFeature):
 
     def _parse4Attr(self, formula):
         attrs = {}
-        self.log("parsing %r formula" % (formula))
+        self.debug("parsing %r formula" % (formula))
         for pattern in formula.split(' '):
-            self.log("\tprocessing %r" % (pattern))
+            self.debug("\tprocessing %r" % (pattern))
             if pattern.startswith(ATTR):
-                self.log("\t\tit starts with %s" % (ATTR))
+                self.debug("\t\tit starts with %s" % (ATTR))
                 name = pattern.partition('[')[-1].rpartition(']')[0]
-                self.log("\t\tunderstood %s as attr name" % (name))
+                self.debug("\t\tunderstood %s as attr name" % (name))
                 method = pattern.split('.')[1]
-                self.log("\t\tunderstood %s as the method" % (method))
+                self.debug("\t\tunderstood %s as the method" % (method))
                 # TODO: check that the attr name exist and the method
                 #       will be callable to replace the given value
                 #       in the formula
                 # TODO: monitor! addReportTo(...) to reevalueate the formula
                 #       if an attribute in here has change its value
                 attrs[name] = pattern
-            else:
-                self.log("\t\tNothing to do")
         return attrs
 
     def _getAttrObj(self, name):
@@ -140,10 +138,7 @@ class Formula(_LinacFeature):
             obj = self._getAttrObj(name)
             method = pattern.split('.')[1]
             if obj is not None and hasattr(obj, method):
-                self.log("working with the obj %s and method %s" % (obj, method))
                 value = str(getattr(obj, method))
-                self.log("gives the value %s" % (value))
                 new = formula.replace(pattern, value)
-                self.log("formula was %r and now %r" % (formula, new))
                 formula = new
         return formula

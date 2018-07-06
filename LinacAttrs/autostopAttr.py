@@ -34,6 +34,7 @@ class AutoStopAttr(LinacAttr):
 
     _plcAttr = None
     _switchAttr = None
+    _switchValue = None
     _enable = None
     _below = None
     _above = None
@@ -95,9 +96,7 @@ class AutoStopAttr(LinacAttr):
         self._plcAttr.read_value.append_cb(self.newvalue_cb)
 
     def _proceedConditions(self):
-        if self._enable.value and \
-                hasattr(self._switchAttr, 'rvalue') and \
-                self._switchAttr.rvalue:
+        if self._enable.value and self._switchValue:
             return True
         return False
 
@@ -153,9 +152,11 @@ class AutoStopAttr(LinacAttr):
         return self._switchAttr
 
     def switch_cb(self):
+        self.info("called the switchAttr callback")
+        self._switchValue = self._switchAttr.rvalue
         if self._proceedConditions():
             self._triggered.rvalue = False
-        if self._switchAttr.rvalue and len(self._buffer) > 0:
+        if self._switchValue and len(self._buffer) > 0:
             self._buffer.resetBuffer()
             if self._eventsObj:
                 self._eventsObj.fireEvent()
@@ -163,6 +164,7 @@ class AutoStopAttr(LinacAttr):
     def setSwitchAttr(self, obj):
         self._switchAttr = obj
         self._switchAttr.addReportTo(self, 'switch_cb')
+        self.info("Linked with the %s attribute" % (self._switchAttr))
 
     @property
     def below(self):
