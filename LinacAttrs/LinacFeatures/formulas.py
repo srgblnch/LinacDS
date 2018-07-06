@@ -29,8 +29,10 @@ ATTR='Attr'
 class Formula(_LinacFeature):
     _read = None
     _readAttrs = None
+    _lastRead = None
     _write = None
     _writeAttrs = None
+    _lastWrite = None
     _write_not_allowed = None
 
     def __init__(self, owner, read=None, write=None, write_not_allowed=None,
@@ -42,12 +44,14 @@ class Formula(_LinacFeature):
             self._readAttrs = self._parse4Attr(self._read)
             self.info("found those attributes in the read formula: %s"
                       % (self._readAttrs))
+            self.__monitorDependencies(self.readAttrs, self.updateRead)
         if write is not None:
             self._write = write
             self.info("configured write formula: %s" % (self._read))
             self._writeAttrs = self._parse4Attr(self._write)
             self.info("found those attributes in the write formula: %s"
                       % (self._readAttrs))
+            self.__monitorDependencies(self.writeAttrs, self.updateWrite)
         self._write_not_allowed = write_not_allowed
 
     def __str__(self):
@@ -67,7 +71,20 @@ class Formula(_LinacFeature):
         modified = self._replaceAttrs4Values(formula, self._readAttrs)
         solution = self._solve(value, modified)
         self.debug("with VALUE=%s, %r means %s" % (value, formula, solution))
+        self._lastRead = solution
         return solution
+
+    def updateRead(self):
+        # Check if the formula gives the same solution than last evaluation
+        previousValue = self._lastRead
+        newValue = self.readHook(self.owner.read_value)
+        self.log("previous read value: %s, new %s"
+                 % (previousValue, newValue))
+        # if solution has change, emit events, report to listeners and so on.
+        if newValue != previousValue:
+            self.owner.launchEvents()
+            if self.owner.reporter is not None:
+                self.owner.reporter.report()
 
     @property
     def readAttrs(self):
@@ -90,7 +107,20 @@ class Formula(_LinacFeature):
                                               self.write_not_allowed,
                                               self.owner.name,
                                               ErrSeverity.WARN)
+        self._lastWrite = solution
         return solution
+
+    def updateWrite(self):
+        if self.owner.write_value is None:
+            return
+        # check if the formula gives the same solution than last evaluation
+        previousValue = self._lastWrite
+        newValue = self.writeHook(self.owner.write_value)
+        self.log("previous write value: %s, new %s"
+                 % (previousValue, newValue))
+        # if solution has change, proceed with the write of the newer value
+        if newValue != previousValue:
+            self.owner.doWriteValue(newValue)
 
     @property
     def writeAttrs(self):
@@ -134,11 +164,20 @@ class Formula(_LinacFeature):
             return None
 
     def _replaceAttrs4Values(self, formula, attrs):
-        for name, pattern in self._readAttrs.iteritems():
+        self.log("for the formula: %s" % (formula))
+        for name, pattern in attrs.iteritems():
+            self.log("\tcheck %s" % (name))
             obj = self._getAttrObj(name)
             method = pattern.split('.')[1]
             if obj is not None and hasattr(obj, method):
                 value = str(getattr(obj, method))
+                self.log("\tvalue: %s" % (value))
                 new = formula.replace(pattern, value)
                 formula = new
+                self.log("formula modified: %s" % (formula))
         return formula
+
+    def __monitorDependencies(self, dct, method):
+        for name in dct.keys():
+            obj = self.owner._getOtherAttrObj(name)
+            obj.addReportTo(self, method)
