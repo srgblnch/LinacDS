@@ -82,8 +82,8 @@ class Formula(_LinacFeature):
         # Check if the formula gives the same solution than last evaluation
         previousValue = self._lastRead
         newValue = self.readHook(self.owner.read_value)
-        self.log("previous read value: %s, new %s"
-                 % (previousValue, newValue))
+        self.debug("previous read value: %s, new %s"
+                   % (previousValue, newValue))
         # if solution has change, emit events, report to listeners and so on.
         if newValue != previousValue:
             self.owner.launchEvents()
@@ -122,8 +122,8 @@ class Formula(_LinacFeature):
         # check if the formula gives the same solution than last evaluation
         previousValue = self._lastWrite
         newValue = self.writeHook(self.owner.write_value)
-        self.log("previous write value: %s, new %s"
-                 % (previousValue, newValue))
+        self.debug("previous write value: %s, new %s"
+                   % (previousValue, newValue))
         # if solution has change, proceed with the write of the newer value
         if newValue != previousValue:
             self.owner.doWriteValue(newValue)
@@ -170,17 +170,17 @@ class Formula(_LinacFeature):
             return None
 
     def _replaceAttrs4Values(self, formula, attrs):
-        self.log("for the formula: %s" % (formula))
+        self.debug("for the formula: %s" % (formula))
         for name, pattern in attrs.iteritems():
-            self.log("\tcheck %s" % (name))
+            self.debug("\tcheck %s" % (name))
             obj = self._getAttrObj(name)
             method = pattern.split('.')[1]
             if obj is not None and hasattr(obj, method):
                 value = str(getattr(obj, method))
-                self.log("\tvalue: %s" % (value))
+                self.debug("\tvalue: %s" % (value))
                 new = formula.replace(pattern, value)
                 formula = new
-                self.log("formula modified: %s" % (formula))
+                self.debug("formula modified: %s" % (formula))
         return formula
 
     def __monitorDependencies(self, dct, method):
@@ -203,7 +203,7 @@ class Formula(_LinacFeature):
                 obj = self.owner._getOtherAttrObj(name)
                 if obj is not None:
                     obj.addReportTo(self, method)
-                    self.log("Succeed retry to monitor %s" % (name))
+                    self.debug("Succeed retry to monitor %s" % (name))
                 else:
                     self.warning("Retry to monitor %s fail" % (name))
                     dependencies.append([name, method])
