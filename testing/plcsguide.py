@@ -90,12 +90,13 @@ def dumpPlcAttrs():
               % (i, attrCtr[i][0], attrCtr[i][1]))
 
 
-def printAttrStruct(plc, name):
-    print dev[plc].Exec("self._getAttrStruct('%s')" % name)
+def attrStruct(plc, name, suffix=None):
+    return dev[plc].Exec("self._getAttrStruct('%s')%s"
+                         % (name, "".join(suffix if suffix is not None else "")))
 
-
-def printSimAttr(plc, name):
-    print sim[plc].Exec("self._plc.attributes['%s']" % name)
+def simAttr(plc, name, suffix=None):
+    sim[plc].Exec("self._plc.attributes['%s']%s"
+                  % (name, "".join(suffix if suffix is not None else "")))
 
 
 def restartAll():
