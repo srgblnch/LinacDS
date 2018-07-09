@@ -23,6 +23,8 @@ from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
 from PyTango import DevLong, DevLong64, DevULong, DevULong64
 from PyTango import DevFloat, DevDouble
+from PyTango import DevFailed
+from PyTango import Except as PyTangoExcept
 
 from time import time, ctime
 import traceback
@@ -193,6 +195,9 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
                 if self._formulaObj is not None and \
                         self._formulaObj.write is not None:
                     wvalue = self._formulaObj.writeHook(wvalue)
+            except DevFailed as e:
+                self.error("Write not allowed: %s" % (e[0].desc))
+                raise e
             except Exception as e:
                 self.error("Exception solving write formula: %s" % (e))
             return wvalue
