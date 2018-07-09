@@ -35,6 +35,8 @@ class Formula(_LinacFeature):
     _lastWrite = None
     _write_not_allowed = None
 
+    _pendingMonitorDependencies = None
+
     def __init__(self, owner, read=None, write=None, write_not_allowed=None,
                  *args, **kwargs):
         super(Formula, self).__init__(owner=owner, *args, **kwargs)
@@ -44,14 +46,14 @@ class Formula(_LinacFeature):
             self._readAttrs = self._parse4Attr(self._read)
             self.info("found those attributes in the read formula: %s"
                       % (self._readAttrs))
-            self.__monitorDependencies(self.readAttrs, self.updateRead)
+            self.__monitorDependencies(self._readAttrs, self.updateRead)
         if write is not None:
             self._write = write
             self.info("configured write formula: %s" % (self._read))
             self._writeAttrs = self._parse4Attr(self._write)
             self.info("found those attributes in the write formula: %s"
                       % (self._readAttrs))
-            self.__monitorDependencies(self.writeAttrs, self.updateWrite)
+            self.__monitorDependencies(self._writeAttrs, self.updateWrite)
         self._write_not_allowed = write_not_allowed
 
     def __str__(self):
@@ -67,6 +69,7 @@ class Formula(_LinacFeature):
         return self._read
 
     def readHook(self, value):
+        self.__reviewMonitorDependencies()
         formula = self._read
         modified = self._replaceAttrs4Values(formula, self._readAttrs)
         solution = self._solve(value, modified)
@@ -75,6 +78,7 @@ class Formula(_LinacFeature):
         return solution
 
     def updateRead(self):
+        self.__reviewMonitorDependencies()
         # Check if the formula gives the same solution than last evaluation
         previousValue = self._lastRead
         newValue = self.readHook(self.owner.read_value)
@@ -97,6 +101,7 @@ class Formula(_LinacFeature):
         return self._write
 
     def writeHook(self, value):
+        self.__reviewMonitorDependencies()
         formula = self._write
         modified = self._replaceAttrs4Values(formula, self._writeAttrs)
         solution = self._solve(value, modified)
@@ -111,6 +116,7 @@ class Formula(_LinacFeature):
         return solution
 
     def updateWrite(self):
+        self.__reviewMonitorDependencies()
         if self.owner.write_value is None:
             return
         # check if the formula gives the same solution than last evaluation
@@ -180,4 +186,25 @@ class Formula(_LinacFeature):
     def __monitorDependencies(self, dct, method):
         for name in dct.keys():
             obj = self.owner._getOtherAttrObj(name)
-            obj.addReportTo(self, method)
+            if obj is not None:
+                obj.addReportTo(self, method)
+            else:
+                self.warning("Device didn't provide attribute object for %s, "
+                             "delay to monitor dependencies" % (name))
+                if self._pendingMonitorDependencies is None:
+                    self._pendingMonitorDependencies = []
+                self._pendingMonitorDependencies.append([name, method])
+
+    def __reviewMonitorDependencies(self):
+        # FIXME: whould this be called more than once before complete the loop?
+        if self._pendingMonitorDependencies is not None:
+            dependencies = []
+            for name, method in self._pendingMonitorDependencies:
+                obj = self.owner._getOtherAttrObj(name)
+                if obj is not None:
+                    obj.addReportTo(self, method)
+                    self.log("Succeed retry to monitor %s" % (name))
+                else:
+                    self.warning("Retry to monitor %s fail" % (name))
+                    dependencies.append([name, method])
+            self._pendingMonitorDependencies = dependencies
