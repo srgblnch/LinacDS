@@ -78,6 +78,7 @@ __license__ = "GPLv3+"
            autostop={}    :Structure to monitor a value and decide if something
                            has to be stopped based on certain rules
            logLevel=level :Specifically indicate the logging level of the attr.
+           formula={}     :Conversion of the read (or write)
 
     events={}                 :Simply to indicate that the attribute
                                shall emit events
@@ -129,4 +130,9 @@ __license__ = "GPLv3+"
                                         accumulating from scratch. This is
                                         useful to trace sequence of states in
                                         a trip, and clean the itlk are reset.
+
+    formula={READ: 'rformula',          :Formula to mask or modify the reading
+             WRITE: 'wformula',         :Formula to protect the modify action
+             'write_not_allowed': 'msg' :if exist, raise a exception with the
+                                         given message.
 '''
