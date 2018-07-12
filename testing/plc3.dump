@@ -1,7 +1,7 @@
 AS1H_I (PLCAttr):
 	description: 'AS1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -11,14 +11,14 @@ AS1H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 92
-	read_t: 1531390828.87
-	read_t_str: Thu Jul 12 12:20:28 2018
-	read_value: [ 0.24934489  0.24934489  0.24934489  0.24146542  0.24146542  0.24146542
-  0.24146542  0.24146542  0.24146542  0.21712664]
+	read_t: 1531391294.9
+	read_t_str: Thu Jul 12 12:28:14 2018
+	read_value: [ 0.2423922   0.2423922   0.2423922   0.23471075  0.23471075  0.23471075
+  0.23471075  0.23471075  0.23471075  0.21893245]
 	reporter: AS1H_I:ChangeReporter (to ['AS1_cooling', 'AS1_current_ok'])
-	rvalue: 0.217126637697
+	rvalue: 0.218932449818
 	setpointAttr: AS1H_I_setpoint
-	timestamp: 1531390828.87
+	timestamp: 1531391294.9
 	type: ('f', 4)
 
 AS1H_I_setpoint (PLCAttr):
@@ -34,13 +34,13 @@ AS1H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 253
-	read_t: 1531390828.87
-	read_t_str: Thu Jul 12 12:20:28 2018
+	read_t: 1531391294.9
+	read_t_str: Thu Jul 12 12:28:14 2018
 	read_value: [ 0.2299  0.2299  0.2299  0.2299  0.2299  0.2299  0.2299  0.2299  0.2299
   0.2299]
 	readbackAttr: AS1H_I
 	rvalue: 0.22990000248
-	timestamp: 1531390828.87
+	timestamp: 1531391294.9
 	type: ('f', 4)
 	write_addr: 92
 
@@ -54,12 +54,12 @@ AS1H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 151
-	read_t: 1531390828.87
-	read_t_str: Thu Jul 12 12:20:28 2018
+	read_t: 1531391294.9
+	read_t_str: Thu Jul 12 12:28:14 2018
 	read_value: 5
 	reporter: AS1H_ST:ChangeReporter (to ['AS1_cooling', 'AS1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390828.87
+	timestamp: 1531391294.9
 	type: ('B', 1)
 
 AS1H_ST:MeaningAttr:
@@ -73,15 +73,15 @@ AS1H_ST:MeaningAttr:
 	read_t: "1531385710.07"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390828.87"
+	timestamp: "1531391294.9"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390828.8716381, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391294.904295, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 AS1V_I (PLCAttr):
 	description: 'AS1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -91,14 +91,14 @@ AS1V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 96
-	read_t: 1531390828.87
-	read_t_str: Thu Jul 12 12:20:28 2018
-	read_value: [ 0.21311232  0.21311232  0.21311232  0.23440284  0.23440284  0.23440284
-  0.23440284  0.23440284  0.23440284  0.21063766]
+	read_t: 1531391294.9
+	read_t_str: Thu Jul 12 12:28:14 2018
+	read_value: [ 0.21429807  0.21429807  0.21429807  0.21300648  0.21300648  0.21300648
+  0.21300648  0.21300648  0.21300648  0.21358889]
 	reporter: AS1V_I:ChangeReporter (to ['AS1_cooling', 'AS1_current_ok'])
-	rvalue: 0.210637658834
+	rvalue: 0.213588893414
 	setpointAttr: AS1V_I_setpoint
-	timestamp: 1531390828.87
+	timestamp: 1531391294.9
 	type: ('f', 4)
 
 AS1V_I_setpoint (PLCAttr):
@@ -114,13 +114,13 @@ AS1V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 257
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391294.9
+	read_t_str: Thu Jul 12 12:28:14 2018
 	read_value: [ 0.2199  0.2199  0.2199  0.2199  0.2199  0.2199  0.2199  0.2199  0.2199
   0.2199]
 	readbackAttr: AS1V_I
 	rvalue: 0.219899997115
-	timestamp: 1531390829.03
+	timestamp: 1531391294.9
 	type: ('f', 4)
 	write_addr: 96
 
@@ -134,12 +134,12 @@ AS1V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 152
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: AS1V_ST:ChangeReporter (to ['AS1_cooling', 'AS1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('B', 1)
 
 AS1V_ST:MeaningAttr:
@@ -153,10 +153,10 @@ AS1V_ST:MeaningAttr:
 	read_t: "1531385710.09"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.03"
+	timestamp: "1531391295.09"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.0315931, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.0882919, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 AS1_ONC (PLCAttr):
 	description: 'AS1 on/off\nFalse:off\nTrue:on'
@@ -167,11 +167,11 @@ AS1_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 290
 	read_bit: 0
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: DevBoolean
 	write_addr: 129
 	write_bit: 0
@@ -179,7 +179,7 @@ AS1_ONC (PLCAttr):
 AS2H_I (PLCAttr):
 	description: 'AS2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -189,14 +189,14 @@ AS2H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 108
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.22739603  0.22739603  0.2286505   0.2286505   0.2286505   0.2286505
-  0.2286505   0.2286505   0.23300716  0.23300716]
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.21271941  0.21271941  0.22908008  0.22908008  0.22908008  0.22908008
+  0.22908008  0.22908008  0.21574895  0.21574895]
 	reporter: AS2H_I:ChangeReporter (to ['AS2_cooling', 'AS2_current_ok'])
-	rvalue: 0.233007162809
+	rvalue: 0.215748950839
 	setpointAttr: AS2H_I_setpoint
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 
 AS2H_I_setpoint (PLCAttr):
@@ -212,13 +212,13 @@ AS2H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 269
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.2299  0.2299  0.2299  0.2299  0.2299  0.2299  0.2299  0.2299  0.2299
   0.2299]
 	readbackAttr: AS2H_I
 	rvalue: 0.22990000248
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 	write_addr: 108
 
@@ -232,12 +232,12 @@ AS2H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 155
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: AS2H_ST:ChangeReporter (to ['AS2_cooling', 'AS2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('B', 1)
 
 AS2H_ST:MeaningAttr:
@@ -251,15 +251,15 @@ AS2H_ST:MeaningAttr:
 	read_t: "1531385710.17"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.03"
+	timestamp: "1531391295.09"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.0315931, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.0882919, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 AS2V_I (PLCAttr):
 	description: 'AS2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -269,14 +269,14 @@ AS2V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 112
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.20830569  0.20830569  0.21038003  0.21038003  0.21038003  0.21038003
-  0.21038003  0.21038003  0.22521923  0.22521923]
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.20946454  0.20946454  0.22619319  0.22619319  0.22619319  0.22619319
+  0.22619319  0.22619319  0.22012073  0.22012073]
 	reporter: AS2V_I:ChangeReporter (to ['AS2_cooling', 'AS2_current_ok'])
-	rvalue: 0.225219234824
+	rvalue: 0.220120728016
 	setpointAttr: AS2V_I_setpoint
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 
 AS2V_I_setpoint (PLCAttr):
@@ -292,13 +292,13 @@ AS2V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 273
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.2199  0.2199  0.2199  0.2199  0.2199  0.2199  0.2199  0.2199  0.2199
   0.2199]
 	readbackAttr: AS2V_I
 	rvalue: 0.219899997115
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 	write_addr: 112
 
@@ -312,12 +312,12 @@ AS2V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 156
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: AS2V_ST:ChangeReporter (to ['AS2_cooling', 'AS2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('B', 1)
 
 AS2V_ST:MeaningAttr:
@@ -331,10 +331,10 @@ AS2V_ST:MeaningAttr:
 	read_t: "1531385710.18"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.03"
+	timestamp: "1531391295.09"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.0315931, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.0882919, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 AS2_ONC (PLCAttr):
 	description: 'AS2 on/off\nFalse:off\nTrue:on'
@@ -345,11 +345,11 @@ AS2_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 290
 	read_bit: 2
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: DevBoolean
 	write_addr: 129
 	write_bit: 2
@@ -357,7 +357,7 @@ AS2_ONC (PLCAttr):
 BC1F_I (PLCAttr):
 	description: 'BC1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 200.0
@@ -366,14 +366,14 @@ BC1F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 16
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 150.01402283  150.01402283  150.01655579  150.01655579  150.01655579
-  150.01655579  150.01655579  150.01655579  149.99645996  149.99645996]
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 149.98995972  149.98995972  149.98609924  149.98609924  149.98609924
+  149.98609924  149.98609924  149.98609924  150.00456238  150.00456238]
 	reporter: BC1F_I:ChangeReporter (to ['BC1_current_ok'])
-	rvalue: 149.996459961
+	rvalue: 150.004562378
 	setpointAttr: BC1F_I_setpoint
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 
 BC1F_I_setpoint (PLCAttr):
@@ -388,12 +388,12 @@ BC1F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 177
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 150.  150.  150.  150.  150.  150.  150.  150.  150.  150.]
 	readbackAttr: BC1F_I
 	rvalue: 150.0
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 	write_addr: 16
 
@@ -407,12 +407,12 @@ BC1F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 132
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: BC1F_ST:ChangeReporter (to ['BC1_cooling', 'BC1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('B', 1)
 
 BC1F_ST:MeaningAttr:
@@ -426,15 +426,15 @@ BC1F_ST:MeaningAttr:
 	read_t: "1531385709.69"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.03"
+	timestamp: "1531391295.09"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.0315931, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.0882919, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 BC1H_I (PLCAttr):
 	description: 'BC1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -444,14 +444,14 @@ BC1H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 68
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.97016847 -0.97016847 -0.96415639 -0.96415639 -0.96415639 -0.96415639
- -0.96415639 -0.96415639 -0.95535892 -0.95535892]
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [-0.98707438 -0.98707438 -0.96777356 -0.96777356 -0.96777356 -0.96777356
+ -0.96777356 -0.96777356 -0.98515618 -0.98515618]
 	reporter: BC1H_I:ChangeReporter (to ['BC1_current_ok'])
-	rvalue: -0.955358922482
+	rvalue: -0.985156178474
 	setpointAttr: BC1H_I_setpoint
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 
 BC1H_I_setpoint (PLCAttr):
@@ -467,13 +467,13 @@ BC1H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 229
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [-0.96990001 -0.96990001 -0.96990001 -0.96990001 -0.96990001 -0.96990001
  -0.96990001 -0.96990001 -0.96990001 -0.96990001]
 	readbackAttr: BC1H_I
 	rvalue: -0.969900012016
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('f', 4)
 	write_addr: 68
 
@@ -487,12 +487,12 @@ BC1H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 145
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.09
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: BC1H_ST:ChangeReporter (to ['BC1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.03
+	timestamp: 1531391295.09
 	type: ('B', 1)
 
 BC1H_ST:MeaningAttr:
@@ -506,15 +506,15 @@ BC1H_ST:MeaningAttr:
 	read_t: "1531385709.95"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.03"
+	timestamp: "1531391295.09"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.0315931, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.0882919, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 BC1V_I (PLCAttr):
 	description: 'BC1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -524,14 +524,14 @@ BC1V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 72
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.35969579 -0.35969579 -0.34780556 -0.34780556 -0.34780556 -0.34780556
- -0.34780556 -0.34780556 -0.37605238 -0.37605238]
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [-0.36856478 -0.37043506 -0.37043506 -0.37043506 -0.37043506 -0.37043506
+ -0.37043506 -0.35534078 -0.35534078 -0.35534078]
 	reporter: BC1V_I:ChangeReporter (to ['BC1_current_ok'])
-	rvalue: -0.376052379608
+	rvalue: -0.355340778828
 	setpointAttr: BC1V_I_setpoint
-	timestamp: 1531390829.03
+	timestamp: 1531391295.25
 	type: ('f', 4)
 
 BC1V_I_setpoint (PLCAttr):
@@ -547,12 +547,12 @@ BC1V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 233
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [-0.37 -0.37 -0.37 -0.37 -0.37 -0.37 -0.37 -0.37 -0.37 -0.37]
 	readbackAttr: BC1V_I
 	rvalue: -0.370000004768
-	timestamp: 1531390829.03
+	timestamp: 1531391295.25
 	type: ('f', 4)
 	write_addr: 72
 
@@ -566,12 +566,12 @@ BC1V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 146
-	read_t: 1531390829.03
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: BC1V_ST:ChangeReporter (to ['BC1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.03
+	timestamp: 1531391295.25
 	type: ('B', 1)
 
 BC1V_ST:MeaningAttr:
@@ -585,10 +585,10 @@ BC1V_ST:MeaningAttr:
 	read_t: "1531385709.97"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.19"
+	timestamp: "1531391295.25"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.1919651, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.2473371, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 BC1_ONC (PLCAttr):
 	description: 'BC1 on/off\nFalse:off\nTrue:on'
@@ -599,11 +599,11 @@ BC1_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 5
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 5
@@ -611,7 +611,7 @@ BC1_ONC (PLCAttr):
 BC2F_I (PLCAttr):
 	description: 'BC2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 200.0
@@ -620,14 +620,14 @@ BC2F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 20
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 135.02120972  135.00820923  135.00820923  135.00820923  135.00820923
-  135.00820923  135.00820923  134.98065186  134.98065186  134.98065186]
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 135.00071716  134.99183655  134.99183655  134.99183655  134.99183655
+  134.99183655  134.99183655  135.01014709  135.01014709  135.01014709]
 	reporter: BC2F_I:ChangeReporter (to ['BC2_current_ok'])
-	rvalue: 134.980651855
+	rvalue: 135.010147095
 	setpointAttr: BC2F_I_setpoint
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 
 BC2F_I_setpoint (PLCAttr):
@@ -642,12 +642,12 @@ BC2F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 181
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 135.  135.  135.  135.  135.  135.  135.  135.  135.  135.]
 	readbackAttr: BC2F_I
 	rvalue: 135.0
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 	write_addr: 20
 
@@ -661,12 +661,12 @@ BC2F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 133
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: BC2F_ST:ChangeReporter (to ['BC2_cooling', 'BC2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('B', 1)
 
 BC2F_ST:MeaningAttr:
@@ -680,15 +680,15 @@ BC2F_ST:MeaningAttr:
 	read_t: "1531385709.71"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.19"
+	timestamp: "1531391295.25"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.1919651, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.2473371, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 BC2H_I (PLCAttr):
 	description: 'BC2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -698,14 +698,14 @@ BC2H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 76
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.04086331  0.05396669  0.05396669  0.05396669  0.05396669  0.05396669
-  0.05396669  0.04891422  0.04891422  0.04891422]
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.05293453  0.07501189  0.07501189  0.07501189  0.07501189  0.07501189
+  0.07501189  0.05472378  0.05472378  0.05472378]
 	reporter: BC2H_I:ChangeReporter (to ['BC2_current_ok'])
-	rvalue: 0.0489142201841
+	rvalue: 0.0547237768769
 	setpointAttr: BC2H_I_setpoint
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 
 BC2H_I_setpoint (PLCAttr):
@@ -721,12 +721,12 @@ BC2H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 237
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.05  0.05  0.05  0.05  0.05  0.05  0.05  0.05  0.05  0.05]
 	readbackAttr: BC2H_I
 	rvalue: 0.0500000007451
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 	write_addr: 76
 
@@ -740,12 +740,12 @@ BC2H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 147
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: BC2H_ST:ChangeReporter (to ['BC2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('B', 1)
 
 BC2H_ST:MeaningAttr:
@@ -759,15 +759,15 @@ BC2H_ST:MeaningAttr:
 	read_t: "1531385709.99"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.19"
+	timestamp: "1531391295.25"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.1919651, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.2473371, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 BC2V_I (PLCAttr):
 	description: 'BC2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -777,14 +777,14 @@ BC2V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 80
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.02605539  0.04438896  0.04438896  0.04438896  0.04438896  0.04438896
-  0.04438896  0.03135282  0.03135282  0.03135282]
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.026379    0.02359414  0.02359414  0.02359414  0.02359414  0.02359414
+  0.02359414  0.01017203  0.01017203  0.01017203]
 	reporter: BC2V_I:ChangeReporter (to ['BC2_current_ok'])
-	rvalue: 0.0313528180122
+	rvalue: 0.0101720346138
 	setpointAttr: BC2V_I_setpoint
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 
 BC2V_I_setpoint (PLCAttr):
@@ -800,13 +800,13 @@ BC2V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 241
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.0199  0.0199  0.0199  0.0199  0.0199  0.0199  0.0199  0.0199  0.0199
   0.0199]
 	readbackAttr: BC2V_I
 	rvalue: 0.0198999997228
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 	write_addr: 80
 
@@ -820,12 +820,12 @@ BC2V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 148
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: BC2V_ST:ChangeReporter (to ['BC2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('B', 1)
 
 BC2V_ST:MeaningAttr:
@@ -839,10 +839,10 @@ BC2V_ST:MeaningAttr:
 	read_t: "1531385710.01"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.19"
+	timestamp: "1531391295.25"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.1919651, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.2473371, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 BC2_ONC (PLCAttr):
 	description: 'BC2 on/off\nFalse:off\nTrue:on'
@@ -853,11 +853,11 @@ BC2_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 6
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 6
@@ -865,7 +865,7 @@ BC2_ONC (PLCAttr):
 GLF_I (PLCAttr):
 	description: 'GL current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 130.0
@@ -874,14 +874,14 @@ GLF_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 24
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.0089307   0.00263278  0.00263278  0.00263278  0.00263278  0.00263278
-  0.00263278 -0.00622965 -0.00622965 -0.00622965]
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.01113047  0.00632874  0.00632874  0.00632874  0.00632874  0.00632874
+  0.00632874 -0.01068062 -0.01068062 -0.01068062]
 	reporter: GLF_I:ChangeReporter (to ['GL_current_ok'])
-	rvalue: -0.00622965255752
+	rvalue: -0.0106806168333
 	setpointAttr: GLF_I_setpoint
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 
 GLF_I_setpoint (PLCAttr):
@@ -896,12 +896,12 @@ GLF_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 185
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
 	readbackAttr: GLF_I
 	rvalue: 0.0
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('f', 4)
 	write_addr: 24
 
@@ -915,12 +915,12 @@ GLF_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 134
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.25
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: GLF_ST:ChangeReporter (to ['GL_cooling', 'GL_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.19
+	timestamp: 1531391295.25
 	type: ('B', 1)
 
 GLF_ST:MeaningAttr:
@@ -934,15 +934,15 @@ GLF_ST:MeaningAttr:
 	read_t: "1531385709.74"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.19"
+	timestamp: "1531391295.41"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.1919651, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.4075019, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 GLH_I (PLCAttr):
 	description: 'GL current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -952,14 +952,14 @@ GLH_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 84
-	read_t: 1531390829.19
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.05092377  0.06943864  0.06943864  0.06943864  0.06943864  0.06943864
-  0.06943864  0.08255402  0.08255402  0.08255402]
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.0810929   0.0810929   0.0810929   0.0810929   0.0810929   0.0810929
+  0.06661353  0.06661353  0.06661353  0.06661353]
 	reporter: GLH_I:ChangeReporter (to ['GL_current_ok'])
-	rvalue: 0.0825540199876
+	rvalue: 0.0666135251522
 	setpointAttr: GLH_I_setpoint
-	timestamp: 1531390829.19
+	timestamp: 1531391295.41
 	type: ('f', 4)
 
 GLH_I_setpoint (PLCAttr):
@@ -975,13 +975,13 @@ GLH_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 245
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.0699  0.0699  0.0699  0.0699  0.0699  0.0699  0.0699  0.0699  0.0699
   0.0699]
 	readbackAttr: GLH_I
 	rvalue: 0.0698999986053
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('f', 4)
 	write_addr: 84
 
@@ -995,12 +995,12 @@ GLH_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 149
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: GLH_ST:ChangeReporter (to ['GL_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('B', 1)
 
 GLH_ST:MeaningAttr:
@@ -1014,15 +1014,15 @@ GLH_ST:MeaningAttr:
 	read_t: "1531385710.03"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.35"
+	timestamp: "1531391295.41"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.3513041, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.4075019, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 GLV_I (PLCAttr):
 	description: 'GL current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -1032,14 +1032,14 @@ GLV_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 88
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.19724682  0.19724682  0.19724682  0.19724682  0.19724682  0.19724682
-  0.21285665  0.21285665  0.21285665  0.21285665]
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.22111923  0.22111923  0.22111923  0.22111923  0.22111923  0.22111923
+  0.21707347  0.21707347  0.21707347  0.21707347]
 	reporter: GLV_I:ChangeReporter (to ['GL_current_ok'])
-	rvalue: 0.212856650352
+	rvalue: 0.217073470354
 	setpointAttr: GLV_I_setpoint
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('f', 4)
 
 GLV_I_setpoint (PLCAttr):
@@ -1055,12 +1055,12 @@ GLV_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 249
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.2  0.2  0.2  0.2  0.2  0.2  0.2  0.2  0.2  0.2]
 	readbackAttr: GLV_I
 	rvalue: 0.20000000298
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('f', 4)
 	write_addr: 88
 
@@ -1074,12 +1074,12 @@ GLV_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 150
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: GLV_ST:ChangeReporter (to ['GL_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('B', 1)
 
 GLV_ST:MeaningAttr:
@@ -1093,10 +1093,10 @@ GLV_ST:MeaningAttr:
 	read_t: "1531385710.05"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.35"
+	timestamp: "1531391295.41"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.3513041, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.4075019, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 GL_ONC (PLCAttr):
 	description: 'GL on/off\nFalse:off\nTrue:on'
@@ -1107,11 +1107,11 @@ GL_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 7
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 7
@@ -1119,17 +1119,17 @@ GL_ONC (PLCAttr):
 HeartBeat (PLCAttr):
 	description: 'cadence bit going from True to False when PLC is okay'
 	device: LinacData(li/ct/plc3)
-	events: Always Emit 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	logLevel: warning
 	name: HeartBeat
 	quality: ATTR_VALID
 	read_addr: 160
 	read_bit: 0
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: DevBoolean
 	write_bit: 0
 
@@ -1144,11 +1144,11 @@ Lock_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 159
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 1
 	rvalue: 1
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('B', 1)
 
 Lock_ST:MeaningAttr:
@@ -1162,10 +1162,10 @@ Lock_ST:MeaningAttr:
 	read_t: "1531385710.34"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "1:local"
-	timestamp: "1531390829.35"
+	timestamp: "1531391295.41"
 	type: "DevString"
 	value: "1:local"
-	vtq: "('1:local', 1531390829.3513041, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('1:local', 1531391295.4075019, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 Locking (PLCAttr):
 	description: 'True when attempting to obtain write lock'
@@ -1176,11 +1176,11 @@ Locking (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 291
 	read_bit: 0
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: DevBoolean
 	write_addr: 130
 	write_bit: 0
@@ -1197,11 +1197,11 @@ MA_Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 0
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 0
@@ -1209,7 +1209,7 @@ MA_Interlock_RC (PLCAttr):
 QT1F_I (PLCAttr):
 	description: 'QT1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.0001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.0001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.3f
 	logLevel: warning
 	maxValue: 6.0
@@ -1218,14 +1218,14 @@ QT1F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 28
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 2.81654334  2.81654334  2.81654334  2.81654334  2.81654334  2.81654334
-  2.8315599   2.8315599   2.8315599   2.8315599 ]
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 2.82482696  2.82482696  2.82482696  2.82482696  2.82482696  2.82482696
+  2.82889962  2.82889962  2.82889962  2.82889962]
 	reporter: QT1F_I:ChangeReporter (to ['QT_current_ok'])
-	rvalue: 2.83155989647
+	rvalue: 2.82889962196
 	setpointAttr: QT1F_I_setpoint
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('f', 4)
 
 QT1F_I_setpoint (PLCAttr):
@@ -1240,13 +1240,13 @@ QT1F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 189
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 2.82999992  2.82999992  2.82999992  2.82999992  2.82999992  2.82999992
   2.82999992  2.82999992  2.82999992  2.82999992]
 	readbackAttr: QT1F_I
 	rvalue: 2.82999992371
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('f', 4)
 	write_addr: 28
 
@@ -1260,12 +1260,12 @@ QT1F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 135
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: QT1F_ST:ChangeReporter (to ['QT_cooling', 'QT_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('B', 1)
 
 QT1F_ST:MeaningAttr:
@@ -1279,15 +1279,15 @@ QT1F_ST:MeaningAttr:
 	read_t: "1531385709.76"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.35"
+	timestamp: "1531391295.41"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.3513041, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.4075019, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 QT1H_I (PLCAttr):
 	description: 'QT1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 16.0
@@ -1297,14 +1297,14 @@ QT1H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 100
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.00233135 -0.00233135 -0.00233135 -0.00233135 -0.00233135 -0.00233135
- -0.00576788 -0.00576788 -0.00576788 -0.00576788]
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [-0.00830672 -0.00830672 -0.00830672 -0.00830672 -0.00830672 -0.00830672
+ -0.00696169 -0.00696169 -0.00696169 -0.00696169]
 	reporter: QT1H_I:ChangeReporter (to ['QT_current_ok'])
-	rvalue: -0.00576788000762
+	rvalue: -0.00696168513969
 	setpointAttr: QT1H_I_setpoint
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('f', 4)
 
 QT1H_I_setpoint (PLCAttr):
@@ -1320,12 +1320,12 @@ QT1H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 261
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
 	readbackAttr: QT1H_I
 	rvalue: 0.0
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('f', 4)
 	write_addr: 100
 
@@ -1339,12 +1339,12 @@ QT1H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 153
-	read_t: 1531390829.35
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: QT1H_ST:ChangeReporter (to ['QT_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.35
+	timestamp: 1531391295.41
 	type: ('B', 1)
 
 QT1H_ST:MeaningAttr:
@@ -1358,15 +1358,15 @@ QT1H_ST:MeaningAttr:
 	read_t: "1531385710.12"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.51"
+	timestamp: "1531391295.41"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.511498, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.4075019, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 QT1V_I (PLCAttr):
 	description: 'QT1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 16.0
@@ -1376,14 +1376,15 @@ QT1V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 104
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.01230531 -0.01230531 -0.01230531 -0.01230531 -0.01230531  0.01110264
-  0.01110264  0.01110264  0.01110264  0.01110264]
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [  1.74200386e-02   1.74200386e-02   1.74200386e-02   1.74200386e-02
+   1.74200386e-02   1.74200386e-02  -4.83269723e-05  -4.83269723e-05
+  -4.83269723e-05  -4.83269723e-05]
 	reporter: QT1V_I:ChangeReporter (to ['QT_current_ok'])
-	rvalue: 0.0111026382074
+	rvalue: -4.8326972319e-05
 	setpointAttr: QT1V_I_setpoint
-	timestamp: 1531390829.51
+	timestamp: 1531391295.41
 	type: ('f', 4)
 
 QT1V_I_setpoint (PLCAttr):
@@ -1399,12 +1400,12 @@ QT1V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 265
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
 	readbackAttr: QT1V_I
 	rvalue: 0.0
-	timestamp: 1531390829.51
+	timestamp: 1531391295.41
 	type: ('f', 4)
 	write_addr: 104
 
@@ -1418,12 +1419,12 @@ QT1V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 154
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: QT1V_ST:ChangeReporter (to ['QT_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.51
+	timestamp: 1531391295.41
 	type: ('B', 1)
 
 QT1V_ST:MeaningAttr:
@@ -1437,15 +1438,15 @@ QT1V_ST:MeaningAttr:
 	read_t: "1531385710.14"
 	read_t_str: "Thu Jul 12 10:55:10 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.51"
+	timestamp: "1531391295.41"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.511498, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.4075019, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 QT2F_I (PLCAttr):
 	description: 'QT2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.0001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.0001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.3f
 	logLevel: warning
 	maxValue: 6.0
@@ -1454,14 +1455,14 @@ QT2F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 32
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 3.21009183  3.21009183  3.21009183  3.21009183  3.21009183  3.18992686
-  3.18992686  3.18992686  3.18992686  3.18992686]
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 3.19032884  3.19032884  3.19032884  3.19032884  3.19032884  3.19032884
+  3.19385552  3.19385552  3.19385552  3.19385552]
 	reporter: QT2F_I:ChangeReporter (to ['QT_current_ok'])
-	rvalue: 3.18992686272
+	rvalue: 3.19385552406
 	setpointAttr: QT2F_I_setpoint
-	timestamp: 1531390829.51
+	timestamp: 1531391295.41
 	type: ('f', 4)
 
 QT2F_I_setpoint (PLCAttr):
@@ -1476,13 +1477,13 @@ QT2F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 193
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.41
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 3.19499993  3.19499993  3.19499993  3.19499993  3.19499993  3.19499993
   3.19499993  3.19499993  3.19499993  3.19499993]
 	readbackAttr: QT2F_I
 	rvalue: 3.19499993324
-	timestamp: 1531390829.51
+	timestamp: 1531391295.41
 	type: ('f', 4)
 	write_addr: 32
 
@@ -1496,12 +1497,12 @@ QT2F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 136
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: QT2F_ST:ChangeReporter (to ['QT_cooling', 'QT_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('B', 1)
 
 QT2F_ST:MeaningAttr:
@@ -1515,10 +1516,10 @@ QT2F_ST:MeaningAttr:
 	read_t: "1531385709.78"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.51"
+	timestamp: "1531391295.57"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.511498, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.5673709, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 QT_ONC (PLCAttr):
 	description: 'QT on/off\nFalse:off\nTrue:on'
@@ -1529,11 +1530,11 @@ QT_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 290
 	read_bit: 1
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: DevBoolean
 	write_addr: 129
 	write_bit: 1
@@ -1541,7 +1542,7 @@ QT_ONC (PLCAttr):
 SL1F_I (PLCAttr):
 	description: 'SL1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 1.0
@@ -1550,14 +1551,14 @@ SL1F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 0
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.25657806  0.25657806  0.25657806  0.25657806  0.25657806  0.26401228
-  0.26401228  0.26401228  0.26401228  0.26401228]
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.24979965  0.24979965  0.24979965  0.24979965  0.24979965  0.24168588
+  0.24168588  0.24168588  0.24168588  0.24168588]
 	reporter: SL1F_I:ChangeReporter (to ['SL1_current_ok'])
-	rvalue: 0.264012277126
+	rvalue: 0.241685882211
 	setpointAttr: SL1F_I_setpoint
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 
 SL1F_I_setpoint (PLCAttr):
@@ -1572,13 +1573,13 @@ SL1F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 161
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.2499  0.2499  0.2499  0.2499  0.2499  0.2499  0.2499  0.2499  0.2499
   0.2499]
 	readbackAttr: SL1F_I
 	rvalue: 0.249899998307
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 	write_addr: 0
 
@@ -1592,12 +1593,12 @@ SL1F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 128
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL1F_ST:ChangeReporter (to ['SL1_cooling', 'SL1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('B', 1)
 
 SL1F_ST:MeaningAttr:
@@ -1611,15 +1612,15 @@ SL1F_ST:MeaningAttr:
 	read_t: "1531385709.6"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.51"
+	timestamp: "1531391295.57"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.511498, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.5673709, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL1H_I (PLCAttr):
 	description: 'SL1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -1629,14 +1630,14 @@ SL1H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 36
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.006814    0.006814    0.006814    0.006814    0.006814    0.00588739
-  0.00588739  0.00588739  0.00588739  0.00588739]
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.00580609  0.00580609  0.00580609  0.00580609  0.00580609 -0.01174221
+ -0.01174221 -0.01174221 -0.01174221 -0.01174221]
 	reporter: SL1H_I:ChangeReporter (to ['SL1_current_ok'])
-	rvalue: 0.00588739477098
+	rvalue: -0.011742210947
 	setpointAttr: SL1H_I_setpoint
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 
 SL1H_I_setpoint (PLCAttr):
@@ -1652,12 +1653,12 @@ SL1H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 197
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
 	readbackAttr: SL1H_I
 	rvalue: 0.0
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 	write_addr: 36
 
@@ -1671,12 +1672,12 @@ SL1H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 137
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL1H_ST:ChangeReporter (to ['SL1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('B', 1)
 
 SL1H_ST:MeaningAttr:
@@ -1690,15 +1691,15 @@ SL1H_ST:MeaningAttr:
 	read_t: "1531385709.8"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.51"
+	timestamp: "1531391295.57"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.511498, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.5673709, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL1V_I (PLCAttr):
 	description: 'SL1 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -1708,14 +1709,14 @@ SL1V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 40
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.45659697  0.45659697  0.45659697  0.45659697  0.45659697  0.46195185
-  0.46195185  0.46195185  0.46195185  0.46195185]
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.45467526  0.45467526  0.45467526  0.45467526  0.45467526  0.45482516
+  0.45482516  0.45482516  0.45482516  0.45482516]
 	reporter: SL1V_I:ChangeReporter (to ['SL1_current_ok'])
-	rvalue: 0.461951851845
+	rvalue: 0.454825162888
 	setpointAttr: SL1V_I_setpoint
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 
 SL1V_I_setpoint (PLCAttr):
@@ -1731,13 +1732,13 @@ SL1V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 201
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.4499  0.4499  0.4499  0.4499  0.4499  0.4499  0.4499  0.4499  0.4499
   0.4499]
 	readbackAttr: SL1V_I
 	rvalue: 0.449900001287
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 	write_addr: 40
 
@@ -1751,12 +1752,12 @@ SL1V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 138
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL1V_ST:ChangeReporter (to ['SL1_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('B', 1)
 
 SL1V_ST:MeaningAttr:
@@ -1770,10 +1771,10 @@ SL1V_ST:MeaningAttr:
 	read_t: "1531385709.82"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.51"
+	timestamp: "1531391295.57"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.511498, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.5673709, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL1_ONC (PLCAttr):
 	description: 'SL1 on/off\nFalse:off\nTrue:on'
@@ -1784,11 +1785,11 @@ SL1_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 1
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 1
@@ -1796,7 +1797,7 @@ SL1_ONC (PLCAttr):
 SL2F_I (PLCAttr):
 	description: 'SL2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 1.0
@@ -1805,14 +1806,14 @@ SL2F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 4
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.28476861  0.28476861  0.28476861  0.28476861  0.28476861  0.28091487
-  0.28091487  0.28091487  0.28091487  0.28091487]
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.29304731  0.29304731  0.29304731  0.29304731  0.29304731  0.27551255
+  0.27551255  0.27551255  0.27551255  0.27551255]
 	reporter: SL2F_I:ChangeReporter (to ['SL2_current_ok'])
-	rvalue: 0.280914872885
+	rvalue: 0.275512546301
 	setpointAttr: SL2F_I_setpoint
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 
 SL2F_I_setpoint (PLCAttr):
@@ -1827,12 +1828,12 @@ SL2F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 165
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.28  0.28  0.28  0.28  0.28  0.28  0.28  0.28  0.28  0.28]
 	readbackAttr: SL2F_I
 	rvalue: 0.280000001192
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('f', 4)
 	write_addr: 4
 
@@ -1846,12 +1847,12 @@ SL2F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 129
-	read_t: 1531390829.51
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL2F_ST:ChangeReporter (to ['SL2_cooling', 'SL2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.51
+	timestamp: 1531391295.57
 	type: ('B', 1)
 
 SL2F_ST:MeaningAttr:
@@ -1865,15 +1866,15 @@ SL2F_ST:MeaningAttr:
 	read_t: "1531385709.62"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.67"
+	timestamp: "1531391295.57"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.6713741, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.5673709, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL2H_I (PLCAttr):
 	description: 'SL2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -1883,14 +1884,14 @@ SL2H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 44
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.08586214 -0.08586214 -0.08586214 -0.08586214 -0.0881427  -0.0881427
- -0.0881427  -0.0881427  -0.0881427  -0.0881427 ]
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [-0.08967576 -0.08967576 -0.08967576 -0.08967576 -0.08967576 -0.08653302
+ -0.08653302 -0.08653302 -0.08653302 -0.08653302]
 	reporter: SL2H_I:ChangeReporter (to ['SL2_current_ok'])
-	rvalue: -0.0881427004933
+	rvalue: -0.0865330174565
 	setpointAttr: SL2H_I_setpoint
-	timestamp: 1531390829.67
+	timestamp: 1531391295.57
 	type: ('f', 4)
 
 SL2H_I_setpoint (PLCAttr):
@@ -1906,12 +1907,12 @@ SL2H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 205
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [-0.09 -0.09 -0.09 -0.09 -0.09 -0.09 -0.09 -0.09 -0.09 -0.09]
 	readbackAttr: SL2H_I
 	rvalue: -0.0900000035763
-	timestamp: 1531390829.67
+	timestamp: 1531391295.57
 	type: ('f', 4)
 	write_addr: 44
 
@@ -1925,12 +1926,12 @@ SL2H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 139
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL2H_ST:ChangeReporter (to ['SL2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.67
+	timestamp: 1531391295.57
 	type: ('B', 1)
 
 SL2H_ST:MeaningAttr:
@@ -1944,15 +1945,15 @@ SL2H_ST:MeaningAttr:
 	read_t: "1531385709.85"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.67"
+	timestamp: "1531391295.57"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.6713741, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.5673709, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL2V_I (PLCAttr):
 	description: 'SL2 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -1962,14 +1963,14 @@ SL2V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 48
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.62153238 -0.62153238 -0.62153238 -0.62153238 -0.61650902 -0.61650902
- -0.61650902 -0.61650902 -0.61650902 -0.61650902]
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [-0.62042779 -0.62042779 -0.62042779 -0.62042779 -0.62042779 -0.62690055
+ -0.62690055 -0.62690055 -0.62690055 -0.62690055]
 	reporter: SL2V_I:ChangeReporter (to ['SL2_current_ok'])
-	rvalue: -0.616509020329
+	rvalue: -0.626900553703
 	setpointAttr: SL2V_I_setpoint
-	timestamp: 1531390829.67
+	timestamp: 1531391295.57
 	type: ('f', 4)
 
 SL2V_I_setpoint (PLCAttr):
@@ -1985,13 +1986,13 @@ SL2V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 209
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.57
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [-0.61989999 -0.61989999 -0.61989999 -0.61989999 -0.61989999 -0.61989999
  -0.61989999 -0.61989999 -0.61989999 -0.61989999]
 	readbackAttr: SL2V_I
 	rvalue: -0.619899988174
-	timestamp: 1531390829.67
+	timestamp: 1531391295.57
 	type: ('f', 4)
 	write_addr: 48
 
@@ -2005,12 +2006,12 @@ SL2V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 140
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL2V_ST:ChangeReporter (to ['SL2_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('B', 1)
 
 SL2V_ST:MeaningAttr:
@@ -2024,10 +2025,10 @@ SL2V_ST:MeaningAttr:
 	read_t: "1531385709.87"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.67"
+	timestamp: "1531391295.73"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.6713741, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.7276621, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL2_ONC (PLCAttr):
 	description: 'SL2 on/off\nFalse:off\nTrue:on'
@@ -2038,11 +2039,11 @@ SL2_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 2
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 2
@@ -2050,7 +2051,7 @@ SL2_ONC (PLCAttr):
 SL3F_I (PLCAttr):
 	description: 'SL3 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 1.0
@@ -2059,14 +2060,14 @@ SL3F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 8
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.44662708  0.44662708  0.44662708  0.44662708  0.45782715  0.45782715
-  0.45782715  0.45782715  0.45782715  0.45782715]
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.44024706  0.44024706  0.44024706  0.44024706  0.46426103  0.46426103
+  0.46426103  0.46426103  0.46426103  0.46426103]
 	reporter: SL3F_I:ChangeReporter (to ['SL3_current_ok'])
-	rvalue: 0.457827150822
+	rvalue: 0.46426102519
 	setpointAttr: SL3F_I_setpoint
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('f', 4)
 
 SL3F_I_setpoint (PLCAttr):
@@ -2081,13 +2082,13 @@ SL3F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 169
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.4499  0.4499  0.4499  0.4499  0.4499  0.4499  0.4499  0.4499  0.4499
   0.4499]
 	readbackAttr: SL3F_I
 	rvalue: 0.449900001287
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('f', 4)
 	write_addr: 8
 
@@ -2101,12 +2102,12 @@ SL3F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 130
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL3F_ST:ChangeReporter (to ['SL3_cooling', 'SL3_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('B', 1)
 
 SL3F_ST:MeaningAttr:
@@ -2120,15 +2121,15 @@ SL3F_ST:MeaningAttr:
 	read_t: "1531385709.64"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.67"
+	timestamp: "1531391295.73"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.6713741, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.7276621, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL3H_I (PLCAttr):
 	description: 'SL3 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -2138,14 +2139,14 @@ SL3H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 52
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.66940451  0.66940451  0.66940451  0.66940451  0.66593796  0.66593796
-  0.66593796  0.66593796  0.66593796  0.66593796]
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.66677558  0.66677558  0.66677558  0.66677558  0.66927391  0.66927391
+  0.66927391  0.66927391  0.66927391  0.66927391]
 	reporter: SL3H_I:ChangeReporter (to ['SL3_current_ok'])
-	rvalue: 0.665937960148
+	rvalue: 0.669273912907
 	setpointAttr: SL3H_I_setpoint
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('f', 4)
 
 SL3H_I_setpoint (PLCAttr):
@@ -2161,13 +2162,13 @@ SL3H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 213
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.67000002  0.67000002  0.67000002  0.67000002  0.67000002  0.67000002
   0.67000002  0.67000002  0.67000002  0.67000002]
 	readbackAttr: SL3H_I
 	rvalue: 0.670000016689
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('f', 4)
 	write_addr: 52
 
@@ -2181,12 +2182,12 @@ SL3H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 141
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL3H_ST:ChangeReporter (to ['SL3_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('B', 1)
 
 SL3H_ST:MeaningAttr:
@@ -2200,15 +2201,15 @@ SL3H_ST:MeaningAttr:
 	read_t: "1531385709.89"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.67"
+	timestamp: "1531391295.73"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.6713741, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.7276621, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL3V_I (PLCAttr):
 	description: 'SL3 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:28 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -2218,14 +2219,14 @@ SL3V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 56
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.61082023  0.61082023  0.61082023  0.61082023  0.61797684  0.61797684
-  0.61797684  0.61797684  0.61797684  0.61797684]
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.60591257  0.60591257  0.60591257  0.60591257  0.63364017  0.63364017
+  0.63364017  0.63364017  0.63364017  0.63364017]
 	reporter: SL3V_I:ChangeReporter (to ['SL3_current_ok'])
-	rvalue: 0.617976844311
+	rvalue: 0.633640170097
 	setpointAttr: SL3V_I_setpoint
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('f', 4)
 
 SL3V_I_setpoint (PLCAttr):
@@ -2241,13 +2242,13 @@ SL3V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 217
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.61000001  0.61000001  0.61000001  0.61000001  0.61000001  0.61000001
   0.61000001  0.61000001  0.61000001  0.61000001]
 	readbackAttr: SL3V_I
 	rvalue: 0.610000014305
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('f', 4)
 	write_addr: 56
 
@@ -2261,12 +2262,12 @@ SL3V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 142
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL3V_ST:ChangeReporter (to ['SL3_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: ('B', 1)
 
 SL3V_ST:MeaningAttr:
@@ -2280,10 +2281,10 @@ SL3V_ST:MeaningAttr:
 	read_t: "1531385709.91"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.67"
+	timestamp: "1531391295.73"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.6713741, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.7276621, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL3_ONC (PLCAttr):
 	description: 'SL3 on/off\nFalse:off\nTrue:on'
@@ -2294,11 +2295,11 @@ SL3_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 3
-	read_t: 1531390829.67
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.67
+	timestamp: 1531391295.73
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 3
@@ -2306,7 +2307,7 @@ SL3_ONC (PLCAttr):
 SL4F_I (PLCAttr):
 	description: 'SL4 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:14 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 1.0
@@ -2315,14 +2316,14 @@ SL4F_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 12
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [ 0.42809123  0.42809123  0.42809123  0.43984407  0.43984407  0.43984407
-  0.43984407  0.43984407  0.43984407  0.41107744]
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [ 0.42082193  0.42082193  0.42082193  0.42082193  0.42891449  0.42891449
+  0.42891449  0.42891449  0.42891449  0.42891449]
 	reporter: SL4F_I:ChangeReporter (to ['SL4_current_ok'])
-	rvalue: 0.411077439785
+	rvalue: 0.428914487362
 	setpointAttr: SL4F_I_setpoint
-	timestamp: 1531390829.83
+	timestamp: 1531391295.73
 	type: ('f', 4)
 
 SL4F_I_setpoint (PLCAttr):
@@ -2337,13 +2338,13 @@ SL4F_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 173
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [ 0.43000001  0.43000001  0.43000001  0.43000001  0.43000001  0.43000001
   0.43000001  0.43000001  0.43000001  0.43000001]
 	readbackAttr: SL4F_I
 	rvalue: 0.430000007153
-	timestamp: 1531390829.83
+	timestamp: 1531391295.73
 	type: ('f', 4)
 	write_addr: 12
 
@@ -2357,12 +2358,12 @@ SL4F_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 131
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.73
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL4F_ST:ChangeReporter (to ['SL4_cooling', 'SL4_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.83
+	timestamp: 1531391295.73
 	type: ('B', 1)
 
 SL4F_ST:MeaningAttr:
@@ -2376,15 +2377,15 @@ SL4F_ST:MeaningAttr:
 	read_t: "1531385709.66"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.83"
+	timestamp: "1531391295.73"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.831677, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.7276621, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL4H_I (PLCAttr):
 	description: 'SL4 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -2394,14 +2395,14 @@ SL4H_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 60
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.09218822 -0.09218822 -0.09218822 -0.11088073 -0.11088073 -0.11088073
- -0.11088073 -0.11088073 -0.11088073 -0.11026259]
+	read_t: 1531391295.89
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [-0.12566112 -0.12566112 -0.12566112 -0.11759944 -0.11759944 -0.11759944
+ -0.11759944 -0.11759944 -0.11759944 -0.11732525]
 	reporter: SL4H_I:ChangeReporter (to ['SL4_current_ok'])
-	rvalue: -0.110262587667
+	rvalue: -0.117325253785
 	setpointAttr: SL4H_I_setpoint
-	timestamp: 1531390829.83
+	timestamp: 1531391295.89
 	type: ('f', 4)
 
 SL4H_I_setpoint (PLCAttr):
@@ -2417,13 +2418,13 @@ SL4H_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 221
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.89
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [-0.1099 -0.1099 -0.1099 -0.1099 -0.1099 -0.1099 -0.1099 -0.1099 -0.1099
  -0.1099]
 	readbackAttr: SL4H_I
 	rvalue: -0.109899997711
-	timestamp: 1531390829.83
+	timestamp: 1531391295.89
 	type: ('f', 4)
 	write_addr: 60
 
@@ -2437,12 +2438,12 @@ SL4H_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 143
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.89
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL4H_ST:ChangeReporter (to ['SL4_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.83
+	timestamp: 1531391295.89
 	type: ('B', 1)
 
 SL4H_ST:MeaningAttr:
@@ -2456,15 +2457,15 @@ SL4H_ST:MeaningAttr:
 	read_t: "1531385709.93"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.83"
+	timestamp: "1531391295.89"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.831677, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.8891151, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL4V_I (PLCAttr):
 	description: 'SL4 current monitor'
 	device: LinacData(li/ct/plc3)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.2f
 	logLevel: warning
 	maxValue: 2.0
@@ -2474,14 +2475,14 @@ SL4V_I (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 64
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
-	read_value: [-0.2664811  -0.2664811  -0.2664811  -0.24683732 -0.24683732 -0.24683732
- -0.24683732 -0.24683732 -0.24683732 -0.24374191]
+	read_t: 1531391295.89
+	read_t_str: Thu Jul 12 12:28:15 2018
+	read_value: [-0.25163022 -0.25163022 -0.25163022 -0.26358688 -0.26358688 -0.26358688
+ -0.26358688 -0.26358688 -0.26358688 -0.24387723]
 	reporter: SL4V_I:ChangeReporter (to ['SL4_current_ok'])
-	rvalue: -0.24374191463
+	rvalue: -0.243877232075
 	setpointAttr: SL4V_I_setpoint
-	timestamp: 1531390829.83
+	timestamp: 1531391295.89
 	type: ('f', 4)
 
 SL4V_I_setpoint (PLCAttr):
@@ -2497,12 +2498,12 @@ SL4V_I_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 225
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.89
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: [-0.25 -0.25 -0.25 -0.25 -0.25 -0.25 -0.25 -0.25 -0.25 -0.25]
 	readbackAttr: SL4V_I
 	rvalue: -0.25
-	timestamp: 1531390829.83
+	timestamp: 1531391295.89
 	type: ('f', 4)
 	write_addr: 64
 
@@ -2516,12 +2517,12 @@ SL4V_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 144
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.89
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: 5
 	reporter: SL4V_ST:ChangeReporter (to ['SL4_current_ok'])
 	rvalue: 5
-	timestamp: 1531390829.83
+	timestamp: 1531391295.89
 	type: ('B', 1)
 
 SL4V_ST:MeaningAttr:
@@ -2535,10 +2536,10 @@ SL4V_ST:MeaningAttr:
 	read_t: "1531385709.94"
 	read_t_str: "Thu Jul 12 10:55:09 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390829.83"
+	timestamp: "1531391295.89"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390829.831677, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391295.8891151, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 SL4_ONC (PLCAttr):
 	description: 'SL4 on/off\nFalse:off\nTrue:on'
@@ -2549,11 +2550,11 @@ SL4_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 289
 	read_bit: 4
-	read_t: 1531390829.83
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.89
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.83
+	timestamp: 1531391295.89
 	type: DevBoolean
 	write_addr: 128
 	write_bit: 4
@@ -2565,11 +2566,11 @@ AS1_cooling (InternalAttr):
 	logicObj: AS1_cooling:Logic ({'AS1H_ST': [3, 4], 'AS1V_ST': [3, 4], 'AS1H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'AS1V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}}, and, inverted)
 	name: AS1_cooling
 	quality: ATTR_VALID
-	read_t: 1531390829.86
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.9
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.86
+	timestamp: 1531391295.9
 	type: DevBoolean
 
 AS1_current_ok (InternalAttr):
@@ -2579,11 +2580,11 @@ AS1_current_ok (InternalAttr):
 	logicObj: AS1_current_ok:Logic ({'AS1H_ST': [0, 1, 2], 'AS1V_ST': [0, 1, 2], 'AS1H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'AS1V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}}, or, inverted)
 	name: AS1_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.86
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.9
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.86
+	timestamp: 1531391295.9
 	type: DevBoolean
 
 AS2_cooling (InternalAttr):
@@ -2593,11 +2594,11 @@ AS2_cooling (InternalAttr):
 	logicObj: AS2_cooling:Logic ({'AS2H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'AS2V_ST': [3, 4], 'AS2V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'AS2H_ST': [3, 4]}, and, inverted)
 	name: AS2_cooling
 	quality: ATTR_VALID
-	read_t: 1531390829.87
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.91
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.87
+	timestamp: 1531391295.91
 	type: DevBoolean
 
 AS2_current_ok (InternalAttr):
@@ -2607,11 +2608,11 @@ AS2_current_ok (InternalAttr):
 	logicObj: AS2_current_ok:Logic ({'AS2H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'AS2V_ST': [0, 1, 2], 'AS2V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'AS2H_ST': [0, 1, 2]}, or, inverted)
 	name: AS2_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.88
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.91
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.88
+	timestamp: 1531391295.91
 	type: DevBoolean
 
 BC1F_u (EnumerationAttr):
@@ -2649,11 +2650,11 @@ BC1_current_ok (InternalAttr):
 	logicObj: BC1_current_ok:Logic ({'BC1F_ST': [0, 1, 2], 'BC1H_ST': [0, 1, 2], 'BC1F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'BC1H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'BC1V_ST': [0, 1, 2], 'BC1V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}}, or, inverted)
 	name: BC1_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.91
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.91
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.91
+	timestamp: 1531391295.91
 	type: DevBoolean
 
 BC2F_u (EnumerationAttr):
@@ -2691,11 +2692,11 @@ BC2_current_ok (InternalAttr):
 	logicObj: BC2_current_ok:Logic ({'BC2V_ST': [0, 1, 2], 'BC2H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'BC2F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'BC2H_ST': [0, 1, 2], 'BC2F_ST': [0, 1, 2], 'BC2V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}}, or, inverted)
 	name: BC2_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.89
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.91
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.89
+	timestamp: 1531391295.91
 	type: DevBoolean
 
 GL_cooling (InternalAttr):
@@ -2719,11 +2720,11 @@ GL_current_ok (InternalAttr):
 	logicObj: GL_current_ok:Logic ({'GLH_ST': [0, 1, 2], 'GLF_ST': [0, 1, 2], 'GLF_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'GLH_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'GLV_ST': [0, 1, 2], 'GLV_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}}, or, inverted)
 	name: GL_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.85
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.9
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.85
+	timestamp: 1531391295.9
 	type: DevBoolean
 
 GL_u (EnumerationAttr):
@@ -2817,11 +2818,11 @@ QT_current_ok (InternalAttr):
 	logicObj: QT_current_ok:Logic ({'QT2F_ST': [0, 1, 2], 'QT1V_ST': [0, 1, 2], 'QT1F_ST': [0, 1, 2], 'QT1H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'QT1V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'QT1F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'QT2F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'QT1H_ST': [0, 1, 2]}, or, inverted)
 	name: QT_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.88
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.91
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.88
+	timestamp: 1531391295.91
 	type: DevBoolean
 
 SL1F_u (EnumerationAttr):
@@ -2859,11 +2860,11 @@ SL1_current_ok (InternalAttr):
 	logicObj: SL1_current_ok:Logic ({'SL1H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL1V_ST': [0, 1, 2], 'SL1V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL1F_ST': [0, 1, 2], 'SL1H_ST': [0, 1, 2], 'SL1F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}}, or, inverted)
 	name: SL1_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.84
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.9
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.84
+	timestamp: 1531391295.9
 	type: DevBoolean
 
 SL2F_u (EnumerationAttr):
@@ -2901,11 +2902,11 @@ SL2_current_ok (InternalAttr):
 	logicObj: SL2_current_ok:Logic ({'SL2F_ST': [0, 1, 2], 'SL2V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL2V_ST': [0, 1, 2], 'SL2H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL2F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL2H_ST': [0, 1, 2]}, or, inverted)
 	name: SL2_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.92
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.91
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.92
+	timestamp: 1531391295.91
 	type: DevBoolean
 
 SL3F_u (EnumerationAttr):
@@ -2943,11 +2944,11 @@ SL3_current_ok (InternalAttr):
 	logicObj: SL3_current_ok:Logic ({'SL3F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL3V_ST': [0, 1, 2], 'SL3V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL3H_ST': [0, 1, 2], 'SL3F_ST': [0, 1, 2], 'SL3H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}}, or, inverted)
 	name: SL3_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.92
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.91
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.92
+	timestamp: 1531391295.91
 	type: DevBoolean
 
 SL4F_u (EnumerationAttr):
@@ -2985,11 +2986,11 @@ SL4_current_ok (InternalAttr):
 	logicObj: SL4_current_ok:Logic ({'SL4V_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL4H_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL4V_ST': [0, 1, 2], 'SL4H_ST': [0, 1, 2], 'SL4F_I': {'qualities': [PyTango._PyTango.AttrQuality.ATTR_WARNING]}, 'SL4F_ST': [0, 1, 2]}, or, inverted)
 	name: SL4_current_ok
 	quality: ATTR_VALID
-	read_t: 1531390829.86
-	read_t_str: Thu Jul 12 12:20:29 2018
+	read_t: 1531391295.9
+	read_t_str: Thu Jul 12 12:28:15 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390829.86
+	timestamp: 1531391295.9
 	type: DevBoolean
 
 all_onc (InternalAttr):

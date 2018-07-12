@@ -1,6 +1,6 @@
 HVPS_I (PLCAttr):
 	device: LinacData(li/ct/plc5)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.1f
 	label: High voltage PS current
 	logLevel: warning
@@ -9,11 +9,11 @@ HVPS_I (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 16
-	read_t: 1531390830.38
-	read_t_str: Thu Jul 12 12:20:30 2018
-	read_value: 0.171881437302
-	rvalue: 0.171881437302
-	timestamp: 1531390830.38
+	read_t: 1531391296.42
+	read_t_str: Thu Jul 12 12:28:16 2018
+	read_value: -0.0913230776787
+	rvalue: -0.0913230776787
+	timestamp: 1531391296.42
 	type: ('f', 4)
 
 HVPS_Interlock_RC (PLCAttr):
@@ -27,11 +27,11 @@ HVPS_Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 2
-	read_t: 1531390830.38
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.42
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531390830.38
+	timestamp: 1531391296.42
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 2
@@ -47,12 +47,12 @@ HVPS_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 3
-	read_t: 1531390830.38
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.42
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: True
 	rvalue: True
 	switchDescriptor: {'attr2ramp': 'HVPS_V_setpoint', 'whenOn': {'from': 'HVPS_V_setpoint_Ascending_Threshold'}}
-	timestamp: 1531390830.38
+	timestamp: 1531391296.42
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 3
@@ -68,12 +68,12 @@ HVPS_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 39
-	read_t: 1531390830.38
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.42
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: 9
 	reporter: HVPS_ST:ChangeReporter (to ['HVPS_ONC:Formula', 'HVPS_ONC:Formula', 'hvps_ready'])
 	rvalue: 9
-	timestamp: 1531390830.38
+	timestamp: 1531391296.42
 	type: ('B', 1)
 
 HVPS_ST:MeaningAttr:
@@ -87,14 +87,14 @@ HVPS_ST:MeaningAttr:
 	read_t: "1531385718.08"
 	read_t_str: "Thu Jul 12 10:55:18 2018"
 	rvalue: "9:ready"
-	timestamp: "1531390830.55"
+	timestamp: "1531391296.42"
 	type: "DevString"
 	value: "9:ready"
-	vtq: "('9:ready', 1531390830.5455551, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('9:ready', 1531391296.4150431, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 HVPS_V (PLCAttr):
 	device: LinacData(li/ct/plc5)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.2f
 	label: High voltage PS voltage
 	logLevel: warning
@@ -103,11 +103,11 @@ HVPS_V (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 12
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
-	read_value: 32.1640968323
-	rvalue: 32.1640968323
-	timestamp: 1531390830.55
+	read_t: 1531391296.42
+	read_t_str: Thu Jul 12 12:28:16 2018
+	read_value: 31.9450531006
+	rvalue: 31.9450531006
+	timestamp: 1531391296.42
 	type: ('f', 4)
 
 HVPS_V_setpoint (PLCAttr):
@@ -122,35 +122,35 @@ HVPS_V_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 46
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.42
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: [ 32.  32.  32.  32.  32.  32.  32.  32.  32.  32.]
 	readbackAttr: HVPS_V
 	rvalue: 32.0
-	timestamp: 1531390830.55
+	timestamp: 1531391296.42
 	type: ('f', 4)
 	write_addr: 0
 
 HeartBeat (PLCAttr):
 	description: 'cadence bit going from True to False when PLC is okay'
 	device: LinacData(li/ct/plc5)
-	events: Always Emit 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	logLevel: warning
 	name: HeartBeat
 	quality: ATTR_VALID
 	read_addr: 36
 	read_bit: 0
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: DevBoolean
 	write_bit: 0
 
 Heat_I (PLCAttr):
 	device: LinacData(li/ct/plc5)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.1f
 	label: Heating current monitor
 	logLevel: warning
@@ -159,11 +159,11 @@ Heat_I (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 4
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
-	read_value: -0.106654934585
-	rvalue: -0.106654934585
-	timestamp: 1531390830.55
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
+	read_value: 0.128358989954
+	rvalue: 0.128358989954
+	timestamp: 1531391296.58
 	type: ('f', 4)
 
 Heat_ST (PLCAttr):
@@ -177,12 +177,12 @@ Heat_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 38
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: 5
 	reporter: Heat_ST:ChangeReporter (to ['lv_ready'])
 	rvalue: 5
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: ('B', 1)
 
 Heat_ST:MeaningAttr:
@@ -196,10 +196,10 @@ Heat_ST:MeaningAttr:
 	read_t: "1531385718.07"
 	read_t_str: "Thu Jul 12 10:55:18 2018"
 	rvalue: "5:ready"
-	timestamp: "1531390830.55"
+	timestamp: "1531391296.58"
 	type: "DevString"
 	value: "5:ready"
-	vtq: "('5:ready', 1531390830.5455551, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('5:ready', 1531391296.5755191, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 Heat_Time (PLCAttr):
 	description: 'heating tempo (20 min)'
@@ -213,16 +213,16 @@ Heat_Time (PLCAttr):
 	qualities: {'changing': {'abs': {'Below': 20, 'Above': 0, 'Under': True}}}
 	quality: ATTR_VALID
 	read_addr: 44
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: [10 10 10 10 10 10 10 10 10 10]
 	rvalue: 1
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: ('h', 2)
 
 Heat_V (PLCAttr):
 	device: LinacData(li/ct/plc5)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.1f
 	label: Heating voltage monitor
 	logLevel: warning
@@ -231,11 +231,11 @@ Heat_V (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 8
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
-	read_value: 0.0617137588561
-	rvalue: 0.0617137588561
-	timestamp: 1531390830.55
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
+	read_value: -0.0462872497737
+	rvalue: -0.0462872497737
+	timestamp: 1531391296.58
 	type: ('f', 4)
 
 LV_Interlock_RC (PLCAttr):
@@ -249,11 +249,11 @@ LV_Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 0
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 0
@@ -269,11 +269,11 @@ LV_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 1
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 1
@@ -289,12 +289,12 @@ LV_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 37
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: 12
 	reporter: LV_ST:ChangeReporter (to ['lv_ready'])
 	rvalue: 12
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: ('B', 1)
 
 LV_ST:MeaningAttr:
@@ -308,10 +308,10 @@ LV_ST:MeaningAttr:
 	read_t: "1531385718.05"
 	read_t_str: "Thu Jul 12 10:55:18 2018"
 	rvalue: "12:ready"
-	timestamp: "1531390830.55"
+	timestamp: "1531391296.58"
 	type: "DevString"
 	value: "12:ready"
-	vtq: "('12:ready', 1531390830.5455551, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('12:ready', 1531391296.5755191, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 LV_Time (PLCAttr):
 	description: 'tempo stop low voltage (5 min)'
@@ -324,11 +324,11 @@ LV_Time (PLCAttr):
 	qualities: {'changing': {'abs': {'Below': 300, 'Above': 0, 'Under': True}}}
 	quality: ATTR_VALID
 	read_addr: 42
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: [10 10 10 10 10 10 10 10 10 10]
 	rvalue: 10
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: ('h', 2)
 
 Lock_ST (PLCAttr):
@@ -342,11 +342,11 @@ Lock_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 41
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: 1
 	rvalue: 1
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: ('B', 1)
 
 Lock_ST:MeaningAttr:
@@ -360,10 +360,10 @@ Lock_ST:MeaningAttr:
 	read_t: "1531385718.15"
 	read_t_str: "Thu Jul 12 10:55:18 2018"
 	rvalue: "1:local"
-	timestamp: "1531390830.55"
+	timestamp: "1531391296.58"
 	type: "DevString"
 	value: "1:local"
-	vtq: "('1:local', 1531390830.5455551, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('1:local', 1531391296.5755191, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 Locking (PLCAttr):
 	description: 'True when attempting to obtain write lock'
@@ -374,11 +374,11 @@ Locking (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 63
 	read_bit: 0
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: DevBoolean
 	write_addr: 17
 	write_bit: 0
@@ -387,7 +387,7 @@ Locking (PLCAttr):
 
 Peak_I (PLCAttr):
 	device: LinacData(li/ct/plc5)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.1f
 	label: Peak current
 	logLevel: warning
@@ -396,17 +396,17 @@ Peak_I (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 20
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
-	read_value: -2.08494234085
-	rvalue: -2.08494234085
-	timestamp: 1531390830.55
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
+	read_value: -1.05603337288
+	rvalue: -1.05603337288
+	timestamp: 1531391296.58
 	type: ('f', 4)
 
 Peak_V (PLCAttr):
 	description: 'peak voltage (calculated'
 	device: LinacData(li/ct/plc5)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:20:29 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:15 2018' ATTR_VALID
 	format: %4.1f
 	label: Peak voltage
 	logLevel: warning
@@ -415,11 +415,11 @@ Peak_V (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 24
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
-	read_value: 1.82878220081
-	rvalue: 1.82878220081
-	timestamp: 1531390830.55
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
+	read_value: -0.0854967832565
+	rvalue: -0.0854967832565
+	timestamp: 1531391296.58
 	type: ('f', 4)
 
 Pulse_ST (PLCAttr):
@@ -433,12 +433,12 @@ Pulse_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 40
-	read_t: 1531390830.55
-	read_t_str: Thu Jul 12 12:20:30 2018
+	read_t: 1531391296.58
+	read_t_str: Thu Jul 12 12:28:16 2018
 	read_value: 8
 	reporter: Pulse_ST:ChangeReporter (to ['HVPS_ONC:Formula', 'HVPS_ONC:Formula', 'hvps_ready'])
 	rvalue: 8
-	timestamp: 1531390830.55
+	timestamp: 1531391296.58
 	type: ('B', 1)
 
 Pulse_ST:MeaningAttr:
@@ -452,10 +452,10 @@ Pulse_ST:MeaningAttr:
 	read_t: "1531385718.09"
 	read_t_str: "Thu Jul 12 10:55:18 2018"
 	rvalue: "8:ready"
-	timestamp: "1531390830.55"
+	timestamp: "1531391296.58"
 	type: "DevString"
 	value: "8:ready"
-	vtq: "('8:ready', 1531390830.5455551, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+	vtq: "('8:ready', 1531391296.5755191, PyTango._PyTango.AttrQuality.ATTR_VALID)"
 
 KA_3GHz_RFampli_u (EnumerationAttr):
 	active: None

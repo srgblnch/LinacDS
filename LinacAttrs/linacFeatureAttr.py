@@ -25,5 +25,8 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 class _LinacFeatureAttr(_LinacFeature, LinacAttrBase):
-    pass
+    def __str__(self):
+        return LinacAttrBase.__str__(self)
 
+    def __repr__(self):
+        return LinacAttrBase.__repr__(self)
