@@ -50,7 +50,8 @@ from types import StringType
 from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
 from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
-                        AutoStopAttr, AutoStopParameter, HistoryAttr)
+                        AutoStopAttr, AutoStopParameter, HistoryAttr,
+                        GroupAttr)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -409,7 +410,7 @@ class AttrList(object):
                                  **kwargs)
 
     def add_AttrGrpBit(self, name, read_addr_bit_pairs=[],
-                       write_addr_bit_pairs=[], meanings=None, qualities=None,
+                       write_addr_bit_pairs=[], attrGroup=None, meanings=None, qualities=None,
                        events=None, **kwargs):
         '''An special type of attribute where, given a set of bits by the pair
            [reg,bit] this attribute can operate all of them as one.
@@ -422,13 +423,17 @@ class AttrList(object):
         else:
             writable = False
         self.__traceAttrAddr(name, PyTango.DevBoolean, internal=True)
-        self._prepareInternalAttribute(name, PyTango.DevBoolean,
-                                       isWritable=writable)
-        rfun = self.__getAttrMethod('read', name, isGroup=True)
-        if len(write_addr_bit_pairs) > 0:
-            wfun = self.__getAttrMethod('write', name, isGroup=True)
+        attrObj = GroupAttr(name=name, device=self.impl,
+                            valueType=PyTango.DevBoolean, isWritable=writable,
+                            group=attrGroup)
+        self.impl._internalAttrs[name] = attrObj
+        rfun = attrObj.read_attr
+        if writable:
+            wfun = attrObj.write_attr
         else:
             wfun = None
+
+
         self._prepareEvents(name, events)
         attrDescr = self.impl._internalAttrs[name]
         attrDescr['read_set'] = read_addr_bit_pairs
@@ -1716,7 +1721,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             MeaningAttr,
                                                             HistoryAttr,
                                                             AutoStopAttr,
-                                                            AutoStopParameter
+                                                            AutoStopParameter,
+                                                            GroupAttr
                                                             ]]):
                 attrStruct.read_attr(attr)
                 return
@@ -1766,7 +1772,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutoStopAttr,
-                                                            AutoStopParameter
+                                                            AutoStopParameter,
+                                                            GroupAttr
                                                             ]]):
                 attrStruct.read_spectrumAttr(attr)
                 return
@@ -1885,7 +1892,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutoStopAttr,
-                                                            AutoStopParameter
+                                                            AutoStopParameter,
+                                                            GroupAttr
                                                             ]]):
                 attrStruct.read_attr(attr)
                 return
@@ -2094,7 +2102,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutoStopAttr,
-                                                            AutoStopParameter
+                                                            AutoStopParameter,
+                                                            GroupAttr
                                                             ]]):
                 attrStruct.write_attr(attr)
                 return
@@ -2128,7 +2137,8 @@ class LinacData(PyTango.Device_4Impl):
                                                             EnumerationAttr,
                                                             MeaningAttr,
                                                             AutoStopAttr,
-                                                            AutoStopParameter
+                                                            AutoStopParameter,
+                                                            GroupAttr
                                                             ]]):
                 attrStruct.write_attr(attr)
                 return

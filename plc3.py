@@ -174,8 +174,10 @@ GrpBit('all_onc',
                             (289, 6), (289, 7), (290, 0), (290, 1), (290, 2)],
        write_addr_bit_pairs=[(128, 1), (128, 2), (128, 3), (128, 4), (128, 5),
                              (128, 6), (128, 7), (129, 0), (129, 1), (129, 2)],
+       attrGroup=['%s_ONC' % m for m in ['SL1', 'SL2', 'SL3', 'SL4','BC1',
+                                         'BC2', 'GL', 'AS1', 'QT', 'AS2']],
        label='all magnet on', meanings={0: 'close', 1: 'open'},
-       qualities={WARNING: [0]}, events={})
+       qualities={WARNING: [0]}, events={}, logLevel='debug')
 
 for magnet in ['SL1', 'SL2', 'SL3', 'SL4', 'BC1', 'BC2', 'GL']:
     AttrLogic('%s_cooling' % (magnet),

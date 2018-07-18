@@ -26,9 +26,6 @@ __license__ = "GPLv3+"
 
 class InternalAttr(LinacAttr):
 
-    _readSet = None
-    _writeSet = None
-
     _meanings = None
     _meaningsObj = None
 
@@ -57,22 +54,6 @@ class InternalAttr(LinacAttr):
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
-    @property
-    def read_set(self):
-        return self._readSet
-
-    @read_set.setter
-    def read_set(self, value):
-        self._readSet = value
-
-    @property
-    def write_set(self):
-        return self._writeSet
-
-    @write_set.setter
-    def write_set(self, value):
-        self._writeSet = value
-
     # FIXME: this may be a reference to a MeaningAttr
     @property
     def meanings(self):

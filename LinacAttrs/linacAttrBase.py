@@ -245,6 +245,9 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     @read_value.setter
     def read_value(self, value):
+        self.applyReadValue(value)
+
+    def applyReadValue(self, value):
         if isinstance(value, CircularBuffer):
             if self._readValue is not None:
                 self.warning("Assigned a readValue %s class when was %s"
