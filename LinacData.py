@@ -409,8 +409,7 @@ class AttrList(object):
                                  minValue=minValue, maxValue=maxValue,
                                  **kwargs)
 
-    def add_AttrGrpBit(self, name, read_addr_bit_pairs=[],
-                       write_addr_bit_pairs=[], attrGroup=None, meanings=None, qualities=None,
+    def add_AttrGrpBit(self, name, attrGroup=None, meanings=None, qualities=None,
                        events=None, **kwargs):
         '''An special type of attribute where, given a set of bits by the pair
            [reg,bit] this attribute can operate all of them as one.
@@ -418,28 +417,14 @@ class AttrList(object):
                     the write value, is applied to _all_ of them
                     (almost) at the same time.
         '''
-        if len(write_addr_bit_pairs) > 0:
-            writable = True
-        else:
-            writable = False
         self.__traceAttrAddr(name, PyTango.DevBoolean, internal=True)
-        attrObj = GroupAttr(name=name, device=self.impl,
-                            valueType=PyTango.DevBoolean, isWritable=writable,
+        attrObj = GroupAttr(name=name, device=self.impl, isWritable=True,
                             group=attrGroup)
         self.impl._internalAttrs[name] = attrObj
         rfun = attrObj.read_attr
-        if writable:
-            wfun = attrObj.write_attr
-        else:
-            wfun = None
-
-
+        wfun = attrObj.write_attr
         self._prepareEvents(name, events)
-        attrDescr = self.impl._internalAttrs[name]
-        attrDescr['read_set'] = read_addr_bit_pairs
-        attrDescr['write_set'] = write_addr_bit_pairs
-        newInternalAttr = self.add_Attr(name, PyTango.DevBoolean, rfun, wfun,
-                                        **kwargs)
+        return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun, **kwargs)
 
     def add_AttrLogic(self, name, logic, label, desc, events=None, operator='and',
                       inverted=False, **kwargs):

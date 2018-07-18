@@ -17,7 +17,7 @@
 
 from .internalAttr import InternalAttr
 from .LinacFeatures import _LinacFeature, Memorised
-from PyTango import AttrQuality
+from PyTango import DevBoolean, AttrQuality
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -37,7 +37,7 @@ class GroupMember(_LinacFeature):
         self._idx = idx
         if self._attr is not None:
             self._rvalue = self._attr.rvalue
-        self.log("Build with index %d" % (self._idx))
+        self.debug("Build with index %d" % (self._idx))
 
     @property
     def name(self):
@@ -52,8 +52,8 @@ class GroupMember(_LinacFeature):
     def valueChange(self):
         newValue = self._attr.rvalue
         if newValue != self._rvalue:
-            self.log("value change to %s (was %s)" % (self._attr.rvalue,
-                                                      self._rvalue))
+            self.debug("value change to %s (was %s)"
+                       % (self._attr.rvalue, self._rvalue))
             self._rvalue = self._attr.rvalue
             self.owner._rvalues[self._idx] = self._rvalue
             self.owner.valueChange()
@@ -64,11 +64,13 @@ class GroupAttr(InternalAttr):
     _members = None
     _rvalues = None
 
-    def __init__(self, group, *args, **kwargs):
-        super(GroupAttr, self).__init__(*args, **kwargs)
+    def __init__(self, group, valueType=DevBoolean, *args, **kwargs):
+        if valueType is not DevBoolean:
+            raise TypeError("Group attributes only supported for booleans")
+        super(GroupAttr, self).__init__(valueType=DevBoolean, *args, **kwargs)
         self._members = {}
         self._rvalues = []
-        self.log("Building group: %s" % (group))
+        self.debug("Building group: %s" % (group))
         for i, element in enumerate(group):
             obj = self._getOtherAttrObj(element)
             if obj is not None:
@@ -86,15 +88,15 @@ class GroupAttr(InternalAttr):
 
     def valueChange(self):
         newValue = all(self._rvalues)
-        self.log("value change to %s (was %s) = all(%s)" % (newValue, self._readValue, self._rvalues))
+        self.debug("value change to %s (was %s) = all(%s)"
+                   % (newValue, self._readValue, self._rvalues))
         self._readValue = newValue
         self.launchEvents()
 
     def doWriteValue(self, value):
-        self.log("received a group write of %s" % (value))
+        self.debug("received a group write of %s" % (value))
         for element, member in self._members.iteritems():
-            self.log("working with %s (%s)" % (element, value))
-            # member._rvalue = value
+            self.debug("working with %s (%s)" % (element, value))
             member._attr.write_value = value
         self._writeValue = value
         self.valueChange()

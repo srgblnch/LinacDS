@@ -281,13 +281,9 @@ for i in range(7):
                              % (number)})
 
 GrpBit('VVall_OC',
-       read_addr_bit_pairs=[(116, 1), (116, 2), (116, 3), (116, 4), (116, 5),
-                            (116, 6), (116, 7)],
-       write_addr_bit_pairs=[(16, 1), (16, 2), (16, 3), (16, 4), (16, 5),
-                             (16, 6), (16, 7)],
        attrGroup=['VV%s_OC' % i for i in range(1,8)],
        label='all vacuum valves open', meanings={0: 'close', 1: 'open'},
-       qualities={WARNING: [0]}, events={}, logLevel='debug')
+       qualities={WARNING: [0]}, events={})
 
 # R117 W017 @DO_8to15 ---
 AttrBit('Util_Interlock_RC',
