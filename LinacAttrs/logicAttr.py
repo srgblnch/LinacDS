@@ -15,12 +15,8 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .constants import LASTEVENTQUALITY, QUALITIES
 from .internalAttr import InternalAttr
-#from .LinacFeatures import _LinacFeature, Memorised
-#from PyTango import DevBoolean, AttrQuality
-
-#from ..constants import LASTEVENTQUALITY, QUALITIES
-#from .feature import _LinacFeature
 from time import time
 import traceback
 
