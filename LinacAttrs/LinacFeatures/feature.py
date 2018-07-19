@@ -65,7 +65,7 @@ class _LinacFeature(_AbstractFeatureLog):
         elif type(attrgetter) is list and len(attrgetter) == 0:
             pass  # ignore
         else:
-            return "%s: \"%s\"" % (component, attrgetter)
+            return "%s: %s" % (component, attrgetter)
 
     @property
     def name(self):

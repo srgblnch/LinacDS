@@ -85,18 +85,18 @@ class _Threshold(_QualitiesObject):
 
     def __init__(self, description, *args, **kwargs):
         super(_Threshold, self).__init__(*args, **kwargs)
-        self._str_ = "("
+        self._str_ = "{"
         for key, item in description.iteritems():
             if key is ABOVE:
                 self._above = item
-                self._str_ = "".join("%sAbove: %s" % (self._str_, item))
+                self._str_ = "".join("%sabove: %s" % (self._str_, item))
             elif key is BELOW:
                 self._below = item
-                self._str_ = "".join("%sBelow: %s" % (self._str_, item))
+                self._str_ = "".join("%sbelow: %s" % (self._str_, item))
             else:
                 raise TypeError("Unknown threshold definition %s" % (key))
             self._str_ = "".join("%s, " % (self._str_))
-        self._str_ = self._str_[:-2] + ")"
+        self._str_ = self._str_[:-2] + "}"
         # TODO: check that below < above
 
     @property
@@ -120,29 +120,34 @@ class _Relative(_Threshold):
 
 
 class _QualityDescription(_QualitiesObject):
+    def __init__(self, *args, **kwargs):
+        super(_QualityDescription, self).__init__(*args, **kwargs)
+
+
+class _Quality4Floats(_QualityDescription):
 
     _absolute = None
     _relative = None
 
     def __init__(self, description, *args, **kwargs):
-        super(_QualityDescription, self).__init__(*args, **kwargs)
-        self._str_ = "("
+        super(_Quality4Floats, self).__init__(*args, **kwargs)
+        self._str_ = "{"
         for key, item in description.iteritems():
             if key is ABSOLUTE:
                 self._absolute = _Absolute(name="%s.absolute" % (self.name),
                                            description=item)
-                self._str_ = "".join("%sAbsolute: %s"
+                self._str_ = "".join("%sabsolute: %s"
                                      % (self._str_, self._absolute))
             elif key is RELATIVE:
                 self._relative = _Relative(name="%s.relative" % (self.name),
                                            description=item)
-                self._str_ = "".join("%sRelative: %s"
+                self._str_ = "".join("%srelative: %s"
                                      % (self._str_, self._relative))
             else:
                 raise TypeError("Unknown threshold definition %s"
                                 % (key))
             self._str_ = "".join("%s, " % (self._str_))
-        self._str_ = self._str_[:-2] + ")"
+        self._str_ = self._str_[:-2] + "}"
 
     @property
     def absolute(self):
@@ -153,12 +158,12 @@ class _QualityDescription(_QualitiesObject):
         return self._relative
 
 
-class _QualityStates(_QualitiesObject):
+class _Quality4States(_QualityDescription):
 
     _enumeration = None
 
     def __init__(self, enumeration, *args, **kwargs):
-        super(_QualityStates, self).__init__(*args, **kwargs)
+        super(_Quality4States, self).__init__(*args, **kwargs)
         self._enumeration = enumeration
 
     @property
@@ -169,27 +174,32 @@ class _QualityStates(_QualitiesObject):
 
 class QualityInterpreter(_LinacFeature):
 
-    #_descriptor = None
     _changing = None
     _warning = None
     _alarm = None
+    _str_ = None
 
     def __init__(self, descriptor, *args, **kwargs):
         super(QualityInterpreter, self).__init__(*args, **kwargs)
+        self._str_ = "{"
         self.log("Building a quality interpreter with %s definition"
                  % (descriptor))
-        self._descriptor = {}
         for key, item in descriptor.iteritems():
             self.log("check for key '%s', item: %s" % (key, item))
             if isinstance(item, list):
                 self.log("item %s is a list" % (item))
-                self.__assignQuality(key, _QualityStates, item)
+                self.__assignQuality(key, _Quality4States, item)
             elif isinstance(item, dict):
                 self.log("item %s is a dictionary" % (item))
-                self.__assignQuality(key, _QualityDescription, item)
+                self.__assignQuality(key, _Quality4Floats, item)
             else:
                 raise TypeError("Unknown descriptor key %s item %s"
                                 % (key, item))
+            self._str_ = "".join("%s, " % (self._str_))
+        self._str_ = self._str_[:-2] + "}"
+
+    def __str__(self):
+        return self._str_
 
     @property
     def changing(self):
@@ -207,11 +217,17 @@ class QualityInterpreter(_LinacFeature):
         if key is CHANGING:
             self._changing = Constructor(name="%s.changing" % (self.name),
                                             description=item)
+            self._str_ = "".join("%schanging: %s"
+                                 % (self._str_, self._changing))
         elif key is WARNING:
             self._warning = Constructor(name="%s.warning" % (self.name),
                                             description=item)
+            self._str_ = "".join("%swarning: %s"
+                                 % (self._str_, self._warning))
         elif key is ALARM:
             self._alarm = Constructor(name="%s.alarm" % (self.name),
                                             description=item)
+            self._str_ = "".join("%salarm: %s"
+                                 % (self._str_, self._alarm))
         else:
             raise KeyError("Unknown descriptor key %s" % (key))
