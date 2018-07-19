@@ -32,7 +32,7 @@ class InternalAttr(LinacAttr):
     _logicObj = None
 
     def __init__(self, isWritable=False, defaultValue=None, meanings=None,
-                 logic=None, operator=None, inverted=None, *args, **kwargs):
+                 *args, **kwargs):
         """
             Class to describe an attribute that references information from
             any of the Linac's PLCs.
@@ -48,9 +48,6 @@ class InternalAttr(LinacAttr):
             else:
                 self._readValue = defaultValue
         self.meanings = meanings
-        if logic is not None:
-            self._logicObj = Logic(owner=self, logic=logic, operator=operator,
-                                   inverted=inverted)
 
     #######################################################
     # Dictionary properties for backwards compatibility ---
@@ -67,9 +64,6 @@ class InternalAttr(LinacAttr):
             self._meaningsObj = None
         self._meanings = value
 
-    @property
-    def logicObj(self):
-        return self._logicObj
 
     # FIXME: this may be a reference to a Memorized feature
     #######################
@@ -81,9 +75,3 @@ class InternalAttr(LinacAttr):
     def recoverDynMemorized(self, mainName, suffix):
         if self._memorised:
             self._memorised.recover(suffix)
-
-    #############################################################
-    # Dependencies between attributes and changes propagation ---
-    def evaluateAttrValue(self):
-        if self._logicObj is not None:
-            self._logicObj._evalLogical()

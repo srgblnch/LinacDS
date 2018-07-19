@@ -20,7 +20,6 @@ from .changereporter import ChangeReporter
 from .events import Events, EventCtr
 from .feature import _LinacFeature
 from .formulas import Formula
-from .logic import Logic
 from .memorised import Memorised
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"

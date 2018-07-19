@@ -51,7 +51,7 @@ from constants import *
 from LinacAttrs import LinacException, CommandExc, AttrExc
 from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
                         AutoStopAttr, AutoStopParameter, HistoryAttr,
-                        GroupAttr)
+                        GroupAttr, LogicAttr)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 LiAttrSpecializations = [EnumerationAttr]
@@ -426,15 +426,19 @@ class AttrList(object):
         self._prepareEvents(name, events)
         return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun, **kwargs)
 
-    def add_AttrLogic(self, name, logic, label, desc, events=None, operator='and',
-                      inverted=False, **kwargs):
+    def add_AttrLogic(self, name, logic, label, desc, events=None,
+                      operator='and', inverted=False, **kwargs):
         '''Internal type of attribute made to evaluate a logical formula with
            other attributes owned by the device with a boolean result.
         '''
         self.__traceAttrAddr(name, PyTango.DevBoolean, internalRO=True)
         self.impl.debug_stream("%s logic: %s" % (name, logic))
-        self._prepareInternalAttribute(name, PyTango.DevBoolean, logic=logic,
-                                       operator=operator, inverted=inverted)
+        # self._prepareInternalAttribute(name, PyTango.DevBoolean, logic=logic,
+        #                                operator=operator, inverted=inverted)
+        attrObj = LogicAttr(name=name, device=self.impl,
+                            valueType=PyTango.DevBoolean,logic=logic,
+                            operator=operator, inverted=inverted)
+        self.impl._internalAttrs[name] = attrObj
         rfun = self.__getAttrMethod('read', name, isLogical=True)
         wfun = None  # this kind can only be ReadOnly
         for key in logic:

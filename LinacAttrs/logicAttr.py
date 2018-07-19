@@ -15,8 +15,12 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from ..constants import LASTEVENTQUALITY, QUALITIES
-from .feature import _LinacFeature
+from .internalAttr import InternalAttr
+#from .LinacFeatures import _LinacFeature, Memorised
+#from PyTango import DevBoolean, AttrQuality
+
+#from ..constants import LASTEVENTQUALITY, QUALITIES
+#from .feature import _LinacFeature
 from time import time
 import traceback
 
@@ -26,32 +30,35 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-class Logic(_LinacFeature):
+class LogicAttr(InternalAttr):
 
     _logic = None
     _operator = None
     _inverted = None
 
-    def __init__(self, owner, logic=None, operator=None, inverted=None,
+    def __init__(self, logic=None, operator=None, inverted=None,
                  *args, **kwargs):
-        super(Logic, self).__init__(owner=owner, *args, **kwargs)
-        self._str_ = "%s:Logic" % (self.owner.name)
-        self._logic = logic
+        super(LogicAttr, self).__init__(*args, **kwargs)
+        self._logic = logic        # FIXME: check its structure
         self._operator = operator  # FIXME: check if it is a valid operator
-        self._inverted = inverted
+        self._inverted = inverted  # FIXME: check it's boolean
         # TODO: include the logic evaluation
         #       - triggered by callbacks
         #       - with the necessary event emission
 
-    def __str__(self):
-        return "%s (%s, %s, %s)" % (self._str_, self._logic, self._operator,
+    @property
+    def logic(self):
+        return "(%s, %s, %s)" % (self._logic, self._operator,
                                     "inverted" if self._inverted else "normal")
 
-    def __repr__(self):
-        return self.__str__()
+    #def __repr__(self):
+    #    return self.__str__()
+
+    def evaluateAttrValue(self):
+        self._evalLogical()
 
     def _evalLogical(self):
-        was = self.owner.read_value
+        was = self.read_value
         values = []
         for key in self._logic.keys():
             try:
@@ -60,11 +67,11 @@ class Logic(_LinacFeature):
                 elif type(self._logic[key]) == list:
                     values.append(self.__evalLst(key, self._logic[key]))
                 else:
-                    self.warn("step less to evaluate %s for key %s unmanaged "
-                              "content type" % (self.owner, key))
+                    self.warn(
+                        "step less to evaluate for key %s unmanaged "
+                        "content type" % (key))
             except Exception as e:
-                self.error("cannot eval logic attr %s for key %s: %s"
-                           % (self.owner, key, e))
+                self.error("cannot eval logic for key %s: %s" % (key, e))
                 traceback.print_exc()
         if self._operator == 'or':
             result = any(values)
@@ -72,17 +79,17 @@ class Logic(_LinacFeature):
             result = all(values)
         if self._inverted:
             result = not result
-            self.debug("For %s: values %s (%s) (inverted) answer %s"
-                       % (self.owner, values, self._operator, result))
+            self.debug("values %s (%s) (inverted) answer %s"
+                       % (values, self._operator, result))
         else:
-            self.debug("For %s: values %s (%s) answer %s"
-                       % (self.owner, values, self._operator, result))
-        self.owner.read_t = time()  # when has been re-evaluated
+            self.debug("values %s (%s) answer %s"
+                       % (values, self._operator, result))
+        self.read_t = time()  # when has been re-evaluated
         if result != was:
             self.debug("value change to %s (was %s)" % (result, was))
             # FIXME: when change propagation done, this message can be removed
-            self.owner.read_value = result
-            self.owner.launchEvents()
+            self.read_value = result
+            self.launchEvents()
 
     def __evalDct(self, name, dct):
         """
@@ -95,18 +102,21 @@ class Logic(_LinacFeature):
     def __evalLst(self, name, lst):
         """
         """
-        attrStruct = self.owner.device._getAttrStruct(name)
-        value = attrStruct.rvalue
-        self.debug("%s %s in %s = %s" % (name, value, lst, value in lst))
-        return value in lst
+        attrStruct = self.device._getAttrStruct(name)
+        if attrStruct is not None:
+            value = attrStruct.rvalue
+            self.debug("%s %s in %s = %s" % (name, value, lst, value in lst))
+            return value in lst
+        return False
 
     def __evalQuality(self, name, lst):
         """
         """
-        attrStruct = self.owner.device._getAttrStruct(name)
-        if LASTEVENTQUALITY in attrStruct:
-            quality = attrStruct[LASTEVENTQUALITY]
-            self.debug("%s %s in %s = %s"
-                       % (name, quality, lst, quality in lst))
-            return quality in lst
+        attrStruct = self.device._getAttrStruct(name)
+        if attrStruct is not None:
+            if LASTEVENTQUALITY in attrStruct:
+                quality = attrStruct[LASTEVENTQUALITY]
+                self.debug("%s %s in %s = %s"
+                           % (name, quality, lst, quality in lst))
+                return quality in lst
         return False
