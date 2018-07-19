@@ -418,8 +418,7 @@ class AttrList(object):
                     (almost) at the same time.
         '''
         self.__traceAttrAddr(name, PyTango.DevBoolean, internal=True)
-        attrObj = GroupAttr(name=name, device=self.impl, isWritable=True,
-                            group=attrGroup)
+        attrObj = GroupAttr(name=name, device=self.impl, group=attrGroup)
         self.impl._internalAttrs[name] = attrObj
         rfun = attrObj.read_attr
         wfun = attrObj.write_attr
