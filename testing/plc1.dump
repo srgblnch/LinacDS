@@ -1,6 +1,6 @@
 A0_OP (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.0f
 	label: A0 output power
 	logLevel: warning
@@ -10,17 +10,17 @@ A0_OP (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 112
-	read_t: 1531391292.38
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992454.98
+	read_t_str: Thu Jul 19 11:27:34 2018
 	read_value: 475.0
 	rvalue: 475.0
-	timestamp: 1531391292.38
+	timestamp: 1531992454.98
 	type: ('f', 4)
 	write_addr: 28
 
 A0_ST (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: 500MHz amplifier status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'ready'}
@@ -28,11 +28,11 @@ A0_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 68
 	read_bit: 4
-	read_t: 1531391292.38
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.38
+	timestamp: 1531992455.94
 	type: DevBoolean
 	write_bit: 4
 
@@ -45,16 +45,16 @@ A0_Status (MeaningAttr):
 	noneValue: 0
 	owner: A0_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.16
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.33
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:ready
-	timestamp: 1531391292.38
+	timestamp: 1531992455.94
 	type: DevString
 
 ATT2_P (PLCAttr):
 	description: 'Attenuator 2 monitor attenuation (PB2)'
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: Attenuator 2 monitor
 	logLevel: warning
@@ -64,17 +64,17 @@ ATT2_P (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 60
-	read_t: 1531391292.38
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: 0.00492734415457
-	rvalue: 0.00492734415457
-	timestamp: 1531391292.38
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
+	read_value: -0.0819298699498
+	rvalue: -0.0819298699498
+	timestamp: 1531992455.94
 	type: ('f', 4)
 
 ATT2_P_setpoint (PLCAttr):
 	description: 'Attenuator 2 attenuation (PB2)'
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.1f
 	label: Attenuator 2
 	logLevel: warning
@@ -83,18 +83,18 @@ ATT2_P_setpoint (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 144
-	read_t: 1531391292.38
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
 	read_value: 0.0
 	rvalue: 0.0
-	timestamp: 1531391292.38
+	timestamp: 1531992455.94
 	type: ('f', 4)
 	write_addr: 60
 
 ATT2_ST (PLCAttr):
 	description: 'attenuator 2 status: 0:undefined, 1:unset, 2:ready, 3:in limit fault, 4:out limit fault, 5:timeout fault'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: attenuator 2 status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
@@ -102,12 +102,12 @@ ATT2_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 81
-	read_t: 1531391292.38
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
 	read_value: 2
 	reporter: ATT2_ST:ChangeReporter (to ['att2_ready'])
 	rvalue: 2
-	timestamp: 1531391292.38
+	timestamp: 1531992455.94
 	type: ('B', 1)
 
 ATT2_Status (MeaningAttr):
@@ -119,15 +119,15 @@ ATT2_Status (MeaningAttr):
 	noneValue: 0
 	owner: ATT2_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.38
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.62
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 2:ready
-	timestamp: 1531391292.38
+	timestamp: 1531992455.94
 	type: DevString
 
 EG_ENB (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Electron gun enabled (PSS)
 	logLevel: warning
 	meanings: {0: 'disabled', 1: 'enabled'}
@@ -135,11 +135,11 @@ EG_ENB (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 70
 	read_bit: 0
-	read_t: 1531391292.38
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.38
+	timestamp: 1531992455.94
 	type: DevBoolean
 	write_bit: 0
 
@@ -152,15 +152,15 @@ EG_ENB_Status (MeaningAttr):
 	noneValue: 0
 	owner: EG_ENB (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.17
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.35
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:enabled
-	timestamp: 1531391292.38
+	timestamp: 1531992456.1
 	type: DevString
 
 GM_DI (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Gun Modulator door interlock
 	logLevel: warning
 	meanings: {0: 'door open', 1: 'normal'}
@@ -168,12 +168,12 @@ GM_DI (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 6
-	read_t: 1531391292.38
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: GM_DI:ChangeReporter (to ['Gun_HV_ready'])
 	rvalue: True
-	timestamp: 1531391292.38
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 6
 
@@ -186,15 +186,15 @@ GM_DI_Status (MeaningAttr):
 	noneValue: 0
 	owner: GM_DI (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.26
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.48
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevString
 
 GUN_Filament_I (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: e-gun filament current
 	logLevel: warning
@@ -204,18 +204,18 @@ GUN_Filament_I (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 0.0}}}
 	quality: ATTR_VALID
 	read_addr: 4
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: [ 0.00334738  0.00334738 -0.03335396 -0.03335396 -0.03335396 -0.03335396
- -0.03335396 -0.03335396  0.02782878  0.02782878]
-	rvalue: 0.0278287827969
-	timestamp: 1531391292.54
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
+	read_value: [ 0.0633418   0.0633418   0.0633418   0.0633418   0.0633418   0.0633418
+  0.02939722  0.02939722  0.02939722  0.02939722]
+	rvalue: 0.0293972175568
+	timestamp: 1531992455.94
 	type: ('f', 4)
 
 GUN_Filament_V (PLCAttr):
 	SwitchAttr: GUN_LV_ONC
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: e-gun filament voltage monitor
 	logLevel: warning
@@ -225,19 +225,19 @@ GUN_Filament_V (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 0.0}}}
 	quality: ATTR_VALID
 	read_addr: 0
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: [ 0.04483772  0.04483772 -0.05210335 -0.05210335 -0.05210335 -0.05210335
- -0.05210335 -0.05210335 -0.01613013 -0.01613013]
-	rvalue: -0.0161301251501
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
+	read_value: [ 0.01160644  0.01160644  0.01160644  0.01160644  0.01160644  0.01160644
+ -0.05597401 -0.05597401 -0.05597401 -0.05597401]
+	rvalue: -0.0559740103781
 	setpointAttr: GUN_Filament_V_setpoint
-	timestamp: 1531391292.54
+	timestamp: 1531992455.94
 	type: ('f', 4)
 
 GUN_Filament_V_setpoint (PLCAttr):
 	SwitchAttr: GUN_LV_ONC
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4.1f
 	label: e-gun filament voltage setpoint
 	logLevel: warning
@@ -247,19 +247,19 @@ GUN_Filament_V_setpoint (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 0}}}
 	quality: ATTR_VALID
 	read_addr: 84
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992455.94
+	read_t_str: Thu Jul 19 11:27:35 2018
 	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
 	readbackAttr: GUN_Filament_V
 	rvalue: 0.0
-	timestamp: 1531391292.54
+	timestamp: 1531992455.94
 	type: ('f', 4)
 	write_addr: 0
 
 GUN_HV_I (PLCAttr):
 	description: 'high voltage PS current (leakage current)'
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: High voltage PS current
 	logLevel: warning
@@ -270,18 +270,18 @@ GUN_HV_I (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': -20.0, 'Above': 1.0}}}
 	quality: ATTR_VALID
 	read_addr: 36
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: [-0.01996364 -0.01996364  0.00848048  0.00848048  0.00848048  0.00848048
-  0.00848048  0.00848048  0.03029603  0.03029603]
-	rvalue: 0.030296029523
-	timestamp: 1531391292.54
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: [-0.00294179 -0.00294179 -0.00294179 -0.00294179 -0.00294179  0.02782967
+  0.02782967  0.02782967  0.02782967  0.02782967]
+	rvalue: 0.0278296656907
+	timestamp: 1531992456.1
 	type: ('f', 4)
 
 GUN_HV_ONC (PLCAttr):
 	description: 'high voltage PS; False:OFF, True:ON'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	formula: GUN_HV_ONC:Formula {read: "VALUE and Attr[Gun_HV_ST].rvalue == 4"}
 	label: High voltage PS
 	logLevel: warning
@@ -290,15 +290,15 @@ GUN_HV_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 162
 	read_bit: 2
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	readbackAttr: GUN_HV_V
 	reporter: GUN_HV_ONC:ChangeReporter (to ['GUN_HV_I_AutoStop', 'GUN_LV_ONC:Formula'])
 	rvalue: True
 	setpointAttr: GUN_HV_V_setpoint
 	switchDescriptor: {'attr2ramp': 'GUN_HV_V_setpoint', 'whenOn': {'from': 'GUN_HV_V_setpoint_Descending_Threshold'}, 'AutoStop': 'GUN_HV_I_AutoStop'}
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_addr: 78
 	write_bit: 2
@@ -312,17 +312,17 @@ GUN_HV_ONC_Status (MeaningAttr):
 	noneValue: 0
 	owner: GUN_HV_ONC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.47
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.81
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:on
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevString
 
 GUN_HV_V (PLCAttr):
 	SwitchAttr: GUN_HV_ONC
 	description: 'high voltage PS voltage'
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: HV PS Voltage
 	logLevel: warning
@@ -331,19 +331,19 @@ GUN_HV_V (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 32
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: 0.0584519803524
-	rvalue: 0.0584519803524
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: -0.0468195676804
+	rvalue: -0.0468195676804
 	setpointAttr: GUN_HV_V_setpoint
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: ('f', 4)
 
 GUN_HV_V_setpoint (PLCAttr):
 	SwitchAttr: GUN_HV_ONC
 	description: 'high voltage PS voltage'
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4.1f
 	label: HV PS Voltage Setpoint
 	logLevel: warning
@@ -352,18 +352,18 @@ GUN_HV_V_setpoint (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 100
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 0.0
 	readbackAttr: GUN_HV_V
 	rvalue: 0.0
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: ('f', 4)
 	write_addr: 16
 
 GUN_Kathode_T (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: e-gun cathode temperature
 	logLevel: warning
@@ -373,17 +373,17 @@ GUN_Kathode_T (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 25.0, 'Above': 41.0}}}
 	quality: ATTR_VALID
 	read_addr: 12
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: [ 24.95251465  24.95251465  24.97283363  24.97283363  24.97283363
-  24.97283363  24.97283363  24.97283363  25.04392242  25.04392242]
-	rvalue: 25.0439224243
-	timestamp: 1531391292.54
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: [ 24.98038483  24.98038483  24.98038483  24.98038483  24.98038483
+  25.05607605  25.05607605  25.05607605  25.05607605  25.05607605]
+	rvalue: 25.0560760498
+	timestamp: 1531992456.1
 	type: ('f', 4)
 
 GUN_Kathode_V (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: e-gun cathode voltage monitor
 	logLevel: warning
@@ -393,17 +393,17 @@ GUN_Kathode_V (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 0.0}}}
 	quality: ATTR_VALID
 	read_addr: 8
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: [-0.00901373 -0.00901373 -0.02179009 -0.02179009 -0.02179009 -0.02179009
- -0.02179009 -0.02179009 -0.10219681 -0.10219681]
-	rvalue: -0.102196805179
-	timestamp: 1531391292.54
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: [-0.01637572 -0.01637572 -0.01637572 -0.01637572 -0.01637572 -0.01967658
+ -0.01967658 -0.01967658 -0.01967658 -0.01967658]
+	rvalue: -0.0196765810251
+	timestamp: 1531992456.1
 	type: ('f', 4)
 
 GUN_Kathode_V_setpoint (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4.1f
 	label: e-gun cathode voltage setpoint
 	logLevel: warning
@@ -413,18 +413,18 @@ GUN_Kathode_V_setpoint (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 0}}}
 	quality: ATTR_VALID
 	read_addr: 88
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
 	rvalue: 0.0
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: ('f', 4)
 	write_addr: 4
 
 GUN_LV_ONC (PLCAttr):
 	description: 'gun low voltage: False:OFF, True:ON'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	formula: GUN_LV_ONC:Formula {read: "VALUE and Attr[Gun_ST].rvalue in [1,4,7,8]", write: "VALUE ^ Attr[GUN_HV_ONC].rvalue", write_not_allowed: "Filament voltage cannot be switch ON/OFF with e-Gun HV ON."}
 	label: Gun low voltage
 	logLevel: warning
@@ -433,14 +433,14 @@ GUN_LV_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 162
 	read_bit: 5
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	readbackAttr: GUN_Filament_V
 	rvalue: True
 	setpointAttr: GUN_Filament_V_setpoint
 	switchDescriptor: {'attr2ramp': 'GUN_Filament_V_setpoint', 'whenOff': {'to': 0}, 'whenOn': {'from': 0}}
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_addr: 78
 	write_bit: 5
@@ -454,16 +454,16 @@ GUN_LV_ONC_Status (MeaningAttr):
 	noneValue: 0
 	owner: GUN_LV_ONC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.48
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.82
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:on
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevString
 
 Gun_HV_ST (PLCAttr):
 	description: 'high voltage PS status: 0:undefined, 1:off, 2:locked, 3: fault, 4:ready, 5: unlocked'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: High voltage PS status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'off', 2: 'locked', 3: 'fault', 4: 'ready', 5: 'unlocked'}
@@ -471,12 +471,12 @@ Gun_HV_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 74
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 4
 	reporter: Gun_HV_ST:ChangeReporter (to ['GUN_HV_ONC:Formula'])
 	rvalue: 4
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: ('B', 1)
 
 Gun_HV_Status (MeaningAttr):
@@ -488,16 +488,16 @@ Gun_HV_Status (MeaningAttr):
 	noneValue: 0
 	owner: Gun_HV_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.32
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.53
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 4:ready
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevString
 
 Gun_ST (PLCAttr):
 	description: 'e-gun low voltage status: 0:undefined, 1:off, 2:bad vacuum, 3:cathode voltage fault, 4:filament current fault, 5:heating running, 6:filament voltage fault, 7:cathode over temperature, 8:ready'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: e-gun low voltage status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'off', 2: 'bad vacuum', 3: 'cathode voltage fault', 4: 'Heating', 5: 'filament current fault', 6: 'filament voltage fault', 7: 'cathode over temperature', 8: 'ready'}
@@ -505,12 +505,12 @@ Gun_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 75
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 8
 	reporter: Gun_ST:ChangeReporter (to ['GUN_LV_ONC:Formula', 'Gun_ready'])
 	rvalue: 8
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: ('B', 1)
 
 Gun_Status (MeaningAttr):
@@ -522,32 +522,32 @@ Gun_Status (MeaningAttr):
 	noneValue: 0
 	owner: Gun_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.32
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.53
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 8:ready
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevString
 
 HeartBeat (PLCAttr):
 	description: 'cadence bit going from True to False when PLC is okay'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	logLevel: warning
 	name: HeartBeat
 	quality: ATTR_VALID
 	read_addr: 72
 	read_bit: 0
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 0
 
 IU_RDY (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Interlock unit ready
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -555,11 +555,11 @@ IU_RDY (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 70
 	read_bit: 5
-	read_t: 1531391292.54
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.54
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 5
 
@@ -572,15 +572,15 @@ IU_RDY_Status (MeaningAttr):
 	noneValue: 0
 	owner: IU_RDY (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.2
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.38
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevString
 
 Interlock_RC (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	isRst: True
 	label: Reset interlocks
 	logLevel: warning
@@ -588,52 +588,52 @@ Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 162
 	read_bit: 3
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_addr: 78
 	write_bit: 3
 
 KA1_OK (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: klystron 1 ready
 	logLevel: warning
 	name: KA1_OK
 	quality: ATTR_VALID
 	read_addr: 73
 	read_bit: 2
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 2
 
 KA2_OK (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: klystron 2 ready
 	logLevel: warning
 	name: KA2_OK
 	quality: ATTR_VALID
 	read_addr: 73
 	read_bit: 3
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 3
 
 KA_ENB (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Klystron amplifier enabled (PSS)
 	logLevel: warning
 	meanings: {0: 'disabled', 1: 'enabled'}
@@ -641,11 +641,11 @@ KA_ENB (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 70
 	read_bit: 1
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 1
 
@@ -658,32 +658,32 @@ KA_ENB_Status (MeaningAttr):
 	noneValue: 0
 	owner: KA_ENB (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.18
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.36
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:enabled
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevString
 
 LI_OK (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Linac system ready
 	logLevel: warning
 	name: LI_OK
 	quality: ATTR_VALID
 	read_addr: 73
 	read_bit: 4
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 4
 
 LI_VOK (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Linac Vacuum OK
 	logLevel: warning
 	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
@@ -691,11 +691,11 @@ LI_VOK (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 7
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 7
 
@@ -708,16 +708,16 @@ LI_VOK_Status (MeaningAttr):
 	noneValue: 0
 	owner: LI_VOK (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.27
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.49
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:good vacuum
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevString
 
 Lock_ST (PLCAttr):
 	description: 'lock status plc1\n0:unlocked\n1:local\n2:remote\n'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: lock status plc1
 	logLevel: warning
 	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
@@ -725,11 +725,11 @@ Lock_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 82
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: 1
-	rvalue: 1
-	timestamp: 1531391292.7
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: 0
+	rvalue: 0
+	timestamp: 1531992456.1
 	type: ('B', 1)
 
 Lock_Status (MeaningAttr):
@@ -741,35 +741,33 @@ Lock_Status (MeaningAttr):
 	noneValue: 0
 	owner: Lock_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.53
-	read_t_str: Thu Jul 12 12:27:31 2018
-	rvalue: 1:local
-	timestamp: 1531391292.7
+	read_t: 1531990524.87
+	read_t_str: Thu Jul 19 10:55:24 2018
+	rvalue: 0:unlocked
+	timestamp: 1531992456.1
 	type: DevString
 
 Locking (PLCAttr):
 	description: 'True when attempting to obtain write lock'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	logLevel: warning
 	name: Locking
 	quality: ATTR_VALID
 	read_addr: 164
 	read_bit: 0
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: True
-	rvalue: True
-	timestamp: 1531391292.7
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_addr: 80
 	write_bit: 0
-	write_value: True
-	wvalue: True
 
 MG_IS (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Magnet Interlock state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -777,11 +775,11 @@ MG_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 5
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevBoolean
 	write_bit: 5
 
@@ -794,15 +792,15 @@ MG_IS_Status (MeaningAttr):
 	noneValue: 0
 	owner: MG_IS (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.26
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.47
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.7
+	timestamp: 1531992456.1
 	type: DevString
 
 PHS1_Phase (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: Phase shifter 1 phase monitor
 	logLevel: warning
@@ -811,16 +809,16 @@ PHS1_Phase (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 40
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: -0.0424924902618
-	rvalue: -0.0424924902618
-	timestamp: 1531391292.7
+	read_t: 1531992456.1
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: -0.00314600998536
+	rvalue: -0.00314600998536
+	timestamp: 1531992456.1
 	type: ('f', 4)
 
 PHS1_Phase_setpoint (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.0f
 	label: Phase shifter 1 phase setpoint
 	logLevel: warning
@@ -829,18 +827,18 @@ PHS1_Phase_setpoint (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 108
-	read_t: 1531391292.7
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 0.0
 	rvalue: 0.0
-	timestamp: 1531391292.7
+	timestamp: 1531992456.26
 	type: ('f', 4)
 	write_addr: 24
 
 PHS1_ST (PLCAttr):
 	description: 'phase shifter 1 status: 0:undefined, 1:unset, 2:ready, 3:in limit fault, 4:out limit fault, 5:timeout fault'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: phase shifter 1 status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
@@ -848,12 +846,12 @@ PHS1_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 79
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 2
 	reporter: PHS1_ST:ChangeReporter (to ['phs1_ready'])
 	rvalue: 2
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: ('B', 1)
 
 PHS1_Status (MeaningAttr):
@@ -865,15 +863,15 @@ PHS1_Status (MeaningAttr):
 	noneValue: 0
 	owner: PHS1_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.37
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.6
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 2:ready
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 PHS2_Phase (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:35 2018' ATTR_VALID
 	format: %4.1f
 	label: Phase shifter 2 phase monitor
 	logLevel: warning
@@ -882,16 +880,16 @@ PHS2_Phase (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 56
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
-	read_value: 0.0514973476529
-	rvalue: 0.0514973476529
-	timestamp: 1531391292.86
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: -0.0494870841503
+	rvalue: -0.0494870841503
+	timestamp: 1531992456.26
 	type: ('f', 4)
 
 PHS2_Phase_setpoint (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.0f
 	label: Phase shifter 2 phase setpoint
 	logLevel: warning
@@ -900,18 +898,18 @@ PHS2_Phase_setpoint (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 140
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 0.0
 	rvalue: 0.0
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: ('f', 4)
 	write_addr: 56
 
 PHS2_ST (PLCAttr):
 	description: 'phase shifter 2 status: 0:undefined, 1:unset, 2:ready, 3:in limit fault, 4:out limit fault, 5:timeout fault'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: phase shifter 2 status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'unset', 2: 'ready', 3: 'in limit fault', 4: 'out limit fault', 5: 'timeout fault'}
@@ -919,12 +917,12 @@ PHS2_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 80
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 2
 	reporter: PHS2_ST:ChangeReporter (to ['phs2_ready'])
 	rvalue: 2
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: ('B', 1)
 
 PHS2_Status (MeaningAttr):
@@ -936,15 +934,15 @@ PHS2_Status (MeaningAttr):
 	noneValue: 0
 	owner: PHS2_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.37
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.61
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 2:ready
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 PLC1_PR (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: PLC1 profibus receive status
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -952,11 +950,11 @@ PLC1_PR (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 72
 	read_bit: 2
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_bit: 2
 
@@ -969,15 +967,15 @@ PLC1_PR_Status (MeaningAttr):
 	noneValue: 0
 	owner: PLC1_PR (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.27
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.5
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 PLC1_PS (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: PLC1 profibus send status
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -985,11 +983,11 @@ PLC1_PS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 72
 	read_bit: 4
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_bit: 4
 
@@ -1002,15 +1000,15 @@ PLC1_PS_Status (MeaningAttr):
 	noneValue: 0
 	owner: PLC1_PS (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.28
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.5
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 RFS_ST (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: RF source Status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'ready'}
@@ -1018,11 +1016,11 @@ RFS_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 68
 	read_bit: 5
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_bit: 5
 
@@ -1035,32 +1033,32 @@ RFS_Status (MeaningAttr):
 	noneValue: 0
 	owner: RFS_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.17
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.34
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:ready
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 RF_OK (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: RF ready
 	logLevel: warning
 	name: RF_OK
 	quality: ATTR_VALID
 	read_addr: 73
 	read_bit: 5
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_bit: 5
 
 RL1_UF (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Resistor load 1 underflow state
 	logLevel: warning
 	meanings: {0: 'underflow', 1: 'normal'}
@@ -1068,12 +1066,12 @@ RL1_UF (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 1
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: RL1_UF:ChangeReporter (to ['ka1_ic'])
 	rvalue: True
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_bit: 1
 
@@ -1086,15 +1084,15 @@ RL1_UF_Status (MeaningAttr):
 	noneValue: 0
 	owner: RL1_UF (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.23
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.44
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 RL2_UF (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Resistor load 2 underflow state
 	logLevel: warning
 	meanings: {0: 'underflow', 1: 'normal'}
@@ -1102,12 +1100,12 @@ RL2_UF (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 2
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: RL2_UF:ChangeReporter (to ['ka1_ic'])
 	rvalue: True
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_bit: 2
 
@@ -1120,15 +1118,15 @@ RL2_UF_Status (MeaningAttr):
 	noneValue: 0
 	owner: RL2_UF (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.24
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.45
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 RL3_UF (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Resistor load 3 underflow state
 	logLevel: warning
 	meanings: {0: 'underflow', 1: 'normal'}
@@ -1136,12 +1134,12 @@ RL3_UF (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 3
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: RL3_UF:ChangeReporter (to ['ka2_ic'])
 	rvalue: True
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_bit: 3
 
@@ -1154,16 +1152,16 @@ RL3_UF_Status (MeaningAttr):
 	noneValue: 0
 	owner: RL3_UF (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.25
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.46
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM1_DC (PLCAttr):
 	description: 'screen monitor 1; 0:up, 1:down'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: fs 1 valve
 	logLevel: warning
 	meanings: {0: 'up', 1: 'down'}
@@ -1171,11 +1169,11 @@ SCM1_DC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 163
 	read_bit: 0
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_addr: 79
 	write_bit: 0
@@ -1189,16 +1187,16 @@ SCM1_DC_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM1_DC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.49
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.82
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: False:up
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM1_LC (PLCAttr):
 	description: 'screen light 1 0:off, 1:on'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: fs 1 light
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1206,11 +1204,11 @@ SCM1_LC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 163
 	read_bit: 3
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_addr: 79
 	write_bit: 3
@@ -1224,16 +1222,16 @@ SCM1_LC_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM1_LC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.51
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.85
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: False:off
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM1_ST (PLCAttr):
 	description: 'screen monitor 1 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: fs 1 status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
@@ -1241,12 +1239,12 @@ SCM1_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 76
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 2
 	reporter: SCM1_ST:ChangeReporter (to ['SCM1_alert'])
 	rvalue: 2
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: ('B', 1)
 
 SCM1_Status (MeaningAttr):
@@ -1258,16 +1256,16 @@ SCM1_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM1_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.33
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.54
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 2:up
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM2_DC (PLCAttr):
 	description: 'screen monitor 2; 0:up, 1:down'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: fs 2 valve
 	logLevel: warning
 	meanings: {0: 'up', 1: 'down'}
@@ -1275,11 +1273,11 @@ SCM2_DC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 163
 	read_bit: 1
-	read_t: 1531391292.86
-	read_t_str: Thu Jul 12 12:28:12 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391292.86
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_addr: 79
 	write_bit: 1
@@ -1293,16 +1291,16 @@ SCM2_DC_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM2_DC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.49
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.83
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: False:up
-	timestamp: 1531391293.02
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM2_LC (PLCAttr):
 	description: 'screen light 2 0:off, 1:on'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: fs 2 light
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1310,11 +1308,11 @@ SCM2_LC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 163
 	read_bit: 4
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391293.02
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_addr: 79
 	write_bit: 4
@@ -1328,16 +1326,16 @@ SCM2_LC_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM2_LC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.52
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.86
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: False:off
-	timestamp: 1531391293.02
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM2_ST (PLCAttr):
 	description: 'screen monitor 2 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: fs 2 status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
@@ -1345,12 +1343,12 @@ SCM2_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 77
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 2
 	reporter: SCM2_ST:ChangeReporter (to ['SCM2_alert'])
 	rvalue: 2
-	timestamp: 1531391293.02
+	timestamp: 1531992456.26
 	type: ('B', 1)
 
 SCM2_Status (MeaningAttr):
@@ -1362,16 +1360,16 @@ SCM2_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM2_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.35
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.56
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 2:up
-	timestamp: 1531391293.02
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM3_DC (PLCAttr):
 	description: 'screen monitor 3; 0:up, 1:down'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: fs 3 valve
 	logLevel: warning
 	meanings: {0: 'up', 1: 'down'}
@@ -1379,11 +1377,11 @@ SCM3_DC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 163
 	read_bit: 2
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.26
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391293.02
+	timestamp: 1531992456.26
 	type: DevBoolean
 	write_addr: 79
 	write_bit: 2
@@ -1397,16 +1395,16 @@ SCM3_DC_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM3_DC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.5
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.84
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: False:up
-	timestamp: 1531391293.02
+	timestamp: 1531992456.26
 	type: DevString
 
 SCM3_LC (PLCAttr):
 	description: 'screen light 3 0:off, 1:on'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: fs 3 light
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1414,11 +1412,11 @@ SCM3_LC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 163
 	read_bit: 5
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_addr: 79
 	write_bit: 5
@@ -1432,16 +1430,16 @@ SCM3_LC_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM3_LC (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.52
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.86
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: False:off
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevString
 
 SCM3_ST (PLCAttr):
 	description: 'screen monitor 3 status: 0:undefined, 1:moving, 2:up, 3:down, 4:fault'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: fs 3 status
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'up', 3: 'down', 4: 'fault'}
@@ -1449,12 +1447,12 @@ SCM3_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 78
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 2
 	reporter: SCM3_ST:ChangeReporter (to ['SCM3_alert'])
 	rvalue: 2
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: ('B', 1)
 
 SCM3_Status (MeaningAttr):
@@ -1466,15 +1464,15 @@ SCM3_Status (MeaningAttr):
 	noneValue: 0
 	owner: SCM3_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.36
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.59
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 2:up
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevString
 
 SF6_P1 (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %4.2f
 	label: SF6 pressure 1
 	logLevel: warning
@@ -1485,17 +1483,17 @@ SF6_P1 (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 2.8999999999999999, 'Above': 3.0499999999999998}}}
 	quality: ATTR_VALID
 	read_addr: 48
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [ 2.88222241  2.88222241  2.88222241  2.88222241  2.88222241  2.91868067
-  2.91868067  2.91868067  2.91868067  2.91868067]
-	rvalue: 2.91868066788
-	timestamp: 1531391293.02
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: [ 2.91581464  2.91581464  2.91581464  2.96184111  2.96184111  2.96184111
+  2.96184111  2.96184111  2.96184111  3.013592  ]
+	rvalue: 3.01359200478
+	timestamp: 1531992456.42
 	type: ('f', 4)
 
 SF6_P1_ST (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: SF6 pressure 1 state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -1503,12 +1501,12 @@ SF6_P1_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 73
 	read_bit: 0
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: SF6_P1_ST:ChangeReporter (to ['ka1_ic'])
 	rvalue: True
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_bit: 0
 
@@ -1521,15 +1519,15 @@ SF6_P1_Status (MeaningAttr):
 	noneValue: 0
 	owner: SF6_P1_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.29
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.51
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevString
 
 SF6_P2 (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:12 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %4.2f
 	label: SF6 pressure 2
 	logLevel: warning
@@ -1540,17 +1538,17 @@ SF6_P2 (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 2.8999999999999999, 'Above': 3.0499999999999998}}}
 	quality: ATTR_VALID
 	read_addr: 52
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [ 2.84705091  2.84705091  2.84705091  2.84705091  2.84705091  2.80989981
-  2.80989981  2.80989981  2.80989981  2.80989981]
-	rvalue: 2.80989980698
-	timestamp: 1531391293.02
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
+	read_value: [ 2.68843102  2.68843102  2.68843102  2.77502131  2.77502131  2.77502131
+  2.77502131  2.77502131  2.77502131  2.77107739]
+	rvalue: 2.77107739449
+	timestamp: 1531992456.42
 	type: ('f', 4)
 
 SF6_P2_ST (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: SF6 pressure 2 state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -1558,12 +1556,12 @@ SF6_P2_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 73
 	read_bit: 1
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: SF6_P2_ST:ChangeReporter (to ['ka2_ic'])
 	rvalue: True
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_bit: 1
 
@@ -1576,15 +1574,15 @@ SF6_P2_Status (MeaningAttr):
 	noneValue: 0
 	owner: SF6_P2_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.3
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.51
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevString
 
 TB_GPA (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.005 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.005 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4.1f
 	label: timer gun pulses attenuation
 	logLevel: warning
@@ -1593,18 +1591,18 @@ TB_GPA (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 104
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 0.0
 	rvalue: 0.0
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: ('f', 4)
 	write_addr: 20
 
 TB_GPI (PLCAttr):
 	description: 'timer e-gun pulse interval (SBM) / width (MBM)'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4d
 	label: timer e-gun pulse
 	logLevel: warning
@@ -1614,18 +1612,18 @@ TB_GPI (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 156
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 64
 	rvalue: 64
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: ('h', 2)
 	write_addr: 72
 
 TB_GPM (PLCAttr):
 	description: 'timer gated pulse mode: 0:beam on, 1:mix, 2:beam off'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %1d
 	label: timer gated pulse mode
 	logLevel: warning
@@ -1635,11 +1633,11 @@ TB_GPM (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 160
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 2
 	rvalue: 2
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: ('h', 2)
 	write_addr: 76
 
@@ -1652,16 +1650,16 @@ TB_GPM_Status (MeaningAttr):
 	noneValue: 0
 	owner: TB_GPM (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.46
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.77
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 2:beam off
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: DevString
 
 TB_GPN (PLCAttr):
 	description: 'number of pulses in SBM (not use in MBM)'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %2d
 	label: number of pulses
 	logLevel: warning
@@ -1671,18 +1669,18 @@ TB_GPN (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 158
-	read_t: 1531391293.02
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 8
 	rvalue: 8
-	timestamp: 1531391293.02
+	timestamp: 1531992456.42
 	type: ('h', 2)
 	write_addr: 74
 
 TB_Gun_Delay (PLCAttr):
 	description: 'timer e-gun delay (step 32 ns)'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4d
 	label: timer e-gun delay
 	logLevel: warning
@@ -1692,17 +1690,17 @@ TB_Gun_Delay (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 154
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 3168
 	rvalue: 3168
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('h', 2)
 	write_addr: 70
 
 TB_KA1_Delay (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %2d
 	label: timer klystron amplifier 1 delay
 	logLevel: warning
@@ -1712,18 +1710,18 @@ TB_KA1_Delay (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 148
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 49
 	rvalue: 49
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('h', 2)
 	write_addr: 64
 
 TB_KA2_Delay (PLCAttr):
 	description: 'timer klystron amplifier 2 delay (step 32 ns)'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4d
 	label: timer klystron amplifier 2 delay
 	logLevel: warning
@@ -1733,18 +1731,18 @@ TB_KA2_Delay (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 150
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 2720
 	rvalue: 2720
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('h', 2)
 	write_addr: 66
 
 TB_MBM (PLCAttr):
 	description: 'timer multi bunch mode enabled; False:SBM, True:MBM'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:25 2018' ATTR_VALID
 	label: timer multi bunch mode
 	logLevel: warning
 	meanings: {0: 'SBM', 1: 'MBM'}
@@ -1752,11 +1750,11 @@ TB_MBM (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 162
 	read_bit: 0
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_addr: 78
 	write_bit: 0
@@ -1770,16 +1768,16 @@ TB_MBM_Status (MeaningAttr):
 	noneValue: 0
 	owner: TB_MBM (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.46
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.8
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:MBM
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevString
 
 TB_RF2_Delay (PLCAttr):
 	description: 'timer RF2 delay (step 8 ns)'
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %4d
 	label: timer RF2 delay
 	logLevel: warning
@@ -1789,17 +1787,17 @@ TB_RF2_Delay (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 152
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 1920
 	rvalue: 1920
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('h', 2)
 	write_addr: 68
 
 TB_ST (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Timer Status State
 	logLevel: warning
 	meanings: {0: 'off', 1: 'ready'}
@@ -1807,11 +1805,11 @@ TB_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 68
 	read_bit: 0
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_bit: 0
 
@@ -1824,15 +1822,15 @@ TB_Status (MeaningAttr):
 	noneValue: 0
 	owner: TB_ST (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.15
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.32
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: False:off
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevString
 
 TL_VOK (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Transfer line vacuum OK (PSS)
 	logLevel: warning
 	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
@@ -1840,11 +1838,11 @@ TL_VOK (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 70
 	read_bit: 2
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_bit: 2
 
@@ -1857,15 +1855,15 @@ TL_VOK_Status (MeaningAttr):
 	noneValue: 0
 	owner: TL_VOK (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.19
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.37
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:good vacuum
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevString
 
 TPS0_Phase (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.1f
 	label: time phase shifter 0 phase
 	logLevel: warning
@@ -1874,17 +1872,17 @@ TPS0_Phase (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 116
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 192.0
 	rvalue: 192.0
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('f', 4)
 	write_addr: 32
 
 TPS1_Phase (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.0f
 	label: time phase shifter 1 phase
 	logLevel: warning
@@ -1893,17 +1891,17 @@ TPS1_Phase (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 120
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 112.0
 	rvalue: 112.0
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('f', 4)
 	write_addr: 36
 
 TPS2_Phase (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.0f
 	label: time phase shifter 2 phase
 	logLevel: warning
@@ -1912,17 +1910,17 @@ TPS2_Phase (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 124
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 151.0
 	rvalue: 151.0
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('f', 4)
 	write_addr: 40
 
 TPSX_Phase (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	format: %3.0f
 	label: time phase shifter X phase
 	logLevel: warning
@@ -1931,17 +1929,17 @@ TPSX_Phase (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 128
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: 145.0
 	rvalue: 145.0
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: ('f', 4)
 	write_addr: 44
 
 UT_IS (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Utilities Interlock state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -1949,11 +1947,11 @@ UT_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 4
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_bit: 4
 
@@ -1966,15 +1964,15 @@ UT_IS_Status (MeaningAttr):
 	noneValue: 0
 	owner: UT_IS (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.25
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.46
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevString
 
 W1_UF (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Window 1 underflow state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -1982,12 +1980,12 @@ W1_UF (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 70
 	read_bit: 6
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: W1_UF:ChangeReporter (to ['ka1_ic'])
 	rvalue: True
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_bit: 6
 
@@ -2000,15 +1998,15 @@ W1_UF_Status (MeaningAttr):
 	noneValue: 0
 	owner: W1_UF (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.2
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.39
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevString
 
 W2_UF (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Window 2 underflow state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -2016,12 +2014,12 @@ W2_UF (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 70
 	read_bit: 7
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.42
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: W2_UF:ChangeReporter (to ['ka1_ic'])
 	rvalue: True
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevBoolean
 	write_bit: 7
 
@@ -2034,15 +2032,15 @@ W2_UF_Status (MeaningAttr):
 	noneValue: 0
 	owner: W2_UF (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.21
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.4
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391293.18
+	timestamp: 1531992456.42
 	type: DevString
 
 W3_UF (PLCAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	label: Window 3 underflow state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'normal'}
@@ -2050,12 +2048,12 @@ W3_UF (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 71
 	read_bit: 0
-	read_t: 1531391293.18
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992456.58
+	read_t_str: Thu Jul 19 11:27:36 2018
 	read_value: True
 	reporter: W3_UF:ChangeReporter (to ['ka2_ic'])
 	rvalue: True
-	timestamp: 1531391293.18
+	timestamp: 1531992456.58
 	type: DevBoolean
 	write_bit: 0
 
@@ -2068,10 +2066,10 @@ W3_UF_Status (MeaningAttr):
 	noneValue: 0
 	owner: W3_UF (PLCAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.22
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.41
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True:normal
-	timestamp: 1531391293.18
+	timestamp: 1531992456.58
 	type: DevString
 
 A0_u (EnumerationAttr):
@@ -2084,9 +2082,9 @@ A0_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531391251.59
-	read_t_str: Thu Jul 12 12:27:31 2018
-	timestamp: 1531391251.59
+	read_t: 1531990524.95
+	read_t_str: Thu Jul 19 10:55:24 2018
+	timestamp: 1531990524.95
 
 ATT2_u (EnumerationAttr):
 	active: None
@@ -2098,9 +2096,9 @@ ATT2_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531391251.55
-	read_t_str: Thu Jul 12 12:27:31 2018
-	timestamp: 1531391251.55
+	read_t: 1531990524.89
+	read_t_str: Thu Jul 19 10:55:24 2018
+	timestamp: 1531990524.89
 
 GUN_CDB_u (EnumerationAttr):
 	active: None
@@ -2112,9 +2110,9 @@ GUN_CDB_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531391251.56
-	read_t_str: Thu Jul 12 12:27:31 2018
-	timestamp: 1531391251.56
+	read_t: 1531990524.92
+	read_t_str: Thu Jul 19 10:55:24 2018
+	timestamp: 1531990524.92
 
 GUN_Cathode_u (EnumerationAttr):
 	active: None
@@ -2126,54 +2124,58 @@ GUN_Cathode_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531391251.55
-	read_t_str: Thu Jul 12 12:27:31 2018
-	timestamp: 1531391251.55
+	read_t: 1531990524.9
+	read_t_str: Thu Jul 19 10:55:24 2018
+	timestamp: 1531990524.9
 
 GUN_HV_I_AutoStop (AutoStopAttr):
 	above: inf
 	below: -20.0
 	device: LinacData(li/ct/plc1)
 	enable: True
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	integr_t: 30.0
 	logLevel: warning
-	mean: -0.00819816581578
+	mean: 0.0128746823108
 	name: GUN_HV_I_AutoStop
 	quality: ATTR_VALID
-	read_t: 1531391251.09
-	read_t_str: Thu Jul 12 12:27:31 2018
-	rvalue: [ 0.1195388   0.1195388  -0.02451435 -0.02451435 -0.04784624 -0.04784624
- -0.04784624 -0.19723611 -0.19723611  0.02008858  0.02008858  0.02008858
-  0.02008858  0.06042866  0.06042866  0.06042866  0.06042866  0.06042866
-  0.06042866  0.06042866 -0.06923791 -0.06923791 -0.06923791 -0.06923791
- -0.06923791 -0.06923791 -0.01457686 -0.01457686 -0.01457686 -0.01457686
- -0.01457686 -0.01457686 -0.03931377 -0.03931377 -0.03931377 -0.03931377
- -0.03931377 -0.03931377 -0.00077307 -0.00077307 -0.00077307 -0.00077307
- -0.00077307 -0.00077307 -0.00077307 -0.02615149 -0.02615149 -0.02615149
- -0.02615149 -0.02615149 -0.02615149 -0.05240468 -0.05240468 -0.05240468
- -0.05240468 -0.05240468 -0.05240468  0.02173076  0.02173076  0.02173076
-  0.02173076  0.02173076  0.02173076  0.03220601  0.03220601  0.03220601
-  0.03220601  0.03220601  0.03220601  0.03220601 -0.08443528 -0.08443528
- -0.08443528 -0.08443528 -0.08443528 -0.08443528  0.01804105  0.01804105
-  0.01804105  0.01804105  0.01804105  0.01804105 -0.01924738 -0.01924738
- -0.01924738 -0.01924738 -0.01924738 -0.01924738 -0.00389904 -0.00389904
- -0.00389904 -0.00389904 -0.00389904 -0.00389904 -0.00389904 -0.00141575
- -0.00141575 -0.00141575 -0.00141575 -0.00141575 -0.00141575 -0.0145136
- -0.0145136  -0.0145136  -0.0145136  -0.0145136  -0.0145136   0.05629108
-  0.05629108  0.05629108  0.05629108  0.05629108  0.05629108 -0.06660507
- -0.06660507 -0.06660507 -0.06660507 -0.06660507 -0.06660507 -0.06660507
- -0.02975621 -0.02975621 -0.02975621 -0.02975621 -0.02975621 -0.02975621
- -0.00519542 -0.00519542 -0.00519542 -0.00519542 -0.00519542 -0.00519542
- -0.00408172 -0.00408172 -0.00408172 -0.00408172 -0.00408172 -0.00408172
-  0.03636144  0.03636144  0.03636144  0.03636144  0.03636144  0.03636144
-  0.03636144 -0.01996364 -0.01996364 -0.01996364 -0.01996364 -0.01996364
- -0.01996364  0.00848048  0.00848048  0.00848048  0.00848048  0.00848048
-  0.00848048  0.03029603  0.03029603  0.03029603  0.03029603  0.03029603
-  0.03029603]
-	std: 0.0444615406685
+	read_t: 1531990524.21
+	read_t_str: Thu Jul 19 10:55:24 2018
+	rvalue: [-0.09380709 -0.09380709 -0.09380709 -0.09380709 -0.09380709  0.01208626
+  0.01208626  0.01208626  0.01208626  0.01208626  0.01208626  0.06987688
+  0.06987688  0.06987688  0.06987688  0.06987688  0.06987688  0.01402771
+  0.01402771  0.01402771  0.01402771  0.01402771  0.01402771  0.03982155
+  0.03982155  0.03982155  0.03982155  0.03982155  0.03982155  0.03982155
+  0.09539973  0.09539973  0.09539973  0.09539973  0.09539973  0.09539973
+  0.00914918  0.00914918  0.00914918  0.00914918  0.00914918  0.00914918
+ -0.09349069 -0.09349069 -0.09349069 -0.09349069 -0.09349069 -0.09349069
+ -0.01595879 -0.01595879 -0.01595879 -0.01595879 -0.01595879 -0.01595879
+ -0.01595879 -0.07940459 -0.07940459 -0.07940459 -0.07940459 -0.07940459
+ -0.07940459  0.01050828  0.01050828  0.01050828  0.01050828  0.01050828
+  0.01050828 -0.03439964 -0.03439964 -0.03439964 -0.03439964 -0.03439964
+ -0.03439964  0.04447601  0.04447601  0.04447601  0.04447601  0.04447601
+  0.04447601  0.04447601  0.04264522  0.04264522  0.04264522  0.04264522
+  0.04264522  0.04264522  0.04550029  0.04550029  0.04550029  0.04550029
+  0.04550029  0.04550029  0.06076925  0.06076925  0.06076925  0.06076925
+  0.06076925  0.06076925  0.07011863  0.07011863  0.07011863  0.07011863
+  0.07011863  0.07011863  0.07011863  0.00081442  0.00081442  0.00081442
+  0.00081442  0.00081442  0.00081442  0.00458099  0.00458099  0.00458099
+  0.00458099  0.00458099  0.00458099 -0.05153377 -0.05153377 -0.05153377
+ -0.05153377 -0.05153377 -0.05153377  0.04065344  0.04065344  0.04065344
+  0.04065344  0.04065344  0.04065344  0.04065344  0.0153339   0.0153339
+  0.0153339   0.0153339   0.0153339   0.0153339   0.02989349  0.02989349
+  0.02989349  0.02989349  0.02989349  0.02989349 -0.00019195 -0.00019195
+ -0.00019195 -0.00019195 -0.00019195 -0.00019195  0.01947902  0.01947902
+  0.01947902  0.01947902  0.01947902  0.01947902  0.01947902  0.02270834
+  0.02270834  0.02270834  0.02270834  0.02270834  0.02270834  0.08210659
+  0.08210659  0.08210659  0.08210659  0.08210659  0.08210659 -0.03743138
+ -0.03743138 -0.03743138 -0.03743138 -0.03743138 -0.03743138 -0.00294179
+ -0.00294179 -0.00294179 -0.00294179 -0.00294179 -0.00294179 -0.00294179
+  0.02782967  0.02782967  0.02782967  0.02782967  0.02782967  0.02782967
+  0.01963511  0.01963511]
+	std: 0.0460378209364
 	switch: GUN_HV_ONC (PLCAttr)
-	timestamp: 1531391293.18
+	timestamp: 1531992456.58
 	triggered: False
 	type: ('f', 4)
 
@@ -2187,10 +2189,10 @@ GUN_HV_I_AutoStop_Below_Threshold (AutoStopParameter):
 	noneValue: 0
 	owner: GUN_HV_I_AutoStop (AutoStopAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.11
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.24
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: -20.0
-	timestamp: 1531391251.11
+	timestamp: 1531990524.24
 	type: <type 'float'>
 	write_value: -20.0
 	wvalue: -20.0
@@ -2205,10 +2207,10 @@ GUN_HV_I_AutoStop_Enable (AutoStopParameter):
 	noneValue: 0
 	owner: GUN_HV_I_AutoStop (AutoStopAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.11
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.25
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: True
-	timestamp: 1531391251.11
+	timestamp: 1531990524.25
 	type: <type 'bool'>
 	write_value: False
 	wvalue: False
@@ -2223,10 +2225,10 @@ GUN_HV_I_AutoStop_IntegrationTime (AutoStopParameter):
 	noneValue: 0
 	owner: GUN_HV_I_AutoStop (AutoStopAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.13
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.27
+	read_t_str: Thu Jul 19 10:55:24 2018
 	rvalue: 30.0
-	timestamp: 1531391251.13
+	timestamp: 1531990524.27
 	type: <type 'float'>
 	write_value: 1
 	wvalue: 1
@@ -2241,10 +2243,10 @@ GUN_HV_I_AutoStop_Mean (AutoStopParameter):
 	noneValue: 0
 	owner: GUN_HV_I_AutoStop (AutoStopAttr)
 	quality: ATTR_VALID
-	read_t: 1531391293.35
-	read_t_str: Thu Jul 12 12:28:13 2018
-	rvalue: -0.00796613470394
-	timestamp: 1531391293.35
+	read_t: 1531992457.06
+	read_t_str: Thu Jul 19 11:27:37 2018
+	rvalue: 0.014684930291
+	timestamp: 1531992457.06
 	type: <type 'float'>
 
 GUN_HV_I_AutoStop_Std (AutoStopParameter):
@@ -2257,10 +2259,10 @@ GUN_HV_I_AutoStop_Std (AutoStopParameter):
 	noneValue: 0
 	owner: GUN_HV_I_AutoStop (AutoStopAttr)
 	quality: ATTR_VALID
-	read_t: 1531391293.35
-	read_t_str: Thu Jul 12 12:28:13 2018
-	rvalue: 0.0444246601665
-	timestamp: 1531391293.35
+	read_t: 1531992457.06
+	read_t_str: Thu Jul 19 11:27:37 2018
+	rvalue: 0.0439922896088
+	timestamp: 1531992457.06
 	type: <type 'float'>
 
 GUN_HV_I_AutoStop_Triggered (AutoStopParameter):
@@ -2273,11 +2275,11 @@ GUN_HV_I_AutoStop_Triggered (AutoStopParameter):
 	noneValue: 0
 	owner: GUN_HV_I_AutoStop (AutoStopAttr)
 	quality: ATTR_VALID
-	read_t: 1531391251.11
-	read_t_str: Thu Jul 12 12:27:31 2018
+	read_t: 1531990524.24
+	read_t_str: Thu Jul 19 10:55:24 2018
 	reporter: GUN_HV_I_AutoStop:AutoStopParameter(Triggered):ChangeReporter (to ['Gun_HV_ready'])
 	rvalue: False
-	timestamp: 1531391251.11
+	timestamp: 1531990524.24
 	type: <type 'bool'>
 
 GUN_HVps_u (EnumerationAttr):
@@ -2290,36 +2292,36 @@ GUN_HVps_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531391251.57
-	read_t_str: Thu Jul 12 12:27:31 2018
-	timestamp: 1531391251.57
+	read_t: 1531990524.93
+	read_t_str: Thu Jul 19 10:55:24 2018
+	timestamp: 1531990524.93
 
-Gun_HV_ready (InternalAttr):
+Gun_HV_ready (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:43 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: Gun_HV_ready:Logic ({'GUN_HV_I_AutoStop_Triggered': [False], 'GM_DI': [True]}, and, normal)
+	logic: ({'GUN_HV_I_AutoStop_Triggered': [False], 'GM_DI': [True]}, and, normal)
 	name: Gun_HV_ready
 	quality: ATTR_VALID
-	read_t: 1531391263.7
-	read_t_str: Thu Jul 12 12:27:43 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391263.7
+	timestamp: 1531990524.98
 	type: DevBoolean
 
-Gun_ready (InternalAttr):
+Gun_ready (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: Gun_ready:Logic ({'Gun_ST': [1, 8]}, and, normal)
+	logic: ({'Gun_ST': [1, 8]}, and, normal)
 	name: Gun_ready
 	quality: ATTR_VALID
-	read_t: 1531391264.31
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391264.31
+	timestamp: 1531990524.98
 	type: DevBoolean
 
 LLRF_u (EnumerationAttr):
@@ -2332,50 +2334,50 @@ LLRF_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531391251.59
-	read_t_str: Thu Jul 12 12:27:31 2018
-	timestamp: 1531391251.59
+	read_t: 1531990524.97
+	read_t_str: Thu Jul 19 10:55:24 2018
+	timestamp: 1531990524.97
 
-SCM1_alert (InternalAttr):
+SCM1_alert (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:31 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: SCM1_alert:Logic ({'SCM1_ST': [3, 4]}, and, normal)
+	logic: ({'SCM1_ST': [3, 4]}, and, normal)
 	name: SCM1_alert
 	quality: ATTR_VALID
-	read_t: 1531391264.31
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391264.31
+	timestamp: 1531990524.98
 	type: DevBoolean
 
-SCM2_alert (InternalAttr):
+SCM2_alert (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:31 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: SCM2_alert:Logic ({'SCM2_ST': [3, 4]}, and, normal)
+	logic: ({'SCM2_ST': [3, 4]}, and, normal)
 	name: SCM2_alert
 	quality: ATTR_VALID
-	read_t: 1531391264.32
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391264.32
+	timestamp: 1531990524.98
 	type: DevBoolean
 
-SCM3_alert (InternalAttr):
+SCM3_alert (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:31 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: SCM3_alert:Logic ({'SCM3_ST': [3, 4]}, and, normal)
+	logic: ({'SCM3_ST': [3, 4]}, and, normal)
 	name: SCM3_alert
 	quality: ATTR_VALID
-	read_t: 1531391264.31
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391264.31
+	timestamp: 1531990524.98
 	type: DevBoolean
 
 TU_u (EnumerationAttr):
@@ -2388,77 +2390,77 @@ TU_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531391251.58
-	read_t_str: Thu Jul 12 12:27:31 2018
-	timestamp: 1531391251.58
+	read_t: 1531990524.94
+	read_t_str: Thu Jul 19 10:55:24 2018
+	timestamp: 1531990524.94
 
-att2_ready (InternalAttr):
+att2_ready (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: att2_ready:Logic ({'ATT2_ST': [2]}, and, normal)
+	logic: ({'ATT2_ST': [2]}, and, normal)
 	name: att2_ready
 	quality: ATTR_VALID
-	read_t: 1531391264.31
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391264.31
+	timestamp: 1531990524.98
 	type: DevBoolean
 
-ka1_ic (InternalAttr):
+ka1_ic (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: ka1_ic:Logic ({'RL1_UF': [1], 'SF6_P1_ST': [1], 'RL2_UF': [1], 'W2_UF': [1], 'W1_UF': [1]}, and, normal)
+	logic: ({'RL1_UF': [1], 'SF6_P1_ST': [1], 'RL2_UF': [1], 'W2_UF': [1], 'W1_UF': [1]}, and, normal)
 	name: ka1_ic
 	quality: ATTR_VALID
-	read_t: 1531391264.31
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391264.31
+	timestamp: 1531990524.98
 	type: DevBoolean
 
-ka2_ic (InternalAttr):
+ka2_ic (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: ka2_ic:Logic ({'SF6_P2_ST': [1], 'W3_UF': [1], 'RL3_UF': [1]}, and, normal)
+	logic: ({'SF6_P2_ST': [1], 'W3_UF': [1], 'RL3_UF': [1]}, and, normal)
 	name: ka2_ic
 	quality: ATTR_VALID
-	read_t: 1531391264.32
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391264.32
+	timestamp: 1531990524.98
 	type: DevBoolean
 
-phs1_ready (InternalAttr):
+phs1_ready (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: phs1_ready:Logic ({'PHS1_ST': [2]}, and, normal)
+	logic: ({'PHS1_ST': [2]}, and, normal)
 	name: phs1_ready
 	quality: ATTR_VALID
-	read_t: 1531391264.32
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391264.32
+	timestamp: 1531990524.98
 	type: DevBoolean
 
-phs2_ready (InternalAttr):
+phs2_ready (LogicAttr):
 	device: LinacData(li/ct/plc1)
-	events: Always Emit 'Thu Jul 12 12:27:44 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:55:24 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: phs2_ready:Logic ({'PHS2_ST': [2]}, and, normal)
+	logic: ({'PHS2_ST': [2]}, and, normal)
 	name: phs2_ready
 	quality: ATTR_VALID
-	read_t: 1531391264.31
-	read_t_str: Thu Jul 12 12:27:44 2018
+	read_t: 1531990524.98
+	read_t_str: Thu Jul 19 10:55:24 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391264.31
+	timestamp: 1531990524.98
 	type: DevBoolean
 

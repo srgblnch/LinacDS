@@ -1,6 +1,6 @@
 HVPS_I (PLCAttr):
 	device: LinacData(li/ct/plc4)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:15 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:38 2018' ATTR_VALID
 	format: %4.1f
 	label: High voltage PS current
 	logLevel: warning
@@ -9,17 +9,17 @@ HVPS_I (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 16
-	read_t: 1531391296.09
-	read_t_str: Thu Jul 12 12:28:16 2018
-	read_value: -0.0869475454092
-	rvalue: -0.0869475454092
-	timestamp: 1531391296.09
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
+	read_value: 0.120552770793
+	rvalue: 0.120552770793
+	timestamp: 1531992459.1
 	type: ('f', 4)
 
 HVPS_Interlock_RC (PLCAttr):
 	description: 'high voltage reset\nrising edge reset'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	isRst: True
 	label: High voltage reset
 	logLevel: warning
@@ -27,11 +27,11 @@ HVPS_Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 2
-	read_t: 1531391296.09
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391296.09
+	timestamp: 1531992459.1
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 2
@@ -39,7 +39,7 @@ HVPS_Interlock_RC (PLCAttr):
 HVPS_ONC (PLCAttr):
 	description: 'high voltage on\nFalse:off\nTrue:on'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	formula: HVPS_ONC:Formula {read: "VALUE and Attr[HVPS_ST].rvalue == 9 and Attr[Pulse_ST].rvalue == 8", write: "VALUE and Attr[HVPS_ST].rvalue in [8,9] and Attr[Pulse_ST].rvalue in [7,8]"}
 	label: High voltage on
 	logLevel: warning
@@ -47,12 +47,12 @@ HVPS_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 3
-	read_t: 1531391296.09
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: True
 	rvalue: True
 	switchDescriptor: {'attr2ramp': 'HVPS_V_setpoint', 'whenOn': {'from': 'HVPS_V_setpoint_Ascending_Threshold'}}
-	timestamp: 1531391296.09
+	timestamp: 1531992459.1
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 3
@@ -60,7 +60,7 @@ HVPS_ONC (PLCAttr):
 HVPS_ST (PLCAttr):
 	description: 'high voltage PS heating status\n0:Waiting for Low Voltage\n1:klystron tank covers\n2:PFN earth rod\n3:PFN doors\n4:dumping relay closed\n5:over current\n6:interlock\n7:fault\n8:off\n9:ready\n'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	label: High voltage PS heating status
 	logLevel: warning
 	meanings: {0: 'Waiting for Low Voltage', 1: 'klystron tank covers', 2: 'PFN earth rod', 3: 'PFN doors', 4: 'dumping relay closed', 5: 'over current', 6: 'interlock', 7: 'fault', 8: 'off', 9: 'ready'}
@@ -68,33 +68,32 @@ HVPS_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 39
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: 9
 	reporter: HVPS_ST:ChangeReporter (to ['HVPS_ONC:Formula', 'HVPS_ONC:Formula', 'hvps_ready'])
 	rvalue: 9
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: ('B', 1)
 
-HVPS_ST:MeaningAttr:
-	alias: "HVPS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'Waiting for Low Voltage', 1: 'klystron tank covers', 2: 'PFN earth rod', 3: 'PFN doors', 4: 'dumping relay closed', 5: 'over current', 6: 'interlock', 7: 'fault', 8: 'off', 9: 'ready'}"
-	noneValue: "0"
-	owner: "HVPS_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385713.5"
-	read_t_str: "Thu Jul 12 10:55:13 2018"
-	rvalue: "9:ready"
-	timestamp: "1531391296.25"
-	type: "DevString"
-	value: "9:ready"
-	vtq: "('9:ready', 1531391296.2525001, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+HVPS_Status (MeaningAttr):
+	alias: HVPS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'Waiting for Low Voltage', 1: 'klystron tank covers', 2: 'PFN earth rod', 3: 'PFN doors', 4: 'dumping relay closed', 5: 'over current', 6: 'interlock', 7: 'fault', 8: 'off', 9: 'ready'}
+	name: HVPS_ST:MeaningAttr
+	noneValue: 0
+	owner: HVPS_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990570.02
+	read_t_str: Thu Jul 19 10:56:10 2018
+	rvalue: 9:ready
+	timestamp: 1531992459.1
+	type: DevString
 
 HVPS_V (PLCAttr):
 	device: LinacData(li/ct/plc4)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:16 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 19 11:27:38 2018' ATTR_VALID
 	format: %4.2f
 	label: High voltage PS voltage
 	logLevel: warning
@@ -103,16 +102,16 @@ HVPS_V (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 12
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
-	read_value: 32.3654899597
-	rvalue: 32.3654899597
-	timestamp: 1531391296.25
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
+	read_value: 32.4958343506
+	rvalue: 32.4958343506
+	timestamp: 1531992459.1
 	type: ('f', 4)
 
 HVPS_V_setpoint (PLCAttr):
 	device: LinacData(li/ct/plc4)
-	events: Emit when changes bigger than 0.005 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.005 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	format: %4.2f
 	label: High voltage PS voltage setpoint
 	logLevel: warning
@@ -122,35 +121,35 @@ HVPS_V_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.10000000000000001}}
 	quality: ATTR_VALID
 	read_addr: 46
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: [ 32.  32.  32.  32.  32.  32.  32.  32.  32.  32.]
 	readbackAttr: HVPS_V
 	rvalue: 32.0
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: ('f', 4)
 	write_addr: 0
 
 HeartBeat (PLCAttr):
 	description: 'cadence bit going from True to False when PLC is okay'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 12:28:16 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:38 2018' ATTR_VALID
 	logLevel: warning
 	name: HeartBeat
 	quality: ATTR_VALID
 	read_addr: 36
 	read_bit: 0
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: DevBoolean
 	write_bit: 0
 
 Heat_I (PLCAttr):
 	device: LinacData(li/ct/plc4)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:16 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:38 2018' ATTR_VALID
 	format: %4.1f
 	label: Heating current monitor
 	logLevel: warning
@@ -159,17 +158,17 @@ Heat_I (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 4
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
-	read_value: 0.0939030647278
-	rvalue: 0.0939030647278
-	timestamp: 1531391296.25
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
+	read_value: 0.0324477106333
+	rvalue: 0.0324477106333
+	timestamp: 1531992459.1
 	type: ('f', 4)
 
 Heat_ST (PLCAttr):
 	description: 'filament heating status\n0:off\n1:decreasing\n2:low limit fault\n3:high limit fault\n4:heating\n5:ready\n'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	label: Filament heating status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'decreasing', 2: 'low limit fault', 3: 'high limit fault', 4: 'heating', 5: 'ready'}
@@ -177,34 +176,33 @@ Heat_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 38
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: 5
 	reporter: Heat_ST:ChangeReporter (to ['lv_ready'])
 	rvalue: 5
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: ('B', 1)
 
-Heat_ST:MeaningAttr:
-	alias: "Heat_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'decreasing', 2: 'low limit fault', 3: 'high limit fault', 4: 'heating', 5: 'ready'}"
-	noneValue: "0"
-	owner: "Heat_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385713.5"
-	read_t_str: "Thu Jul 12 10:55:13 2018"
-	rvalue: "5:ready"
-	timestamp: "1531391296.25"
-	type: "DevString"
-	value: "5:ready"
-	vtq: "('5:ready', 1531391296.2525001, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+Heat_Status (MeaningAttr):
+	alias: Heat_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'decreasing', 2: 'low limit fault', 3: 'high limit fault', 4: 'heating', 5: 'ready'}
+	name: Heat_ST:MeaningAttr
+	noneValue: 0
+	owner: Heat_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990570.01
+	read_t_str: Thu Jul 19 10:56:10 2018
+	rvalue: 5:ready
+	timestamp: 1531992459.1
+	type: DevString
 
 Heat_Time (PLCAttr):
 	description: 'heating tempo (20 min)'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	formula: Heat_Time:Formula {read: "VALUE / 6"}
 	label: Heating time
 	logLevel: warning
@@ -213,16 +211,16 @@ Heat_Time (PLCAttr):
 	qualities: {'changing': {'abs': {'Below': 20, 'Above': 0, 'Under': True}}}
 	quality: ATTR_VALID
 	read_addr: 44
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: [10 10 10 10 10 10 10 10 10 10]
 	rvalue: 1
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: ('h', 2)
 
 Heat_V (PLCAttr):
 	device: LinacData(li/ct/plc4)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:16 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:38 2018' ATTR_VALID
 	format: %4.1f
 	label: Heating voltage monitor
 	logLevel: warning
@@ -231,17 +229,17 @@ Heat_V (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 8
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
-	read_value: 0.124352402985
-	rvalue: 0.124352402985
-	timestamp: 1531391296.25
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
+	read_value: 0.0154507886618
+	rvalue: 0.0154507886618
+	timestamp: 1531992459.1
 	type: ('f', 4)
 
 LV_Interlock_RC (PLCAttr):
 	description: 'low voltage reset\nrising edge reset'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	isRst: True
 	label: Low voltage reset
 	logLevel: warning
@@ -249,11 +247,11 @@ LV_Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 0
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 0
@@ -261,7 +259,7 @@ LV_Interlock_RC (PLCAttr):
 LV_ONC (PLCAttr):
 	description: 'low voltage on\nFalse:off\nTrue:on'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	formula: LV_ONC:Formula {read: "VALUE and Attr[lv_ready].rvalue == True"}
 	label: Low voltage on
 	logLevel: warning
@@ -269,11 +267,11 @@ LV_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 62
 	read_bit: 1
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 1
@@ -281,7 +279,7 @@ LV_ONC (PLCAttr):
 LV_ST (PLCAttr):
 	description: 'low voltage status\n0:off\n1:vacuum fault\n2:oil level fault\n3:fan circuit breakers fault\n4:23 C water inlet fault\n5:focusing magnet underflow\n6:focusing magnet overtemp\n7:klystron body underflow\n8:klystron body overtemp\n9:klystron collector underflow\n10:klystron collector overtemp\n11:cooling down (5 minutes)\n12:ready\n'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	label: Low voltage status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'vacuum fault', 2: 'oil level fault', 3: 'fan circuit breakers fault', 4: '23 C water inlet fault', 5: 'focusing magnet underflow', 6: 'focusing magnet overtemp', 7: 'klystron body underflow', 8: 'klystron body overtemp', 9: 'klystron collector underflow', 10: 'klystron collector overtemp', 11: 'cooling down (5 minutes)', 12: 'ready'}
@@ -289,34 +287,33 @@ LV_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 37
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: 12
 	reporter: LV_ST:ChangeReporter (to ['lv_ready'])
 	rvalue: 12
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: ('B', 1)
 
-LV_ST:MeaningAttr:
-	alias: "LV_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'vacuum fault', 2: 'oil level fault', 3: 'fan circuit breakers fault', 4: '23 C water inlet fault', 5: 'focusing magnet underflow', 6: 'focusing magnet overtemp', 7: 'klystron body underflow', 8: 'klystron body overtemp', 9: 'klystron collector underflow', 10: 'klystron collector overtemp', 11: 'cooling down (5 minutes)', 12: 'ready'}"
-	noneValue: "0"
-	owner: "LV_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385713.49"
-	read_t_str: "Thu Jul 12 10:55:13 2018"
-	rvalue: "12:ready"
-	timestamp: "1531391296.25"
-	type: "DevString"
-	value: "12:ready"
-	vtq: "('12:ready', 1531391296.2525001, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+LV_Status (MeaningAttr):
+	alias: LV_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'vacuum fault', 2: 'oil level fault', 3: 'fan circuit breakers fault', 4: '23 C water inlet fault', 5: 'focusing magnet underflow', 6: 'focusing magnet overtemp', 7: 'klystron body underflow', 8: 'klystron body overtemp', 9: 'klystron collector underflow', 10: 'klystron collector overtemp', 11: 'cooling down (5 minutes)', 12: 'ready'}
+	name: LV_ST:MeaningAttr
+	noneValue: 0
+	owner: LV_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990570.0
+	read_t_str: Thu Jul 19 10:56:09 2018
+	rvalue: 12:ready
+	timestamp: 1531992459.1
+	type: DevString
 
 LV_Time (PLCAttr):
 	description: 'tempo stop low voltage (5 min)'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	label: Voltage slow down time
 	logLevel: warning
 	name: LV_Time
@@ -324,17 +321,17 @@ LV_Time (PLCAttr):
 	qualities: {'changing': {'abs': {'Below': 300, 'Above': 0, 'Under': True}}}
 	quality: ATTR_VALID
 	read_addr: 42
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: [10 10 10 10 10 10 10 10 10 10]
 	rvalue: 10
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: ('h', 2)
 
 Lock_ST (PLCAttr):
 	description: 'lock status plc4\n0:unlocked\n1:local\n2:remote\n'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:57:11 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	label: lock status plc4
 	logLevel: warning
 	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
@@ -342,43 +339,42 @@ Lock_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 41
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.1
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: 1
 	rvalue: 1
-	timestamp: 1531391296.25
+	timestamp: 1531992459.1
 	type: ('B', 1)
 
-Lock_ST:MeaningAttr:
-	alias: "Lock_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'unlocked', 1: 'local', 2: 'remote'}"
-	noneValue: "0"
-	owner: "Lock_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385713.56"
-	read_t_str: "Thu Jul 12 10:55:13 2018"
-	rvalue: "1:local"
-	timestamp: "1531391296.25"
-	type: "DevString"
-	value: "1:local"
-	vtq: "('1:local', 1531391296.2525001, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+Lock_Status (MeaningAttr):
+	alias: Lock_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
+	name: Lock_ST:MeaningAttr
+	noneValue: 0
+	owner: Lock_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990570.08
+	read_t_str: Thu Jul 19 10:56:10 2018
+	rvalue: 1:local
+	timestamp: 1531992459.1
+	type: DevString
 
 Locking (PLCAttr):
 	description: 'True when attempting to obtain write lock'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:57:11 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	logLevel: warning
 	name: Locking
 	quality: ATTR_VALID
 	read_addr: 63
 	read_bit: 0
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.27
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391296.25
+	timestamp: 1531992459.27
 	type: DevBoolean
 	write_addr: 17
 	write_bit: 0
@@ -387,7 +383,7 @@ Locking (PLCAttr):
 
 Peak_I (PLCAttr):
 	device: LinacData(li/ct/plc4)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:16 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:38 2018' ATTR_VALID
 	format: %4.1f
 	label: Peak current
 	logLevel: warning
@@ -396,17 +392,17 @@ Peak_I (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 20
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
-	read_value: 1.05004882812
-	rvalue: 1.05004882812
-	timestamp: 1531391296.25
+	read_t: 1531992459.27
+	read_t_str: Thu Jul 19 11:27:39 2018
+	read_value: 0.816148340702
+	rvalue: 0.816148340702
+	timestamp: 1531992459.27
 	type: ('f', 4)
 
 Peak_V (PLCAttr):
 	description: 'peak voltage (calculated'
 	device: LinacData(li/ct/plc4)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 12:28:16 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 11:27:38 2018' ATTR_VALID
 	format: %4.1f
 	label: Peak voltage
 	logLevel: warning
@@ -415,17 +411,17 @@ Peak_V (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 24
-	read_t: 1531391296.25
-	read_t_str: Thu Jul 12 12:28:16 2018
-	read_value: 0.593222379684
-	rvalue: 0.593222379684
-	timestamp: 1531391296.25
+	read_t: 1531992459.27
+	read_t_str: Thu Jul 19 11:27:39 2018
+	read_value: -0.441802024841
+	rvalue: -0.441802024841
+	timestamp: 1531992459.27
 	type: ('f', 4)
 
 Pulse_ST (PLCAttr):
 	description: 'pulse status\n0:off\n1:focusing B1 undercurrent\n2:focusing B2 undercurrent\n3:focusing B3 undercurrent\n4:DC reset undercurrent\n5:arc overcurrent\n6:RF reflected power\n7:off\n8:ready\n'
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	label: Pulse status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'focusing B1 undercurrent', 2: 'focusing B2 undercurrent', 3: 'focusing B3 undercurrent', 4: 'DC reset undercurrent', 5: 'arc overcurrent', 6: 'RF reflected power', 7: 'off', 8: 'ready'}
@@ -433,29 +429,28 @@ Pulse_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 40
-	read_t: 1531391296.41
-	read_t_str: Thu Jul 12 12:28:16 2018
+	read_t: 1531992459.27
+	read_t_str: Thu Jul 19 11:27:39 2018
 	read_value: 8
 	reporter: Pulse_ST:ChangeReporter (to ['HVPS_ONC:Formula', 'HVPS_ONC:Formula', 'hvps_ready'])
 	rvalue: 8
-	timestamp: 1531391296.41
+	timestamp: 1531992459.27
 	type: ('B', 1)
 
-Pulse_ST:MeaningAttr:
-	alias: "Pulse_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'focusing B1 undercurrent', 2: 'focusing B2 undercurrent', 3: 'focusing B3 undercurrent', 4: 'DC reset undercurrent', 5: 'arc overcurrent', 6: 'RF reflected power', 7: 'off', 8: 'ready'}"
-	noneValue: "0"
-	owner: "Pulse_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385713.51"
-	read_t_str: "Thu Jul 12 10:55:13 2018"
-	rvalue: "8:ready"
-	timestamp: "1531391296.41"
-	type: "DevString"
-	value: "8:ready"
-	vtq: "('8:ready', 1531391296.4118819, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+Pulse_Status (MeaningAttr):
+	alias: Pulse_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'focusing B1 undercurrent', 2: 'focusing B2 undercurrent', 3: 'focusing B3 undercurrent', 4: 'DC reset undercurrent', 5: 'arc overcurrent', 6: 'RF reflected power', 7: 'off', 8: 'ready'}
+	name: Pulse_ST:MeaningAttr
+	noneValue: 0
+	owner: Pulse_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990570.03
+	read_t_str: Thu Jul 19 10:56:10 2018
+	rvalue: 8:ready
+	timestamp: 1531992459.27
+	type: DevString
 
 KA_3GHz_RFampli_u (EnumerationAttr):
 	active: None
@@ -467,9 +462,9 @@ KA_3GHz_RFampli_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.59
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.59
+	read_t: 1531990570.13
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.13
 
 KA_DCps_thyratron_u (EnumerationAttr):
 	active: None
@@ -481,9 +476,9 @@ KA_DCps_thyratron_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.6
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.6
+	read_t: 1531990570.14
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.14
 
 KA_HVps_u (EnumerationAttr):
 	active: None
@@ -495,9 +490,9 @@ KA_HVps_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.62
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.62
+	read_t: 1531990570.15
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.15
 
 KA_IP_controller (EnumerationAttr):
 	active: None
@@ -509,9 +504,9 @@ KA_IP_controller (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.63
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.63
+	read_t: 1531990570.17
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.17
 
 KA_fcoil1_u (EnumerationAttr):
 	active: None
@@ -523,9 +518,9 @@ KA_fcoil1_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.64
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.64
+	read_t: 1531990570.17
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.17
 
 KA_fcoil2_u (EnumerationAttr):
 	active: None
@@ -537,9 +532,9 @@ KA_fcoil2_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.65
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.65
+	read_t: 1531990570.18
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.18
 
 KA_fcoil3_u (EnumerationAttr):
 	active: None
@@ -551,9 +546,9 @@ KA_fcoil3_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.67
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.67
+	read_t: 1531990570.19
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.19
 
 KA_thyratron_u (EnumerationAttr):
 	active: None
@@ -565,9 +560,9 @@ KA_thyratron_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.58
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.58
+	read_t: 1531990570.12
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.12
 
 KA_tube_u (EnumerationAttr):
 	active: None
@@ -579,36 +574,36 @@ KA_tube_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385713.57
-	read_t_str: Thu Jul 12 10:55:13 2018
-	timestamp: 1531385713.57
+	read_t: 1531990570.11
+	read_t_str: Thu Jul 19 10:56:10 2018
+	timestamp: 1531990570.11
 
-hvps_ready (InternalAttr):
+hvps_ready (LogicAttr):
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: hvps_ready:Logic ({'HVPS_ST': [8, 9], 'Pulse_ST': [0, 7, 8]}, and, normal)
+	logic: ({'HVPS_ST': [8, 9], 'Pulse_ST': [0, 7, 8]}, and, normal)
 	name: hvps_ready
 	quality: ATTR_VALID
-	read_t: 1531385714.09
-	read_t_str: Thu Jul 12 10:55:14 2018
+	read_t: 1531990582.7
+	read_t_str: Thu Jul 19 10:56:22 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531385714.09
+	timestamp: 1531990582.7
 	type: DevBoolean
 
-lv_ready (InternalAttr):
+lv_ready (LogicAttr):
 	device: LinacData(li/ct/plc4)
-	events: Always Emit 'Thu Jul 12 10:55:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:22 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: lv_ready:Logic ({'LV_ST': [12], 'Heat_ST': [5]}, and, normal)
+	logic: ({'LV_ST': [12], 'Heat_ST': [5]}, and, normal)
 	name: lv_ready
 	quality: ATTR_VALID
-	read_t: 1531385714.1
-	read_t_str: Thu Jul 12 10:55:14 2018
+	read_t: 1531990582.7
+	read_t_str: Thu Jul 19 10:56:22 2018
 	read_value: True
 	reporter: lv_ready:ChangeReporter (to ['LV_ONC:Formula'])
 	rvalue: True
-	timestamp: 1531385714.1
+	timestamp: 1531990582.7
 	type: DevBoolean
 

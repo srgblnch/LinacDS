@@ -1,6 +1,6 @@
 AC_IS (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: compressed air interlock state
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'good'}
@@ -8,33 +8,32 @@ AC_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 99
 	read_bit: 1
-	read_t: 1531391293.38
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.38
+	timestamp: 1531992457.29
 	type: DevBoolean
 	write_bit: 1
 
-AC_IS:MeaningAttr:
-	alias: "AC_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'good'}"
-	noneValue: "0"
-	owner: "AC_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.84"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:good"
-	timestamp: "1531391293.38"
-	type: "DevString"
-	value: "True:good"
-	vtq: "('True:good', 1531391293.383888, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+AC_IS_Status (MeaningAttr):
+	alias: AC_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'good'}
+	name: AC_IS:MeaningAttr
+	noneValue: 0
+	owner: AC_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.8
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:good
+	timestamp: 1531992457.29
+	type: DevString
 
 CL1_ONC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: CL1_ONC:Formula {read: "VALUE and Attr[cl1_ready].rvalue == True"}
 	label: cooling loop 1 on
 	logLevel: warning
@@ -43,34 +42,33 @@ CL1_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 117
 	read_bit: 2
-	read_t: 1531391293.38
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.38
+	timestamp: 1531992457.29
 	type: DevBoolean
 	write_addr: 17
 	write_bit: 2
 
-CL1_ONC:MeaningAttr:
-	alias: "CL1_ONC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "CL1_ONC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.93"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391293.38"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391293.383888, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL1_ONC_Status (MeaningAttr):
+	alias: CL1_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL1_ONC:MeaningAttr
+	noneValue: 0
+	owner: CL1_ONC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.96
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.29
+	type: DevString
 
 CL1_PWD (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.1 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.1 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %4.1f
 	label: cooling loop 1 power drive monitor
 	logLevel: warning
@@ -80,18 +78,18 @@ CL1_PWD (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 15, 'Above': 80}}}
 	quality: ATTR_VALID
 	read_addr: 68
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [ 19.70956612  19.70956612  19.58799362  19.58799362  19.58799362
-  19.58799362  19.58799362  19.58799362  19.54983711  19.54983711]
-	rvalue: 19.5498371124
-	timestamp: 1531391293.54
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [ 19.49766159  19.49766159  19.49766159  19.49766159  19.43857002
+  19.43857002  19.43857002  19.43857002  19.43857002  19.43857002]
+	rvalue: 19.4385700226
+	timestamp: 1531992457.29
 	type: ('f', 4)
 
 CL1_ST (PLCAttr):
 	description: 'cooling loop 1 status\n0:primary underflow\n1:off\n2:fault\n3:prebuncher 1 underflow\n4:prebuncher 2 underflow\n5:buncher underflow\n6:running\n7:cooling down (5 min)\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	history: CL1_Status_History (HistoryAttr)
 	label: cooling loop 1 status
 	logLevel: warning
@@ -100,49 +98,47 @@ CL1_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 96
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: [6]
 	reporter: CL1_ST:ChangeReporter (to ['cl1_ready'])
 	rvalue: 6
-	timestamp: 1531391293.54
+	timestamp: 1531992457.29
 	type: ('B', 1)
 
-CL1_ST:MeaningAttr:
-	alias: "CL1_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'prebuncher 1 underflow', 4: 'prebuncher 2 underflow', 5: 'buncher underflow', 6: 'running', 7: 'cooling down (5 min)'}"
-	noneValue: "0"
-	owner: "CL1_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.8"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "6:running"
-	timestamp: "1531391293.54"
-	type: "DevString"
-	value: "6:running"
-	vtq: "('6:running', 1531391293.5433581, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL1_Status (MeaningAttr):
+	alias: CL1_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'prebuncher 1 underflow', 4: 'prebuncher 2 underflow', 5: 'buncher underflow', 6: 'running', 7: 'cooling down (5 min)'}
+	name: CL1_ST:MeaningAttr
+	noneValue: 0
+	owner: CL1_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.73
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 6:running
+	timestamp: 1531992457.29
+	type: DevString
 
-CL1_ST:HistoryAttr:
-	alias: "CL1_Status_History"
-	events: "{}"
-	logLevel: "warning"
-	noneValue: "0"
-	owner: "CL1_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.8"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	read_value: "['6:running']"
-	rvalue: "['6:running']"
-	timestamp: "1531391293.54"
-	type: "DevString"
-	value: "['6:running']"
-	vtq: "(['6:running'], 1531391293.5433581, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL1_Status_History (HistoryAttr):
+	alias: CL1_Status_History
+	events: {}
+	logLevel: warning
+	name: CL1_ST:HistoryAttr
+	noneValue: 0
+	owner: CL1_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.73
+	read_t_str: Thu Jul 19 10:56:05 2018
+	read_value: ['6:running']
+	rvalue: ['6:running']
+	timestamp: 1531992457.29
+	type: DevString
 
 CL1_T (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %4.2f
 	label: cooling loop 1 temperature monitor
 	logLevel: warning
@@ -151,16 +147,16 @@ CL1_T (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 56
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: 32.4851036072
-	rvalue: 32.4851036072
-	timestamp: 1531391293.54
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: 32.6020393372
+	rvalue: 32.6020393372
+	timestamp: 1531992457.29
 	type: ('f', 4)
 
 CL1_T_setpoint (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	format: %4.2f
 	label: cooling loop 1 temperature setpoint
 	logLevel: warning
@@ -170,17 +166,17 @@ CL1_T_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.5}, 'alarm': {'abs': {'Below': 15, 'Above': 45}}, 'warning': {'abs': {'Below': 20, 'Above': 40}}}
 	quality: ATTR_VALID
 	read_addr: 100
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: [ 32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5]
 	rvalue: 32.5
-	timestamp: 1531391293.54
+	timestamp: 1531992457.29
 	type: ('f', 4)
 	write_addr: 0
 
 CL2_ONC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: CL2_ONC:Formula {read: "VALUE and Attr[cl2_ready].rvalue == True"}
 	label: cooling loop 2 on
 	logLevel: warning
@@ -189,34 +185,33 @@ CL2_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 117
 	read_bit: 3
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.54
+	timestamp: 1531992457.29
 	type: DevBoolean
 	write_addr: 17
 	write_bit: 3
 
-CL2_ONC:MeaningAttr:
-	alias: "CL2_ONC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "CL2_ONC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.94"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391293.54"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391293.5433581, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL2_ONC_Status (MeaningAttr):
+	alias: CL2_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL2_ONC:MeaningAttr
+	noneValue: 0
+	owner: CL2_ONC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.96
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.29
+	type: DevString
 
 CL2_PWD (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.1 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.1 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %4.1f
 	label: cooling loop 2 power drive monitor
 	logLevel: warning
@@ -226,18 +221,18 @@ CL2_PWD (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 15, 'Above': 80}}}
 	quality: ATTR_VALID
 	read_addr: 72
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [ 40.08248138  40.08248138  39.99382019  39.99382019  39.99382019
-  39.99382019  39.99382019  39.99382019  40.04918289  40.04918289]
-	rvalue: 40.0491828918
-	timestamp: 1531391293.54
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [ 40.11576462  40.11576462  40.11576462  40.11576462  40.0735321
+  40.0735321   40.0735321   40.0735321   40.0735321   40.0735321 ]
+	rvalue: 40.0735321045
+	timestamp: 1531992457.29
 	type: ('f', 4)
 
 CL2_ST (PLCAttr):
 	description: 'cooling loop 2 status\n0:primary underflow\n1:off\n2:fault\n3:accelerating section 1 underflow\n4:running\n5:cooling down (5 min)\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	history: CL2_Status_History (HistoryAttr)
 	label: cooling loop 2 status
 	logLevel: warning
@@ -246,49 +241,47 @@ CL2_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 97
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: [4]
 	reporter: CL2_ST:ChangeReporter (to ['cl2_ready'])
 	rvalue: 4
-	timestamp: 1531391293.54
+	timestamp: 1531992457.29
 	type: ('B', 1)
 
-CL2_ST:MeaningAttr:
-	alias: "CL2_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 1 underflow', 4: 'running', 5: 'cooling down (5 min)'}"
-	noneValue: "0"
-	owner: "CL2_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.82"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "4:running"
-	timestamp: "1531391293.54"
-	type: "DevString"
-	value: "4:running"
-	vtq: "('4:running', 1531391293.5433581, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL2_Status (MeaningAttr):
+	alias: CL2_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 1 underflow', 4: 'running', 5: 'cooling down (5 min)'}
+	name: CL2_ST:MeaningAttr
+	noneValue: 0
+	owner: CL2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.75
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 4:running
+	timestamp: 1531992457.29
+	type: DevString
 
-CL2_ST:HistoryAttr:
-	alias: "CL2_Status_History"
-	events: "{}"
-	logLevel: "warning"
-	noneValue: "0"
-	owner: "CL2_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.82"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	read_value: "['4:running']"
-	rvalue: "['4:running']"
-	timestamp: "1531391293.54"
-	type: "DevString"
-	value: "['4:running']"
-	vtq: "(['4:running'], 1531391293.5433581, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL2_Status_History (HistoryAttr):
+	alias: CL2_Status_History
+	events: {}
+	logLevel: warning
+	name: CL2_ST:HistoryAttr
+	noneValue: 0
+	owner: CL2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.75
+	read_t_str: Thu Jul 19 10:56:05 2018
+	read_value: ['4:running']
+	rvalue: ['4:running']
+	timestamp: 1531992457.29
+	type: DevString
 
 CL2_T (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %4.2f
 	label: cooling loop 2 temperature monitor
 	logLevel: warning
@@ -297,16 +290,16 @@ CL2_T (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 60
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: 32.6627731323
-	rvalue: 32.6627731323
-	timestamp: 1531391293.54
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: 32.2812652588
+	rvalue: 32.2812652588
+	timestamp: 1531992457.29
 	type: ('f', 4)
 
 CL2_T_setpoint (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	format: %4.2f
 	label: cooling loop 2 temperature setpoint
 	logLevel: warning
@@ -316,17 +309,17 @@ CL2_T_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.5}, 'alarm': {'abs': {'Below': 15, 'Above': 45}}, 'warning': {'abs': {'Below': 20, 'Above': 40}}}
 	quality: ATTR_VALID
 	read_addr: 104
-	read_t: 1531391293.54
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: [ 32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5]
 	rvalue: 32.5
-	timestamp: 1531391293.54
+	timestamp: 1531992457.29
 	type: ('f', 4)
 	write_addr: 4
 
 CL3_ONC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: CL3_ONC:Formula {read: "VALUE and Attr[cl3_ready].rvalue == True"}
 	label: cooling loop 3 on
 	logLevel: warning
@@ -335,34 +328,33 @@ CL3_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 117
 	read_bit: 4
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.7
+	timestamp: 1531992457.29
 	type: DevBoolean
 	write_addr: 17
 	write_bit: 4
 
-CL3_ONC:MeaningAttr:
-	alias: "CL3_ONC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "CL3_ONC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.95"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391293.7"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391293.703434, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL3_ONC_Status (MeaningAttr):
+	alias: CL3_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL3_ONC:MeaningAttr
+	noneValue: 0
+	owner: CL3_ONC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.97
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.29
+	type: DevString
 
 CL3_PWD (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.1 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.1 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	format: %4.1f
 	label: cooling loop 3 power drive monitor
 	logLevel: warning
@@ -372,18 +364,18 @@ CL3_PWD (PLCAttr):
 	qualities: {'warning': {'abs': {'Below': 15, 'Above': 80}}}
 	quality: ATTR_VALID
 	read_addr: 76
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: [ 32.00360107  32.00360107  32.00360107  32.00360107  32.00360107
   32.00360107  32.00360107  32.00360107  32.00360107  32.00360107]
 	rvalue: 32.0036010742
-	timestamp: 1531391293.7
+	timestamp: 1531992457.29
 	type: ('f', 4)
 
 CL3_ST (PLCAttr):
 	description: 'cooling loop 3 status\n0:primary underflow\n1:off\n2:fault\n3:accelerating section 2 underflow\n4:running\n5:cooling down (5 minutes)\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	history: CL3_Status_History (HistoryAttr)
 	label: cooling loop 3 status
 	logLevel: warning
@@ -392,49 +384,47 @@ CL3_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 98
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: [4]
 	reporter: CL3_ST:ChangeReporter (to ['cl3_ready'])
 	rvalue: 4
-	timestamp: 1531391293.7
+	timestamp: 1531992457.29
 	type: ('B', 1)
 
-CL3_ST:MeaningAttr:
-	alias: "CL3_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 2 underflow', 4: 'running', 5: 'cooling down (5 minutes)'}"
-	noneValue: "0"
-	owner: "CL3_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.83"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "4:running"
-	timestamp: "1531391293.7"
-	type: "DevString"
-	value: "4:running"
-	vtq: "('4:running', 1531391293.703434, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL3_Status (MeaningAttr):
+	alias: CL3_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 2 underflow', 4: 'running', 5: 'cooling down (5 minutes)'}
+	name: CL3_ST:MeaningAttr
+	noneValue: 0
+	owner: CL3_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.78
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 4:running
+	timestamp: 1531992457.29
+	type: DevString
 
-CL3_ST:HistoryAttr:
-	alias: "CL3_Status_History"
-	events: "{}"
-	logLevel: "warning"
-	noneValue: "0"
-	owner: "CL3_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.83"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	read_value: "['4:running']"
-	rvalue: "['4:running']"
-	timestamp: "1531391293.7"
-	type: "DevString"
-	value: "['4:running']"
-	vtq: "(['4:running'], 1531391293.703434, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+CL3_Status_History (HistoryAttr):
+	alias: CL3_Status_History
+	events: {}
+	logLevel: warning
+	name: CL3_ST:HistoryAttr
+	noneValue: 0
+	owner: CL3_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.79
+	read_t_str: Thu Jul 19 10:56:05 2018
+	read_value: ['4:running']
+	rvalue: ['4:running']
+	timestamp: 1531992457.29
+	type: DevString
 
 CL3_T (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.001 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.001 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %4.2f
 	label: cooling loop 3 temperature monitor
 	logLevel: warning
@@ -443,16 +433,16 @@ CL3_T (PLCAttr):
 	noneValue: nan
 	quality: ATTR_VALID
 	read_addr: 64
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: 32.5113182068
-	rvalue: 32.5113182068
-	timestamp: 1531391293.7
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: 32.3922653198
+	rvalue: 32.3922653198
+	timestamp: 1531992457.29
 	type: ('f', 4)
 
 CL3_T_setpoint (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Emit when changes bigger than 0.01 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Emit when changes bigger than 0.01 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	format: %4.2f
 	label: cooling loop 3 temperature setpoint
 	logLevel: warning
@@ -462,18 +452,18 @@ CL3_T_setpoint (PLCAttr):
 	qualities: {'changing': {'rel': 0.5}, 'alarm': {'abs': {'Below': 15, 'Above': 45}}, 'warning': {'abs': {'Below': 20, 'Above': 40}}}
 	quality: ATTR_VALID
 	read_addr: 108
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: [ 32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5]
 	rvalue: 32.5
-	timestamp: 1531391293.7
+	timestamp: 1531992457.29
 	type: ('f', 4)
 	write_addr: 8
 
 HVG1_IS (PLCAttr):
 	description: 'high vacuum gauge 1 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: high vacuum gauge 1 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -481,33 +471,32 @@ HVG1_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 2
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.7
+	timestamp: 1531992457.29
 	type: DevBoolean
 	write_bit: 2
 
-HVG1_IS:MeaningAttr:
-	alias: "HVG1_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "HVG1_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.68"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.7"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.703434, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+HVG1_IS_Status (MeaningAttr):
+	alias: HVG1_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG1_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG1_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.57
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.29
+	type: DevString
 
 HVG1_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:36 2018' ATTR_VALID
 	format: %2.1e
 	label: high vacuum gauge 1 pressure monitor
 	logLevel: warning
@@ -518,19 +507,19 @@ HVG1_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 36
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  7.70960273e-09   9.64994129e-09   9.64994129e-09   9.64994129e-09
-   9.64994129e-09   9.64994129e-09   9.64994129e-09   9.35312805e-09
-   9.35312805e-09   9.35312805e-09]
-	rvalue: 9.35312804984e-09
-	timestamp: 1531391293.7
+	read_t: 1531992457.29
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  9.53163504e-09   9.53163504e-09   9.53163504e-09   9.53163504e-09
+   9.92364857e-09   9.92364857e-09   9.92364857e-09   9.92364857e-09
+   9.92364857e-09   9.92364857e-09]
+	rvalue: 9.92364856955e-09
+	timestamp: 1531992457.29
 	type: ('f', 4)
 
 HVG2_IS (PLCAttr):
 	description: 'high vacuum gauge 2 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: high vacuum gauge 2 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -538,33 +527,32 @@ HVG2_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 3
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.7
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 3
 
-HVG2_IS:MeaningAttr:
-	alias: "HVG2_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "HVG2_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.69"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.7"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.703434, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+HVG2_IS_Status (MeaningAttr):
+	alias: HVG2_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG2_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG2_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.57
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 HVG2_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: high vacuum gauge 2 pressure monitor
 	logLevel: warning
@@ -575,19 +563,19 @@ HVG2_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 40
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  2.74621286e-08   2.73799561e-08   2.73799561e-08   2.73799561e-08
-   2.73799561e-08   2.73799561e-08   2.73799561e-08   2.83575154e-08
-   2.83575154e-08   2.83575154e-08]
-	rvalue: 2.83575154469e-08
-	timestamp: 1531391293.7
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  2.57868411e-08   2.57868411e-08   2.57868411e-08   2.70657541e-08
+   2.70657541e-08   2.70657541e-08   2.70657541e-08   2.70657541e-08
+   2.70657541e-08   2.79669070e-08]
+	rvalue: 2.79669070125e-08
+	timestamp: 1531992457.45
 	type: ('f', 4)
 
 HVG3_IS (PLCAttr):
 	description: 'high vacuum gauge 3 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: high vacuum gauge 3 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -595,33 +583,32 @@ HVG3_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 4
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.7
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 4
 
-HVG3_IS:MeaningAttr:
-	alias: "HVG3_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "HVG3_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.7"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.7"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.703434, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+HVG3_IS_Status (MeaningAttr):
+	alias: HVG3_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG3_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG3_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.58
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 HVG3_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: high vacuum gauge 3 pressure monitor
 	logLevel: warning
@@ -632,19 +619,19 @@ HVG3_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 44
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  6.74582123e-09   8.24653679e-09   8.24653679e-09   8.24653679e-09
-   8.24653679e-09   8.24653679e-09   8.24653679e-09   8.80135076e-09
-   8.80135076e-09   8.80135076e-09]
-	rvalue: 8.80135075931e-09
-	timestamp: 1531391293.7
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  6.30911190e-09   6.30911190e-09   6.30911190e-09   9.36196809e-09
+   9.36196809e-09   9.36196809e-09   9.36196809e-09   9.36196809e-09
+   9.36196809e-09   7.84297249e-09]
+	rvalue: 7.84297249368e-09
+	timestamp: 1531992457.45
 	type: ('f', 4)
 
 HVG4_IS (PLCAttr):
 	description: 'high vacuum gauge 4 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: high vacuum gauge 4 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -652,33 +639,32 @@ HVG4_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 5
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.7
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 5
 
-HVG4_IS:MeaningAttr:
-	alias: "HVG4_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "HVG4_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.7"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.7"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.703434, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+HVG4_IS_Status (MeaningAttr):
+	alias: HVG4_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG4_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG4_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.58
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 HVG4_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: high vacuum gauge 4 pressure monitor
 	logLevel: warning
@@ -689,19 +675,19 @@ HVG4_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 48
-	read_t: 1531391293.7
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  7.93828914e-09   7.39184847e-09   7.39184847e-09   7.39184847e-09
-   7.39184847e-09   7.39184847e-09   7.39184847e-09   8.11107981e-09
-   8.11107981e-09   8.11107981e-09]
-	rvalue: 8.1110798078e-09
-	timestamp: 1531391293.7
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  8.25760971e-09   8.25760971e-09   8.25760971e-09   7.07255277e-09
+   7.07255277e-09   7.07255277e-09   7.07255277e-09   7.07255277e-09
+   7.07255277e-09   7.99570543e-09]
+	rvalue: 7.99570543109e-09
+	timestamp: 1531992457.45
 	type: ('f', 4)
 
 HVG5_IS (PLCAttr):
 	description: 'high vacuum gauge 5 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: high vacuum gauge 5 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -709,33 +695,32 @@ HVG5_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 6
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 6
 
-HVG5_IS:MeaningAttr:
-	alias: "HVG5_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "HVG5_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.71"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.87"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.8670211, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+HVG5_IS_Status (MeaningAttr):
+	alias: HVG5_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG5_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG5_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.59
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 HVG5_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: high vacuum gauge 5 pressure monitor
 	logLevel: warning
@@ -746,36 +731,36 @@ HVG5_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 52
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  9.45990175e-10   9.45990175e-10   9.45990175e-10   9.45990175e-10
-   9.45990175e-10   9.45990175e-10   2.52239230e-09   2.52239230e-09
-   2.52239230e-09   2.52239230e-09]
-	rvalue: 2.52239229503e-09
-	timestamp: 1531391293.87
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  3.96529698e-09   3.96529698e-09   3.96529698e-09   2.77554513e-09
+   2.77554513e-09   2.77554513e-09   2.77554513e-09   2.77554513e-09
+   2.77554513e-09   2.57667687e-09]
+	rvalue: 2.57667687187e-09
+	timestamp: 1531992457.45
 	type: ('f', 4)
 
 HeartBeat (PLCAttr):
 	description: 'cadence bit going from True to False when PLC is okay'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	logLevel: warning
 	name: HeartBeat
 	quality: ATTR_VALID
 	read_addr: 99
 	read_bit: 0
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 0
 
 IP1_IS (PLCAttr):
 	description: 'ion pump 1 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 1 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -783,33 +768,32 @@ IP1_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 7
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 7
 
-IP1_IS:MeaningAttr:
-	alias: "IP1_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP1_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.71"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.87"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.8670211, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP1_IS_Status (MeaningAttr):
+	alias: IP1_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP1_IS:MeaningAttr
+	noneValue: 0
+	owner: IP1_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.6
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 IP1_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 1 pressure monitor
 	logLevel: warning
@@ -820,18 +804,18 @@ IP1_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 0
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  6.43075326e-09   6.43075326e-09   6.43075326e-09   6.43075326e-09
-   6.43075326e-09   6.43075326e-09   4.69757921e-09   4.69757921e-09
-   4.69757921e-09   4.69757921e-09]
-	rvalue: 4.69757921451e-09
-	timestamp: 1531391293.87
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  4.82020601e-09   4.82020601e-09   4.82020601e-09   4.17311830e-09
+   4.17311830e-09   4.17311830e-09   4.17311830e-09   4.17311830e-09
+   4.17311830e-09   4.06179668e-09]
+	rvalue: 4.06179667678e-09
+	timestamp: 1531992457.45
 	type: ('f', 4)
 
 IP1_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 1 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -839,34 +823,33 @@ IP1_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 0
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 0
 
-IP1_ST:MeaningAttr:
-	alias: "IP1_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP1_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.62"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391293.87"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391293.8670211, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP1_Status (MeaningAttr):
+	alias: IP1_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP1_ST:MeaningAttr
+	noneValue: 0
+	owner: IP1_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.47
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.45
+	type: DevString
 
 IP2_IS (PLCAttr):
 	description: 'ion pump 2 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 2 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -874,33 +857,32 @@ IP2_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 0
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 0
 
-IP2_IS:MeaningAttr:
-	alias: "IP2_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP2_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.72"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.87"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.8670211, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP2_IS_Status (MeaningAttr):
+	alias: IP2_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP2_IS:MeaningAttr
+	noneValue: 0
+	owner: IP2_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.62
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 IP2_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 2 pressure monitor
 	logLevel: warning
@@ -911,18 +893,18 @@ IP2_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 4
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  4.23882573e-09   4.23882573e-09   4.23882573e-09   4.23882573e-09
-   4.23882573e-09   4.23882573e-09   3.09038861e-09   3.09038861e-09
-   3.09038861e-09   3.09038861e-09]
-	rvalue: 3.09038861168e-09
-	timestamp: 1531391293.87
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  5.08421349e-09   5.08421349e-09   5.08421349e-09   2.77296852e-09
+   2.77296852e-09   2.77296852e-09   2.77296852e-09   2.77296852e-09
+   2.77296852e-09   4.23374535e-09]
+	rvalue: 4.2337453543e-09
+	timestamp: 1531992457.45
 	type: ('f', 4)
 
 IP2_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 2 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -930,34 +912,33 @@ IP2_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 1
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 1
 
-IP2_ST:MeaningAttr:
-	alias: "IP2_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP2_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.62"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391293.87"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391293.8670211, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP2_Status (MeaningAttr):
+	alias: IP2_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP2_ST:MeaningAttr
+	noneValue: 0
+	owner: IP2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.47
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.45
+	type: DevString
 
 IP3_IS (PLCAttr):
 	description: 'ion pump 3 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 3 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -965,33 +946,32 @@ IP3_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 1
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 1
 
-IP3_IS:MeaningAttr:
-	alias: "IP3_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP3_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.72"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391293.87"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391293.8670211, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP3_IS_Status (MeaningAttr):
+	alias: IP3_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP3_IS:MeaningAttr
+	noneValue: 0
+	owner: IP3_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.63
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 IP3_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 3 pressure monitor
 	logLevel: warning
@@ -1002,18 +982,18 @@ IP3_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 8
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
-	read_value: [  4.01598643e-10   4.01598643e-10   4.01598643e-10   4.01598643e-10
-   4.01598643e-10   4.01598643e-10   2.15060481e-09   2.15060481e-09
-   2.15060481e-09   2.15060481e-09]
-	rvalue: 2.15060480535e-09
-	timestamp: 1531391293.87
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  1.15106025e-09   1.15106025e-09   1.15106025e-09   7.09842574e-10
+   7.09842574e-10   7.09842574e-10   7.09842574e-10   7.09842574e-10
+   7.09842574e-10   2.04306572e-09]
+	rvalue: 2.04306571661e-09
+	timestamp: 1531992457.45
 	type: ('f', 4)
 
 IP3_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 3 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1021,34 +1001,33 @@ IP3_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 2
-	read_t: 1531391293.87
-	read_t_str: Thu Jul 12 12:28:13 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391293.87
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 2
 
-IP3_ST:MeaningAttr:
-	alias: "IP3_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP3_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.63"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391293.87"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391293.8670211, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP3_Status (MeaningAttr):
+	alias: IP3_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP3_ST:MeaningAttr
+	noneValue: 0
+	owner: IP3_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.48
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.45
+	type: DevString
 
 IP4_IS (PLCAttr):
 	description: 'ion pump 4 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 4 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -1056,33 +1035,32 @@ IP4_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 2
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.45
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.45
 	type: DevBoolean
 	write_bit: 2
 
-IP4_IS:MeaningAttr:
-	alias: "IP4_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP4_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.73"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP4_IS_Status (MeaningAttr):
+	alias: IP4_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP4_IS:MeaningAttr
+	noneValue: 0
+	owner: IP4_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.63
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.45
+	type: DevString
 
 IP4_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 4 pressure monitor
 	logLevel: warning
@@ -1093,18 +1071,18 @@ IP4_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 12
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
-	read_value: [  1.69429926e-09   1.69429926e-09   1.69429926e-09   1.69429926e-09
-   1.69429926e-09   2.10226303e-09   2.10226303e-09   2.10226303e-09
-   2.10226303e-09   2.10226303e-09]
-	rvalue: 2.10226303032e-09
-	timestamp: 1531391294.03
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  8.78631223e-10   8.78631223e-10   6.38955555e-10   6.38955555e-10
+   6.38955555e-10   6.38955555e-10   6.38955555e-10   6.38955555e-10
+   3.19010862e-09   3.19010862e-09]
+	rvalue: 3.19010862171e-09
+	timestamp: 1531992457.61
 	type: ('f', 4)
 
 IP4_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 4 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1112,34 +1090,33 @@ IP4_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 3
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 3
 
-IP4_ST:MeaningAttr:
-	alias: "IP4_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP4_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.63"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP4_Status (MeaningAttr):
+	alias: IP4_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP4_ST:MeaningAttr
+	noneValue: 0
+	owner: IP4_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.49
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.61
+	type: DevString
 
 IP5_IS (PLCAttr):
 	description: 'ion pump 5 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 5 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -1147,33 +1124,32 @@ IP5_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 3
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 3
 
-IP5_IS:MeaningAttr:
-	alias: "IP5_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP5_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.73"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP5_IS_Status (MeaningAttr):
+	alias: IP5_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP5_IS:MeaningAttr
+	noneValue: 0
+	owner: IP5_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.64
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.61
+	type: DevString
 
 IP5_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 5 pressure monitor
 	logLevel: warning
@@ -1184,18 +1160,18 @@ IP5_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 16
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
-	read_value: [  1.41593199e-08   1.41593199e-08   1.41593199e-08   1.41593199e-08
-   1.41593199e-08   1.39960115e-08   1.39960115e-08   1.39960115e-08
-   1.39960115e-08   1.39960115e-08]
-	rvalue: 1.39960114609e-08
-	timestamp: 1531391294.03
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  1.34127820e-08   1.34127820e-08   1.32242874e-08   1.32242874e-08
+   1.32242874e-08   1.32242874e-08   1.32242874e-08   1.32242874e-08
+   1.21676749e-08   1.21676749e-08]
+	rvalue: 1.21676748677e-08
+	timestamp: 1531992457.61
 	type: ('f', 4)
 
 IP5_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 5 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1203,34 +1179,33 @@ IP5_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 4
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 4
 
-IP5_ST:MeaningAttr:
-	alias: "IP5_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP5_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.64"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP5_Status (MeaningAttr):
+	alias: IP5_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP5_ST:MeaningAttr
+	noneValue: 0
+	owner: IP5_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.5
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.61
+	type: DevString
 
 IP6_IS (PLCAttr):
 	description: 'ion pump 6 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 6 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -1238,33 +1213,32 @@ IP6_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 4
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 4
 
-IP6_IS:MeaningAttr:
-	alias: "IP6_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP6_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.74"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP6_IS_Status (MeaningAttr):
+	alias: IP6_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP6_IS:MeaningAttr
+	noneValue: 0
+	owner: IP6_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.64
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.61
+	type: DevString
 
 IP6_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 6 pressure monitor
 	logLevel: warning
@@ -1275,18 +1249,18 @@ IP6_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 20
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
-	read_value: [  5.80262460e-09   5.80262460e-09   5.80262460e-09   5.80262460e-09
-   5.80262460e-09   7.84479326e-09   7.84479326e-09   7.84479326e-09
-   7.84479326e-09   7.84479326e-09]
-	rvalue: 7.84479325944e-09
-	timestamp: 1531391294.03
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  7.28525240e-09   7.28525240e-09   5.79554404e-09   5.79554404e-09
+   5.79554404e-09   5.79554404e-09   5.79554404e-09   5.79554404e-09
+   5.78349990e-09   5.78349990e-09]
+	rvalue: 5.78349990121e-09
+	timestamp: 1531992457.61
 	type: ('f', 4)
 
 IP6_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 6 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1294,34 +1268,33 @@ IP6_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 5
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 5
 
-IP6_ST:MeaningAttr:
-	alias: "IP6_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP6_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.64"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP6_Status (MeaningAttr):
+	alias: IP6_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP6_ST:MeaningAttr
+	noneValue: 0
+	owner: IP6_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.5
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.61
+	type: DevString
 
 IP7_IS (PLCAttr):
 	description: 'ion pump 7 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 7 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -1329,33 +1302,32 @@ IP7_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 5
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 5
 
-IP7_IS:MeaningAttr:
-	alias: "IP7_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP7_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.74"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP7_IS_Status (MeaningAttr):
+	alias: IP7_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP7_IS:MeaningAttr
+	noneValue: 0
+	owner: IP7_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.65
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.61
+	type: DevString
 
 IP7_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 7 pressure monitor
 	logLevel: warning
@@ -1366,18 +1338,18 @@ IP7_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 24
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
-	read_value: [  7.73067477e-09   7.73067477e-09   7.73067477e-09   7.73067477e-09
-   7.73067477e-09   7.35970618e-09   7.35970618e-09   7.35970618e-09
-   7.35970618e-09   7.35970618e-09]
-	rvalue: 7.35970617782e-09
-	timestamp: 1531391294.03
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  8.32067659e-09   8.32067659e-09   8.10928835e-09   8.10928835e-09
+   8.10928835e-09   8.10928835e-09   8.10928835e-09   8.10928835e-09
+   7.22584037e-09   7.22584037e-09]
+	rvalue: 7.2258403705e-09
+	timestamp: 1531992457.61
 	type: ('f', 4)
 
 IP7_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 7 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1385,34 +1357,33 @@ IP7_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 6
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 6
 
-IP7_ST:MeaningAttr:
-	alias: "IP7_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP7_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.65"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP7_Status (MeaningAttr):
+	alias: IP7_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP7_ST:MeaningAttr
+	noneValue: 0
+	owner: IP7_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.51
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.61
+	type: DevString
 
 IP8_IS (PLCAttr):
 	description: 'ion pump 8 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 8 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -1420,33 +1391,32 @@ IP8_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 6
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.03
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 6
 
-IP8_IS:MeaningAttr:
-	alias: "IP8_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP8_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.75"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391294.03"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391294.0275331, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP8_IS_Status (MeaningAttr):
+	alias: IP8_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP8_IS:MeaningAttr
+	noneValue: 0
+	owner: IP8_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.65
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.61
+	type: DevString
 
 IP8_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 8 pressure monitor
 	logLevel: warning
@@ -1457,18 +1427,18 @@ IP8_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 28
-	read_t: 1531391294.03
-	read_t_str: Thu Jul 12 12:28:14 2018
-	read_value: [  2.19851559e-09   2.19851559e-09   2.19851559e-09   2.19851559e-09
-   2.19851559e-09   1.13701037e-09   1.13701037e-09   1.13701037e-09
-   1.13701037e-09   1.13701037e-09]
-	rvalue: 1.13701037474e-09
-	timestamp: 1531391294.03
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  2.35775910e-09   2.35775910e-09   1.95923322e-09   1.95923322e-09
+   1.95923322e-09   1.95923322e-09   1.95923322e-09   1.95923322e-09
+   3.02835845e-09   3.02835845e-09]
+	rvalue: 3.02835845289e-09
+	timestamp: 1531992457.61
 	type: ('f', 4)
 
 IP8_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 8 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1476,34 +1446,33 @@ IP8_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 84
 	read_bit: 7
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 7
 
-IP8_ST:MeaningAttr:
-	alias: "IP8_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP8_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.66"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391294.19"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391294.1872499, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP8_Status (MeaningAttr):
+	alias: IP8_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP8_ST:MeaningAttr
+	noneValue: 0
+	owner: IP8_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.52
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.61
+	type: DevString
 
 IP9_IS (PLCAttr):
 	description: 'ion pump 9 interlock; False:fault, True:ready'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 9 interlock
 	logLevel: warning
 	meanings: {0: 'fault', 1: 'ready'}
@@ -1511,33 +1480,32 @@ IP9_IS (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 86
 	read_bit: 7
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 7
 
-IP9_IS:MeaningAttr:
-	alias: "IP9_IS_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'fault', 1: 'ready'}"
-	noneValue: "0"
-	owner: "IP9_IS (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.75"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:ready"
-	timestamp: "1531391294.19"
-	type: "DevString"
-	value: "True:ready"
-	vtq: "('True:ready', 1531391294.1872499, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP9_IS_Status (MeaningAttr):
+	alias: IP9_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP9_IS:MeaningAttr
+	noneValue: 0
+	owner: IP9_IS (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.66
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:ready
+	timestamp: 1531992457.61
+	type: DevString
 
 IP9_P (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 12:28:13 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 11:27:37 2018' ATTR_VALID
 	format: %2.1e
 	label: ion pump 9 pressure monitor
 	logLevel: warning
@@ -1548,18 +1516,18 @@ IP9_P (PLCAttr):
 	qualities: {'warning': {'abs': {'Above': 9.9999999999999995e-08}}}
 	quality: ATTR_VALID
 	read_addr: 32
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
-	read_value: [  1.72398584e-09   1.72398584e-09   1.72398584e-09   1.72398584e-09
-   1.59261615e-09   1.59261615e-09   1.59261615e-09   1.59261615e-09
-   1.59261615e-09   1.59261615e-09]
-	rvalue: 1.59261615007e-09
-	timestamp: 1531391294.19
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
+	read_value: [  1.09287757e-09   1.09287757e-09   2.18688778e-09   2.18688778e-09
+   2.18688778e-09   2.18688778e-09   2.18688778e-09   2.18688778e-09
+   2.99575298e-09   2.99575298e-09]
+	rvalue: 2.99575297902e-09
+	timestamp: 1531992457.61
 	type: ('f', 4)
 
 IP9_ST (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: ion pump 9 status
 	logLevel: warning
 	meanings: {0: 'off', 1: 'on'}
@@ -1567,34 +1535,33 @@ IP9_ST (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 0
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_bit: 0
 
-IP9_ST:MeaningAttr:
-	alias: "IP9_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'off', 1: 'on'}"
-	noneValue: "0"
-	owner: "IP9_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.66"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:on"
-	timestamp: "1531391294.19"
-	type: "DevString"
-	value: "True:on"
-	vtq: "('True:on', 1531391294.1872499, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+IP9_Status (MeaningAttr):
+	alias: IP9_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP9_ST:MeaningAttr
+	noneValue: 0
+	owner: IP9_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.53
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:on
+	timestamp: 1531992457.61
+	type: DevString
 
 Lock_ST (PLCAttr):
 	description: 'lock status plc2\n0:unlocked\n1:local\n2:remote\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:57:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: lock status plc2
 	logLevel: warning
 	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
@@ -1602,43 +1569,42 @@ Lock_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 95
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 1
 	rvalue: 1
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: ('B', 1)
 
-Lock_ST:MeaningAttr:
-	alias: "Lock_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'unlocked', 1: 'local', 2: 'remote'}"
-	noneValue: "0"
-	owner: "Lock_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.96"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "1:local"
-	timestamp: "1531391294.19"
-	type: "DevString"
-	value: "1:local"
-	vtq: "('1:local', 1531391294.1872499, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+Lock_Status (MeaningAttr):
+	alias: Lock_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
+	name: Lock_ST:MeaningAttr
+	noneValue: 0
+	owner: Lock_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.99
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 1:local
+	timestamp: 1531992457.61
+	type: DevString
 
 Locking (PLCAttr):
 	description: 'True when attempting to obtain write lock'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:57:14 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	logLevel: warning
 	name: Locking
 	quality: ATTR_VALID
 	read_addr: 120
 	read_bit: 0
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_addr: 20
 	write_bit: 0
@@ -1648,7 +1614,7 @@ Locking (PLCAttr):
 Util_Interlock_RC (PLCAttr):
 	description: 'utilities interlock reset command'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	isRst: True
 	label: interlock reset
 	logLevel: warning
@@ -1656,18 +1622,18 @@ Util_Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 117
 	read_bit: 0
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_addr: 17
 	write_bit: 0
 
 VCV_ONC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VCV_ONC:Formula {read: "VALUE and not Attr[VCV_ST].rvalue == 4"}
 	label: collimator valve open
 	logLevel: warning
@@ -1676,35 +1642,34 @@ VCV_ONC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 0
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 0
 
-VCV_ONC:MeaningAttr:
-	alias: "VCV_ONC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VCV_ONC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.86"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.19"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.1872499, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VCV_ONC_Status (MeaningAttr):
+	alias: VCV_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VCV_ONC:MeaningAttr
+	noneValue: 0
+	owner: VCV_ONC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.83
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.61
+	type: DevString
 
 VCV_ST (PLCAttr):
 	description: 'collimator valve state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: collimator valve state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -1712,34 +1677,33 @@ VCV_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 87
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.61
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VCV_ST:ChangeReporter (to ['VCV_ONC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.19
+	timestamp: 1531992457.61
 	type: ('B', 1)
 
-VCV_ST:MeaningAttr:
-	alias: "VCV_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VCV_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.76"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.19"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.1872499, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VCV_Status (MeaningAttr):
+	alias: VCV_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VCV_ST:MeaningAttr
+	noneValue: 0
+	owner: VCV_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.67
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.77
+	type: DevString
 
 VC_Interlock_RC (PLCAttr):
 	description: 'vacuum reset command'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	isRst: True
 	label: vacuum reset
 	logLevel: warning
@@ -1747,18 +1711,18 @@ VC_Interlock_RC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 117
 	read_bit: 1
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: False
 	rvalue: False
-	timestamp: 1531391294.19
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 17
 	write_bit: 1
 
 VC_OK (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: linac vacuum okay
 	logLevel: warning
 	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
@@ -1766,33 +1730,32 @@ VC_OK (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 85
 	read_bit: 1
-	read_t: 1531391294.19
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
 	rvalue: True
-	timestamp: 1531391294.19
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_bit: 1
 
-VC_OK:MeaningAttr:
-	alias: "VC_OK_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'bad vacuum', 1: 'good vacuum'}"
-	noneValue: "0"
-	owner: "VC_OK (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.67"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:good vacuum"
-	timestamp: "1531391294.35"
-	type: "DevString"
-	value: "True:good vacuum"
-	vtq: "('True:good vacuum', 1531391294.34725, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VC_OK_Status (MeaningAttr):
+	alias: VC_OK_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
+	name: VC_OK:MeaningAttr
+	noneValue: 0
+	owner: VC_OK (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.54
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:good vacuum
+	timestamp: 1531992457.77
+	type: DevString
 
 VV1_OC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VV1_OC:Formula {read: "VALUE and not Attr[VV1_ST].rvalue == 4"}
 	label: vacuum valve 1 open
 	logLevel: warning
@@ -1801,35 +1764,35 @@ VV1_OC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 1
-	read_t: 1531391294.35
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
+	reporter: VV1_OC:ChangeReporter (to ['VV1_OC:GroupMember'])
 	rvalue: True
-	timestamp: 1531391294.35
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 1
 
-VV1_OC:MeaningAttr:
-	alias: "VV1_OC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VV1_OC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.86"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.35"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.34725, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV1_OC_Status (MeaningAttr):
+	alias: VV1_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV1_OC:MeaningAttr
+	noneValue: 0
+	owner: VV1_OC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.84
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.77
+	type: DevString
 
 VV1_ST (PLCAttr):
 	description: 'vacuum valve 1 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: vacuum valve 1 state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -1837,33 +1800,32 @@ VV1_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 88
-	read_t: 1531391294.35
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VV1_ST:ChangeReporter (to ['VV1_OC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.35
+	timestamp: 1531992457.77
 	type: ('B', 1)
 
-VV1_ST:MeaningAttr:
-	alias: "VV1_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VV1_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.76"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.35"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.34725, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV1_Status (MeaningAttr):
+	alias: VV1_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV1_ST:MeaningAttr
+	noneValue: 0
+	owner: VV1_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.68
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.77
+	type: DevString
 
 VV2_OC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VV2_OC:Formula {read: "VALUE and not Attr[VV2_ST].rvalue == 4"}
 	label: vacuum valve 2 open
 	logLevel: warning
@@ -1872,35 +1834,35 @@ VV2_OC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 2
-	read_t: 1531391294.35
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
+	reporter: VV2_OC:ChangeReporter (to ['VV2_OC:GroupMember'])
 	rvalue: True
-	timestamp: 1531391294.35
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 2
 
-VV2_OC:MeaningAttr:
-	alias: "VV2_OC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VV2_OC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.87"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.35"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.34725, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV2_OC_Status (MeaningAttr):
+	alias: VV2_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV2_OC:MeaningAttr
+	noneValue: 0
+	owner: VV2_OC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.85
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.77
+	type: DevString
 
 VV2_ST (PLCAttr):
 	description: 'vacuum valve 2 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: vacuum valve 2 state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -1908,33 +1870,32 @@ VV2_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 89
-	read_t: 1531391294.35
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VV2_ST:ChangeReporter (to ['VV2_OC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.35
+	timestamp: 1531992457.77
 	type: ('B', 1)
 
-VV2_ST:MeaningAttr:
-	alias: "VV2_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VV2_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.77"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.51"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.507776, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV2_Status (MeaningAttr):
+	alias: VV2_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV2_ST:MeaningAttr
+	noneValue: 0
+	owner: VV2_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.69
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.77
+	type: DevString
 
 VV3_OC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VV3_OC:Formula {read: "VALUE and not Attr[VV3_ST].rvalue == 4"}
 	label: vacuum valve 3 open
 	logLevel: warning
@@ -1943,35 +1904,35 @@ VV3_OC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 3
-	read_t: 1531391294.51
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
+	reporter: VV3_OC:ChangeReporter (to ['VV3_OC:GroupMember'])
 	rvalue: True
-	timestamp: 1531391294.51
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 3
 
-VV3_OC:MeaningAttr:
-	alias: "VV3_OC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VV3_OC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.87"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.51"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.507776, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV3_OC_Status (MeaningAttr):
+	alias: VV3_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV3_OC:MeaningAttr
+	noneValue: 0
+	owner: VV3_OC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.86
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.77
+	type: DevString
 
 VV3_ST (PLCAttr):
 	description: 'vacuum valve 3 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: vacuum valve 3 state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -1979,33 +1940,32 @@ VV3_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 90
-	read_t: 1531391294.51
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VV3_ST:ChangeReporter (to ['VV3_OC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.51
+	timestamp: 1531992457.77
 	type: ('B', 1)
 
-VV3_ST:MeaningAttr:
-	alias: "VV3_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VV3_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.77"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.51"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.507776, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV3_Status (MeaningAttr):
+	alias: VV3_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV3_ST:MeaningAttr
+	noneValue: 0
+	owner: VV3_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.69
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.77
+	type: DevString
 
 VV4_OC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VV4_OC:Formula {read: "VALUE and not Attr[VV4_ST].rvalue == 4"}
 	label: vacuum valve 4 open
 	logLevel: warning
@@ -2014,35 +1974,35 @@ VV4_OC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 4
-	read_t: 1531391294.51
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
+	reporter: VV4_OC:ChangeReporter (to ['VV4_OC:GroupMember'])
 	rvalue: True
-	timestamp: 1531391294.51
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 4
 
-VV4_OC:MeaningAttr:
-	alias: "VV4_OC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VV4_OC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.88"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.51"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.507776, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV4_OC_Status (MeaningAttr):
+	alias: VV4_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV4_OC:MeaningAttr
+	noneValue: 0
+	owner: VV4_OC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.88
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.77
+	type: DevString
 
 VV4_ST (PLCAttr):
 	description: 'vacuum valve 4 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: vacuum valve 4 state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -2050,33 +2010,32 @@ VV4_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 91
-	read_t: 1531391294.51
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VV4_ST:ChangeReporter (to ['VV4_OC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.51
+	timestamp: 1531992457.77
 	type: ('B', 1)
 
-VV4_ST:MeaningAttr:
-	alias: "VV4_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VV4_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.78"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.51"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.507776, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV4_Status (MeaningAttr):
+	alias: VV4_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV4_ST:MeaningAttr
+	noneValue: 0
+	owner: VV4_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.7
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.77
+	type: DevString
 
 VV5_OC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VV5_OC:Formula {read: "VALUE and not Attr[VV5_ST].rvalue == 4"}
 	label: vacuum valve 5 open
 	logLevel: warning
@@ -2085,35 +2044,35 @@ VV5_OC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 5
-	read_t: 1531391294.67
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
+	reporter: VV5_OC:ChangeReporter (to ['VV5_OC:GroupMember'])
 	rvalue: True
-	timestamp: 1531391294.67
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 5
 
-VV5_OC:MeaningAttr:
-	alias: "VV5_OC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VV5_OC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.89"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.67"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.667598, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV5_OC_Status (MeaningAttr):
+	alias: VV5_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV5_OC:MeaningAttr
+	noneValue: 0
+	owner: VV5_OC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.89
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.77
+	type: DevString
 
 VV5_ST (PLCAttr):
 	description: 'vacuum valve 5 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: vacuum valve 5 state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -2121,33 +2080,32 @@ VV5_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 92
-	read_t: 1531391294.67
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VV5_ST:ChangeReporter (to ['VV5_OC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.67
+	timestamp: 1531992457.77
 	type: ('B', 1)
 
-VV5_ST:MeaningAttr:
-	alias: "VV5_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VV5_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.78"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.67"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.667598, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV5_Status (MeaningAttr):
+	alias: VV5_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV5_ST:MeaningAttr
+	noneValue: 0
+	owner: VV5_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.7
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.77
+	type: DevString
 
 VV6_OC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VV6_OC:Formula {read: "VALUE and not Attr[VV6_ST].rvalue == 4"}
 	label: vacuum valve 6 open
 	logLevel: warning
@@ -2156,35 +2114,35 @@ VV6_OC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 6
-	read_t: 1531391294.67
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
+	reporter: VV6_OC:ChangeReporter (to ['VV6_OC:GroupMember'])
 	rvalue: True
-	timestamp: 1531391294.67
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 6
 
-VV6_OC:MeaningAttr:
-	alias: "VV6_OC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VV6_OC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.9"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.67"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.667598, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV6_OC_Status (MeaningAttr):
+	alias: VV6_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV6_OC:MeaningAttr
+	noneValue: 0
+	owner: VV6_OC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.9
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.77
+	type: DevString
 
 VV6_ST (PLCAttr):
 	description: 'vacuum valve 6 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: vacuum valve 6 state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -2192,33 +2150,32 @@ VV6_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 93
-	read_t: 1531391294.67
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VV6_ST:ChangeReporter (to ['VV6_OC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.67
+	timestamp: 1531992457.77
 	type: ('B', 1)
 
-VV6_ST:MeaningAttr:
-	alias: "VV6_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VV6_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.78"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.67"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.667598, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV6_Status (MeaningAttr):
+	alias: VV6_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV6_ST:MeaningAttr
+	noneValue: 0
+	owner: VV6_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.71
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.77
+	type: DevString
 
 VV7_OC (PLCAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	formula: VV7_OC:Formula {read: "VALUE and not Attr[VV7_ST].rvalue == 4"}
 	label: vacuum valve 7 open
 	logLevel: warning
@@ -2227,35 +2184,35 @@ VV7_OC (PLCAttr):
 	quality: ATTR_VALID
 	read_addr: 116
 	read_bit: 7
-	read_t: 1531391294.83
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.77
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: True
+	reporter: VV7_OC:ChangeReporter (to ['VV7_OC:GroupMember'])
 	rvalue: True
-	timestamp: 1531391294.83
+	timestamp: 1531992457.77
 	type: DevBoolean
 	write_addr: 16
 	write_bit: 7
 
-VV7_OC:MeaningAttr:
-	alias: "VV7_OC_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'close', 1: 'open'}"
-	noneValue: "0"
-	owner: "VV7_OC (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.91"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "True:open"
-	timestamp: "1531391294.83"
-	type: "DevString"
-	value: "True:open"
-	vtq: "('True:open', 1531391294.827425, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV7_OC_Status (MeaningAttr):
+	alias: VV7_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV7_OC:MeaningAttr
+	noneValue: 0
+	owner: VV7_OC (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.91
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: True:open
+	timestamp: 1531992457.77
+	type: DevString
 
 VV7_ST (PLCAttr):
 	description: 'vacuum valve 7 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	label: vacuum valve 7 state
 	logLevel: warning
 	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
@@ -2263,29 +2220,28 @@ VV7_ST (PLCAttr):
 	noneValue: 0
 	quality: ATTR_VALID
 	read_addr: 94
-	read_t: 1531391294.83
-	read_t_str: Thu Jul 12 12:28:14 2018
+	read_t: 1531992457.93
+	read_t_str: Thu Jul 19 11:27:37 2018
 	read_value: 2
 	reporter: VV7_ST:ChangeReporter (to ['VV7_OC:Formula'])
 	rvalue: 2
-	timestamp: 1531391294.83
+	timestamp: 1531992457.93
 	type: ('B', 1)
 
-VV7_ST:MeaningAttr:
-	alias: "VV7_Status"
-	events: "{}"
-	logLevel: "warning"
-	meanings: "{0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}"
-	noneValue: "0"
-	owner: "VV7_ST (PLCAttr)"
-	quality: "ATTR_VALID"
-	read_t: "1531385705.79"
-	read_t_str: "Thu Jul 12 10:55:05 2018"
-	rvalue: "2:opened"
-	timestamp: "1531391294.83"
-	type: "DevString"
-	value: "2:opened"
-	vtq: "('2:opened', 1531391294.827425, PyTango._PyTango.AttrQuality.ATTR_VALID)"
+VV7_Status (MeaningAttr):
+	alias: VV7_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV7_ST:MeaningAttr
+	noneValue: 0
+	owner: VV7_ST (PLCAttr)
+	quality: ATTR_VALID
+	read_t: 1531990565.72
+	read_t_str: Thu Jul 19 10:56:05 2018
+	rvalue: 2:opened
+	timestamp: 1531992457.93
+	type: DevString
 
 HVG1_u (EnumerationAttr):
 	active: None
@@ -2297,9 +2253,9 @@ HVG1_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.08
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.08
+	read_t: 1531990566.13
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.13
 
 HVG2_u (EnumerationAttr):
 	active: None
@@ -2311,9 +2267,9 @@ HVG2_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.09
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.09
+	read_t: 1531990566.14
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.14
 
 HVG3_u (EnumerationAttr):
 	active: None
@@ -2325,9 +2281,9 @@ HVG3_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.09
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.09
+	read_t: 1531990566.15
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.15
 
 HVG4_u (EnumerationAttr):
 	active: None
@@ -2339,9 +2295,9 @@ HVG4_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.1
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.1
+	read_t: 1531990566.16
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.16
 
 HVG5_u (EnumerationAttr):
 	active: None
@@ -2353,9 +2309,9 @@ HVG5_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.11
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.11
+	read_t: 1531990566.18
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.18
 
 IP1_u (EnumerationAttr):
 	active: None
@@ -2367,9 +2323,9 @@ IP1_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385705.97
-	read_t_str: Thu Jul 12 10:55:05 2018
-	timestamp: 1531385705.97
+	read_t: 1531990566.0
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.0
 
 IP2_u (EnumerationAttr):
 	active: None
@@ -2381,9 +2337,9 @@ IP2_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385705.98
-	read_t_str: Thu Jul 12 10:55:05 2018
-	timestamp: 1531385705.98
+	read_t: 1531990566.01
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.01
 
 IP3_u (EnumerationAttr):
 	active: None
@@ -2395,9 +2351,9 @@ IP3_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385705.99
-	read_t_str: Thu Jul 12 10:55:05 2018
-	timestamp: 1531385705.99
+	read_t: 1531990566.04
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.04
 
 IP4_u (EnumerationAttr):
 	active: None
@@ -2409,9 +2365,9 @@ IP4_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.0
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.0
+	read_t: 1531990566.05
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.05
 
 IP5_u (EnumerationAttr):
 	active: None
@@ -2423,9 +2379,9 @@ IP5_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.02
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.02
+	read_t: 1531990566.06
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.06
 
 IP6_u (EnumerationAttr):
 	active: None
@@ -2437,9 +2393,9 @@ IP6_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.03
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.03
+	read_t: 1531990566.07
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.07
 
 IP7_u (EnumerationAttr):
 	active: None
@@ -2451,9 +2407,9 @@ IP7_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.04
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.04
+	read_t: 1531990566.08
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.08
 
 IP8_u (EnumerationAttr):
 	active: None
@@ -2465,9 +2421,9 @@ IP8_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.05
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.05
+	read_t: 1531990566.11
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.11
 
 IP9_u (EnumerationAttr):
 	active: None
@@ -2479,9 +2435,9 @@ IP9_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.06
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.06
+	read_t: 1531990566.12
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.12
 
 IPC1_u (EnumerationAttr):
 	active: None
@@ -2493,9 +2449,9 @@ IPC1_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.12
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.12
+	read_t: 1531990566.19
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.19
 
 IPC2_u (EnumerationAttr):
 	active: None
@@ -2507,9 +2463,9 @@ IPC2_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.13
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.13
+	read_t: 1531990566.2
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.2
 
 IPC3_u (EnumerationAttr):
 	active: None
@@ -2521,9 +2477,9 @@ IPC3_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.14
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.14
+	read_t: 1531990566.21
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.21
 
 IPC4_u (EnumerationAttr):
 	active: None
@@ -2535,9 +2491,9 @@ IPC4_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.2
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.2
+	read_t: 1531990566.22
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.22
 
 IPC5_u (EnumerationAttr):
 	active: None
@@ -2549,65 +2505,66 @@ IPC5_u (EnumerationAttr):
 	noneValue: 0
 	numeric: 0
 	quality: ATTR_INVALID
-	read_t: 1531385706.21
-	read_t_str: Thu Jul 12 10:55:06 2018
-	timestamp: 1531385706.21
+	read_t: 1531990566.23
+	read_t_str: Thu Jul 19 10:56:06 2018
+	timestamp: 1531990566.23
 
-VVall_OC (InternalAttr):
+VVall_OC (GroupAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	logLevel: warning
+	members: ['VV6_OC', 'VV4_OC', 'VV5_OC', 'VV3_OC', 'VV1_OC', 'VV2_OC', 'VV7_OC']
 	name: VVall_OC
 	quality: ATTR_VALID
-	read_set: [(116, 1), (116, 2), (116, 3), (116, 4), (116, 5), (116, 6), (116, 7)]
-	read_t: 1531385705.91
-	read_t_str: Thu Jul 12 10:55:05 2018
-	timestamp: 1531385705.91
+	read_t: 1531990565.92
+	read_t_str: Thu Jul 19 10:56:05 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1531990565.92
 	type: DevBoolean
-	write_set: [(16, 1), (16, 2), (16, 3), (16, 4), (16, 5), (16, 6), (16, 7)]
 
-cl1_ready (InternalAttr):
+cl1_ready (LogicAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: cl1_ready:Logic ({'CL1_ST': [1, 6]}, and, normal)
+	logic: ({'CL1_ST': [1, 6]}, and, normal)
 	name: cl1_ready
 	quality: ATTR_VALID
-	read_t: 1531385706.24
-	read_t_str: Thu Jul 12 10:55:06 2018
+	read_t: 1531990578.1
+	read_t_str: Thu Jul 19 10:56:18 2018
 	read_value: True
 	reporter: cl1_ready:ChangeReporter (to ['CL1_ONC:Formula'])
 	rvalue: True
-	timestamp: 1531385706.24
+	timestamp: 1531990578.1
 	type: DevBoolean
 
-cl2_ready (InternalAttr):
+cl2_ready (LogicAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: cl2_ready:Logic ({'CL2_ST': [1, 4]}, and, normal)
+	logic: ({'CL2_ST': [1, 4]}, and, normal)
 	name: cl2_ready
 	quality: ATTR_VALID
-	read_t: 1531385706.24
-	read_t_str: Thu Jul 12 10:55:06 2018
+	read_t: 1531990578.11
+	read_t_str: Thu Jul 19 10:56:18 2018
 	read_value: True
 	reporter: cl2_ready:ChangeReporter (to ['CL2_ONC:Formula'])
 	rvalue: True
-	timestamp: 1531385706.24
+	timestamp: 1531990578.11
 	type: DevBoolean
 
-cl3_ready (InternalAttr):
+cl3_ready (LogicAttr):
 	device: LinacData(li/ct/plc2)
-	events: Always Emit 'Thu Jul 12 10:55:06 2018' ATTR_VALID
+	events: Always Emit 'Thu Jul 19 10:56:18 2018' ATTR_VALID
 	logLevel: warning
-	logicObj: cl3_ready:Logic ({'CL3_ST': [1, 4]}, and, normal)
+	logic: ({'CL3_ST': [1, 4]}, and, normal)
 	name: cl3_ready
 	quality: ATTR_VALID
-	read_t: 1531385706.26
-	read_t_str: Thu Jul 12 10:55:06 2018
+	read_t: 1531990578.11
+	read_t_str: Thu Jul 19 10:56:18 2018
 	read_value: True
 	reporter: cl3_ready:ChangeReporter (to ['CL3_ONC:Formula'])
 	rvalue: True
-	timestamp: 1531385706.26
+	timestamp: 1531990578.11
 	type: DevBoolean
 
