@@ -28,10 +28,7 @@ class InternalAttr(LinacAttr):
     _meanings = None
     _meaningsObj = None
 
-    _logicObj = None
-
-    def __init__(self, isWritable=False, defaultValue=None, meanings=None,
-                 *args, **kwargs):
+    def __init__(self, defaultValue=None, meanings=None, *args, **kwargs):
         """
             Class to describe an attribute that references information from
             any of the Linac's PLCs.
