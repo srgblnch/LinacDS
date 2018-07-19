@@ -68,8 +68,8 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
     _formulaObj = None
 
     def __init__(self, name, valueType, label=None, description=None,
-                 events=None, minValue=None, maxValue=None, formula=None,
-                 *args, **kwargs):
+                 events=None, minValue=None, maxValue=None, qualities=None,
+                 formula=None, *args, **kwargs):
         # meanings must be is a subclass of LinacAttr or
         # generates a circular import because MeaningAttr
         # inherits from LinacAttr.
@@ -102,6 +102,7 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
             self._minValue = minValue
         if maxValue:
             self._maxValue = maxValue
+        self._qualities = qualities
         self.setFormula(formula)
 
     def __str__(self):

@@ -38,7 +38,6 @@ class PLCAttr(LinacAttr):
 
     _meanings = None
     _meaningsObj = None
-    _qualities = None
 
     _readbackAttrName = None
     _setpointAttrName = None
@@ -48,12 +47,9 @@ class PLCAttr(LinacAttr):
     _rst_t = None
 
     def __init__(self, valueFormat=None,
-                 readAddr=None, readBit=None,
-                 writeAddr=None, writeBit=None,
-                 meanings=None, qualities=None,
-                 readback=None, setpoint=None, switch=None,
-                 IamChecker=None, isRst=None,
-                 *args, **kwargs):
+                 readAddr=None, readBit=None, writeAddr=None, writeBit=None,
+                 meanings=None, readback=None, setpoint=None, switch=None,
+                 IamChecker=None, isRst=None, *args, **kwargs):
         """
             Class to describe an attribute that references information from
             any of the Linac's PLCs.
@@ -66,7 +62,6 @@ class PLCAttr(LinacAttr):
         self._writeBit = writeBit or readBit
 
         self.meanings = meanings
-        self._qualities = qualities
 
         self._readbackAttrName = readback
         self._setpointAttrName = setpoint
