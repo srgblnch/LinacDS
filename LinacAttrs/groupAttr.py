@@ -80,6 +80,8 @@ class GroupAttr(InternalAttr):
                 obj.addReportTo(member, member.valueChange)
             else:
                 self.error("Unable to find %s member of the group" % (element))
+                # FIXME: this may happen if the construction of this object
+                #        happen before the member declaration.
 
     @property
     def members(self):

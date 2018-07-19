@@ -57,6 +57,10 @@ __license__ = "GPLv3+"
                     suffixes=None, :String to end with the attribute name
                     **kwargs)
 
+    GrpBit(name,         :Name of the resulting boolean attribute
+           attrGroup=[], :List of attributes members of the group
+           **kwargs)
+
    kwargs: l=None,        :label of the attribute
            d=None,        :description of the attribute
            minValue=None, :minimum value allowed
