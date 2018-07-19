@@ -17,7 +17,7 @@
 
 from .abstract import _AbstractAttrDict, _AbstractAttrTango
 from .LinacFeatures import Events, ChangeReporter, Formula
-from .LinacFeatures import CircularBuffer
+from .LinacFeatures import CircularBuffer, QualityInterpreter
 from PyTango import AttrQuality
 from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
@@ -102,8 +102,10 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
             self._minValue = minValue
         if maxValue:
             self._maxValue = maxValue
-        self._qualities = qualities
-        self.setFormula(formula)
+        if qualities is not None:
+            self.qualities = qualities
+        if formula is not None:
+            self.setFormula(formula)
 
     def __str__(self):
         return "%s (%s)" % (self.name, self.__class__.__name__)
@@ -306,7 +308,11 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     @qualities.setter
     def qualities(self, value):
-        self._qualities = value
+        if value is not None:
+            self._qualities = QualityInterpreter(owner=self,
+                                                 descriptor=value)
+        else:
+            self._qualities = None
 
     @property
     def events(self):

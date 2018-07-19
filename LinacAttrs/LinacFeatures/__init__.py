@@ -21,6 +21,7 @@ from .events import Events, EventCtr
 from .feature import _LinacFeature
 from .formulas import Formula
 from .memorised import Memorised
+from .qualities import QualityInterpreter
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
