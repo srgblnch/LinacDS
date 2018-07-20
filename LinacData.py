@@ -422,8 +422,16 @@ class AttrList(object):
         self.impl._internalAttrs[name] = attrObj
         rfun = attrObj.read_attr
         wfun = attrObj.write_attr
+        toReturn = [self.add_Attr(name, PyTango.DevBoolean, rfun, wfun,
+                                  **kwargs)]
+        if qualities is not None:
+            attrObj.qualities = qualities
+        if meanings is not None:
+            meaningAttr = self._buildMeaningAttr(attrObj, meanings, rfun,
+                                                 **kwargs)
+            toReturn.append(meaningAttr)
         self._prepareEvents(name, events)
-        return self.add_Attr(name, PyTango.DevBoolean, rfun, wfun, **kwargs)
+        return tuple(toReturn)
 
     def add_AttrLogic(self, name, logic, label, desc, events=None,
                       operator='and', inverted=False, **kwargs):
@@ -839,21 +847,29 @@ class AttrList(object):
         attrState = self.add_Attr(attrName, attrType, rfun, wfun, **kwargs)
         # then prepare the human readable attribute as a feature
         attrStruct = self.impl._plcAttrs[attrName]
-        attrStruct.meanings = meanings
         attrStruct.qualities = qualities
-        if attrName.endswith('_ST'):
-            meaningAttrName = attrName.replace('_ST', '_Status')
+        attrTuple = self._buildMeaningAttr(attrStruct, meanings, rfun,
+                                             **kwargs)
+        toReturn = (attrState,)
+        toReturn += (attrTuple,)
+        return toReturn
+
+    def _buildMeaningAttr(self, attrObj, meanings, rfun, historyBuffer=None,
+                          **kwargs):
+        if attrObj.name.endswith('_ST'):
+            name = attrObj.name.replace('_ST', '_Status')
         else:
-            meaningAttrName = "%s_Status" % (attrName)
-        self.impl._plcAttrs[meaningAttrName] = attrStruct._meaningsObj
-        self.impl._plcAttrs[meaningAttrName].meanings = meanings
-        self.impl._plcAttrs[meaningAttrName].alias = meaningAttrName
-        self.impl._plcAttrs[meaningAttrName].qualities = attrStruct.qualities
-        meaningAttr = self.add_Attr(meaningAttrName, PyTango.DevString, rfun,
-                                    wfun=None, **kwargs)
-        toReturn = (attrState, meaningAttr)
+            name = "%s_Status" % (attrObj.name)
+        attrObj.meanings = meanings
+        self.impl._plcAttrs[name] = attrObj._meaningsObj
+        self.impl._plcAttrs[name].alias = name
+        self.impl._plcAttrs[name].meanings = meanings
+        self.impl._plcAttrs[name].qualities = attrObj.qualities
+        meaningAttr = self.add_Attr(name, PyTango.DevString, rfun, wfun=None,
+                                    **kwargs)
+        toReturn = (meaningAttr)
         if historyBuffer is not None:
-            attrHistoryName = "%s_History" % (meaningAttrName)
+            attrHistoryName = "%s_History" % (attrStruct._meaningsalias)
             attrStruct.history = historyBuffer
             historyStruct = attrStruct._historyObj
             historyStruct.history = historyBuffer
@@ -866,20 +882,9 @@ class AttrList(object):
             attrHistory = self.add_Attr(attrHistoryName, PyTango.DevString,
                                         rfun=historyStruct.read_attr,
                                         xdim=xdim, **kwargs)
-#             historyDescription = copy(attrStruct)
-#             self.impl._plcAttrs[attrHistoryName] = historyDescription
-#             self.impl._plcAttrs[attrHistoryName][READVALUE] =\
-#                 HistoryBuffer(historyBuffer[BASESET], maxlen=HISTORYLENGTH,
-#                               owner=self.impl._plcAttrs[attrHistoryName])
-#             self.impl._plcAttrs[attrHistoryName][BASESET] =\
-#                 historyBuffer[BASESET]
-#             xdim = self.impl._plcAttrs[attrHistoryName][READVALUE].maxSize()
-#             attrHistory = self.add_Attr(attrHistoryName, PyTango.DevString,
-#                                         # attrType,
-#                                         rfun=self.impl.read_spectrumAttr,
-#                                         xdim=xdim, **kwargs)
             toReturn += (attrHistory,)
         return toReturn
+
 
     def _prepareAttrWithQualities(self, attrName, attrType, qualities,
                                   rfun, wfun, label=None, unit=None,
