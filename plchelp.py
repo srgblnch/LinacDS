@@ -90,12 +90,15 @@ __license__ = "GPLv3+"
                                events. But the comparison is with the last
                                value emitted to avoid smooth changes mask.
 
-    qualities={WARNING|ALARM|CHANGING: :Root block to specify which quality
-               [values]                :List of values that requires the
-                                        root quality (state-like attrs)
-               {ABSOLUTE|RELATIVE:     :When working with float or decimal
-                                        values a comparison could be set up
-                {BELOW|ABOVE: value}   :Leaf of the specification
+    qualities={WARNING|ALARM|CHANGING:  :Root block to specify which quality
+               [values]                 :List of values that requires the
+                                         root quality (state-like attrs)
+               {ABSOLUTE: {BELOW|ABOVE: :When working with float or decimal
+                           float,        values a comparison could be set up
+                           UNDER: bool}  as absolute with bounds (use under to 
+                                         define if out of or within the bounds), 
+                RELATIVE: float          or relative when the attribute stores 
+                                         a buffer.
                }}
 
     rampDescriptor={ASCENDING|DESCENDING: :Ramps can be deferent based on their
