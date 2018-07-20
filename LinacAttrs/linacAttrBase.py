@@ -308,7 +308,9 @@ class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
 
     @qualities.setter
     def qualities(self, value):
-        if value is not None:
+        if isinstance(value, QualityInterpreter):
+            self._qualities = value
+        elif value is not None:
             self._qualities = QualityInterpreter(owner=self,
                                                  descriptor=value)
         else:
