@@ -563,9 +563,7 @@ class AttrList(object):
 
     def add_AttrLock_ST(self, read_addr):
         COMM_STATUS = {0: 'unlocked', 1: 'local', 2: 'remote'}
-        COMM_QUALITIES = {0: PyTango.AttrQuality.ATTR_ALARM,
-                          1: PyTango.AttrQuality.ATTR_VALID,
-                          2: PyTango.AttrQuality.ATTR_WARNING}
+        COMM_QUALITIES = {ALARM: [0], WARNING: [2]}
         plc_name = self.impl.get_name().split('/')[-1]
         desc = 'lock status %s' % plc_name
         # This attr was a number but for the user what shows the ----
@@ -842,6 +840,7 @@ class AttrList(object):
         # then prepare the human readable attribute as a feature
         attrStruct = self.impl._plcAttrs[attrName]
         attrStruct.meanings = meanings
+        attrStruct.qualities = qualities
         if attrName.endswith('_ST'):
             meaningAttrName = attrName.replace('_ST', '_Status')
         else:
@@ -849,6 +848,7 @@ class AttrList(object):
         self.impl._plcAttrs[meaningAttrName] = attrStruct._meaningsObj
         self.impl._plcAttrs[meaningAttrName].meanings = meanings
         self.impl._plcAttrs[meaningAttrName].alias = meaningAttrName
+        self.impl._plcAttrs[meaningAttrName].qualities = attrStruct.qualities
         meaningAttr = self.add_Attr(meaningAttrName, PyTango.DevString, rfun,
                                     wfun=None, **kwargs)
         toReturn = (attrState, meaningAttr)
