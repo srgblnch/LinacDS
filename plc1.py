@@ -140,21 +140,21 @@ AttrBit('TB_ST',
         label='Timer Status State',
         meanings={0: 'off',
                   1: 'ready'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('A0_ST',
         68, 4,  # RO
         label='500MHz amplifier status',
         meanings={0: 'off',
                   1: 'ready'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('RFS_ST',
         68, 5,  # RO
         label='RF source Status',
         meanings={0: 'off',
                   1: 'ready'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 
 # R069 @DI_8to15 ---
@@ -165,42 +165,42 @@ AttrBit('EG_ENB',
         label='Electron gun enabled (PSS)',
         meanings={0: 'disabled',
                   1: 'enabled'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('KA_ENB',
         70, 1,  # RO
         label='Klystron amplifier enabled (PSS)',
         meanings={0: 'disabled',
                   1: 'enabled'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('TL_VOK',
         70, 2,  # RO
         label='Transfer line vacuum OK (PSS)',
         meanings={0: 'bad vacuum',
                   1: 'good vacuum'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('IU_RDY',
         70, 5,  # RO
         label='Interlock unit ready',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('W1_UF',
         70, 6,  # RO
         label='Window 1 underflow state',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('W2_UF',
         70, 7,  # RO
         label='Window 2 underflow state',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 
 # R71 @DI_24to31 ---
@@ -209,56 +209,56 @@ AttrBit('W3_UF',
         label='Window 3 underflow state',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('RL1_UF',
         71, 1,  # RO
         label='Resistor load 1 underflow state',
         meanings={0: 'underflow',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('RL2_UF',
         71, 2,  # RO
         label='Resistor load 2 underflow state',
         meanings={0: 'underflow',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('RL3_UF',
         71, 3,  # RO
         label='Resistor load 3 underflow state',
         meanings={0: 'underflow',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('UT_IS',
         71, 4,  # RO
         label='Utilities Interlock state',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('MG_IS',
         71, 5,  # RO
         label='Magnet Interlock state',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('GM_DI',
         71, 6,  # RO
         label='Gun Modulator door interlock',
         meanings={0: 'door open',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('LI_VOK',
         71, 7,  # RO
         label='Linac Vacuum OK',
         meanings={0: 'bad vacuum',
                   1: 'good vacuum'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 
 # R072 @DI_Comm ---
@@ -270,14 +270,14 @@ AttrBit('PLC1_PR',
         label='PLC1 profibus receive status',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('PLC1_PS',
         72, 4,  # RO
         label='PLC1 profibus send status',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 
 # R073 @DI_ITLK_K ---
@@ -286,14 +286,14 @@ AttrBit('SF6_P1_ST',
         label='SF6 pressure 1 state',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('SF6_P2_ST',
         73, 1,  # RO
         label='SF6 pressure 2 state',
         meanings={0: 'fault',
                   1: 'normal'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={})
 AttrBit('KA1_OK',  # KA1_EN
         73, 2,  # RO
@@ -678,7 +678,7 @@ AttrBit('TB_MBM',
         desc='timer multi bunch mode enabled; False:SBM, True:MBM',
         meanings={0: 'SBM',
                   1: 'MBM'},
-        qualities={0: PyTango.AttrQuality.ATTR_WARNING},
+        qualities={WARNING: [False]},
         events={})
 
 AttrBit('GUN_HV_ONC',  # HVS_OC
@@ -687,8 +687,7 @@ AttrBit('GUN_HV_ONC',  # HVS_OC
         desc='high voltage PS; False:OFF, True:ON',
         meanings={0: 'off',
                   1: 'on'},
-        qualities={0: PyTango.AttrQuality.ATTR_WARNING,
-                   1: PyTango.AttrQuality.ATTR_VALID},
+        qualities={WARNING: [False]},
         events={},
         formula={'read': 'VALUE and Attr[Gun_HV_ST].rvalue == 4'},
         switchDescriptor={ATTR2RAMP: 'GUN_HV_V_setpoint',
@@ -715,7 +714,7 @@ AttrBit('GUN_LV_ONC',
         desc='gun low voltage: False:OFF, True:ON',
         meanings={0: 'off',
                   1: 'on'},
-        qualities={WARNING: [0]},
+        qualities={WARNING: [False]},
         events={},
         formula={'read':
                  'VALUE and Attr[Gun_ST].rvalue in [1,4,7,8]',

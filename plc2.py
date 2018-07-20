@@ -87,20 +87,20 @@ for i in range(8):
             84, i,  # RO
             label='ion pump %d status' % (number),
             meanings={0: 'off', 1: 'on'},
-            qualities={WARNING: [0]}, events={})
+            qualities={WARNING: [False]}, events={})
 
 # R085 @DI_8to15 ---
 AttrBit('IP9_ST',
         85, 0,  # RO
         label='ion pump 9 status',
         meanings={0: 'off', 1: 'on'},
-        qualities={WARNING: [0]}, events={})
+        qualities={WARNING: [False]}, events={})
 
 AttrBit('VC_OK',  # LI_VOK
         85, 1,  # RO
         label='linac vacuum okay',
         meanings={0: 'bad vacuum', 1: 'good vacuum'},
-        qualities={WARNING: [0]}, events={})
+        qualities={WARNING: [False]}, events={})
 
 for i in range(5):
     number = i+1
@@ -110,14 +110,14 @@ for i in range(5):
             desc='high vacuum gauge %d interlock; False:fault, True:ready'
                  % (number),
             meanings={0: 'fault', 1: 'ready'},
-            qualities={WARNING: [0]}, events={})
+            qualities={WARNING: [False]}, events={})
 
 AttrBit('IP1_IS',
         85, 7,  # RO
         label='ion pump 1 interlock',
         desc='ion pump 1 interlock; False:fault, True:ready',
         meanings={0: 'fault', 1: 'ready'},
-        qualities={WARNING: [0]}, events={})
+        qualities={WARNING: [False]}, events={})
 
 # R086 @DI_Spare ---
 for i in range(8):
@@ -127,7 +127,7 @@ for i in range(8):
             label='ion pump %d interlock' % (number),
             desc='ion pump %d interlock; False:fault, True:ready' % (number),
             meanings={0: 'fault', 1: 'ready'},
-            qualities={WARNING: [0]}, events={})
+            qualities={WARNING: [False]}, events={})
 
 # R087 @CV_ST ---
 VALVE_STATUS = {0: 'undefined',
@@ -241,7 +241,7 @@ AttrBit('AC_IS',
         99, 1,
         label='compressed air interlock state',
         meanings={0: 'fault', 1: 'good'},
-        qualities={WARNING: [0]}, events={})
+        qualities={WARNING: [False]}, events={})
 
 # ## Read/Write attributes ---
 
@@ -266,7 +266,7 @@ AttrBit('VCV_ONC',
         116, 0, 16,
         label='collimator valve open',
         meanings={0: 'close', 1: 'open'},
-        qualities={WARNING: [0]}, events={},
+        qualities={WARNING: [False]}, events={},
         formula={'read': 'VALUE and not Attr[VCV_ST].rvalue == 4'}
         )
 
@@ -276,14 +276,14 @@ for i in range(7):
             116, 1+i, 16,
             label='vacuum valve %d open' % (number),
             meanings={0: 'close', 1: 'open'},
-            qualities={WARNING: [0]}, events={},
+            qualities={WARNING: [False]}, events={},
             formula={'read': 'VALUE and not Attr[VV%d_ST].rvalue == 4'
                              % (number)})
 
 GrpBit('VVall_OC',
        attrGroup=['VV%s_OC' % i for i in range(1,8)],
        label='all vacuum valves open', meanings={0: 'close', 1: 'open'},
-       qualities={WARNING: [0]}, events={})
+       qualities={WARNING: [False]}, events={})
 
 # R117 W017 @DO_8to15 ---
 AttrBit('Util_Interlock_RC',
@@ -305,7 +305,7 @@ for i in range(3):
             117, i+2, 17,
             label='cooling loop %d on' % (number),
             meanings={0: 'off', 1: 'on'},
-            qualities={WARNING: [0]}, events={},
+            qualities={WARNING: [False]}, events={},
             formula={'read': 'VALUE and Attr[cl%d_ready].rvalue == True'
                              % (number)})
 

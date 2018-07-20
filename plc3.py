@@ -173,7 +173,7 @@ GrpBit('all_onc',
        attrGroup=['%s_ONC' % m for m in ['SL1', 'SL2', 'SL3', 'SL4','BC1',
                                          'BC2', 'GL', 'AS1', 'QT', 'AS2']],
        label='all magnet on', meanings={0: 'close', 1: 'open'},
-       qualities={WARNING: [0]}, events={})
+       qualities={WARNING: [False]}, events={})
 
 for magnet in ['SL1', 'SL2', 'SL3', 'SL4', 'BC1', 'BC2', 'GL']:
     AttrLogic('%s_cooling' % (magnet),
