@@ -265,7 +265,7 @@ class _AbstractAttrDict(_AbstractAttrLog):
         self[key] = None
 
 
-class _AbstractAttrTango(_AbstractAttrLog):
+class _AbstractAttrTango(_AbstractAttrDict):
 
     _device = None
     _attr = None

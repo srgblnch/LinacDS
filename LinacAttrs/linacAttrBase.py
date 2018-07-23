@@ -43,7 +43,7 @@ TYPE_MAP = {DevUChar: ('B', 1),
             }
 
 
-class LinacAttrBase(_AbstractAttrDict, _AbstractAttrTango):
+class LinacAttrBase(_AbstractAttrTango):
 
     _name = None
     _type = None
