@@ -54,7 +54,7 @@ class InterlockReset(_LinacFeature):
     def clean(self):
         if currentThread() is self._thread:
             self.info("Clean the reset")
-            #self.owner.write_value = False
+            self.owner.write_value = False
             self._thread = None
         else:
             self.error("This thread is not allowed to call this method")

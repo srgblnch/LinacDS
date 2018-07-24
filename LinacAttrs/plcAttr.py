@@ -228,7 +228,7 @@ class PLCAttr(LinacAttr):
 
     def _evalQuality(self):
         # self.info("PLCAttr._evalQuality()")
-        if self.isTooFarEnable() and self._setpointAttrName is not None:
+        if self._setpointAttrName is not None and self.isTooFarEnable():
             # self.info("TooFar is enable and there is a Setpoint Attr %s"
             #           % (self._setpointAttrName))
             if self._setpointAttrObj is None and \
@@ -249,3 +249,8 @@ class PLCAttr(LinacAttr):
         # once made the check, the superclass implementation is called just
         # to know if there is a QualityInterpreter to be evaluated above this
         super(PLCAttr, self)._evalQuality()
+
+    def doWriteValue(self, value):
+        if self._rst is not None:
+            self._rst.prepare()
+        super(PLCAttr, self).doWriteValue(value)
