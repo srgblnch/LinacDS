@@ -37,21 +37,36 @@ class TooFarCondition(_LinacFeature):
         self._setpointAttr = setpointAttr
         self._closeZero = closeZero
         self._relPercentage = relPercentage
+        self.log("Build TooFarCondition feature object")
 
     @property
     def setpointAttr(self):
         return self._setpointAttr
 
     def checkCondition(self):
+        self.info("check condition")
         setpoint = self._setpointAttr.rvalue
         readback = self._owner.rvalue
         if (-self._closeZero < setpoint < self._closeZero) or readback == 0:
+            # self.info("(%s < %s < %s) or (%s == 0): %s or %s"
+            #           % (-self._closeZero, setpoint, self._closeZero,
+            #              readback,
+            #              -self._closeZero < setpoint < self._closeZero,
+            #              readback == 0))
             diff = abs(setpoint - readback)
+            # self.info("diff: abs(%s-%s) = %s" % (setpoint, readback, diff))
             if (diff > self._closeZero):
                 return True
         else:
             diff = abs(setpoint / readback)
+            # self.info("diff: abs(%s/%s) = %s" % (setpoint, readback, diff))
             # 10%
+            # self.info("(1-%s > %s) or (%s > 1+%s) = %s or %s = %s"
+            #          % (self._relPercentage, diff, diff, self._relPercentage,
+            #             1 - self._relPercentage > diff,
+            #             diff > 1 + self._relPercentage,
+            #             (1 - self._relPercentage > diff or
+            #              diff > 1 + self._relPercentage)))
             if (1 - self._relPercentage > diff or
                     diff > 1 + self._relPercentage):
                 return True

@@ -168,6 +168,9 @@ class PLCAttr(LinacAttr):
 
     def _buildReadbackObj(self):
         self._readbackAttrObj = self._getOtherAttrObj(self._readbackAttrName)
+        if self._readbackAttrObj is not None:
+            self.debug("Readback Object build with %s"
+                       % (self._readbackAttrName))
         return self._readbackAttrObj
 
     @property
@@ -176,6 +179,9 @@ class PLCAttr(LinacAttr):
 
     def _buildSetpointObj(self):
         self._setpointAttrObj = self._getOtherAttrObj(self._setpointAttrName)
+        if self._setpointAttrObj is not None:
+            self.debug("Setpoint Object build with %s"
+                       % (self._setpointAttrName))
         return self._setpointAttrObj
 
     @property
@@ -184,6 +190,9 @@ class PLCAttr(LinacAttr):
 
     def _buildSwitchObj(self):
         self._switchAttrObj = self._getOtherAttrObj(self._switchAttrName)
+        if self._switchAttrObj is not None:
+            self.debug("Switch Object build with %s"
+                       % (self._switchAttrName))
         return self._switchAttrObj
 
     @property
@@ -215,10 +224,10 @@ class PLCAttr(LinacAttr):
         self._meanings = value
 
     def _evalQuality(self):
-        self.log("PLCAttr._evalQuality()")
+        # self.info("PLCAttr._evalQuality()")
         if self.isTooFarEnable() and self._setpointAttrName is not None:
-            self.log("TooFar is enable and there is a Setpoint Attr %s"
-                     % (self._setpointAttrName))
+            # self.info("TooFar is enable and there is a Setpoint Attr %s"
+            #           % (self._setpointAttrName))
             if self._setpointAttrObj is None and \
                     self._buildSetpointObj() is None:
                 return  # Couldn't build the setpoint object
@@ -227,7 +236,13 @@ class PLCAttr(LinacAttr):
                     owner=self, setpointAttr=self._setpointAttrObj)
             # Once here one have the object build for sure
             if self._tooFarCondition.checkCondition():
+                # self.info("Readback is too far from setpoint!")
                 self._quality = AttrQuality.ATTR_WARNING
+                self.info("After check TooFar condition, quality is: %s"
+                          % (self._quality))
+                return  # break check this wins
+            self.info("After check TooFar condition, quality is: %s"
+                      % (self._quality))
         # once made the check, the superclass implementation is called just
         # to know if there is a QualityInterpreter to be evaluated above this
         super(PLCAttr, self)._evalQuality()
