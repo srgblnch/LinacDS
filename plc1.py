@@ -520,14 +520,14 @@ AttrRampeable('GUN_Filament_V_setpoint',
               format='%4.1f', minValue=0, maxValue=10, unit='V',
               events={THRESHOLD: 0.01},
               qualities={WARNING: {ABSOLUTE: {BELOW: 0}}},
-              rampsDescriptor={DESCENDING: {STEP: 1,  # V
-                                            STEPTIME: 1,  # s
-                                            THRESHOLD: 10,  # V
-                                            SWITCH: 'GUN_LV_ONC'},
-                               ASCENDING: {STEP: 1,  # V
-                                           STEPTIME: 1,  # s
-                                           THRESHOLD: 0,  # V
-                                           SWITCH: 'GUN_LV_ONC'}},
+              # rampsDescriptor={DESCENDING: {STEP: 1,  # V
+              #                               STEPTIME: 1,  # s
+              #                               THRESHOLD: 10,  # V
+              #                               SWITCH: 'GUN_LV_ONC'},
+              #                  ASCENDING: {STEP: 1,  # V
+              #                              STEPTIME: 1,  # s
+              #                              THRESHOLD: 0,  # V
+              #                              SWITCH: 'GUN_LV_ONC'}},
               readback='GUN_Filament_V',
               switch='GUN_LV_ONC')
 
@@ -549,15 +549,15 @@ AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
               desc='high voltage PS voltage',
               format='%4.1f', minValue=-90, maxValue=0, unit='kV',
               events={THRESHOLD: 0.01},
-              rampsDescriptor={DESCENDING: {STEP: 1,  # kV
-                                            STEPTIME: 1,  # s
-                                            THRESHOLD: -50,  # kV
-                                            SWITCH: 'GUN_HV_ONC'},
-                               # ASCENDING: {STEP: 5,  # kV
-                               #             STEPTIME: 0.5,  # s
-                               #             THRESHOLD: -90,  # kV
-                               #             SWITCH: 'GUN_HV_ONC'}
-                               },
+              # rampsDescriptor={DESCENDING: {STEP: 1,  # kV
+              #                               STEPTIME: 1,  # s
+              #                               THRESHOLD: -50,  # kV
+              #                               SWITCH: 'GUN_HV_ONC'},
+              #                  # ASCENDING: {STEP: 5,  # kV
+              #                  #             STEPTIME: 0.5,  # s
+              #                  #             THRESHOLD: -90,  # kV
+              #                  #             SWITCH: 'GUN_HV_ONC'}
+              #                  },
               readback='GUN_HV_V',
               switch='GUN_HV_ONC')
               # User request (back) to limit the device setpoint to avoid
@@ -690,14 +690,14 @@ AttrBit('GUN_HV_ONC',  # HVS_OC
         qualities={WARNING: [False]},
         events={},
         formula={'read': 'VALUE and Attr[Gun_HV_ST].rvalue == 4'},
-        switchDescriptor={ATTR2RAMP: 'GUN_HV_V_setpoint',
-                          WHENON:
-                          {FROM: 'GUN_HV_V_setpoint_Descending_Threshold'},
-                          # from where the WRITEVALUE say
-                          # WHENOFF: {TO: 0},  # to where the WRITEVALUE say
-                          AUTOSTOP: 'GUN_HV_I_'+AUTOSTOP,
-                          # to know where it has the autostop feature
-                          },
+        # switchDescriptor={ATTR2RAMP: 'GUN_HV_V_setpoint',
+        #                   WHENON:
+        #                   {FROM: 'GUN_HV_V_setpoint_Descending_Threshold'},
+        #                   # from where the WRITEVALUE say
+        #                   # WHENOFF: {TO: 0},  # to where the WRITEVALUE say
+        #                   AUTOSTOP: 'GUN_HV_I_'+AUTOSTOP,
+        #                   # to know where it has the autostop feature
+        #                   },
         readback='GUN_HV_V',
         setpoint='GUN_HV_V_setpoint')
 
@@ -723,9 +723,9 @@ AttrBit('GUN_LV_ONC',
                  'write_not_allowed':
                      'Filament voltage cannot be switch ON/OFF '
                      'with e-Gun HV ON.'},
-        switchDescriptor={ATTR2RAMP: 'GUN_Filament_V_setpoint',
-                          WHENON: {FROM: 0},
-                          WHENOFF: {TO: 0}},
+        # switchDescriptor={ATTR2RAMP: 'GUN_Filament_V_setpoint',
+        #                   WHENON: {FROM: 0},
+        #                   WHENOFF: {TO: 0}},
         readback='GUN_Filament_V',
         setpoint='GUN_Filament_V_setpoint')
         # formula['write'] condition: avoid LV on/off when HV is on

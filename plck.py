@@ -181,10 +181,10 @@ AttrRampeable('HVPS_V_setpoint',
               unit='kV', minValue=0, maxValue=33, format='%4.2f',
               events={THRESHOLD: 0.005},
               qualities={CHANGING: {'rel': 0.1}},
-              rampsDescriptor={ASCENDING: {STEP: 0.5,  # kV
-                                           STEPTIME: 1,  # s
-                                           THRESHOLD: 20,  # kV
-                                           SWITCH: 'HVPS_ONC'}},
+              # rampsDescriptor={ASCENDING: {STEP: 0.5,  # kV
+              #                              STEPTIME: 1,  # s
+              #                              THRESHOLD: 20,  # kV
+              #                              SWITCH: 'HVPS_ONC'}},
               readback='HVPS_V')
 
 AttrBit('LV_Interlock_RC',
@@ -220,12 +220,12 @@ AttrBit('HVPS_ONC',
                  'VALUE and Attr[HVPS_ST].rvalue in [8,9] and '
                  'Attr[Pulse_ST].rvalue in [7,8]'
                  },
-        switchDescriptor={ATTR2RAMP: 'HVPS_V_setpoint',
-                          WHENON: {FROM:
-                                   'HVPS_V_setpoint_Ascending_Threshold'},
-                          # WHENOFF: {TO: 0}
-                          # from where the WRITEVALUE say
-                          }
+        # switchDescriptor={ATTR2RAMP: 'HVPS_V_setpoint',
+        #                   WHENON: {FROM:
+        #                            'HVPS_V_setpoint_Ascending_Threshold'},
+        #                   # WHENOFF: {TO: 0}
+        #                   # from where the WRITEVALUE say
+        #                   }
         )
 
 # AttrPLC(HeartBeat, Lock_ST, rLockingAddr, rLockingBit, wLockingAddr,
