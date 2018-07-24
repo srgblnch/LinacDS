@@ -22,6 +22,7 @@ from .feature import _LinacFeature
 from .formulas import Formula
 from .memorised import Memorised
 from .qualities import QualityInterpreter
+from .toofarcondition import TooFarCondition
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
