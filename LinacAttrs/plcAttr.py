@@ -18,8 +18,9 @@
 from .abstract import LinacException
 from .linacAttr import LinacAttr
 from .linacAttrBase import TYPE_MAP
+from .LinacFeatures import TooFarCondition
 from .meaningAttr import MeaningAttr
-from PyTango import DevBoolean, DevUChar
+from PyTango import DevBoolean, DevUChar, AttrQuality
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -40,11 +41,16 @@ class PLCAttr(LinacAttr):
     _meaningsObj = None
 
     _readbackAttrName = None
+    _readbackAttrObj = None
     _setpointAttrName = None
+    _setpointAttrObj = None
     _switchAttrName = None
+    _switchAttrObj = None
 
     _isRst = None
     _rst_t = None
+
+    _tooFarCondition = None
 
     def __init__(self, valueFormat=None,
                  readAddr=None, readBit=None, writeAddr=None, writeBit=None,
@@ -64,8 +70,11 @@ class PLCAttr(LinacAttr):
         self.meanings = meanings
 
         self._readbackAttrName = readback
+        self._buildReadbackObj()
         self._setpointAttrName = setpoint
+        self._buildSetpointObj()
         self._switchAttrName = switch
+        self._buildSwitchObj()
         self._isRst = isRst
         # self.debug("%s PLCAttr build" % self.name)
 
@@ -157,13 +166,25 @@ class PLCAttr(LinacAttr):
     def readbackAttr(self):
         return self._readbackAttrName
 
+    def _buildReadbackObj(self):
+        self._readbackAttrObj = self._getOtherAttrObj(self._readbackAttrName)
+        return self._readbackAttrObj
+
     @property
     def setpointAttr(self):
         return self._setpointAttrName
 
+    def _buildSetpointObj(self):
+        self._setpointAttrObj = self._getOtherAttrObj(self._setpointAttrName)
+        return self._setpointAttrObj
+
     @property
     def SwitchAttr(self):
         return self._switchAttrName
+
+    def _buildSwitchObj(self):
+        self._switchAttrObj = self._getOtherAttrObj(self._switchAttrName)
+        return self._switchAttrObj
 
     @property
     def isRst(self):
@@ -192,3 +213,21 @@ class PLCAttr(LinacAttr):
         else:
             self._meaningsObj = None
         self._meanings = value
+
+    def _evalQuality(self):
+        self.log("PLCAttr._evalQuality()")
+        if self.isTooFarEnable() and self._setpointAttrName is not None:
+            self.log("TooFar is enable and there is a Setpoint Attr %s"
+                     % (self._setpointAttrName))
+            if self._setpointAttrObj is None and \
+                    self._buildSetpointObj() is None:
+                return  # Couldn't build the setpoint object
+            if self._tooFarCondition is None:
+                self._tooFarCondition = TooFarCondition(
+                    owner=self, setpointAttr=self._setpointAttrObj)
+            # Once here one have the object build for sure
+            if self._tooFarCondition.checkCondition():
+                self._quality = AttrQuality.ATTR_WARNING
+        # once made the check, the superclass implementation is called just
+        # to know if there is a QualityInterpreter to be evaluated above this
+        super(PLCAttr, self)._evalQuality()
