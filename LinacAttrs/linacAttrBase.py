@@ -16,8 +16,8 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from .abstract import _AbstractAttrDict, _AbstractAttrTango
-from .LinacFeatures import Events, ChangeReporter, Formula
-from .LinacFeatures import CircularBuffer, QualityInterpreter
+from .LinacFeatures import (Events, ChangeReporter, Formula, CircularBuffer,
+                            QualityInterpreter)
 from PyTango import AttrQuality
 from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
@@ -64,7 +64,6 @@ class LinacAttrBase(_AbstractAttrTango):
 
     _changeReporter = None
 
-    # _formula = None
     _formulaObj = None
 
     def __init__(self, name, valueType, label=None, description=None,
@@ -211,7 +210,13 @@ class LinacAttrBase(_AbstractAttrTango):
 
     @property
     def quality(self):
+        self._evalQuality()
         return self._quality
+
+    def _evalQuality(self):
+        self.log("LinacAttrBase._evalQuality()")
+        if self._qualities is not None:
+            self._quality = self._qualities.getQuality(self._readValue)
 
     @property
     def vtq(self):
