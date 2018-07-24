@@ -37,7 +37,7 @@ class TooFarCondition(_LinacFeature):
         self._setpointAttr = setpointAttr
         self._closeZero = closeZero
         self._relPercentage = relPercentage
-        self.log("Build TooFarCondition feature object")
+        self.info("Build TooFarCondition feature object")
 
     @property
     def setpointAttr(self):

@@ -250,7 +250,6 @@ class _Quality4Floats(_QualityDescription):
         return False
 
 
-
 class _Quality4States(_QualityDescription):
 
     _enumeration = None
@@ -265,10 +264,9 @@ class _Quality4States(_QualityDescription):
 
     def eval(self, value):
         answer = value in self._enumeration
-        self.log("eval quality for enumerations (%s in %s: %s)"
-                 % (value, self._enumeration, answer))
+        self.info("eval quality for enumerations (%s in %s: %s)"
+                  % (value, self._enumeration, answer))
         return answer
-
 
 
 class QualityInterpreter(_LinacFeature):
