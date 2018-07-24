@@ -293,7 +293,7 @@ class _AbstractAttrTango(_AbstractAttrDict):
                 self._memorised.recover(suffix)
 
     def _getOtherAttrObj(self, name):
-        if self.device is not None:
+        if self.device is not None and name is not None:
             return self.device._getAttrStruct(name)
 
     def _buildAttrObj(self):
