@@ -429,3 +429,9 @@ class _AbstractAttrTango(_AbstractAttrDict):
         else:
             value = None
         return value
+
+    def isTooFarEnable(self):
+        self.log("_AbstractAttrTango.isTooFarEnable()")
+        if self.device is not None:
+            return self.device.attr_IsTooFarEnable_read
+        return False
