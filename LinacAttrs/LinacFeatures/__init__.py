@@ -20,6 +20,7 @@ from .changereporter import ChangeReporter
 from .events import Events, EventCtr
 from .feature import _LinacFeature
 from .formulas import Formula
+from .interlockreset import InterlockReset
 from .memorised import Memorised
 from .qualities import QualityInterpreter
 from .toofarcondition import TooFarCondition

@@ -18,7 +18,7 @@
 from .abstract import LinacException
 from .linacAttr import LinacAttr
 from .linacAttrBase import TYPE_MAP
-from .LinacFeatures import TooFarCondition
+from .LinacFeatures import TooFarCondition, InterlockReset
 from .meaningAttr import MeaningAttr
 from PyTango import DevBoolean, DevUChar, AttrQuality
 
@@ -47,7 +47,7 @@ class PLCAttr(LinacAttr):
     _switchAttrName = None
     _switchAttrObj = None
 
-    _isRst = None
+    _rst = None
     _rst_t = None
 
     _tooFarCondition = None
@@ -75,7 +75,7 @@ class PLCAttr(LinacAttr):
         self._buildSetpointObj()
         self._switchAttrName = switch
         self._buildSwitchObj()
-        self._isRst = isRst
+        self.isRst = isRst
         # self.debug("%s PLCAttr build" % self.name)
 
     def hardwareRead(self, datablock):
@@ -197,19 +197,22 @@ class PLCAttr(LinacAttr):
 
     @property
     def isRst(self):
-        return self._isRst
+        return self._rst is not None
 
     @isRst.setter
     def isRst(self, value):
-        self._isRst = value
+        if value is True:
+            self._rst = InterlockReset(owner=self)
+        else:
+            self._rst = None
 
-    @property
-    def rst_t(self):
-        return self._rst_t
-
-    @rst_t.setter
-    def rst_t(self, value):
-        self._rst_t = value
+    # @property
+    # def rst_t(self):
+    #     return self._rst_t
+    #
+    # @rst_t.setter
+    # def rst_t(self, value):
+    #     self._rst_t = value
 
     @property
     def meanings(self):
