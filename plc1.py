@@ -514,7 +514,8 @@ AttrLogic('att2_ready',
 # ## Read/Write attributes ---
 
 # R084 W000 @EG_FVS ---
-AttrRampeable('GUN_Filament_V_setpoint',
+#AttrRampeable('GUN_Filament_V_setpoint',
+Attr('GUN_Filament_V_setpoint',
               PyTango.DevFloat, 84, 0,  # RW
               label='e-gun filament voltage setpoint',
               format='%4.1f', minValue=0, maxValue=10, unit='V',
@@ -543,7 +544,8 @@ Attr('GUN_Kathode_V_setpoint',
 # R096 W012 #AO_03: free ---
 
 # R100 W016 @HVS_VS ---
-AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
+#AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
+Attr('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
               PyTango.DevFloat, 100, 16,  # RW
               label='HV PS Voltage Setpoint',
               desc='high voltage PS voltage',
