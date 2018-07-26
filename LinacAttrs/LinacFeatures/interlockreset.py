@@ -35,6 +35,10 @@ class InterlockReset(_LinacFeature):
         super(InterlockReset, self).__init__(*args, **kwargs)
         self._waitTime = waitTime
 
+    @property
+    def rst_t(self):
+        return self._waitTime
+
     def prepare(self):
         if self._thread is not None and not self._thread.isAlive():
             self._thread = None
