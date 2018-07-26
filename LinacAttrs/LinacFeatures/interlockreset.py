@@ -36,12 +36,14 @@ class InterlockReset(_LinacFeature):
         self._waitTime = waitTime
 
     def prepare(self):
+        if self._thread is not None and not self._thread.isAlive():
+            self._thread = None
         if self._thread is None:
             self._thread = Thread(target=self.wait)
             self._thread.setDaemon(True)
             self._thread.start()
-        else:
-            self.error("Reset in progress")
+        elif self._thread.isAlive():
+            self.error("Reset already in progress")
 
     def wait(self):
         if currentThread() is self._thread:
