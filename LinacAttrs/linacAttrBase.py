@@ -183,7 +183,8 @@ class LinacAttrBase(_AbstractAttrTango):
             rvalue = self.read_value
         try:
             if self._formulaObj is not None and \
-                    self._formulaObj.read is not None:
+                    self._formulaObj.read is not None and \
+                    rvalue is not None:
                 rvalue = self._formulaObj.readHook(rvalue)
         except Exception as e:
             self.error("Exception solving read formula: %s" % (e))
