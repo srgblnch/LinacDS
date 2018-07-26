@@ -3364,9 +3364,10 @@ class LinacData(PyTango.Device_4Impl):
                         eventCtr.clear()
                         self._tangoEventsTime.append(diff_t)
                         self._tangoEventsNumber.append(nEvents)
-                        self.debug_stream(
-                            "newValuesThread() it has take %3.6f seconds for "
-                            "%d events" % (diff_t, nEvents))
+                        if nEvents > 0:
+                            self.debug_stream(
+                                "newValuesThread() it has take %3.6f seconds "
+                                "for %d events" % (diff_t, nEvents))
                         self._newDataAvailable.clear()
                     else:
                         self._newDataAvailable.wait()
