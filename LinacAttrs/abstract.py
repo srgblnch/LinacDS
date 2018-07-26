@@ -23,6 +23,7 @@ from PyTango import DevBoolean, DevString
 from PyTango import DevUChar, DevShort, DevUShort, DevInt
 from PyTango import DevLong, DevLong64, DevULong, DevULong64
 from PyTango import DevFloat, DevDouble
+from PyTango import DevFailed
 import traceback
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
@@ -328,7 +329,10 @@ class _AbstractAttrTango(_AbstractAttrDict):
         if attr is not None:
             attrName = self._getAttrName(attr)
             self.info("Received a read request for %s" % attrName)
-            self._setTangoAttrReadValue(attr, self.rvalue)
+            if self.isReadAllowed():
+                self._setTangoAttrReadValue(attr, self.rvalue)
+            if self.isWriteAllowed(attr):
+                self._setTangoAttrWriteValue(attr, self.wvalue)
 
     @AttrExc
     def write_attr(self, attr):
@@ -396,25 +400,42 @@ class _AbstractAttrTango(_AbstractAttrDict):
                          % (attr.__class__.__mro__))
             return
         try:
-            attr.set_value_date_quality(readValue, self.timestamp,
-                                        self.quality)
+            if readValue is None:
+                self.__setReadValue2None(attr)
+            else:
+                attr.set_value_date_quality(readValue, self.timestamp,
+                                            self.quality)
             # FIXME: check dimensions if the readValue have
             #        set the paramenter
         except Exception as e:
             self.error("_setTangoAttrReadValue(%s, %s, %s, %s) exception %s"
                        % (attrName, readValue, self.timestamp,
                           self.quality, e))
-            if hasattr(self, 'noneValue'):
-                value = self.noneValue
-            else:
-                value = self._getTangoAttrNoneValue(attr)
-            try:
-                attr.set_value_date_quality(value, self.timestamp,
-                                            AttrQuality.ATTR_INVALID)
-            except Exception as e:
-                self.error("neither None value")
-            # FIXME: check dimensions if the readValue have
-            #        set the paramenter
+            self.__setReadValue2None(attr)
+
+    def __setReadValue2None(self, attr):
+        if hasattr(self, 'noneValue'):
+            value = self.noneValue
+        else:
+            value = self._getTangoAttrNoneValue(attr)
+        try:
+            attr.set_value_date_quality(value, self.timestamp,
+                                        AttrQuality.ATTR_INVALID)
+        except Exception as e:
+            self.error("Exception setting read value to None:\n%s" % (e))
+        # FIXME: check dimensions if the readValue have
+        #        set the paramenter
+
+
+    def _setTangoAttrWriteValue(self, attr, writeValue):
+        attrName = self._getAttrName(attr)
+        self.debug("_setTangoAttrWriteValue(%s, %s, %s, %s)"
+                   % (attrName, writeValue, self.timestamp, self.quality))
+        try:
+            if writeValue is not None:
+                attr.set_write_value(writeValue)
+        except DevFailed as e:
+            self.error("failed to set value %s\n%s" % (writeValue, e))
 
     def _getTangoAttrNoneValue(self, attr):
         if attr.get_data_size() > 1:

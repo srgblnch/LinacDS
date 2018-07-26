@@ -82,14 +82,23 @@ class PLCAttr(LinacAttr):
         if datablock is None:
             self.warning("Not ready to read from hardware")
             return
+        rvalue, wvalue = None, None
         if self.type == DevBoolean:
-            value = datablock.bit(self._readAddr, self._readBit)
+            rvalue = datablock.bit(self._readAddr, self._readBit)
+            if self._writeAddr is not None and self._writeBit is not None:
+                wvalue = datablock.bit(self._writeAddr+datablock.write_start,
+                                       self._writeBit)
         else:
-            value = datablock.get(self._readAddr, *self.type)
-        if value is not None:
-            self.read_value = value
+            rvalue = datablock.get(self._readAddr, *self.type)
+            if self._writeAddr is not None:
+                wvalue = datablock.get(self._writeAddr+datablock.write_start,
+                                       *self.type)
+        if rvalue is not None:
+            self.read_value = rvalue
+            if wvalue is not None:
+                self.write_value = wvalue
             self._timestamp = self._device.last_update_time
-        return value
+        return rvalue
 
     def hardwareWrite(self, datablock):
         if datablock is None:
@@ -205,14 +214,6 @@ class PLCAttr(LinacAttr):
             self._rst = InterlockReset(owner=self)
         else:
             self._rst = None
-
-    # @property
-    # def rst_t(self):
-    #     return self._rst_t
-    #
-    # @rst_t.setter
-    # def rst_t(self, value):
-    #     self._rst_t = value
 
     @property
     def meanings(self):
