@@ -96,7 +96,7 @@ class PLCAttr(LinacAttr):
         if rvalue is not None:
             self.read_value = rvalue
             if wvalue is not None:
-                self.write_value = wvalue
+                self._writeValue = wvalue
             self._timestamp = self._device.last_update_time
         return rvalue
 
