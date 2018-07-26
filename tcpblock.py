@@ -130,7 +130,7 @@ class Datablock(object):
         while len(self._recv) != self.read_size:  # while rem>0:
             select.select([self.sock.fileno()], E, E)
             self._recv = self.sock.recv(8192)
-            self.debug_stream("> received %d bytes" % (len(self._recv)))
+            # self.debug_stream("> received %d bytes" % (len(self._recv)))
             if len(self._recv) == 0:
                 retries += 1
                 # if retries == 10:

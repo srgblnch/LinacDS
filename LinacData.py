@@ -3364,9 +3364,9 @@ class LinacData(PyTango.Device_4Impl):
                         eventCtr.clear()
                         self._tangoEventsTime.append(diff_t)
                         self._tangoEventsNumber.append(nEvents)
-                        # self.debug_stream(
-                        #     "newValuesThread() it has take %3.6f seconds for "
-                        #     "%d events" % (diff_t, nEvents))
+                        self.debug_stream(
+                            "newValuesThread() it has take %3.6f seconds for "
+                            "%d events" % (diff_t, nEvents))
                         self._newDataAvailable.clear()
                     else:
                         self._newDataAvailable.wait()
@@ -3480,14 +3480,14 @@ triggered.
 #             else:
 #                 return False
 
-        def __isRstAttr(self, attrName):
-            self.warn_stream("DEPRECATED: __isRstAttr(%s)" % (attrName))
-            if attrName.startswith('lastUpdate'):
-                return False
-            if ISRESET in self._getAttrStruct(attrName):
-                return self._getAttrStruct(attrName)[ISRESET]
-            else:
-                return False
+        # def __isRstAttr(self, attrName):
+        #     self.warn_stream("DEPRECATED: __isRstAttr(%s)" % (attrName))
+        #     if attrName.startswith('lastUpdate'):
+        #         return False
+        #     if ISRESET in self._getAttrStruct(attrName):
+        #         return self._getAttrStruct(attrName)[ISRESET]
+        #     else:
+        #         return False
 
 #         def __checkAttrEmissionParams(self, attrName, newValue):
 #             if not self.__attrHasEvents(attrName):
@@ -3739,59 +3739,59 @@ triggered.
 # #                                               len(attributeList)))
 #             return len(attr2Event)
 
-        def checkResetAttr(self, attrName):
-            '''
-            '''
-            self.warn_stream("DEPRECATED: checkResetAttr(%s)" % (attrName))
-            if not self.__isRstAttr(attrName):
-                return
-            # FIXME: ---
-            # if this is moved to a new thread separated to the event
-            # emit, the system must be changed to be passive waiting
-            # (that it Threading.Event())
-            if self.__isCleanResetNeed(attrName):
-                self._plcAttrs[attrName][RESETTIME] = None
-                readAddr = self._plcAttrs[attrName][READADDR]
-                writeAddr = self._plcAttrs[attrName][WRITEADDR]
-                writeBit = self._plcAttrs[attrName][WRITEBIT]
-                writeValue = False
-                self.__writeBit(attrName, readAddr,
-                                writeAddr, writeBit, writeValue)
-                self._plcAttrs[attrName][WRITEVALUE] = writeValue
-                self.info_stream("Set back to 0 a RST attr %s" % (attrName))
-                # self._plcAttrs[attrName][READVALUE] = False
-                # self.fireEvent([attrName, False], time.time())
+        # def checkResetAttr(self, attrName):
+        #     '''
+        #     '''
+        #     self.warn_stream("DEPRECATED: checkResetAttr(%s)" % (attrName))
+        #     if not self.__isRstAttr(attrName):
+        #         return
+        #     # FIXME: ---
+        #     # if this is moved to a new thread separated to the event
+        #     # emit, the system must be changed to be passive waiting
+        #     # (that it Threading.Event())
+        #     if self.__isCleanResetNeed(attrName):
+        #         self._plcAttrs[attrName][RESETTIME] = None
+        #         readAddr = self._plcAttrs[attrName][READADDR]
+        #         writeAddr = self._plcAttrs[attrName][WRITEADDR]
+        #         writeBit = self._plcAttrs[attrName][WRITEBIT]
+        #         writeValue = False
+        #         self.__writeBit(attrName, readAddr,
+        #                         writeAddr, writeBit, writeValue)
+        #         self._plcAttrs[attrName][WRITEVALUE] = writeValue
+        #         self.info_stream("Set back to 0 a RST attr %s" % (attrName))
+        #         # self._plcAttrs[attrName][READVALUE] = False
+        #         # self.fireEvent([attrName, False], time.time())
 
-        def __isCleanResetNeed(self, attrName):
-            '''
-            '''
-            now = time.time()
-            if self.__isResetAttr(attrName):
-                read_value = self._plcAttrs[attrName][READVALUE]
-                rst_t = self._plcAttrs[attrName][RESETTIME]
-                if read_value and rst_t is not None:
-                    diff_t = now-rst_t
-                    if RESETACTIVE in self._plcAttrs[attrName]:
-                        activeRst_t = self._plcAttrs[attrName][RESETACTIVE]
-                    else:
-                        activeRst_t = ACTIVE_RESET_T
-                    if activeRst_t-diff_t < 0:
-                        self.info_stream("Attribute %s needs clean reset"
-                                         % (attrName))
-                        return True
-                    self.info_stream("Do not clean reset flag yet for %s "
-                                     "(%6.3f seconds left)"
-                                     % (attrName, activeRst_t-diff_t))
-            return False
+        # def __isCleanResetNeed(self, attrName):
+        #     '''
+        #     '''
+        #     now = time.time()
+        #     if self.__isResetAttr(attrName):
+        #         read_value = self._plcAttrs[attrName][READVALUE]
+        #         rst_t = self._plcAttrs[attrName][RESETTIME]
+        #         if read_value and rst_t is not None:
+        #             diff_t = now-rst_t
+        #             if RESETACTIVE in self._plcAttrs[attrName]:
+        #                 activeRst_t = self._plcAttrs[attrName][RESETACTIVE]
+        #             else:
+        #                 activeRst_t = ACTIVE_RESET_T
+        #             if activeRst_t-diff_t < 0:
+        #                 self.info_stream("Attribute %s needs clean reset"
+        #                                  % (attrName))
+        #                 return True
+        #             self.info_stream("Do not clean reset flag yet for %s "
+        #                              "(%6.3f seconds left)"
+        #                              % (attrName, activeRst_t-diff_t))
+        #     return False
 
-        def __isResetAttr(self, attrName):
-            '''
-            '''
-            if attrName in self._plcAttrs and \
-                    ISRESET in self._plcAttrs[attrName] and \
-                    self._plcAttrs[attrName][ISRESET]:
-                return True
-            return False
+        # def __isResetAttr(self, attrName):
+        #     '''
+        #     '''
+        #     if attrName in self._plcAttrs and \
+        #             ISRESET in self._plcAttrs[attrName] and \
+        #             self._plcAttrs[attrName][ISRESET]:
+        #         return True
+        #     return False
 
         def relock(self):
             '''
