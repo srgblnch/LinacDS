@@ -808,6 +808,89 @@ class AttrList(object):
                           label=label, description=description,
                           minValue=minValue, maxValue=maxValue)
         self.impl._plcAttrs[attrName] = attrObj
+        self._insert2reverseDictionary(attrName, attrType, readAddr, readBit,
+                                       writeAddr, writeBit)
+        # if readBit is not None:
+        #     if readAddr not in self.impl._addrDct:
+        #         self.impl._addrDct[readAddr] = {}
+        #     self.impl._addrDct[readAddr][readBit] = []
+        #     self.impl._addrDct[readAddr][readBit].append(attrName)
+        #     if writeAddr is not None:
+        #         self.impl._addrDct[readAddr][readBit].append(writeAddr)
+        #         if writeBit is not None:
+        #             self.impl._addrDct[readAddr][readBit].append(writeBit)
+        #         else:
+        #             self.impl._addrDct[readAddr][readBit].append(readBit)
+        # else:
+        #     if readAddr not in self.impl._addrDct:
+        #         self.impl._addrDct[readAddr] = []
+        #         self.impl._addrDct[readAddr].append(attrName)
+        #         self.impl._addrDct[readAddr].append(attrType)
+        #         if writeAddr is not None:
+        #             self.impl._addrDct[readAddr].append(writeAddr)
+        #     else:
+        #         self.impl.error_stream("The address %s has been found in the "
+        #                                "reverse dictionary" % (readAddr))
+
+    def _insert2reverseDictionary(self, name, valueType, readAddr, readBit,
+                                  writeAddr, writeBit):
+        '''
+        Hackish for the dump of a valid write block when the PLC provides
+        invalid values in the write datablock
+
+        :param name:
+        :param valueType:
+        :param readAddr:
+        :param readBit:
+        :param writeAddr:
+        :param writeBit:
+        :return:
+        '''
+        dct = self.impl._addrDct
+        if 'readBlock' not in dct:
+            dct['readBlock'] = {}
+        rDct = dct['readBlock']
+        if 'writeBlock' not in dct:
+            dct['writeBlock'] = {}
+        wDct = dct['writeBlock']
+        if readBit is not None:  # boolean
+            if readAddr not in rDct:
+                rDct[readAddr] = {}
+            if readBit in rDct[readAddr]:
+                self.impl.error_stream("Overwrite readAddr %d readBit %d: %s"
+                                       % (readAddr, readBit,
+                                          rDct[readAddr][readBit]))
+            rDct[readAddr][readBit] = {}
+            rDct[readAddr][readBit]['name'] = name
+            rDct[readAddr][readBit]['type'] = valueType
+            if writeAddr is not None:
+                rDct[readAddr][readBit]['writeAddr'] = writeAddr
+                if writeBit is None:
+                    writeBit = readBit
+                rDct[readAddr][readBit]['writeBit'] = writeBit
+                if writeAddr not in wDct:
+                    wDct[writeAddr] = {}
+                wDct[writeAddr][writeBit] = {}
+                wDct[writeAddr][writeBit]['name'] = name
+                wDct[writeAddr][writeBit]['type'] = valueType
+                wDct[writeAddr][writeBit]['readAddr'] = readAddr
+                wDct[writeAddr][writeBit]['readBit'] = readBit
+        else:  # Byte, Word or Float
+            if readAddr in rDct:
+                self.impl.error_stream("Overwrite readAddr %s: %s"
+                                       % (readAddr, rDct[readAddr]))
+            rDct[readAddr] = {}
+            rDct[readAddr]['name'] = name
+            rDct[readAddr]['type'] = valueType
+            if writeAddr is not None:
+                rDct[readAddr]['writeAddr'] = writeAddr
+                if writeAddr in wDct:
+                    self.impl.error_stream("Overwrite writeAddr %s: %s"
+                                           % (writeAddr, wDct[writeAddr]))
+                wDct[writeAddr] = {}
+                wDct[writeAddr]['name'] = name
+                wDct[writeAddr]['type'] = valueType
+                wDct[writeAddr]['readAddr'] = readAddr
 
     def _prepareInternalAttribute(self, attrName, attrType, memorized=False,
                                   isWritable=False, defaultValue=None,
@@ -1075,9 +1158,11 @@ class LinacData(PyTango.Device_4Impl):
         AttrFile = None
         _plcAttrs = {}
         _internalAttrs = {}
+        _addrDct = {}
 
         disconnect_t = 0
         read_db = None
+        dataBlockSemaphore = threading.Semaphore()
         _important_logs = []
 
 #         #ramping auxiliars
@@ -1217,42 +1302,86 @@ class LinacData(PyTango.Device_4Impl):
                Due to this we force a construction of a complete write
                datablock to be send once for all.
             '''
+            wDct = self._addrDct['writeBlock']
+            self.info_stream("Force to reconstruct the write data block")
+            self.dataBlockSemaphore.acquire()
+            self.attr_forceWriteDB_read = ""
             try:
-                WriteAttrNames = self._getWattrList()
-                self._forceWriteDB(WriteAttrNames)
+                for wAddr in wDct:
+                    if 'readAddr' in wDct[wAddr]:  # Uchars, Shorts, floats
+                        name = wDct[wAddr]['name']
+                        rAddr = wDct[wAddr]['readAddr']
+                        T, size = TYPE_MAP[wDct[wAddr]['type']]
+                        rValue = self.read_db.get(rAddr, T, size)
+                        wValue = self.write_db.get(
+                            wAddr+self.write_db.write_start, T, size)
+                        msg = "%s = (%s, %s) [%s -> %s, %s, %s]" \
+                            % (name, rValue, wValue, rAddr, wAddr, T, size)
+                        self.attr_forceWriteDB_read += "%s\n" % msg
+                        self.info_stream(msg)
+                        self.write_db.write(wAddr, rValue, (T, size),
+                                            dry=True)
+                    else:  # booleans
+                        was = byte = self.write_db.b(
+                            wAddr+self.write_db.write_start)
+                        msg = "booleans %d" % (wAddr)
+                        self.attr_forceWriteDB_read += "%s\n" % msg
+                        self.info_stream(msg)
+                        for wBit in wDct[wAddr]:
+                            name = wDct[wAddr][wBit]['name']
+                            rAddr = wDct[wAddr][wBit]['readAddr']
+                            rBit = wDct[wAddr][wBit]['readBit']
+                            rValue = self.read_db.bit(rAddr, rBit)
+                            wValue = self.write_db.bit(
+                                wAddr+self.write_db.write_start, rBit)
+                            msg = "\t%s = (%s, %s) [%s.%s -> %s.%s]" \
+                                % (name, rValue, wValue, rAddr, rBit,
+                                   wAddr, wBit)
+                            self.attr_forceWriteDB_read += "%s\n" % msg
+                            self.info_stream(msg)
+                            if rValue is True:
+                                byte = byte | (int(1) << wBit)
+                            else:
+                                byte = byte & ((0xFF) ^ (1 << wBit))
+                        msg = "%d = %d -> %d" % (wAddr, was, byte)
+                        self.attr_forceWriteDB_read += "%s\n" % msg
+                        self.info_stream(msg)
+                self.write_db.rewrite()
             except Exception as e:
-                self.warn_stream("In forceWriteAttrs() Exception: %s" % (e))
-                traceback.print_exc()
+                msg = "Could not complete the force Write\n%s" % (e)
+                self.attr_forceWriteDB_read += "%s\n" % msg
+                self.error_stream(msg)
+            self.dataBlockSemaphore.release()
 
-        def _getWattrList(self):
-            wAttrNames = []
-            for attrName in self._plcAttrs.keys():
-                attrStruct = self._getAttrStruct(attrName)
-                if WRITEVALUE in attrStruct:
-                    wAttrNames.append(attrName)
-            return wAttrNames
+        # def _getWattrList(self):
+        #     wAttrNames = []
+        #     for attrName in self._plcAttrs.keys():
+        #         attrStruct = self._getAttrStruct(attrName)
+        #         if WRITEVALUE in attrStruct:
+        #             wAttrNames.append(attrName)
+        #     return wAttrNames
 
-        def _forceWriteDB(self, attr2write):
-            for attrName in attr2write:
-                attrStruct = self._getAttrStruct(attrName)
-                write_addr = attrStruct[WRITEADDR]
-                write_value = attrStruct[READVALUE]
-                if type(attrStruct[READVALUE]) in [CircularBuffer,
-                                                   HistoryBuffer]:
-                    write_value = attrStruct[READVALUE].value
-                else:
-                    write_value = attrStruct[READVALUE]
-                self.info_stream("Dry write of %s value %s"
-                                 % (attrName, write_value))
-                if WRITEBIT in attrStruct:
-                    read_addr = attrStruct[READADDR]
-                    write_bit = attrStruct[WRITEBIT]
-                    self.__writeBit(attrName, read_addr, write_addr, write_bit,
-                                    write_value, dry=True)
-                else:
-                    self.write_db.write(write_addr, write_value,
-                                        attrStruct[TYPE], dry=True)
-            self.write_db.rewrite()
+        # def _forceWriteDB(self, attr2write):
+        #     for attrName in attr2write:
+        #         attrStruct = self._getAttrStruct(attrName)
+        #         write_addr = attrStruct[WRITEADDR]
+        #         write_value = attrStruct[READVALUE]
+        #         if type(attrStruct[READVALUE]) in [CircularBuffer,
+        #                                            HistoryBuffer]:
+        #             write_value = attrStruct[READVALUE].value
+        #         else:
+        #             write_value = attrStruct[READVALUE]
+        #         self.info_stream("Dry write of %s value %s"
+        #                          % (attrName, write_value))
+        #         if WRITEBIT in attrStruct:
+        #             read_addr = attrStruct[READADDR]
+        #             write_bit = attrStruct[WRITEBIT]
+        #             self.__writeBit(attrName, read_addr, write_addr, write_bit,
+        #                             write_value, dry=True)
+        #         else:
+        #             self.write_db.write(write_addr, write_value,
+        #                                 attrStruct[TYPE], dry=True)
+        #     self.write_db.rewrite()
         # Done PLC connectivity area ---
 
         ####
@@ -2543,6 +2672,7 @@ class LinacData(PyTango.Device_4Impl):
                 self.set_change_event('Status', True, False)
                 self.attr_IsSayAgainEnable_read = False
                 self.attr_IsTooFarEnable_read = True
+                self.attr_forceWriteDB_read = ""
                 # The attributes Locking, Lock_ST, and HeartBeat have also
                 # events but this call is made in each of the AttrList method
                 # who dynamically build them.
@@ -2902,6 +3032,17 @@ class LinacData(PyTango.Device_4Impl):
             self.attr_IsTooFarEnable_read = bool(data)
             # PROTECTED REGION END -- LinacData.IsTooFarEnable_write
 
+        # ------------------------------------------------------------------
+        #    Read forceWriteDB attribute
+        # ------------------------------------------------------------------
+        def read_forceWriteDB(self, attr):
+            self.debug_stream("In " + self.get_name() +
+                              ".read_forceWriteDB()")
+            # PROTECTED REGION ID(LinacData.forceWriteDB_read) ---
+
+            # PROTECTED REGION END --- LinacData.forceWriteDB_read
+            attr.set_value(self.attr_forceWriteDB_read)
+
         # ---------------------------------------------------------------------
         #    LinacData command methods
         # ---------------------------------------------------------------------
@@ -3233,7 +3374,17 @@ class LinacData(PyTango.Device_4Impl):
                     and not self._plcAttrs['Locking'].rvalue:
                 self.relock()
             try:
-                up = self.read_db.readall()  # The real reading to the hardware
+                self.dataBlockSemaphore.acquire()
+                e = None
+                try:
+                    up = self.read_db.readall()  # The real reading to the hardware
+                except Exception as e:
+                    self.error_stream("Could not complete the readall()\n%s"
+                                      % (e))
+                finally:
+                    self.dataBlockSemaphore.release()
+                    if e is not None:
+                        raise e
                 if up:
                     self.last_update_time = time.time()
                     if self.get_state() == PyTango.DevState.ALARM:
@@ -4031,6 +4182,12 @@ class LinacDataClass(PyTango.DeviceClass):
                                          'Memorized': "true"
                                          }
                                         ],
+                     'forceWriteDB': [[PyTango.DevString,
+                                       PyTango.SCALAR,
+                                       PyTango.READ],
+                                      {'Display level':
+                                           PyTango.DispLevel.EXPERT}
+                                      ],
                      }
 
 if __name__ == '__main__':
