@@ -17,7 +17,13 @@
 
 from PyTango import DeviceProxy
 
+__author__ = "Lothar Krause and Sergi Blanch-Torne"
+__maintainer__ = "Sergi Blanch-Torne"
+__copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
+__license__ = "GPLv3+"
+
 NAMEPATTERN = "li/ct/plc%d"
+
 
 def getPLCSimulators():
     sim = {}
@@ -25,11 +31,13 @@ def getPLCSimulators():
         sim[i] = DeviceProxy("%s-sim" % (NAMEPATTERN % i))
     return sim
 
+
 def getLinacDevices():
     dev = {}
     for i in range(1, 6):
         dev[i] = DeviceProxy(NAMEPATTERN % i)
     return dev
+
 
 def getRelocator():
     return DeviceProxy("li/ct/linacdatarelocator-01")

@@ -25,6 +25,7 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
+
 def john(sls):
     '''used to encode the messages shown for each state code
     '''
@@ -32,6 +33,7 @@ def john(sls):
         return '\n'+''.join('%d:%s\n' % (t, sls[t]) for t in sls.keys())
     else:
         return '\n'+''.join('%d:%s\n' % t for t in enumerate(sls))
+
 
 class ParseFile(object):
 
@@ -64,7 +66,8 @@ class ParseFile(object):
         #         minValue=None, maxValue=None, unit=None, format=None,
         #         readback=None, setpoint=None, switch=None,
         #         memorized=False, logLevel=None, xdim=0,
-        #         historyBuffer=None, IamChecker=None, events=None, *args, **kwargs):
+        #         historyBuffer=None, IamChecker=None, events=None,
+        #         *args, **kwargs):
         self._attrs[name] = {}
         if T in [PyTango.DevFloat, PyTango.DevDouble]:
             self._attrs[name]['type'] = 'float'
@@ -78,7 +81,7 @@ class ParseFile(object):
 
     def parse_file(self, fname):
         try:
-            fullname = "%s/%s" % (path.dirname(path.abspath(__file__)),fname)
+            fullname = "%s/%s" % (path.dirname(path.abspath(__file__)), fname)
             execfile(fullname, self.globals_, self.locals_)
         except Exception as e:
             print("ERROR: %s" % e)

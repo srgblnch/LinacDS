@@ -41,14 +41,13 @@ class TestBench(TestCase):
 
     def _parseFiles(self):
         self._attrs = {}
-        for number in [1,2,3]:
+        for number in [1, 2, 3]:
             obj = ParseFile()
             obj.parse_file('../plc%d.py' % number)
             self._attrs[number] = obj.attrs
         obj = ParseFile()
         obj.parse_file('../plck.py')
         self._attrs[5] = self._attrs[4] = obj.attrs
-
 
     def test_Constructor(self):
         devProxies = 0
