@@ -51,8 +51,8 @@ class ParseFile(object):
             'GrpBit': self.process,
             'AttrLogic': self.process,
             'AttrRampeable': self.process,
-            'AttrPLC': self.thethee,
-            'AttrEnumeration': self.process,
+            'AttrPLC': self.ignore,
+            'AttrEnumeration': self.enumerations,
         })
         self._attrs = {}
 
@@ -84,10 +84,18 @@ class ParseFile(object):
             self._attrs[statusName] = {}
             self._attrs[statusName]['type'] = 'str'
 
+    def enumerations(self, name, prefix=None):
+        if prefix is not None:
+            fullname = "%s_%s" % (prefix, name)
+        else:
+            fullname = name
+        self._attrs[fullname] = {'active': {'type': 'bool'},
+                                 'numeric': {'type': 'int'},
+                                 'meaning': {'type': 'str'},
+                                 'options': {'type': 'str', 'dim': 1}}
 
-    def thethee(self, HeartBeat, Lock_ST,
-                rLockingAddr, rLockingBit, wLockingAddr, wLockingBit):
-        pass  # TODO
+    def ignore(self, *args, **kwargs):
+        pass  # TODO: not yet implemented how to test those attributes
 
     def parse_file(self, fname):
         try:
