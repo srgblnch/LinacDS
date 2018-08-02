@@ -15,10 +15,12 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from constants import *
+from json import dumps
 from os import path
 import PyTango
 from PyTango import AttrQuality
-from constants import *
+
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -58,7 +60,7 @@ class ParseFile(object):
     def attrs(self):
         return self._attrs
 
-    def process(self, name, T=None, read_bit=None, logic=None,
+    def process(self, name, T=None, read_bit=None, logic=None, meanings=None,
                 *args, **kwargs):
         # # label=None, desc=None, qualities=None,
         #         read_addr=None, read_bit=None,
@@ -74,10 +76,18 @@ class ParseFile(object):
         elif T in [PyTango.DevShort, PyTango.DevUChar] or \
                 read_bit is not None or logic is not None:
             self._attrs[name]['type'] = 'int'
+        if meanings is not None:
+            if name.endswith('_ST'):
+                statusName = name.replace('_ST', '_Status')
+            else:
+                statusName = "%s_Status" % (name)
+            self._attrs[statusName] = {}
+            self._attrs[statusName]['type'] = 'str'
+
 
     def thethee(self, HeartBeat, Lock_ST,
                 rLockingAddr, rLockingBit, wLockingAddr, wLockingBit):
-        pass
+        pass  # TODO
 
     def parse_file(self, fname):
         try:
@@ -85,3 +95,15 @@ class ParseFile(object):
             execfile(fullname, self.globals_, self.locals_)
         except Exception as e:
             print("ERROR: %s" % e)
+
+
+if __name__ == '__main__':
+    attrs = {}
+    for number in [1, 2, 3]:
+        obj = ParseFile()
+        obj.parse_file('../plc%d.py' % number)
+        attrs[number] = obj.attrs
+    obj = ParseFile()
+    obj.parse_file('../plck.py')
+    attrs[5] = attrs[4] = obj.attrs
+    print(dumps(attrs, indent=True))
