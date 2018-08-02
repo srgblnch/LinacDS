@@ -16,7 +16,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-import plchelp  # there is the help about how to follow this builder
+# import plchelp  # there is the help about how to follow this builder
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -780,8 +780,7 @@ AttrBit('SCM3_LC',
 
 # R164 W080 @Local_Lock ---
 
-# AttrPLC(HeartBeat, Lock_ST, rLockingAddr, rLockingBit, wLockingAddr,
-#         wLockingBit)
+# AttrPLC(GUN_LV_ONC)
 AttrPLC(72, 82, 164, 0, 80, 0)
 
 AttrLogic('ka1_ic',
