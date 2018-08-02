@@ -33,6 +33,11 @@ class TestBench(TestCase):
     _devices = None
     _relocator = None
 
+    _reads = None
+    _writes = None
+    _subtotal = None
+    _total = None
+
     def setUp(self):
         self._simulators = getPLCSimulators()
         self._devices = getLinacDevices()
@@ -62,21 +67,20 @@ class TestBench(TestCase):
                          "Not all the devices proxies are available")
 
     def test_Attributes(self):
-        total = 0
+        self._total = 0
         for number in self._attrs:
-            reads = 0
+            self._reads = 0
             device = self._devices[number]
             for attrName in self._attrs[number]:
                 if 'type' in self._attrs[number][attrName]:
                     attrType = self._attrs[number][attrName]['type']
-                    print number, attrName
                     value = device[attrName].value
                     if self.__doTest(value, attrType, attrName):
-                        reads += 1
-            subtotal = reads
-            total += subtotal
-            print("plc%d: %d attributes tested" % (number, subtotal))
-        print("Total %d attributes tested" % (total))
+                        self._reads += 1
+            self._subtotal = self._reads
+            self._total += self._subtotal
+            print("plc%d: %d attributes tested" % (number, self._subtotal))
+        print("Total %d attributes tested" % (self._total))
 
     def __doTest(self, value, dataType, msg=None):
         if dataType == 'float':
