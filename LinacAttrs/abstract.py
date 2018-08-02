@@ -332,7 +332,7 @@ class _AbstractAttrTango(_AbstractAttrDict):
             if self.isReadAllowed():
                 self._setTangoAttrReadValue(attr, self.rvalue)
             if self.isWriteAllowed(attr):
-                self._setTangoAttrWriteValue(attr, self.wvalue)
+                self._setTangoAttrWriteValue(attr, self._writeValue)
 
     @AttrExc
     def write_attr(self, attr):
