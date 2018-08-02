@@ -20,7 +20,7 @@ from .linacAttr import LinacAttr
 from .linacAttrBase import TYPE_MAP
 from .LinacFeatures import TooFarCondition, InterlockReset
 from .meaningAttr import MeaningAttr
-from PyTango import DevBoolean, DevUChar, AttrQuality
+from PyTango import DevBoolean, DevUChar, DevFloat, AttrQuality
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -229,7 +229,9 @@ class PLCAttr(LinacAttr):
 
     def _evalQuality(self):
         # self.info("PLCAttr._evalQuality()")
-        if self._setpointAttrName is not None and self.isTooFarEnable():
+        if self.type == DevFloat and \
+                self._setpointAttrName is not None and \
+                self.isTooFarEnable():
             # self.info("TooFar is enable and there is a Setpoint Attr %s"
             #           % (self._setpointAttrName))
             if self._setpointAttrObj is None and \

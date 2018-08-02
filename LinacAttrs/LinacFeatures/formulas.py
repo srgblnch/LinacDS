@@ -73,7 +73,7 @@ class Formula(_LinacFeature):
         formula = self._read
         modified = self._replaceAttrs4Values(formula, self._readAttrs)
         solution = self._solve(value, modified)
-        self.debug("with VALUE=%s, %r means %s" % (value, formula, solution))
+        self.debug("with rVALUE=%s, %r means %s" % (value, formula, solution))
         self._lastRead = solution
         return solution
 
@@ -105,7 +105,7 @@ class Formula(_LinacFeature):
         formula = self._write
         modified = self._replaceAttrs4Values(formula, self._writeAttrs)
         solution = self._solve(value, modified)
-        self.debug("with VALUE=%s, %r means %s" % (value, formula, solution))
+        self.debug("with wVALUE=%s, %r means %s" % (value, formula, solution))
         if self.write_not_allowed is not None:
             if value != solution:
                 PyTangoExcept.throw_exception("Write %s not allowed" % value,
