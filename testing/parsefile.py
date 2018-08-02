@@ -51,7 +51,7 @@ class ParseFile(object):
             'GrpBit': self.process,
             'AttrLogic': self.process,
             'AttrRampeable': self.process,
-            'AttrPLC': self.ignore,
+            'AttrPLC': self.specials,
             'AttrEnumeration': self.enumerations,
         })
         self._attrs = {}
@@ -83,6 +83,13 @@ class ParseFile(object):
                 statusName = "%s_Status" % (name)
             self._attrs[statusName] = {}
             self._attrs[statusName]['type'] = 'str'
+
+    def specials(self, heart, lockst, read_lockingAddr, read_lockingBit,
+                 write_lockingAddr, write_lockingBit):
+        self._attrs['HeartBeat'] = {'type': 'bool'}
+        self._attrs['Lock_ST'] = {'type': 'int'}
+        self._attrs['Lock_Status'] = {'type': 'str'}
+        self._attrs['Locking'] = {'type': 'bool'}
 
     def enumerations(self, name, prefix=None):
         if prefix is not None:
