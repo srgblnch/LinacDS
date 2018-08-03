@@ -26,6 +26,25 @@ __copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
+# TODO: To complete the coverage:
+# * read with checks on the qualities
+# * write attributes
+#   * plc attributes (3 types)
+#   * internals (side effects with other attrs)
+#   * enumerations (the funcionality itself)
+# * Event generation (events are generated with the expected values)
+# * Circular buffers (how different values affect those buffers)
+# * Attr memorised (make sure the values are well stored, but also recovered)
+# * Meaning attributes (construction of those strings from the ints)
+# * History attributes (special case of buffer with certain resets)
+# * AutoStop
+#   * Well collection of data when on and no data collection if off
+#   * reproduce the stop
+# * change reporter (test relations propagation)
+# * Formulas & masks / logic attrs
+# * TooFar, switches and resets
+# * group attributes
+
 class TestBench(TestCase):
 
     _attrs = None
@@ -72,7 +91,6 @@ class TestBench(TestCase):
                 'State': None,
                 'Status': None,
                 }
-
 
     def test_Constructor(self):
         devProxies = 0
@@ -138,7 +156,8 @@ class TestBench(TestCase):
                         self.fail(attrName)
             else:
                 value = device[attrName].value
-                if self.assertReadValue(value, attrType, dim=dim, msg=attrName):
+                if self.assertReadValue(value, attrType,
+                                        dim=dim, msg=attrName):
                     self._reads += 1
 
     def assertReadValue(self, value, dataType, dim=0, msg=None):
