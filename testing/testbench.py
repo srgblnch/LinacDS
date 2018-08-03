@@ -129,9 +129,17 @@ class TestBench(TestCase):
                 dim = attrStruct['dim']
             else:
                 dim = 0
-            value = device[attrName].value
-            if self.assertReadValue(value, attrType, dim=dim, msg=attrName):
-                self._reads += 1
+            if 'assert' in attrStruct:
+                if attrStruct['assert'] == 'noException':
+                    try:
+                        device[attrName].value
+                        self._reads += 1
+                    except:
+                        self.fail(attrName)
+            else:
+                value = device[attrName].value
+                if self.assertReadValue(value, attrType, dim=dim, msg=attrName):
+                    self._reads += 1
 
     def assertReadValue(self, value, dataType, dim=0, msg=None):
         if dim == 0:

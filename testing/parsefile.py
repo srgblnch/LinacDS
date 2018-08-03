@@ -61,7 +61,7 @@ class ParseFile(object):
         return self._attrs
 
     def process(self, name, T=None, read_bit=None, logic=None, meanings=None,
-                *args, **kwargs):
+                autoStop=None, *args, **kwargs):
         # # label=None, desc=None, qualities=None,
         #         read_addr=None, read_bit=None,
         #         write_addr=None, write_bit=None,
@@ -81,8 +81,22 @@ class ParseFile(object):
                 statusName = name.replace('_ST', '_Status')
             else:
                 statusName = "%s_Status" % (name)
-            self._attrs[statusName] = {}
-            self._attrs[statusName]['type'] = 'str'
+            self._attrs[statusName] = {'type': 'str'}
+        if autoStop is not None:
+            groupName = "%s_%s" % (name, AUTOSTOP)
+            self._attrs[groupName] = {'assert': 'noException'}
+
+            enableName = "%s_Enable" % (groupName)
+            self._attrs[enableName] = {'type': 'bool'}
+            for condition in [BELOW, ABOVE]:
+                if condition in autoStop:
+                    conditionName = "%s_%s_Threshold" % (groupName, condition)
+                    self._attrs[conditionName] = {'type': 'float'}
+            for floatNames in ['IntegrationTime', 'Mean', 'Std']:
+                attrName = "%s_%s" % (groupName, floatNames)
+                self._attrs[attrName] = {'type': 'float'}
+            triggeredName = "%s_Triggered" % (groupName)
+            self._attrs[triggeredName] = {'type': 'bool'}
 
     def specials(self, heart, lockst, read_lockingAddr, read_lockingBit,
                  write_lockingAddr, write_lockingBit):
