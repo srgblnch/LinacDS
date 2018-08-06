@@ -254,6 +254,6 @@ class PLCAttr(LinacAttr):
         super(PLCAttr, self)._evalQuality()
 
     def doWriteValue(self, value):
-        if self._rst is not None and value == True:
+        if self._rst is not None and value is True:
             self._rst.prepare()
         super(PLCAttr, self).doWriteValue(value)

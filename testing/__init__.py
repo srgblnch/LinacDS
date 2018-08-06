@@ -15,8 +15,8 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-# from .circularbuffers import TestCircularBuffer
-from .testbench import TestBench
+from .attrsread import AttrsRead
+from .linacds import LinacDS
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
