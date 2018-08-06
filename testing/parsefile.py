@@ -118,9 +118,13 @@ class ParseFile(object):
 
     def specials(self, heart, lockst, read_lockingAddr, read_lockingBit,
                  write_lockingAddr, write_lockingBit):
-        for attrName, attrType in [['HeartBeat', 'bool'], ['Lock_ST', 'int'],
-                                   ['Lock_Status', 'str'], ['Locking', 'bool']]:
-            self._attrs[attrName] = Descriptor(attrName, type=attrType)
+        for attrName, attrType, writable in \
+                [['HeartBeat', 'bool', False],
+                 ['Lock_ST', 'int', False],
+                 ['Lock_Status', 'str', False],
+                 ['Locking', 'bool', True]]:
+            self._attrs[attrName] = Descriptor(attrName, type=attrType,
+                                               writable=writable)
 
     def enumerations(self, name, prefix=None):
         if prefix is not None:
