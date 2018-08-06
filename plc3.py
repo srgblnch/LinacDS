@@ -70,11 +70,12 @@ def PS(name, types, rng):
         readbackName = name+M+'_'+CURRENT
         setpointName = name+M+'_'+CURRENT+'_'+SETPOINT
         Attr(readbackName,
-             PyTango.DevFloat, Iread_addr,  # RO
+             PyTango.DevFloat, read_addr=Iread_addr,  # RO
              desc=desc+' monitor', unit='A',
              setpoint=setpointName, **rng)
         Attr(setpointName,
-             PyTango.DevFloat, Iread_addr+161, Iref_addr,  # RW
+             PyTango.DevFloat,
+             read_addr=Iread_addr+161, write_addr=Iref_addr,  # RW
              desc=desc+' setpoint', unit='A',
              readback=readbackName, **rng)
         Iread_addr += 4
@@ -89,7 +90,7 @@ def PS(name, types, rng):
         else:
             meanings = None
         Attr('%s%s_ST' % (name, M),
-             PyTango.DevUChar, Status_addr,  # RO
+             PyTango.DevUChar, read_addr=Status_addr,  # RO
              desc=desc_st+john(meanings),
              meanings=meanings, qualities=qualities, events={},
              IamChecker=['\x01', '\x02', '\x03', '\x04', '\x05'])
@@ -155,19 +156,29 @@ PS('AS2', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
 
 onc_desc = lambda x: x+' on/off\nFalse:off\nTrue:on'
-AttrBit('MA_Interlock_RC', 289, 0, 128,
+AttrBit('MA_Interlock_RC', read_addr=289, read_bit=0, write_addr=128,
         desc='magnets interlock reset, rising edge:reset', events={},
         isRst=True)
-AttrBit('SL1_ONC', 289, 1, 128, desc=onc_desc('SL1'), events={})
-AttrBit('SL2_ONC', 289, 2, 128, desc=onc_desc('SL2'), events={})
-AttrBit('SL3_ONC', 289, 3, 128, desc=onc_desc('SL3'), events={})
-AttrBit('SL4_ONC', 289, 4, 128, desc=onc_desc('SL4'), events={})
-AttrBit('BC1_ONC', 289, 5, 128, desc=onc_desc('BC1'), events={})
-AttrBit('BC2_ONC', 289, 6, 128, desc=onc_desc('BC2'), events={})
-AttrBit('GL_ONC', 289, 7, 128, desc=onc_desc('GL'), events={})
-AttrBit('AS1_ONC', 290, 0, 129, desc=onc_desc('AS1'), events={})
-AttrBit('QT_ONC', 290, 1, 129, desc=onc_desc('QT'), events={})
-AttrBit('AS2_ONC', 290, 2, 129, desc=onc_desc('AS2'), events={})
+AttrBit('SL1_ONC', read_addr=289, read_bit=1, write_addr=128,
+        desc=onc_desc('SL1'), events={})
+AttrBit('SL2_ONC', read_addr=289, read_bit=2, write_addr=128,
+        desc=onc_desc('SL2'), events={})
+AttrBit('SL3_ONC', read_addr=289, read_bit=3, write_addr=128,
+        desc=onc_desc('SL3'), events={})
+AttrBit('SL4_ONC', read_addr=289, read_bit=4, write_addr=128,
+        desc=onc_desc('SL4'), events={})
+AttrBit('BC1_ONC', read_addr=289, read_bit=5, write_addr=128,
+        desc=onc_desc('BC1'), events={})
+AttrBit('BC2_ONC', read_addr=289, read_bit=6, write_addr=128,
+        desc=onc_desc('BC2'), events={})
+AttrBit('GL_ONC', read_addr=289, read_bit=7, write_addr=128,
+        desc=onc_desc('GL'), events={})
+AttrBit('AS1_ONC', read_addr=290, read_bit=0, write_addr=129,
+        desc=onc_desc('AS1'), events={})
+AttrBit('QT_ONC', read_addr=290, read_bit=1, write_addr=129,
+        desc=onc_desc('QT'), events={})
+AttrBit('AS2_ONC', read_addr=290, read_bit=2, write_addr=129,
+        desc=onc_desc('AS2'), events={})
 
 GrpBit('all_onc',
        attrGroup=['%s_ONC' % m for m in ['SL1', 'SL2', 'SL3', 'SL4', 'BC1',

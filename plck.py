@@ -27,21 +27,21 @@ __license__ = "GPLv3+"
 #     return john(args)
 
 Attr('Heat_I',
-     PyTango.DevFloat, 4,  # RO
+     PyTango.DevFloat, read_addr=4,  # RO
      label='Heating current monitor',
      unit='A', minValue=0, maxValue=30, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('Heat_V',
-     PyTango.DevFloat, 8,  # RO
+     PyTango.DevFloat, read_addr=8,  # RO
      label='Heating voltage monitor',
      unit='V', minValue=0, maxValue=30, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('HVPS_V',
-     PyTango.DevFloat, 12,  # RO
+     PyTango.DevFloat, read_addr=12,  # RO
      label='High voltage PS voltage',
      unit='kV', minValue=0, maxValue=40, format='%4.2f',
      events={THRESHOLD: 0.001},
@@ -49,7 +49,7 @@ Attr('HVPS_V',
      )
 
 Attr('HVPS_I',
-     PyTango.DevFloat, 16,  # RO
+     PyTango.DevFloat, read_addr=16,  # RO
      label='High voltage PS current',
      unit='mA', minValue=0, maxValue=150, format='%4.1f',
      events={THRESHOLD: 0.01},
@@ -57,14 +57,14 @@ Attr('HVPS_I',
      )
 
 Attr('Peak_I',
-     PyTango.DevFloat, 20,  # RO
+     PyTango.DevFloat, read_addr=20,  # RO
      label='Peak current',
      unit='A', minValue=0, maxValue=400, format='%4.1f',
      events={THRESHOLD: 0.01},  # qualities={CHANGING: {'rel': 0.1}}
      )
 
 Attr('Peak_V',
-     PyTango.DevFloat, 24,  # RO
+     PyTango.DevFloat, read_addr=24,  # RO
      label='Peak voltage',
      desc='peak voltage (calculated',
      unit='kV', minValue=0, maxValue=400, format='%4.1f',
@@ -89,7 +89,7 @@ LV_J_QUALITIES = {WARNING: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                   CHANGING: [11]}
 
 Attr('LV_ST',
-     PyTango.DevUChar, 37,  # RO
+     PyTango.DevUChar, read_addr=37,  # RO
      label='Low voltage status',
      desc='low voltage status'+john(LV_J),
      meanings=LV_J, qualities=LV_J_QUALITIES, events={})
@@ -105,7 +105,7 @@ F_J_QUALITIES = {WARNING: [0, 2, 3],
                  CHANGING: [1, 4]}
 
 Attr('Heat_ST',
-     PyTango.DevUChar, 38,  # RO
+     PyTango.DevUChar, read_addr=38,  # RO
      label='Filament heating status',
      desc='filament heating status'+john(F_J),
      meanings=F_J, qualities=F_J_QUALITIES, events={})
@@ -126,7 +126,7 @@ HV_J_QUALITIES = {ALARM: [7],
                   WARNING: [0, 1, 2, 3, 4, 5, 6, 8]}
 
 Attr('HVPS_ST',
-     PyTango.DevUChar, 39,  # RO
+     PyTango.DevUChar, read_addr=39,  # RO
      label='High voltage PS heating status',
      desc='high voltage PS heating status'+john(HV_J),
      meanings=HV_J, qualities=HV_J_QUALITIES, events={})
@@ -144,13 +144,13 @@ PL_J = {0: 'off',
 PL_J_QUALITIES = {WARNING: [0, 1, 2, 3, 4, 5, 6, 7]}
 
 Attr('Pulse_ST',
-     PyTango.DevUChar, 40,  # RO
+     PyTango.DevUChar, read_addr=40,  # RO
      label='Pulse status',
      desc='pulse status'+john(PL_J),
      meanings=PL_J, qualities=PL_J_QUALITIES, events={})
 
 Attr('LV_Time',
-     PyTango.DevShort, 42,  # RO
+     PyTango.DevShort, read_addr=42,  # RO
      label='Voltage slow down time',
      desc='tempo stop low voltage (5 min)',
      unit='s', events={},
@@ -158,7 +158,7 @@ Attr('LV_Time',
      )
 
 Attr('Heat_Time',
-     PyTango.DevShort, 44,  # RO
+     PyTango.DevShort, read_addr=44,  # RO
      label='Heating time',
      desc='heating tempo (20 min)',
      unit='m', events={},
@@ -176,7 +176,7 @@ Attr('Heat_Time',
 # the maximum must follow some steps and some time on each step.
 # This two ramp parameters must be also dynattrs.
 Attr('HVPS_V_setpoint',  # AttrRampeable('HVPS_V_setpoint',
-     PyTango.DevFloat, 46, 0,  # RW
+     PyTango.DevFloat, read_addr=46, write_addr=0,  # RW
      label='High voltage PS voltage setpoint',
      unit='kV', minValue=0, maxValue=33, format='%4.2f',
      events={THRESHOLD: 0.005},
@@ -188,13 +188,13 @@ Attr('HVPS_V_setpoint',  # AttrRampeable('HVPS_V_setpoint',
      readback='HVPS_V')
 
 AttrBit('LV_Interlock_RC',
-        62, 0, 16,  # RW
+        read_addr=62, read_bit=0, write_addr=16,  # RW
         label='Low voltage reset',
         desc='low voltage reset\nrising edge reset',
         events={}, isRst=True)
 
 AttrBit('LV_ONC',
-        62, 1, 16,  # RW
+        read_addr=62, read_bit=1, write_addr=16,  # RW
         label='Low voltage on',
         desc='low voltage on\nFalse:off\nTrue:on',
         events={},
@@ -202,13 +202,13 @@ AttrBit('LV_ONC',
         )
 
 AttrBit('HVPS_Interlock_RC',
-        62, 2, 16,  # RW
+        read_addr=62, read_bit=2, write_addr=16,  # RW
         label='High voltage reset',
         desc='high voltage reset\nrising edge reset',
         events={}, isRst=True)
 
 AttrBit('HVPS_ONC',
-        62, 3, 16,  # RW
+        read_addr=62, read_bit=3, write_addr=16,  # RW
         label='High voltage on',
         desc='high voltage on\nFalse:off\nTrue:on',
         events={},
