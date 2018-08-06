@@ -42,11 +42,26 @@ class Descriptor(object):
         if enumeration is True:
             if self._subAttrs is None:
                 self._subAttrs = []
-            self._subAttrs.append(Descriptor('active', type='bool'))
+            self._subAttrs.append(Descriptor('active', type='bool',
+                                  writable=True))
             self._subAttrs.append(Descriptor('numeric', type='int'))
             self._subAttrs.append(Descriptor('meaning', type='str'))
-            self._subAttrs.append(Descriptor('options', type='str', dim=1))
+            self._subAttrs.append(Descriptor('options', type='str', dim=1,
+                                  writable=True))
         self._writable = writable
+
+    def __str__(self):
+        return "%s(%s)" % (self.__class__.__name__, self.name)
+
+    def __repr__(self):
+        repr = "%s(%s, " % (self.__class__.__name__, self.name)
+        for key in ['type', 'dim', 'plc', 'specialCheck', 'writable']:
+            value = getattr(self, key)
+            if value is not None:
+                repr += "%s=%s, " % (key, value)
+        if self.hasSubAttrs():
+            repr += "hasSubAttrs=True, "
+        return repr[:-2] + ")"
 
     @property
     def name(self):
