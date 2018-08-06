@@ -16,6 +16,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 from .attrsread import AttrsRead
+from .attrswrite import AttrsWrite
 from .linacds import LinacDS
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"

@@ -15,7 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from testing import AttrsRead
+from testing import AttrsRead, AttrsWrite
 from unittest import main
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
