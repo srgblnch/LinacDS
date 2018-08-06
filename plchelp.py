@@ -95,9 +95,10 @@ __license__ = "GPLv3+"
                                          root quality (state-like attrs)
                {ABSOLUTE: {BELOW|ABOVE: :When working with float or decimal
                            float,        values a comparison could be set up
-                           UNDER: bool}  as absolute with bounds (use under to 
-                                         define if out of or within the bounds), 
-                RELATIVE: float          or relative when the attribute stores 
+                           UNDER: bool}  as absolute with bounds (use under to
+                                         define if out of or within the
+                                         bounds),
+                RELATIVE: float          or relative when the attribute stores
                                          a buffer.
                }}
 
@@ -131,7 +132,7 @@ __license__ = "GPLv3+"
               INTEGRATIONTIME=seconds
               SWITCHDESCRIPTOR='name'
              }
-             
+
     historyBuffer={'BASESET: [values]} :When the new value added is in the
                                         list, clean the buffer and start
                                         accumulating from scratch. This is

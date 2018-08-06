@@ -514,23 +514,22 @@ AttrLogic('att2_ready',
 # ## Read/Write attributes ---
 
 # R084 W000 @EG_FVS ---
-#AttrRampeable('GUN_Filament_V_setpoint',
-Attr('GUN_Filament_V_setpoint',
-              PyTango.DevFloat, 84, 0,  # RW
-              label='e-gun filament voltage setpoint',
-              format='%4.1f', minValue=0, maxValue=10, unit='V',
-              events={THRESHOLD: 0.01},
-              qualities={WARNING: {ABSOLUTE: {BELOW: 0}}},
-              # rampsDescriptor={DESCENDING: {STEP: 1,  # V
-              #                               STEPTIME: 1,  # s
-              #                               THRESHOLD: 10,  # V
-              #                               SWITCH: 'GUN_LV_ONC'},
-              #                  ASCENDING: {STEP: 1,  # V
-              #                              STEPTIME: 1,  # s
-              #                              THRESHOLD: 0,  # V
-              #                              SWITCH: 'GUN_LV_ONC'}},
-              readback='GUN_Filament_V',
-              switch='GUN_LV_ONC')
+Attr('GUN_Filament_V_setpoint',  # AttrRampeable('GUN_Filament_V_setpoint',
+     PyTango.DevFloat, 84, 0,  # RW
+     label='e-gun filament voltage setpoint',
+     format='%4.1f', minValue=0, maxValue=10, unit='V',
+     events={THRESHOLD: 0.01},
+     qualities={WARNING: {ABSOLUTE: {BELOW: 0}}},
+     # rampsDescriptor={DESCENDING: {STEP: 1,  # V
+     #                               STEPTIME: 1,  # s
+     #                               THRESHOLD: 10,  # V
+     #                               SWITCH: 'GUN_LV_ONC'},
+     #                  ASCENDING: {STEP: 1,  # V
+     #                              STEPTIME: 1,  # s
+     #                              THRESHOLD: 0,  # V
+     #                              SWITCH: 'GUN_LV_ONC'}},
+     readback='GUN_Filament_V',
+     switch='GUN_LV_ONC')
 
 # R088 W004 @EG_KVS ---
 Attr('GUN_Kathode_V_setpoint',
@@ -544,26 +543,24 @@ Attr('GUN_Kathode_V_setpoint',
 # R096 W012 #AO_03: free ---
 
 # R100 W016 @HVS_VS ---
-#AttrRampeable('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
-Attr('GUN_HV_V_setpoint',  # voltage (set) is 90 kV fixed
-              PyTango.DevFloat, 100, 16,  # RW
-              label='HV PS Voltage Setpoint',
-              desc='high voltage PS voltage',
-              format='%4.1f', minValue=-90, maxValue=0, unit='kV',
-              events={THRESHOLD: 0.01},
-              # rampsDescriptor={DESCENDING: {STEP: 1,  # kV
-              #                               STEPTIME: 1,  # s
-              #                               THRESHOLD: -50,  # kV
-              #                               SWITCH: 'GUN_HV_ONC'},
-              #                  # ASCENDING: {STEP: 5,  # kV
-              #                  #             STEPTIME: 0.5,  # s
-              #                  #             THRESHOLD: -90,  # kV
-              #                  #             SWITCH: 'GUN_HV_ONC'}
-              #                  },
-              readback='GUN_HV_V',
-              switch='GUN_HV_ONC')
-              # User request (back) to limit the device setpoint to avoid
-              # below -90kV.
+Attr('GUN_HV_V_setpoint',  # AttrRampeable('GUN_HV_V_setpoint',
+     PyTango.DevFloat, 100, 16,  # RW
+     label='HV PS Voltage Setpoint',
+     desc='high voltage PS voltage',
+     format='%4.1f', minValue=-90, maxValue=0, unit='kV',
+     events={THRESHOLD: 0.01},
+     # rampsDescriptor={DESCENDING: {STEP: 1,  # kV
+     #                               STEPTIME: 1,  # s
+     #                               THRESHOLD: -50,  # kV
+     #                               SWITCH: 'GUN_HV_ONC'},
+     #                  # ASCENDING: {STEP: 5,  # kV
+     #                  #             STEPTIME: 0.5,  # s
+     #                  #             THRESHOLD: -90,  # kV
+     #                  #             SWITCH: 'GUN_HV_ONC'}
+     #                  },
+     readback='GUN_HV_V',
+     switch='GUN_HV_ONC'
+     )
 
 # R104 W020 @TB_GPA ---
 Attr('TB_GPA',
@@ -729,12 +726,13 @@ AttrBit('GUN_LV_ONC',
         #                   WHENON: {FROM: 0},
         #                   WHENOFF: {TO: 0}},
         readback='GUN_Filament_V',
-        setpoint='GUN_Filament_V_setpoint')
+        setpoint='GUN_Filament_V_setpoint'
         # formula['write'] condition: avoid LV on/off when HV is on
         # that is: allow to turn LV off when HV is off => 0 xor 0: 0
         #          avoid to turn LV off when HV is on  => 0 xor 1: 1
         #          allow to turn LV on  when HV is off => 1 xor 0: 1
         #          avoid to turn LV on  when HV is on  => 1 xor 1: 0
+        )
 
 # R163 W079 @DO_8to15 ---
 scm_dc_desc = 'screen monitor %d; 0:up, 1:down'

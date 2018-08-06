@@ -170,7 +170,7 @@ AttrBit('QT_ONC', 290, 1, 129, desc=onc_desc('QT'), events={})
 AttrBit('AS2_ONC', 290, 2, 129, desc=onc_desc('AS2'), events={})
 
 GrpBit('all_onc',
-       attrGroup=['%s_ONC' % m for m in ['SL1', 'SL2', 'SL3', 'SL4','BC1',
+       attrGroup=['%s_ONC' % m for m in ['SL1', 'SL2', 'SL3', 'SL4', 'BC1',
                                          'BC2', 'GL', 'AS1', 'QT', 'AS2']],
        label='all magnet on', meanings={0: 'close', 1: 'open'},
        qualities={WARNING: [False]}, events={})

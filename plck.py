@@ -175,18 +175,17 @@ Attr('Heat_Time',
 # That is from 0 to this threashold is set directly, and above to
 # the maximum must follow some steps and some time on each step.
 # This two ramp parameters must be also dynattrs.
-#AttrRampeable('HVPS_V_setpoint',
-Attr('HVPS_V_setpoint',
-              PyTango.DevFloat, 46, 0,  # RW
-              label='High voltage PS voltage setpoint',
-              unit='kV', minValue=0, maxValue=33, format='%4.2f',
-              events={THRESHOLD: 0.005},
-              qualities={CHANGING: {'rel': 0.1}},
-              # rampsDescriptor={ASCENDING: {STEP: 0.5,  # kV
-              #                              STEPTIME: 1,  # s
-              #                              THRESHOLD: 20,  # kV
-              #                              SWITCH: 'HVPS_ONC'}},
-              readback='HVPS_V')
+Attr('HVPS_V_setpoint',  # AttrRampeable('HVPS_V_setpoint',
+     PyTango.DevFloat, 46, 0,  # RW
+     label='High voltage PS voltage setpoint',
+     unit='kV', minValue=0, maxValue=33, format='%4.2f',
+     events={THRESHOLD: 0.005},
+     qualities={CHANGING: {'rel': 0.1}},
+     # rampsDescriptor={ASCENDING: {STEP: 0.5,  # kV
+     #                              STEPTIME: 1,  # s
+     #                              THRESHOLD: 20,  # kV
+     #                              SWITCH: 'HVPS_ONC'}},
+     readback='HVPS_V')
 
 AttrBit('LV_Interlock_RC',
         62, 0, 16,  # RW

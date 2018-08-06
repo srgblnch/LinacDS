@@ -281,7 +281,7 @@ for i in range(7):
                              % (number)})
 
 GrpBit('VVall_OC',
-       attrGroup=['VV%s_OC' % i for i in range(1,8)],
+       attrGroup=['VV%s_OC' % i for i in range(1, 8)],
        label='all vacuum valves open', meanings={0: 'close', 1: 'open'},
        qualities={WARNING: [False]}, events={})
 
