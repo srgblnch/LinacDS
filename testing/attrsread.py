@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from attrdescr import Descriptor
 from .linacds import LinacDS
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
@@ -26,7 +27,6 @@ __license__ = "GPLv3+"
 class AttrsRead(LinacDS):
 
     _reads = None
-    _writes = None
     _subtotal = None
     _total = None
 
@@ -37,44 +37,31 @@ class AttrsRead(LinacDS):
             device = self._devices[number]
             devAttrs = list(device.get_attribute_list())
             otherAttrs = []
-            for attrName, attrStruct in self._attrs[number].iteritems():
-                if isinstance(attrStruct, dict) and 'active' in attrStruct:
-                    for k in attrStruct:
-                        self.__checkAttrsLists("%s_%s" % (attrName, k),
-                                               devAttrs, otherAttrs)
+            for attrName, attrDesc in self._attrs[number].iteritems():
+                if isinstance(attrDesc, Descriptor) and attrDesc.hasSubAttrs():
+                    for subAttrDesc in attrDesc.subAttrs():
+                        self._checkAttrsLists("%s_%s" % (attrName,
+                                                         subAttrDesc.name),
+                                              devAttrs, otherAttrs)
                 else:
-                    self.__checkAttrsLists(attrName, devAttrs, otherAttrs)
-                    self.assertAttibute(attrName, attrStruct, device)
-            for attrName, attrStruct in self._deviceStaticAttrs().iteritems():
-                self.__checkAttrsLists(attrName, devAttrs, otherAttrs)
-                self.assertAttibute(attrName, attrStruct, device)
+                    self._checkAttrsLists(attrName, devAttrs, otherAttrs)
+                    self.assertAttibute(attrName, attrDesc, device)
+            for attrName, attrDesc in self._deviceStaticAttrs().iteritems():
+                self._checkAttrsLists(attrName, devAttrs, otherAttrs)
+                self.assertAttibute(attrName, attrDesc, device)
             self._subtotal = self._reads
             self._total += self._subtotal
-            print("plc%d: %d attributes tested" % (number, self._subtotal))
+            print("plc%d: %d attributes read tested" % (number, self._subtotal))
             if len(devAttrs) > 0:
-                print("Unchecked device attributes: %s" % (devAttrs))
+                print("Unchecked device read attributes: %s" % (devAttrs))
             if len(otherAttrs) > 0:
-                print("Described attributes not present: %s" % (otherAttrs))
-        print("Total %d attributes tested" % (self._total))
+                print("Described read attributes not present: %s" % (otherAttrs))
+        print("Total %d read attributes tested" % (self._total))
 
-    def __checkAttrsLists(self, attrName, devAttrs, otherAttrs):
-        if attrName in devAttrs:
-            devAttrs.pop(devAttrs.index(attrName))
-        else:
-            otherAttrs.append(attrName)
-
-    def assertAttibute(self, attrName, attrStruct, device):
-        if isinstance(attrStruct, dict):
-            if 'type' in attrStruct:
-                attrType = attrStruct['type']
-            else:
-                attrType = None
-            if 'dim' in attrStruct:
-                dim = attrStruct['dim']
-            else:
-                dim = 0
-            if 'assert' in attrStruct:
-                if attrStruct['assert'] == 'noException':
+    def assertAttibute(self, attrName, attrDesc, device):
+        if isinstance(attrDesc, Descriptor):
+            if attrDesc.specialCheck:
+                if attrDesc.specialCheck == 'noException':
                     try:
                         device[attrName].value
                         self._reads += 1
@@ -82,8 +69,8 @@ class AttrsRead(LinacDS):
                         self.fail(attrName)
             else:
                 value = device[attrName].value
-                if self.assertReadValue(value, attrType,
-                                        dim=dim, msg=attrName):
+                if self.assertReadValue(value, attrDesc.type,
+                                        dim=attrDesc.dim, msg=attrName):
                     self._reads += 1
 
     def assertReadValue(self, value, dataType, dim=0, msg=None):
@@ -98,4 +85,3 @@ class AttrsRead(LinacDS):
                 return False
             return True
         return False
-

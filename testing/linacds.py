@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .attrdescr import Descriptor
 from .devices import getPLCSimulators, getLinacDevices, getRelocator
 from .parsefile import ParseFile
 from PyTango import DeviceProxy
@@ -27,7 +28,7 @@ __license__ = "GPLv3+"
 
 
 # TODO: To complete the coverage:
-# * read with checks on the qualities
+# - read with checks on the qualities
 # * write attributes
 #   * plc attributes (3 types)
 #   * internals (side effects with other attrs)
@@ -51,41 +52,13 @@ class LinacDS(TestCase):
     _simulators = None
     _devices = None
     _relocator = None
+    _statics = None
 
     def setUp(self):
         self._simulators = getPLCSimulators()
         self._devices = getLinacDevices()
         self._relocator = getRelocator()
         self._parseFiles()
-
-    def _parseFiles(self):
-        self._attrs = {}
-        for number in [1, 2, 3]:
-            obj = ParseFile()
-            obj.parse_file('../plc%d.py' % number)
-            self._attrs[number] = obj.attrs
-        obj = ParseFile()
-        obj.parse_file('../plck.py')
-        self._attrs[5] = self._attrs[4] = obj.attrs
-
-    def _deviceStaticAttrs(self):
-        return {'EventsTime': {'type': 'float', 'dim': 1},
-                'EventsTimeMin': {'type': 'float'},
-                'EventsTimeMax': {'type': 'float'},
-                'EventsTimeMean': {'type': 'float'},
-                'EventsTimeStd': {'type': 'float'},
-                'EventsNumber': {'type': 'int', 'dim': 1},
-                'EventsNumberMin': {'type': 'int'},
-                'EventsNumberMax': {'type': 'int'},
-                'EventsNumberMean': {'type': 'float'},
-                'EventsNumberStd': {'type': 'float'},
-                'IsTooFarEnable': {'type': 'bool'},
-                'forceWriteDB': {'type': 'str'},
-                'lastUpdateStatus': None,
-                'lastUpdate': None,
-                'State': None,
-                'Status': None,
-                }
 
     def test_Constructor(self):
         devProxies = 0
@@ -98,3 +71,43 @@ class LinacDS(TestCase):
             devProxies += 1
         self.assertEqual(devProxies, 11,
                          "Not all the devices proxies are available")
+
+    def _parseFiles(self):
+        self._attrs = {}
+        for number in [1, 2, 3]:
+            obj = ParseFile()
+            obj.parse_file('../plc%d.py' % number)
+            self._attrs[number] = obj.attrs
+        obj = ParseFile()
+        obj.parse_file('../plck.py')
+        self._attrs[5] = self._attrs[4] = obj.attrs
+
+    def _deviceStaticAttrs(self):
+        if self._statics is None:
+            self._statics =  {}
+            staticLst = [Descriptor('EventsTime', type='float', dim=1),
+                         Descriptor('EventsTimeMin', type='float'),
+                         Descriptor('EventsTimeMax', type='float'),
+                         Descriptor('EventsTimeMean', type='float'),
+                         Descriptor('EventsTimeStd', type='float'),
+                         Descriptor('EventsNumber', type='int', dim=1),
+                         Descriptor('EventsNumberMin', type='int'),
+                         Descriptor('EventsNumberMax', type='int'),
+                         Descriptor('EventsNumberMean', type='float'),
+                         Descriptor('EventsNumberStd', type='float'),
+                         Descriptor('IsTooFarEnable', type='bool',
+                                    writable=True),
+                         Descriptor('forceWriteDB', type='str'),
+                         Descriptor('lastUpdateStatus'),
+                         Descriptor('lastUpdate'),
+                         Descriptor('State'),
+                         Descriptor('Status')]
+            for element in staticLst:
+                self._statics[element.name] = element
+        return self._statics
+
+    def _checkAttrsLists(self, attrName, devAttrs, otherAttrs):
+        if attrName in devAttrs:
+            devAttrs.pop(devAttrs.index(attrName))
+        else:
+            otherAttrs.append(attrName)
