@@ -103,6 +103,7 @@ class AttrList(object):
         self.alist = list()
         self.locals_ = {}
         self._relations = {}
+        self._buider = None
 
         self.globals_ = globals()
         self.globals_.update({
@@ -680,6 +681,25 @@ class AttrList(object):
                 self.impl.remove_attribute(attr.get_name())
             except ValueError as exc:
                 self.impl.debug_stream(attr.get_name()+': '+str(exc))
+
+    def build(self, fname):
+        if self._buider is not None:
+            if not isinstance(self._buider, threading.Thread):
+                msg = "AttrList builder is not a Thread! (%s)" \
+                      % (type(self._buider))
+                self.impl.error_stream("Ups! This should never happen: %s"
+                                       % (msg))
+                raise AssertionError(msg)
+            elif self._buider.isAlive():
+                msg = "AttrList build while it is building"
+                self.impl.error_stream("Ups! This should never happen: %s"
+                                       % (msg))
+                return
+            else:
+                self._buider = None
+        self._buider = threading.Thread(target=self.parse_file, args=(fname,))
+        self.impl.info_stream("Launch a thread to build the dynamic attrs")
+        self._buider.start()
 
     def parse_file(self,  fname):
         msg = "%30s\t%10s\t%5s\t%6s\t%6s"\
@@ -2631,6 +2651,20 @@ class LinacData(PyTango.Device_4Impl):
         #                 self.fireEventsList([[attrName, attrValue,
         #                                       attrQuality]], log=True)
 
+        def loadAttrFile(self):
+            self.attr_loaded = True
+            if self.AttrFile:
+                attr_fname = self.AttrFile
+            else:
+                attr_fname = self.get_name().split('/')[-1]+'.py'
+            try:
+                self.attr_list.build(attr_fname.lower())
+            except Exception as e:
+                if self.get_state() != PyTango.DevState.FAULT:
+                    self.set_state(PyTango.DevState.FAULT)
+                    self.set_status("ReloadAttrFile() failed (%s)" % (e),
+                                    important=True)
+
         @AttrExc
         def read_lastUpdateStatus(self, attr):
             '''
@@ -2843,7 +2877,7 @@ class LinacData(PyTango.Device_4Impl):
 
         # PROTECTED REGION ID(LinacData.initialize_dynamic_attributes) ---
         def initialize_dynamic_attributes(self):
-            self.ReloadAttrFile()
+            self.loadAttrFile()
 
         # PROTECTED REGION END --- LinacData.initialize_dynamic_attributes
 
@@ -3057,18 +3091,7 @@ class LinacData(PyTango.Device_4Impl):
             :rtype: PyTango.DevVoid """
             self.debug_stream('In ReloadAttrFile()')
             # PROTECTED REGION ID(LinacData.ReloadAttrFile) ---
-            self.attr_loaded = True
-            if self.AttrFile:
-                attr_fname = self.AttrFile
-            else:
-                attr_fname = self.get_name().split('/')[-1]+'.py'
-            try:
-                self.attr_list.parse_file(attr_fname.lower())
-            except Exception as e:
-                if self.get_state() != PyTango.DevState.FAULT:
-                    self.set_state(PyTango.DevState.FAULT)
-                    self.set_status("ReloadAttrFile() failed (%s)" % (e),
-                                    important=True)
+            self.loadAttrFile()
             # PROTECTED REGION END --- LinacData.ReloadAttrFile
 
         @CommandExc
