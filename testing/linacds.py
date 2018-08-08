@@ -28,26 +28,6 @@ __copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-# TODO: To complete the coverage:
-# - read with checks on the qualities
-# * write attributes
-#   * plc attributes (3 types)
-#   * internals (side effects with other attrs)
-#   * enumerations (the funcionality itself)
-# * Event generation (events are generated with the expected values)
-# * Circular buffers (how different values affect those buffers)
-# * Attr memorised (make sure the values are well stored, but also recovered)
-# * Meaning attributes (construction of those strings from the ints)
-# * History attributes (special case of buffer with certain resets)
-# * AutoStop
-#   * Well collection of data when on and no data collection if off
-#   * reproduce the stop
-# * change reporter (test relations propagation)
-# * Formulas & masks / logic attrs
-# * TooFar, switches and resets
-# * group attributes
-
-
 class LinacDS(TestCase):
 
     _logger = None
@@ -60,7 +40,7 @@ class LinacDS(TestCase):
     def setUp(self):
         logging.basicConfig(
             level=logging.INFO,
-            format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self._logger = logging.getLogger(self.__class__.__name__)
         self._simulators = getPLCSimulators()
         self._devices = getLinacDevices()
@@ -79,7 +59,7 @@ class LinacDS(TestCase):
 
     def _deviceStaticAttrs(self):
         if self._statics is None:
-            self._statics =  {}
+            self._statics = {}
             staticLst = [Descriptor('EventsTime', type='float', dim=1),
                          Descriptor('EventsTimeMin', type='float'),
                          Descriptor('EventsTimeMax', type='float'),
@@ -108,7 +88,7 @@ class LinacDS(TestCase):
             otherAttrs.append(attrName)
 
 
-class Test1_Constructors(LinacDS):
+class Test01_Constructors(LinacDS):
     def test_Constructor(self):
         devProxies = 0
         for i in range(1, 6):

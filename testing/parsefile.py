@@ -73,7 +73,7 @@ class ParseFile(object):
         #         memorized=False, logLevel=None, xdim=0,
         #         historyBuffer=None, IamChecker=None, events=None,
         #         *args, **kwargs):
-        #print("unused: args: %s, kwargs: %s" % (str(args), str(kwargs)))
+        # print("unused: args: %s, kwargs: %s" % (str(args), str(kwargs)))
         self._attrs[name] = Descriptor(name)
         if T in [PyTango.DevFloat, PyTango.DevDouble]:
             self._attrs[name].type = 'float'

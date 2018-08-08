@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-class Test2_AttrsRead(LinacDS):
+class Test02_AttrsRead(LinacDS):
 
     _reads = None
     _subtotal = None
@@ -57,8 +57,8 @@ class Test2_AttrsRead(LinacDS):
                 self._logger.warning("Unchecked device read attributes: %s"
                                      % (devAttrs))
             if len(otherAttrs) > 0:
-                self._logger.warning("Described read attributes not present: %s"
-                                     % (otherAttrs))
+                self._logger.warning("Described read attributes not present: "
+                                     "%s" % (otherAttrs))
         self._logger.info("Total %d read attributes tested"
                           % (self._total))
         self._logger.info("Attributes read test succeed")

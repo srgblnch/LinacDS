@@ -15,13 +15,33 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from testing import Test1_Constructors, Test2_AttrsRead, Test3_AttrsWrite
+from testing import (Test01_Constructors, Test02_AttrsRead, Test03_AttrsWrite)
 from unittest import main
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
+
+# TODO: To complete the coverage:
+# 1 read with checks on the qualities
+# 2 write attributes
+#   * done what it is to write the same value without raise an exception
+#   * pending to write other valid values as well as provoque the exceptions
+#     when invalid values are tried to be write.
+# * Event generation (events are generated with the expected values)
+# * Circular buffers (how different values affect those buffers)
+# * Attr memorised (make sure the values are well stored, but also recovered)
+# * Meaning attributes (construction of those strings from the ints)
+# * History attributes (special case of buffer with certain resets)
+# * AutoStop
+#   * Well collection of data when on and no data collection if off
+#   * reproduce the stop
+# * change reporter (test relations propagation)
+# * Formulas & masks / logic attrs
+# * TooFar, switches and resets
+# * group attributes
+# * Force to rewrite the write DataBlock
 
 if __name__ == '__main__':
     main()
