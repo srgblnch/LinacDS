@@ -72,20 +72,37 @@ class AttrsWrite(LinacDS):
 
     def assertAttibute(self, attrName, attrDesc, device):
         if isinstance(attrDesc, Descriptor):
-            if attrDesc.type == 'bool':
-                self._booleanFlip(device, attrName)
+            func = {'bool': self._booleanWrites,
+                    'int': self._integerWrites,
+                    'float': self._floatWrites}.get(attrDesc.type, None)
+            if func is not None:
+                func(device, attrName)
                 self._writes += 1
-            elif attrDesc.type == 'int':
-                self._integerWrites(device, attrName)
-                self._writes += 1
-            elif attrDesc.type == 'float':
-                self._floatWrites(device, attrName)
-                self._writes += 1
+            else:
+                self.fail("%s has an unmanaged type %s"
+                          % (attrName, attrDesc.type))
 
     def __writeWait(self):
         sleep(1.5)  # FIXME: it is necessary an active wait.
         # Do not wait always the maximum, but do some readings if the write
         # has applied before the limit.
+
+    def _booleanWrites(self, device, attrName):
+        self._checkNoExceptionOnWrite(device, attrName)
+        self._booleanFlip(device, attrName)
+
+    def _integerWrites(self, device, attrName):
+        self._checkNoExceptionOnWrite(device, attrName)
+
+    def _floatWrites(self, device, attrName):
+        self._checkNoExceptionOnWrite(device, attrName)
+
+    def _checkNoExceptionOnWrite(self, device, attrName):
+        try:
+            value = device[attrName].value
+            device[attrName] = value
+        except:
+            self.fail(attrName)
 
     def _booleanFlip(self, device, attrName):
         value = device[attrName].value
@@ -102,16 +119,3 @@ class AttrsWrite(LinacDS):
         self.__writeWait()
         self.assertEqual(device[attrName].value, value)
 
-    def _integerWrites(self, device, attrName):
-        value = device[attrName].value
-        try:
-            device[attrName] = value
-        except:
-            self.fail(attrName)
-
-    def _floatWrites(self, device, attrName):
-        value = device[attrName].value
-        try:
-            device[attrName] = value
-        except:
-            self.fail(attrName)
