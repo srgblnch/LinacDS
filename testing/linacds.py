@@ -17,6 +17,7 @@
 
 from .attrdescr import Descriptor
 from .devices import getPLCSimulators, getLinacDevices, getRelocator
+import logging
 from .parsefile import ParseFile
 from PyTango import DeviceProxy
 from unittest import TestCase
@@ -46,8 +47,10 @@ __license__ = "GPLv3+"
 # * TooFar, switches and resets
 # * group attributes
 
+
 class LinacDS(TestCase):
 
+    _logger = None
     _attrs = None
     _simulators = None
     _devices = None
@@ -55,22 +58,14 @@ class LinacDS(TestCase):
     _statics = None
 
     def setUp(self):
+        logging.basicConfig(
+            level=logging.INFO,
+            format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self._logger = logging.getLogger(self.__class__.__name__)
         self._simulators = getPLCSimulators()
         self._devices = getLinacDevices()
         self._relocator = getRelocator()
         self._parseFiles()
-
-    def test_Constructor(self):
-        devProxies = 0
-        for i in range(1, 6):
-            if isinstance(self._simulators[i], DeviceProxy):
-                devProxies += 1
-            if isinstance(self._devices[i], DeviceProxy):
-                devProxies += 1
-        if isinstance(self._relocator, DeviceProxy):
-            devProxies += 1
-        self.assertEqual(devProxies, 11,
-                         "Not all the devices proxies are available")
 
     def _parseFiles(self):
         self._attrs = {}
@@ -111,3 +106,18 @@ class LinacDS(TestCase):
             devAttrs.pop(devAttrs.index(attrName))
         else:
             otherAttrs.append(attrName)
+
+
+class Test1_Constructors(LinacDS):
+    def test_Constructor(self):
+        devProxies = 0
+        for i in range(1, 6):
+            if isinstance(self._simulators[i], DeviceProxy):
+                devProxies += 1
+            if isinstance(self._devices[i], DeviceProxy):
+                devProxies += 1
+        if isinstance(self._relocator, DeviceProxy):
+            devProxies += 1
+        self.assertEqual(devProxies, 11,
+                         "Not all the devices proxies are available")
+        self._logger.info("Constructors test succeed")

@@ -15,9 +15,9 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .attrsread import AttrsRead
-from .attrswrite import AttrsWrite
-from .linacds import LinacDS
+from .attrsread import Test2_AttrsRead
+from .attrswrite import Test3_AttrsWrite
+from .linacds import LinacDS, Test1_Constructors
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"

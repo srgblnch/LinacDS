@@ -26,7 +26,7 @@ __copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-class AttrsWrite(LinacDS):
+class Test3_AttrsWrite(LinacDS):
 
     _writes = None
     _subtotal = None
@@ -62,13 +62,17 @@ class AttrsWrite(LinacDS):
                     self.assertAttibute(attrName, attrDesc, device)
             self._subtotal = self._writes
             self._total += self._subtotal
-            print("plc%d: %d attributes write tested" % (number, self._subtotal))
+            self._logger.info("plc%d: %d attributes write tested"
+                             % (number, self._subtotal))
             if len(devAttrs) > 0:
-                print("Unchecked device write attributes: %s" % (devAttrs))
+                self._logger.warning("Unchecked device write attributes: %s"
+                                     % (devAttrs))
             if len(otherAttrs) > 0:
-                print("Described write attributes not present: %s" % (
-                    otherAttrs))
-        print("Total %d write attributes tested" % (self._total))
+                self._logger.warning("Described write attributes not present: %s"
+                                     % (otherAttrs))
+        self._logger.info("Total %d write attributes tested"
+                         % (self._total))
+        self._logger.info("Attributes write test succeed")
 
     def assertAttibute(self, attrName, attrDesc, device):
         if isinstance(attrDesc, Descriptor):

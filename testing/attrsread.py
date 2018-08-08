@@ -24,7 +24,7 @@ __copyright__ = "Copyright 2018, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-class AttrsRead(LinacDS):
+class Test2_AttrsRead(LinacDS):
 
     _reads = None
     _subtotal = None
@@ -51,12 +51,17 @@ class AttrsRead(LinacDS):
                 self.assertAttibute(attrName, attrDesc, device)
             self._subtotal = self._reads
             self._total += self._subtotal
-            print("plc%d: %d attributes read tested" % (number, self._subtotal))
+            self._logger.info("plc%d: %d attributes read tested"
+                              % (number, self._subtotal))
             if len(devAttrs) > 0:
-                print("Unchecked device read attributes: %s" % (devAttrs))
+                self._logger.warning("Unchecked device read attributes: %s"
+                                     % (devAttrs))
             if len(otherAttrs) > 0:
-                print("Described read attributes not present: %s" % (otherAttrs))
-        print("Total %d read attributes tested" % (self._total))
+                self._logger.warning("Described read attributes not present: %s"
+                                     % (otherAttrs))
+        self._logger.info("Total %d read attributes tested"
+                          % (self._total))
+        self._logger.info("Attributes read test succeed")
 
     def assertAttibute(self, attrName, attrDesc, device):
         if isinstance(attrDesc, Descriptor):
