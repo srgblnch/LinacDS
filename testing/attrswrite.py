@@ -80,7 +80,7 @@ class Test3_AttrsWrite(LinacDS):
                     'int': self._integerWrites,
                     'float': self._floatWrites}.get(attrDesc.type, None)
             if func is not None:
-                func(device, attrName)
+                func(attrName, attrDesc, device)
                 self._writes += 1
             else:
                 self.fail("%s has an unmanaged type %s"
@@ -91,14 +91,14 @@ class Test3_AttrsWrite(LinacDS):
         # Do not wait always the maximum, but do some readings if the write
         # has applied before the limit.
 
-    def _booleanWrites(self, device, attrName):
+    def _booleanWrites(self, attrName, attrDesc, device):
         self._checkNoExceptionOnWrite(device, attrName)
-        self._booleanFlip(device, attrName)
+        # self._booleanFlip(device, attrName)
 
-    def _integerWrites(self, device, attrName):
+    def _integerWrites(self, attrName, attrDesc, device):
         self._checkNoExceptionOnWrite(device, attrName)
 
-    def _floatWrites(self, device, attrName):
+    def _floatWrites(self, attrName, attrDesc, device):
         self._checkNoExceptionOnWrite(device, attrName)
 
     def _checkNoExceptionOnWrite(self, device, attrName):
@@ -122,4 +122,3 @@ class Test3_AttrsWrite(LinacDS):
             self.fail(attrName)
         self.__writeWait()
         self.assertEqual(device[attrName].value, value)
-

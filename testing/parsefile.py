@@ -65,13 +65,15 @@ class ParseFile(object):
                 read_addr=None, read_bit=None,
                 write_addr=None, write_bit=None,
                 logic=None, meanings=None,
-                autoStop=None, *args, **kwargs):
+                autoStop=None, attrGroup=None,
+                *args, **kwargs):
         # # label=None, desc=None, qualities=None,
         #         minValue=None, maxValue=None, unit=None, format=None,
         #         readback=None, setpoint=None, switch=None,
         #         memorized=False, logLevel=None, xdim=0,
         #         historyBuffer=None, IamChecker=None, events=None,
         #         *args, **kwargs):
+        #print("unused: args: %s, kwargs: %s" % (str(args), str(kwargs)))
         self._attrs[name] = Descriptor(name)
         if T in [PyTango.DevFloat, PyTango.DevDouble]:
             self._attrs[name].type = 'float'
@@ -92,6 +94,10 @@ class ParseFile(object):
                 self._attrs[name].plc = True
             if write_addr is not None:
                 self._attrs[name].writable = True
+        if attrGroup is not None:
+            self._attrs[name].type = 'bool'
+            self._attrs[name].writable = True
+            self._attrs[name].group = attrGroup
         if meanings is not None:
             if name.endswith('_ST'):
                 statusName = name.replace('_ST', '_Status')
@@ -104,13 +110,19 @@ class ParseFile(object):
                                                 specialCheck='noException')
 
             enableName = "%s_Enable" % (groupName)
-            self._attrs[enableName] = Descriptor(enableName, type='bool')
+            self._attrs[enableName] = Descriptor(enableName, type='bool',
+                                                 writable=True)
             for condition in [BELOW, ABOVE]:
                 if condition in autoStop:
                     conditionName = "%s_%s_Threshold" % (groupName, condition)
                     self._attrs[conditionName] = Descriptor(conditionName,
-                                                            type='float')
-            for floatNames in ['IntegrationTime', 'Mean', 'Std']:
+                                                            type='float',
+                                                            writable=True)
+            integrTimeName = "%s_IntegrationTime" % (groupName)
+            self._attrs[integrTimeName] = Descriptor(integrTimeName,
+                                                     type='float',
+                                                     writable=True)
+            for floatNames in ['Mean', 'Std']:
                 attrName = "%s_%s" % (groupName, floatNames)
                 self._attrs[attrName] = Descriptor(attrName, type='float')
             triggeredName = "%s_Triggered" % (groupName)
@@ -125,6 +137,10 @@ class ParseFile(object):
                  ['Locking', 'bool', True]]:
             self._attrs[attrName] = Descriptor(attrName, type=attrType,
                                                writable=writable)
+
+    def groups(self, name, attrGroup, *args, **kwargs):
+
+        pass
 
     def enumerations(self, name, prefix=None):
         if prefix is not None:

@@ -32,7 +32,8 @@ class Descriptor(object):
     _writable = None
 
     def __init__(self, name, type=None, dim=0, plc=False,
-                 specialCheck=False, enumeration=False, writable=False):
+                 specialCheck=False, enumeration=False, writable=False,
+                 group=None):
         super(Descriptor, self).__init__()
         self._name = name
         self._type = type
@@ -49,6 +50,7 @@ class Descriptor(object):
             self._subAttrs.append(Descriptor('options', type='str', dim=1,
                                   writable=True))
         self._writable = writable
+        self.group = group
 
     def __str__(self):
         return "%s(%s)" % (self.__class__.__name__, self.name)
@@ -113,3 +115,12 @@ class Descriptor(object):
     @writable.setter
     def writable(self, value):
         self._writable = value
+
+    @property
+    def group(self):
+        return self._group
+
+    @group.setter
+    def group(self, lst):
+        if isinstance(lst, list):
+            self._group = lst
