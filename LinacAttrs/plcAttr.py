@@ -229,7 +229,7 @@ class PLCAttr(LinacAttr):
 
     def _evalQuality(self):
         # self.info("PLCAttr._evalQuality()")
-        if self.type == DevFloat and \
+        if self.type == ('f',4) and \
                 self._setpointAttrName is not None and \
                 self.isTooFarEnable():
             # self.info("TooFar is enable and there is a Setpoint Attr %s"
