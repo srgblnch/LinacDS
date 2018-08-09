@@ -44,6 +44,8 @@ __license__ = "GPLv3+"
 # * change reporter (test relations propagation)
 # * Formulas & masks / logic attrs
 # 11 TooFar condition
+#   * magnets current_ok boolean states are logic attributes
+#     but they change while TooFar is triggered: may tested also
 # * switches and resets
 # * group attributes
 # * Force to rewrite the write DataBlock
