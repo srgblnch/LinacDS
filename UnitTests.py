@@ -15,7 +15,11 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from testing import (Test01_Constructors, Test02_AttrsRead, Test03_AttrsWrite)
+from testing import (Test01_Constructors,
+                     Test02_AttrsRead,
+                     Test03_AttrsWrite,
+                     Test11_TooFar
+                     )
 from unittest import main
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
@@ -39,7 +43,8 @@ __license__ = "GPLv3+"
 #   * reproduce the stop
 # * change reporter (test relations propagation)
 # * Formulas & masks / logic attrs
-# * TooFar, switches and resets
+# 11 TooFar condition
+# * switches and resets
 # * group attributes
 # * Force to rewrite the write DataBlock
 

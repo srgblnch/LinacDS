@@ -18,6 +18,7 @@
 from .attrsread import Test02_AttrsRead
 from .attrswrite import Test03_AttrsWrite
 from .linacds import LinacDS, Test01_Constructors
+from .toofar import Test11_TooFar
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
