@@ -91,9 +91,11 @@ class LogicAttr(InternalAttr):
         """
         """
         self.debug("%s dict2eval: %s" % (name, dct))
-        for key in dct.keys():
+        for key, quality in dct.iteritems():
             if key == QUALITIES:
-                return self.__evalQuality(name, dct[key])
+                return self.__evalQuality(name, quality)
+            else:
+                self.error("Not Implemented for key %s" % (key))
 
     def __evalLst(self, name, lst):
         """
@@ -110,8 +112,9 @@ class LogicAttr(InternalAttr):
         """
         attrStruct = self.device._getAttrStruct(name)
         if attrStruct is not None:
-            if LASTEVENTQUALITY in attrStruct:
-                quality = attrStruct[LASTEVENTQUALITY]
+            if hasattr(attrStruct, '_eventsObj') and \
+                    attrStruct._eventsObj is not None:
+                quality = attrStruct._eventsObj.lastEventQuality
                 self.debug("%s %s in %s = %s"
                            % (name, quality, lst, quality in lst))
                 return quality in lst
