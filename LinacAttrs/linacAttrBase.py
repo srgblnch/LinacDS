@@ -217,7 +217,7 @@ class LinacAttrBase(_AbstractAttrTango):
     def _evalQuality(self):
         # self.info("LinacAttrBase._evalQuality()")
         if self._qualities is not None:
-            self._quality = self._qualities.getQuality(self._readValue)
+            self._quality = self._qualities.getQuality(self.rvalue)
             self.info("After check Qualities feature, quality is: %s"
                       % (self._quality))
 

@@ -165,10 +165,10 @@ class Events(_LinacFeature):
                 self.debug("No previous event to check threshold condition")
                 return True
             diff = abs(self._lastEventValue - value)
-            if isnan(diff) or diff > threshold:
+            if isnan(diff) or diff >= threshold:
                 self._lastEventValue = value
                 self.debug("Value change bigger or equal to the threshold "
-                           "(%g > %g)" % (diff, threshold))
+                           "(%g >= %g)" % (diff, threshold))
                 return True
             elif self.lastEventQuality == AttrQuality.ATTR_CHANGING and \
                     self.lastEventQuality != quality:
