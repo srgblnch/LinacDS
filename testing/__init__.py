@@ -15,6 +15,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .autostop import Test08_AutoStop
 from .attrsread import Test02_AttrsRead
 from .attrswrite import Test03_AttrsWrite
 from .linacds import LinacDS, Test01_Constructors

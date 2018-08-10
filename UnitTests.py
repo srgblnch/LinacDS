@@ -18,6 +18,7 @@
 from testing import (Test01_Constructors,
                      Test02_AttrsRead,
                      Test03_AttrsWrite,
+                     Test08_AutoStop,
                      Test11_TooFar
                      )
 from unittest import main
@@ -38,7 +39,7 @@ __license__ = "GPLv3+"
 # * Attr memorised (make sure the values are well stored, but also recovered)
 # * Meaning attributes (construction of those strings from the ints)
 # * History attributes (special case of buffer with certain resets)
-# * AutoStop
+# 8 AutoStop
 #   * Well collection of data when on and no data collection if off
 #   * reproduce the stop
 # * change reporter (test relations propagation)
