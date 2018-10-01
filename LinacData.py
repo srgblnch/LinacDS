@@ -104,6 +104,8 @@ class AttrList(object):
         self.locals_ = {}
         self._relations = {}
         self._buider = None
+        self._fileParsed = threading.Event()
+        self._fileParsed.clear()
 
         self.globals_ = globals()
         self.globals_.update({
@@ -697,11 +699,14 @@ class AttrList(object):
                 return
             else:
                 self._buider = None
+        self._fileParsed = threading.Event()
         self._buider = threading.Thread(target=self.parse_file, args=(fname,))
         self.impl.info_stream("Launch a thread to build the dynamic attrs")
         self._buider.start()
 
     def parse_file(self,  fname):
+        t0 = time.time()
+        self._fileParsed.clear()
         msg = "%30s\t%10s\t%5s\t%6s\t%6s"\
             % ("'attrName'", "'Type'", "'RO/RW'", "'read'", "'write'")
         self.impl.info_stream(msg)
@@ -739,6 +744,9 @@ class AttrList(object):
                                        % (origName, e))
                 traceback.print_exc()
         self.impl.applyCheckers()
+        self._fileParsed.set()
+        tf = time.time()
+        self.impl.info_stream("file parsed in %6.3f seconds" % (tf-t0))
 
     def parse(self, text):
         exec text in self.globals_, self.locals_
@@ -2860,9 +2868,8 @@ class LinacData(PyTango.Device_4Impl):
                     traceback.print_exc()
                     self.disconnect()
                     self.set_state(PyTango.DevState.UNKNOWN)
-                self.set_status('initialized')
                 self.info_stream('initialized')
-                self.set_state(PyTango.DevState.UNKNOWN)
+                # self.set_state(PyTango.DevState.UNKNOWN)
 
                 self._threadingBuilder()
             except Exception:
@@ -2878,6 +2885,10 @@ class LinacData(PyTango.Device_4Impl):
         # PROTECTED REGION ID(LinacData.initialize_dynamic_attributes) ---
         def initialize_dynamic_attributes(self):
             self.loadAttrFile()
+            if not self.attr_list._fileParsed.isSet():
+                self.info_stream("file parsing not yet ready, wait...")
+                self.attr_list._fileParsed.wait()
+            self.info_stream("with all the attributes build, proceed...")
 
         # PROTECTED REGION END --- LinacData.initialize_dynamic_attributes
 
