@@ -193,7 +193,10 @@ class LinacAttrBase(_AbstractAttrTango):
     @property
     def wvalue(self):
         if hasattr(self, 'write_value'):
-            wvalue = self.write_value
+            if self.type == ('f', 4):
+                wvalue = float(self.format % self.write_value)
+            else:
+                wvalue = self.write_value
             try:
                 if self._formulaObj is not None and \
                         self._formulaObj.write is not None:
