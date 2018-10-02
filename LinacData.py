@@ -37,6 +37,7 @@ import fcntl
 import json  # FIXME: temporal to dump dictionary on the relations collection
 from numpy import uint16, uint8, float32, int16
 import pprint
+import psutil
 import Queue
 import socket
 import struct
@@ -2715,6 +2716,10 @@ class LinacData(PyTango.Device_4Impl):
                 self.attr_IsSayAgainEnable_read = False
                 self.attr_IsTooFarEnable_read = True
                 self.attr_forceWriteDB_read = ""
+                self.attr_cpu_percent_read = 0.0
+                self.attr_mem_percent_read = 0.0
+                self.attr_mem_rss_read = 0
+                self.attr_mem_swap_read = 0
                 # The attributes Locking, Lock_ST, and HeartBeat have also
                 # events but this call is made in each of the AttrList method
                 # who dynamically build them.
@@ -2744,6 +2749,8 @@ class LinacData(PyTango.Device_4Impl):
                 attr.set_default_properties(attrProp)
                 self.add_attribute(attr, r_meth=self.read_lastUpdate)
                 self.set_change_event('lastUpdate', True, False)
+
+                self._process = psutil.Process()
 
                 self.attr_list = AttrList(self)
 
@@ -3087,6 +3094,51 @@ class LinacData(PyTango.Device_4Impl):
 
             # PROTECTED REGION END --- LinacData.forceWriteDB_read
             attr.set_value(self.attr_forceWriteDB_read)
+
+
+        # ------------------------------------------------------------------
+        #    Read cpu_percent attribute
+        # ------------------------------------------------------------------
+        def read_cpu_percent(self, attr):
+            self.debug_stream("In " + self.get_name() +
+                              ".read_cpu_percent()")
+            # PROTECTED REGION ID(LinacData.cpu_percent_read) ---
+            self.attr_cpu_percent_read = self._process.cpu_percent()
+            # PROTECTED REGION END --- LinacData.cpu_percent_read
+            attr.set_value(self.attr_cpu_percent_read)
+
+        # ------------------------------------------------------------------
+        #    Read mem_percent attribute
+        # ------------------------------------------------------------------
+        def read_mem_percent(self, attr):
+            self.debug_stream("In " + self.get_name() +
+                              ".read_mem_percent()")
+            # PROTECTED REGION ID(LinacData.mem_percent_read) ---
+            self.attr_mem_percent_read = self._process.memory_percent()
+            # PROTECTED REGION END --- LinacData.mem_percent_read
+            attr.set_value(self.attr_mem_percent_read)
+
+        # ------------------------------------------------------------------
+        #    Read mem_rss attribute
+        # ------------------------------------------------------------------
+        def read_mem_rss(self, attr):
+            self.debug_stream("In " + self.get_name() +
+                              ".read_mem_rss()")
+            # PROTECTED REGION ID(LinacData.mem_rss_read) ---
+            self.attr_mem_rss_read = self._process.memory_info().rss
+            # PROTECTED REGION END --- LinacData.mem_rss_read
+            attr.set_value(self.attr_mem_rss_read)
+
+        # ------------------------------------------------------------------
+        #    Read mem_swap attribute
+        # ------------------------------------------------------------------
+        def read_mem_swap(self, attr):
+            self.debug_stream("In " + self.get_name() +
+                              ".read_mem_swap()")
+            # PROTECTED REGION ID(LinacData.mem_swap_read) ---
+            self.attr_mem_swap_read = self._process.memory_full_info().swap
+            # PROTECTED REGION END --- LinacData.mem_swap_read
+            attr.set_value(self.attr_mem_swap_read)
 
         # ---------------------------------------------------------------------
         #    LinacData command methods
@@ -4222,6 +4274,32 @@ class LinacDataClass(PyTango.DeviceClass):
                                       {'Display level':
                                            PyTango.DispLevel.EXPERT}
                                       ],
+                     'cpu_percent': [[PyTango.DevDouble,
+                                      PyTango.SCALAR,
+                                      PyTango.READ],
+                                     {'Display level':
+                                          PyTango.DispLevel.EXPERT}
+                                     ],
+                     'mem_percent': [[PyTango.DevDouble,
+                                      PyTango.SCALAR,
+                                      PyTango.READ],
+                                     {'Display level':
+                                          PyTango.DispLevel.EXPERT}
+                                     ],
+                     'mem_rss': [[PyTango.DevULong,
+                                  PyTango.SCALAR,
+                                  PyTango.READ],
+                                 {'Display level':
+                                      PyTango.DispLevel.EXPERT,
+                                  'unit': 'Bytes'}
+                                 ],
+                     'mem_swap': [[PyTango.DevULong,
+                                   PyTango.SCALAR,
+                                   PyTango.READ],
+                                  {'Display level':
+                                       PyTango.DispLevel.EXPERT,
+                                  'unit': 'Bytes'}
+                                  ],
                      }
 
 if __name__ == '__main__':
