@@ -56,7 +56,7 @@ Attr('GUN_Kathode_V',
 Attr('GUN_Kathode_T',
      PyTango.DevFloat, read_addr=12,  # RO
      label='e-gun cathode temperature',
-     format='%4.1f', minValue=0, maxValue=50, unit='degC',
+     format='%4.1f', minValue=0, maxValue=50, unit='⁰C',
      events={THRESHOLD: 0.01},
      qualities={WARNING: {ABSOLUTE: {BELOW: 25.0,
                                      ABOVE: 41.0}}})
