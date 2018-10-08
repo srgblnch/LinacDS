@@ -2515,8 +2515,8 @@ class LinacData(PyTango.Device_4Impl):
             return self._plcUpdatePeriod
 
         def _setPlcUpdatePeriod(self, value):
-            self.info_stream("modifying PLC Update period: was %f and now "
-                             "becomes %f." % (self._plcUpdatePeriod, value))
+            self.info_stream("modifying PLC Update period: was %.3f and now "
+                             "becomes %.3f." % (self._plcUpdatePeriod, value))
             self._plcUpdatePeriod = value
             # FIXME: this is hardcoding!!
             # self._refreshInternalAutostopParams('GUN_HV_I_AutoStop')
