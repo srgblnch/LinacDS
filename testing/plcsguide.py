@@ -95,9 +95,46 @@ def attrStruct(plc, name, suffix=None):
                          % (name, "".join(suffix if suffix is not None else "")))
 
 def simAttr(plc, name, suffix=None):
-    sim[plc].Exec("self._plc.attributes['%s']%s"
-                  % (name, "".join(suffix if suffix is not None else "")))
+    return sim[plc].Exec("self._plc.attributes['%s']%s"
+                         % (name, "".join(suffix
+                                          if suffix is not None else "")))
 
+def simAttrs(plc):
+    return eval(sim[plc].Exec("self._plc.attributes.keys()"))
+
+def simAttrIsUpdatable(plc, name):
+    k = eval(sim[plc].Exec("self._plc.attributes['%s'].keys()" % (name)))
+    if 'updatable' in k:
+        return eval(sim[plc].Exec("self._plc.attributes['%s']['updatable']"
+                                  % (name)))
+    return None  # if the key is not present
+
+def simAttrSetUpdatable(plc, name, value):
+    if simAttrIsUpdatable(plc, name) is not None and value in [False, True]:
+        sim[plc].Exec("self._plc.attributes['%s']['updatable'] = %s"
+                      % (name, value))
+
+def stopUpdatables(plc=None):
+    if plc is None:
+        for i in range(1,6):
+            stopUpdatables(i)
+    else:
+        attrNames = simAttrs(plc)
+        print("stopping updates on %d attributes of plc %d"
+              % (len(attrNames), plc))
+        for attrName in attrNames:
+            simAttrSetUpdatable(plc, attrName, False)
+
+def startUpdatables(plc=None):
+    if plc is None:
+        for i in range(1,6):
+            startUpdatables(i)
+    else:
+        attrNames = simAttrs(plc)
+        print("starting updates on %d attributes of plc %d"
+              % (len(attrNames), plc))
+        for attrName in attrNames:
+            simAttrSetUpdatable(plc, attrName, True)
 
 def restartAll():
     relocator.RestartAllInstance()
