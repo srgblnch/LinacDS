@@ -192,9 +192,10 @@ class LinacAttrBase(_AbstractAttrTango):
 
     @property
     def wvalue(self):
-        if hasattr(self, 'write_value'):
+        if hasattr(self, 'write_value') and self.write_value is not None:
             if self.type == ('f', 4):
                 wvalue = float(self.format % self.write_value)
+                #wvalue = float(self.write_value)
             else:
                 wvalue = self.write_value
             try:
