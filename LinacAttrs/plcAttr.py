@@ -229,9 +229,9 @@ class PLCAttr(LinacAttr):
 
     def _evalQuality(self):
         # self.info("PLCAttr._evalQuality()")
-        if self.type == ('f',4) and \
-                self._setpointAttrName is not None and \
-                self.isTooFarEnable():
+        isFloat = self.type == ('f',4)
+        hasSetpointAttr = self._setpointAttrName is not None
+        if isFloat and hasSetpointAttr and self.isTooFarEnable():
             # self.info("TooFar is enable and there is a Setpoint Attr %s"
             #           % (self._setpointAttrName))
             if self._setpointAttrObj is None and \
@@ -242,11 +242,13 @@ class PLCAttr(LinacAttr):
                     owner=self, setpointAttr=self._setpointAttrObj)
             # Once here one have the object build for sure
             if self._tooFarCondition.checkCondition():
-                # self.info("Readback is too far from setpoint!")
+                self.info("Readback is too far from setpoint!")
                 self._quality = AttrQuality.ATTR_WARNING
                 self.info("After check TooFar condition, quality is: %s"
                           % (self._quality))
                 return  # break check this wins
+            else:
+                self._quality = AttrQuality.ATTR_VALID
             self.info("After check TooFar condition, quality is: %s"
                       % (self._quality))
         # once made the check, the superclass implementation is called just

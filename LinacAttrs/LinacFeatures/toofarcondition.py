@@ -44,18 +44,30 @@ class TooFarCondition(_LinacFeature):
         return self._setpointAttr
 
     def checkCondition(self):
-        self.info("check condition")
         setpoint = self._setpointAttr.rvalue
         readback = self._owner.rvalue
         if setpoint is not None and readback is not None:
-            if (-self._closeZero < setpoint < self._closeZero) or readback == 0:
+            self.info("check condition with readback %s and setpoint %s"
+                      % (readback, setpoint))
+            setpointClose2Zero = (-self._closeZero<setpoint<self._closeZero)
+            readbackClose2Zero = (-self._closeZero<readback<self._closeZero)
+            if setpointClose2Zero or readbackClose2Zero:
                 diff = abs(setpoint - readback)
+                self.info("close to zero (readback %s setpoint %s): "
+                          "diff = %s (%s)"
+                          % (readbackClose2Zero, setpointClose2Zero,
+                             diff, self._closeZero))
                 if (diff > self._closeZero):
                     return True
             else:
                 diff = abs(setpoint / readback)
                 # 10%
-                if (1 - self._relPercentage > diff or
-                        diff > 1 + self._relPercentage):
+                below = 1-self._relPercentage > diff
+                above = diff > 1+self._relPercentage
+                self.info("10%% difference (below %s above %s)"
+                          % (below, above))
+                if below or above:
                     return True
+        else:
+            self.debug("No condition to be checked")
         return False
