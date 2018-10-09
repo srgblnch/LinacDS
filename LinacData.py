@@ -1334,7 +1334,8 @@ class LinacData(PyTango.Device_4Impl):
             wDct = self._addrDct['writeBlock']
             self.info_stream("Force to reconstruct the write data block")
             self.dataBlockSemaphore.acquire()
-            self.attr_forceWriteDB_read = ""
+            self.attr_forceWriteDB_read = "%s\n" % (time.strftime(
+                "%Y/%m/%d %H:%M:%S", time.localtime()))
             try:
                 for wAddr in wDct:
                     if 'readAddr' in wDct[wAddr]:  # Uchars, Shorts, floats
