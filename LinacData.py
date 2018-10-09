@@ -3382,8 +3382,11 @@ class LinacData(PyTango.Device_4Impl):
             else:
                 self.set_state(PyTango.DevState.UNKNOWN)
                 self.set_status("")
-            self.forceWriteAttrs()
             # PROTECTED REGION END --- LinacData.ResetState
+
+        @CommandExc
+        def RestoreReadDB(self):
+            self.forceWriteAttrs()
 
         # To be moved ---
         def _threadingBuilder(self):
@@ -4188,7 +4191,11 @@ class LinacDataClass(PyTango.DeviceClass):
                     'Update': [[PyTango.DevVoid, ""],
                                [PyTango.DevVoid, ""],
                                # { 'polling period' : 50 }
-                               ]
+                               ],
+                    'RestoreReadDB': [[PyTango.DevVoid, ""],
+                                      [PyTango.DevVoid, ""],
+                                      {'Display level':
+                                           PyTango.DispLevel.EXPERT}],
                     }
 
         # Attribute definitions ---
