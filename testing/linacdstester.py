@@ -53,6 +53,8 @@ class LinacTester(object):
         if nSimulatorDevices not in [0, 5]:
             raise EnvironmentError("Not all the simulation proxies "
                                    "were build")
+        if nSimulatorDevices in [0]:
+            self._sim = None
 
     def dumpPlcAttrs(self):
         """
@@ -129,6 +131,18 @@ class LinacTester(object):
             "self._getAttrStruct('%s')%s"
             % (name, "".join(suffix if suffix is not None else ""))))
 
+    def plcAttrs(self, plc):
+        """
+        Given the plc number, return a list with the names of attributes
+        :param plc
+        """
+        lst = \
+            eval(self._dev[3].Exec("self._plcAttrs.keys()")) + \
+            eval(self._dev[3].Exec("self._internalAttrs.keys()"))
+        lst.sort()
+        return lst
+
+
     def simAttr(self, plc, name, suffix=None):
         """
         When there are simulation devices, this works similarly to
@@ -153,7 +167,9 @@ class LinacTester(object):
         :return:
         """
         if self._sim is not None:
-            return eval(self._sim[plc].Exec("self._plc.attributes.keys()"))
+            lst = eval(self._sim[plc].Exec("self._plc.attributes.keys()"))
+            lst.sort()
+            return lst
 
     def simAttrIsUpdatable(self, plc, name):
         """
