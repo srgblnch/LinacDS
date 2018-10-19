@@ -41,10 +41,10 @@ class LinacTester(object):
         self._sim = {}
         for i in range(1, 6):
             devName = devNamePattern % i
-            dev[i] = tango.DeviceProxy(devName)
+            self._dev[i] = tango.DeviceProxy(devName)
             print("Build proxy to plc%d device" % (i))
             try:
-                sim[i] = tango.DeviceProxy(devName+"-sim")
+                self._sim[i] = tango.DeviceProxy(devName+"-sim")
                 print("Build proxy to plc%d simulator" % (i))
             except:
                 pass
