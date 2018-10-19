@@ -27,119 +27,205 @@ __copyright__ = "Copyright 2017, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-dev = {}
-sim = {}
-
-for i in range(1,6):
-    sim[i] = tango.DeviceProxy("li/ct/plc%d-sim"%i)
-
-for i in range(1,6):
-    dev[i] = tango.DeviceProxy("li/ct/plc%d"%i)
-
-relocator = tango.DeviceProxy("li/ct/linacdatarelocator-01")
+devNamePattern = "li/ct/plc%d"
 
 
-def dumpPlcAttrs():
-    attrCtr = {}
-    currentPath = path.realpath(__file__).rsplit('/',1)[0]
-    print currentPath
-    with open(currentPath+"/plcs.dump", 'w') as allplcs:
-        for i in range(1,6):
-            with open(currentPath+"/plc%d.dump" % (i), 'w') as singleplc:
-                attrCtr[i] = [0, 0]
-                allplcs.write(
-                    "********** working with PLC{} **********\n".format(i))
-                attrLst = eval(dev[i].Exec("self._plcAttrs.keys()"))
-                attrLst.sort()
-                for attrName in attrLst:
-                    try:
-                        attrStr = "{}\n".format(dev[i].Exec(
-                            "self._plcAttrs['%s']" % attrName))
-                        allplcs.write(attrStr)
-                        singleplc.write(attrStr)
-                    except Exception as e:
-                        eStr = "{}\n".format(e)
-                        allplcs.write(eStr)
-                        singleplc.write(eStr)
-                    try:
-                        allplcs.write("{}\n".format(dev[i][attrName]))
-                    except Exception as e:
-                        allplcs.write("{}\n".format(e))
-                    allplcs.write("----------\n")
-                    attrCtr[i][0] += 1
-                attrLst = eval(dev[i].Exec("self._internalAttrs.keys()"))
-                attrLst.sort()
-                for attrName in attrLst:
-                    try:
-                        attrStr = "{}\n".format(dev[i].Exec(
-                            "self._internalAttrs['%s']" % attrName))
-                        allplcs.write(attrStr)
-                        singleplc.write(attrStr)
-                    except Exception as e:
-                        eStr = "{}\n".format(e)
-                        allplcs.write(eStr)
-                        singleplc.write(eStr)
-                    try:
-                        allplcs.write("{}\n".format(dev[i][attrName]))
-                    except Exception as e:
-                        allplcs.write("{}\n".format(e))
-                    allplcs.write("----------\n")
-                    attrCtr[i][1] += 1
-    for i in attrCtr:
-        print("plc%d\tplcAttrs: %3d\tinternalAttrs: %3d"
-              % (i, attrCtr[i][0], attrCtr[i][1]))
+class LinacTester(object):
+    _dev = None
+    _sim = None
+    _relocator = None
+
+    def __init__(self):
+        super(LinacTester, self).__init__()
+        self._dev = {}
+        self._sim = {}
+        for i in range(1, 6):
+            devName = devNamePattern % i
+            dev[i] = tango.DeviceProxy(devName)
+            print("Build proxy to plc%d device" % (i))
+            try:
+                sim[i] = tango.DeviceProxy(devName+"-sim")
+                print("Build proxy to plc%d simulator" % (i))
+            except:
+                pass
+        self._relocator = tango.DeviceProxy("li/ct/linacdatarelocator-01")
+        nSimulatorDevices = len(self._sim.keys())
+        if nSimulatorDevices not in [0, 5]:
+            raise EnvironmentError("Not all the simulation proxies "
+                                   "were build")
+
+    def dumpPlcAttrs(self):
+        """
+        Dump to the current directory a file with the representation of all the
+        attributes in the plcs devices.
+        :return:
+        """
+        attrCtr = {}
+        currentPath = path.realpath(__file__).rsplit('/',1)[0]
+        print currentPath
+        with open(currentPath+"/plcs.dump", 'w') as allplcs:
+            for i in range(1,6):
+                with open(currentPath+"/plc%d.dump" % (i), 'w') as singleplc:
+                    attrCtr[i] = [0, 0]
+                    allplcs.write(
+                        "********** working with PLC{} **********\n".format(i))
+                    attrLst = eval(self._dev[i].Exec("self._plcAttrs.keys()"))
+                    attrLst.sort()
+                    for attrName in attrLst:
+                        try:
+                            attrStr = "{}\n".format(self._dev[i].Exec(
+                                "self._plcAttrs['%s']" % attrName))
+                            allplcs.write(attrStr)
+                            singleplc.write(attrStr)
+                        except Exception as e:
+                            eStr = "{}\n".format(e)
+                            allplcs.write(eStr)
+                            singleplc.write(eStr)
+                        try:
+                            allplcs.write(
+                                "{}\n".format(self._dev[i][attrName]))
+                        except Exception as e:
+                            allplcs.write("{}\n".format(e))
+                        allplcs.write("----------\n")
+                        attrCtr[i][0] += 1
+                    attrLst = eval(
+                        self._dev[i].Exec("self._internalAttrs.keys()"))
+                    attrLst.sort()
+                    for attrName in attrLst:
+                        try:
+                            attrStr = "{}\n".format(self._dev[i].Exec(
+                                "self._internalAttrs['%s']" % attrName))
+                            allplcs.write(attrStr)
+                            singleplc.write(attrStr)
+                        except Exception as e:
+                            eStr = "{}\n".format(e)
+                            allplcs.write(eStr)
+                            singleplc.write(eStr)
+                        try:
+                            allplcs.write(
+                                "{}\n".format(self._dev[i][attrName]))
+                        except Exception as e:
+                            allplcs.write("{}\n".format(e))
+                        allplcs.write("----------\n")
+                        attrCtr[i][1] += 1
+        for i in attrCtr:
+            print("plc%d\tplcAttrs: %3d\tinternalAttrs: %3d"
+                  % (i, attrCtr[i][0], attrCtr[i][1]))
 
 
-def attrStruct(plc, name, suffix=None):
-    return dev[plc].Exec("self._getAttrStruct('%s')%s"
-                         % (name, "".join(suffix if suffix is not None else "")))
+    def attrStruct(self, plc, name, suffix=None):
+        """
+        Given the plc number and an attribute name print in the strout the
+        representation of the internal object.
+        Optionally, one can use a suffix that, starting with a dot, access the
+        parameters of the object. This is a expert way to read and modify
+        internally the objects. Be carefull!
+        :param plc:
+        :param name:
+        :param suffix:
+        :return:
+        """
+        print(self._dev[plc].Exec(
+            "self._getAttrStruct('%s')%s"
+            % (name, "".join(suffix if suffix is not None else ""))))
 
-def simAttr(plc, name, suffix=None):
-    return sim[plc].Exec("self._plc.attributes['%s']%s"
-                         % (name, "".join(suffix
-                                          if suffix is not None else "")))
+    def simAttr(self, plc, name, suffix=None):
+        """
+        When there are simulation devices, this works similarly to
+        attrStruct(...) but for the simulators.
+        It can be used to access the internal structures of the simulation,
+        as well as to modify the behaviour of the simulation.
+        :param plc
+        :param name:
+        :param suffix:
+        :return:
+        """
+        if self._sim is not None:
+            print(self._sim[plc].Exec(
+                "self._plc.attributes['%s']%s"
+                % (name, "".join(suffix if suffix is not None else ""))))
 
-def simAttrs(plc):
-    return eval(sim[plc].Exec("self._plc.attributes.keys()"))
+    def simAttrs(self, plc):
+        """
+        Given the plc number, and if there is a simulation device, return a
+        list with the names of internal registers
+        :param plc:
+        :return:
+        """
+        if self._sim is not None:
+            return eval(self._sim[plc].Exec("self._plc.attributes.keys()"))
 
-def simAttrIsUpdatable(plc, name):
-    k = eval(sim[plc].Exec("self._plc.attributes['%s'].keys()" % (name)))
-    if 'updatable' in k:
-        return eval(sim[plc].Exec("self._plc.attributes['%s']['updatable']"
-                                  % (name)))
-    return None  # if the key is not present
+    def simAttrIsUpdatable(self, plc, name):
+        """
+        Given a plc number and a register name, report if the attribute is
+        uipdatable or not.
+        :param plc:
+        :param name:
+        :return:
+        """
+        if self._sim is not None:
+            k = eval(self._sim[plc].Exec(
+                "self._plc.attributes['%s'].keys()" % (name)))
+            if 'updatable' in k:
+                return eval(self._sim[plc].Exec(
+                    "self._plc.attributes['%s']['updatable']" % (name)))
+        return None  # if the key is not present
 
-def simAttrSetUpdatable(plc, name, value):
-    if simAttrIsUpdatable(plc, name) is not None and value in [False, True]:
-        sim[plc].Exec("self._plc.attributes['%s']['updatable'] = %s"
-                      % (name, value))
+    def simAttrSetUpdatable(self, plc, name, value):
+        """
+        Given a plc number and a register name turn on or off the updatable
+        characteristic if it has it.
+        :param plc:
+        :param name:
+        :param value:
+        :return:
+        """
+        if self.simAttrIsUpdatable(plc, name) is not None:
+            if value in [False, True]:
+                self._sim[plc].Exec(
+                    "self._plc.attributes['%s']['updatable'] = %s"
+                    % (name, value))
 
-def stopUpdatables(plc=None):
-    if plc is None:
-        for i in range(1,6):
-            stopUpdatables(i)
-    else:
-        attrNames = simAttrs(plc)
-        print("stopping updates on %d attributes of plc %d"
-              % (len(attrNames), plc))
-        for attrName in attrNames:
-            simAttrSetUpdatable(plc, attrName, False)
+    def stopUpdatables(self, plc=None):
+        """
+        If there are simulation devices, stop the updater flags.
+        Only to the simulator indicated in the parameter or to all of them if
+        the parameter is not used
+        :param plc:
+        :return:
+        """
+        if plc is None:
+            for i in range(1,6):
+                self.stopUpdatables(i)
+        else:
+            attrNames = self.simAttrs(plc)
+            print("stopping updates on %d attributes of plc %d"
+                  % (len(attrNames), plc))
+            for attrName in attrNames:
+                self.simAttrSetUpdatable(plc, attrName, False)
 
-def startUpdatables(plc=None):
-    if plc is None:
-        for i in range(1,6):
-            startUpdatables(i)
-    else:
-        attrNames = simAttrs(plc)
-        print("starting updates on %d attributes of plc %d"
-              % (len(attrNames), plc))
-        for attrName in attrNames:
-            simAttrSetUpdatable(plc, attrName, True)
+    def startUpdatables(self, plc=None):
+        """
+        If there are simulation devices, start the updater flags.
+        Only to the simulator indicated in the parameter or to all of them if
+        the parameter is not used
+        :param plc:
+        :return:
+        """
+        if plc is None:
+            for i in range(1,6):
+                self.startUpdatables(i)
+        else:
+            attrNames = self.simAttrs(plc)
+            print("starting updates on %d attributes of plc %d"
+                  % (len(attrNames), plc))
+            for attrName in attrNames:
+                self.simAttrSetUpdatable(plc, attrName, True)
 
-def restartAll():
-    relocator.RestartAllInstance()
+    def restartAll(self.):
+        self._relocator.RestartAllInstance()
 
 
 if __name__ == '__main__':
-    dumpPlcAttrs()
+    LinacTester().dumpPlcAttrs()
 
