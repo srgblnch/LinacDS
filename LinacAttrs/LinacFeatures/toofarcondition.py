@@ -46,10 +46,15 @@ class TooFarCondition(_LinacFeature):
     def checkCondition(self):
         readback = self._owner.rvalue
         setpoint = self._setpointAttr.rvalue
-        if self._setpointAttr._switchAttrObj is not None:
-            switch = self._setpointAttr._switchAttrObj.rvalue
+        switchObj = self._setpointAttr._switchAttrObj or \
+            self._setpointAttr._buildSwitchObj()
+            # get or request to build this switch object
+        if switchObj is None:
+            # if it is still None is because it can not be build,
+            # then the switch check is not used.
+            switch = None
         else:
-            switch = self._setpointAttr._buildSwitchObj().rvalue
+            switch = switchObj.rvalue
         if switch is False:
             self.debug("No sense to check too far when off")
             return False

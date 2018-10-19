@@ -146,7 +146,7 @@ class Events(_LinacFeature):
         except Exception as e:
             self.error("Event for %s (with name %s and value %s) not emitted "
                        "due to: %s" % (self.name, name, value, e))
-            traceback.print_stack()
+            traceback.print_exc()
         return None
 
     def _checkConditions(self, name, value, quality):
