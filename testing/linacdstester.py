@@ -222,7 +222,7 @@ class LinacTester(object):
             for attrName in attrNames:
                 self.simAttrSetUpdatable(plc, attrName, True)
 
-    def restartAll(self.):
+    def restartAll(self):
         self._relocator.RestartAllInstance()
 
 
