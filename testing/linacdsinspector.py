@@ -30,13 +30,13 @@ __license__ = "GPLv3+"
 devNamePattern = "li/ct/plc%d"
 
 
-class LinacTester(object):
+class LinacDSInspector(object):
     _dev = None
     _sim = None
     _relocator = None
 
     def __init__(self):
-        super(LinacTester, self).__init__()
+        super(LinacDSInspector, self).__init__()
         self._dev = {}
         self._sim = {}
         for i in range(1, 6):
@@ -56,17 +56,17 @@ class LinacTester(object):
         if nSimulatorDevices in [0]:
             self._sim = None
 
-    def dumpPlcAttrs(self):
+    def dumpPlcAttrStructs(self):
         """
         Dump to the current directory a file with the representation of all the
         attributes in the plcs devices.
         :return:
         """
         attrCtr = {}
-        currentPath = path.realpath(__file__).rsplit('/',1)[0]
+        currentPath = path.realpath(__file__).rsplit('/', 1)[0]
         print currentPath
         with open(currentPath+"/plcs.dump", 'w') as allplcs:
-            for i in range(1,6):
+            for i in range(1, 6):
                 with open(currentPath+"/plc%d.dump" % (i), 'w') as singleplc:
                     attrCtr[i] = [0, 0]
                     allplcs.write(
@@ -114,8 +114,7 @@ class LinacTester(object):
             print("plc%d\tplcAttrs: %3d\tinternalAttrs: %3d"
                   % (i, attrCtr[i][0], attrCtr[i][1]))
 
-
-    def attrStruct(self, plc, name, suffix=None):
+    def devAttrStruct(self, plc, name, suffix=None):
         """
         Given the plc number and an attribute name print in the strout the
         representation of the internal object.
@@ -131,7 +130,7 @@ class LinacTester(object):
             "self._getAttrStruct('%s')%s"
             % (name, "".join(suffix if suffix is not None else ""))))
 
-    def plcAttrs(self, plc):
+    def devAttrNames(self, plc):
         """
         Given the plc number, return a list with the names of attributes
         :param plc
@@ -142,8 +141,7 @@ class LinacTester(object):
         lst.sort()
         return lst
 
-
-    def simAttr(self, plc, name, suffix=None):
+    def simAttrStruct(self, plc, name, suffix=None):
         """
         When there are simulation devices, this works similarly to
         attrStruct(...) but for the simulators.
@@ -159,7 +157,7 @@ class LinacTester(object):
                 "self._plc.attributes['%s']%s"
                 % (name, "".join(suffix if suffix is not None else ""))))
 
-    def simAttrs(self, plc):
+    def simAttrNames(self, plc):
         """
         Given the plc number, and if there is a simulation device, return a
         list with the names of internal registers
@@ -202,7 +200,7 @@ class LinacTester(object):
                     "self._plc.attributes['%s']['updatable'] = %s"
                     % (name, value))
 
-    def stopUpdatables(self, plc=None):
+    def simStopUpdatables(self, plc=None):
         """
         If there are simulation devices, stop the updater flags.
         Only to the simulator indicated in the parameter or to all of them if
@@ -211,16 +209,16 @@ class LinacTester(object):
         :return:
         """
         if plc is None:
-            for i in range(1,6):
-                self.stopUpdatables(i)
+            for i in range(1, 6):
+                self.simStopUpdatables(i)
         else:
-            attrNames = self.simAttrs(plc)
+            attrNames = self.simAttrNames(plc)
             print("stopping updates on %d attributes of plc %d"
                   % (len(attrNames), plc))
             for attrName in attrNames:
                 self.simAttrSetUpdatable(plc, attrName, False)
 
-    def startUpdatables(self, plc=None):
+    def simStartUpdatables(self, plc=None):
         """
         If there are simulation devices, start the updater flags.
         Only to the simulator indicated in the parameter or to all of them if
@@ -229,19 +227,18 @@ class LinacTester(object):
         :return:
         """
         if plc is None:
-            for i in range(1,6):
-                self.startUpdatables(i)
+            for i in range(1, 6):
+                self.simStartUpdatables(i)
         else:
-            attrNames = self.simAttrs(plc)
+            attrNames = self.simAttrNames(plc)
             print("starting updates on %d attributes of plc %d"
                   % (len(attrNames), plc))
             for attrName in attrNames:
                 self.simAttrSetUpdatable(plc, attrName, True)
 
-    def restartAll(self):
+    def restartAllDev(self):
         self._relocator.RestartAllInstance()
 
 
 if __name__ == '__main__':
-    LinacTester().dumpPlcAttrs()
-
+    LinacTester().dumpPlcAttrStructs()
