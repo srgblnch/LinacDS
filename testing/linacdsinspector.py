@@ -126,9 +126,9 @@ class LinacDSInspector(object):
         :param suffix:
         :return:
         """
-        print(self._dev[plc].Exec(
+        return self._dev[plc].Exec(
             "self._getAttrStruct('%s')%s"
-            % (name, "".join(suffix if suffix is not None else ""))))
+            % (name, "".join(suffix if suffix is not None else "")))
 
     def devAttrNames(self, plc):
         """
@@ -136,8 +136,8 @@ class LinacDSInspector(object):
         :param plc
         """
         lst = \
-            eval(self._dev[3].Exec("self._plcAttrs.keys()")) + \
-            eval(self._dev[3].Exec("self._internalAttrs.keys()"))
+            eval(self._dev[plc].Exec("self._plcAttrs.keys()")) + \
+            eval(self._dev[plc].Exec("self._internalAttrs.keys()"))
         lst.sort()
         return lst
 
