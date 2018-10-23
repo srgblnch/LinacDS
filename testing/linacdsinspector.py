@@ -114,6 +114,18 @@ class LinacDSInspector(object):
             print("plc%d\tplcAttrs: %3d\tinternalAttrs: %3d"
                   % (i, attrCtr[i][0], attrCtr[i][1]))
 
+    def devAttr(self, plc, name, value=None):
+        """
+
+        :param plc:
+        :param name:
+        :return:
+        """
+        if value is None:
+            return self._dev[plc][name]
+        else:
+            self._dev[plc][name] = value
+
     def devAttrStruct(self, plc, name, suffix=None):
         """
         Given the plc number and an attribute name print in the strout the
