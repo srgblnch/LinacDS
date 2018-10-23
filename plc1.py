@@ -677,7 +677,7 @@ AttrBit('TB_MBM',
         desc='timer multi bunch mode enabled; False:SBM, True:MBM',
         meanings={0: 'SBM',
                   1: 'MBM'},
-        qualities={WARNING: [False]},
+        # qualities={WARNING: [False]},
         events={})
 
 AttrBit('GUN_HV_ONC',  # HVS_OC
