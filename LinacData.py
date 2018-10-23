@@ -57,7 +57,7 @@ from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
 
 class release:
-    author = 'Lothar Krause <lkrause@cells.es> &'\
+    author = 'Lothar Krause &'\
              ' Sergi Blanch-Torne <sblanch@cells.es>'
     hexversion = (((MAJOR_VERSION << 8) | MINOR_VERSION) << 8) | BUILD_VERSION
     __str__ = lambda self: hex(hexversion)
