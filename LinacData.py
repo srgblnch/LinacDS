@@ -55,8 +55,6 @@ from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
                         GroupAttr, LogicAttr)
 from LinacAttrs.LinacFeatures import CircularBuffer, HistoryBuffer, EventCtr
 
-LiAttrSpecializations = [EnumerationAttr]
-
 
 class release:
     author = 'Lothar Krause <lkrause@cells.es> &'\
@@ -3515,21 +3513,21 @@ class LinacData(PyTango.Device_4Impl):
                 if self._getPlcUpdatePeriod() > PLC_MIN_UPDATE_PERIOD:
                     self._setPlcUpdatePeriod(self._plcUpdatePeriod -
                                              PLC_STEP_UPDATE_PERIOD)
-            except tcpblock.Shutdown, exc:
+            except tcpblock.Shutdown as exc:
                 self.set_state(PyTango.DevState.FAULT)
                 msg = 'communication shutdown requested '\
                       'at '+time.strftime('%F %T')
                 self.set_status(msg)
                 self.error_stream(msg)
                 self.disconnect()
-            except socket.error, exc:
+            except socket.error as exc:
                 self.set_state(PyTango.DevState.FAULT)
                 msg = 'broken socket at %s\n%s' % (time.strftime('%F %T'),
                                                    str(exc))
                 self.set_status(msg)
                 self.error_stream(msg)
                 self.disconnect()
-            except Exception, exc:
+            except Exception as exc:
                 self.set_state(PyTango.DevState.FAULT)
                 msg = 'update failed at %s\n%s: %s' % (time.strftime('%F %T'),
                                                        str(type(exc)),
