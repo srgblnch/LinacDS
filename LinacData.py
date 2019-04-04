@@ -699,7 +699,8 @@ class AttrList(object):
             else:
                 self._buider = None
         self._fileParsed = threading.Event()
-        self._buider = threading.Thread(target=self.parse_file, args=(fname,))
+        self._buider = threading.Thread(name="FileParser",
+                                        target=self.parse_file, args=(fname,))
         self.impl.info_stream("Launch a thread to build the dynamic attrs")
         self._buider.start()
 
@@ -1210,6 +1211,22 @@ class LinacData(PyTango.Device_4Impl):
 
         _prevMemDump = None
         _prevLockSt = None
+
+        def debug_stream(self, msg):
+            super(LinacData, self).debug_stream(
+                "[%s] %s" % (threading.current_thread().getName(), msg))
+
+        def info_stream(self, msg):
+            super(LinacData, self).info_stream(
+                "[%s] %s" % (threading.current_thread().getName(), msg))
+
+        def warn_stream(self, msg):
+            super(LinacData, self).warn_stream(
+                "[%s] %s" % (threading.current_thread().getName(), msg))
+
+        def error_stream(self, msg):
+            super(LinacData, self).error_stream(
+                "[%s] %s" % (threading.current_thread().getName(), msg))
 
         ####
         # PLC connectivity area ---
@@ -3396,9 +3413,11 @@ class LinacData(PyTango.Device_4Impl):
             self._tangoEventsJoiner.clear()
             # Threads declaration ---
             self._plcUpdateThread = \
-                threading.Thread(target=self.plcUpdaterThread)
+                threading.Thread(name="PlcUpdater",
+                                 target=self.plcUpdaterThread)
             self._tangoEventsThread = \
-                threading.Thread(target=self.newValuesThread)
+                threading.Thread(name="EventManager",
+                                 target=self.newValuesThread)
             self._tangoEventsTime = \
                 CircularBuffer([], maxlen=HISTORY_EVENT_BUFFER, owner=None)
             self._tangoEventsNumber = \
@@ -3591,28 +3610,27 @@ class LinacData(PyTango.Device_4Impl):
             # Locking flag.
             if self._deviceIsInLocal:
                 self.write_lock(True)
-            eventCtr = EventCtr()
+            event_ctr = EventCtr()
             while not self._tangoEventsJoiner.isSet():
                 try:
                     if self._newDataAvailable.isSet():
                         start_t = time.time()
                         self.propagateNewValues()
-                        t1 = time.time()
                         diff_t = time.time() - start_t
-                        nEvents = eventCtr.ctr
-                        eventCtr.clear()
+                        n_events = event_ctr.ctr
+                        event_ctr.clear()
                         self._tangoEventsTime.append(diff_t)
-                        self._tangoEventsNumber.append(nEvents)
-                        if nEvents > 0:
+                        self._tangoEventsNumber.append(n_events)
+                        if n_events > 0:
                             self.debug_stream(
                                 "newValuesThread() it has take %3.6f seconds "
-                                "for %d events" % (diff_t, nEvents))
+                                "for %d events" % (diff_t, n_events))
                         self._newDataAvailable.clear()
                     else:
                         self._newDataAvailable.wait()
-                except Exception as e:
+                except Exception as exc:
                     self.error_stream(
-                        "In newValuesThread() exception: %s" % (e))
+                        "In newValuesThread() exception: %s" % (exc))
                     traceback.print_exc()
 
         def propagateNewValues(self):
