@@ -2435,36 +2435,6 @@ class LinacData(PyTango.Device_4Impl):
         #     except Exception as e:
         #         self.error_stream("Cannot set the bit group: %s" % (e))
 
-        def write_lock(self, value):
-            '''
-            '''
-            
-            if self.get_state() == PyTango.DevState.FAULT or \
-                    not self.has_data_available():
-                return  # raise AttributeError("Not available in fault state!")
-            if 'Locking' in self._plcAttrs:
-                self._plcAttrs['Locking'].write_value = value
-#             if self.locking_raddr and self.locking_waddr:
-#                 rbyte = self.read_db.b(self.locking_raddr)
-#                 wbyte = self.write_db.b(self.locking_waddr)
-#                 if value:
-#                     # sets bit 'bitno' of b
-#                     toWrite = rbyte | (int(value) << self.locking_wbit)
-#                     # a byte of 0s with a unique 1 in the place to set this 1
-#                 else:
-#                     # clears bit 'bitno' of b
-#                     toWrite = rbyte & (0xFF) ^ (1 << self.locking_wbit)
-#                     # a byte of 1s with a unique 0 in the place to set this 0
-#                 self.write_db.write(self.locking_waddr, toWrite,
-#                                     TYPE_MAP[PyTango.DevUChar])
-#                 reRead = self.read_db.b(self.locking_raddr)
-#                 self.debug_stream("Writing Locking boolean to %s (%d.%d) byte "
-#                                   "was %s; write %s; now %s"
-#                                   % ("  lock" if value else "unlock",
-#                                      self.locking_raddr, self.locking_rbit,
-#                                      bin(rbyte), bin(toWrite), bin(reRead)))
-#                 self._plcAttrs['Locking'][WRITEVALUE] = value
-
 #         @AttrExc
 #         def write_Locking(self, attr):
 #             '''
@@ -3477,9 +3447,7 @@ class LinacData(PyTango.Device_4Impl):
                         self.set_state(PyTango.DevState.UNKNOWN)
                     return
             # relock if auto-recover from fault ---
-            if self._deviceIsInLocal and 'Locking' in self._plcAttrs \
-                    and not self._plcAttrs['Locking'].rvalue:
-                self.relock()
+            self.auto_local_lock()
             try:
                 self.dataBlockSemaphore.acquire()
                 e = None
@@ -3608,8 +3576,7 @@ class LinacData(PyTango.Device_4Impl):
             # with in the start up procedure, if the device is running in local
             # mode, it tries to lock the PLC control for itself by writing the
             # Locking flag.
-            if self._deviceIsInLocal:
-                self.write_lock(True)
+            self.auto_local_lock()
             event_ctr = EventCtr()
             while not self._tangoEventsJoiner.isSet():
                 try:
@@ -4051,12 +4018,60 @@ triggered.
         #         return True
         #     return False
 
+        def auto_local_lock(self):
+            if self._deviceIsInLocal:
+                if 'Locking' in self._plcAttrs:
+                    if not self._plcAttrs['Locking'].rvalue:
+                        self.info_stream("Device is in Local mode and "
+                                         "not locked. Proceed to lock it")
+                        self.relock()
+                    # else:
+                    #     self.info_stream("Device is in Local mode and locked")
+                else:
+                    self.warn_stream("Device in Local mode but 'Locking' "
+                                     "attribute not yet present")
+            # else:
+            #     self.info_stream("Device is not in Local mode")
+
         def relock(self):
             '''
             '''
-            if self._plcAttrs['Locking'][WRITEVALUE]:
+            if 'Locking' in self._plcAttrs and \
+                    not self._plcAttrs['Locking'].wvalue:
                 self.write_lock(True)
         # end "To be moved" section
+
+        def write_lock(self, value):
+            '''
+            '''
+
+            if self.get_state() == PyTango.DevState.FAULT or \
+                    not self.has_data_available():
+                return  # raise AttributeError("Not available in fault state!")
+            if not isinstance(value, bool):
+                raise ValueError("write_lock argument must be a boolean")
+            if 'Locking' in self._plcAttrs:
+                raddr = self._plcAttrs['Locking'].read_addr
+                rbit = self._plcAttrs['Locking'].read_bit
+                rbyte = self.read_db.b(raddr)
+                waddr = self._plcAttrs['Locking'].write_bit
+                if value:
+                    # sets bit 'bitno' of b
+                    toWrite = rbyte | (int(value) << rbit)
+                    # a byte of 0s with a unique 1 in the place to set this 1
+                else:
+                    # clears bit 'bitno' of b
+                    toWrite = rbyte & (0xFF) ^ (1 << rbit)
+                    # a byte of 1s with a unique 0 in the place to set this 0
+                self.write_db.write(waddr, toWrite, TYPE_MAP[PyTango.DevUChar])
+                time.sleep(self._getPlcUpdatePeriod())
+                reRead = self.read_db.b(raddr)
+                self.info_stream("Writing Locking boolean to %s (%d.%d) byte "
+                                  "was %s; write %s; now %s"
+                                  % ("  lock" if value else "unlock",
+                                     raddr, rbit, bin(rbyte), bin(toWrite),
+                                     bin(reRead)))
+                self._plcAttrs['Locking'].write_value = value
 
         @CommandExc
         def Update(self):
