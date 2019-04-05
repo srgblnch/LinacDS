@@ -36,6 +36,28 @@ class LinacException(Exception):
     pass
 
 
+def binaryByte(byte):
+    return "0b%s" % bin(byte)[2:].zfill(8)
+
+
+def hex_dump(arrays, step=4):
+    i = 0
+    msg = ""
+    longer = 0
+    for j, arr in enumerate(arrays):
+        if len(arr) > len(arrays[j]):
+            longer = j
+    while i < len(arrays[longer]):
+        line = []
+        for arr in arrays:
+            line.append("%s" % (' '.join("%02x" % x for x in arr[i:i+step])))
+        msg += "%3d:  " % i
+        msg += '    '.join(line)
+        msg += "\n"
+        i += step
+    return msg
+
+
 def CommandExc(f):
     '''Decorates commands so that the exception is logged and also raised.
     '''

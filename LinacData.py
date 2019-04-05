@@ -49,7 +49,8 @@ from types import StringType
 
 
 from constants import *
-from LinacAttrs import LinacException, CommandExc, AttrExc
+from LinacAttrs import (LinacException, CommandExc, AttrExc,
+                        binaryByte, hex_dump)
 from LinacAttrs import (EnumerationAttr, PLCAttr, InternalAttr, MeaningAttr,
                         AutoStopAttr, AutoStopParameter, HistoryAttr,
                         GroupAttr, LogicAttr)
@@ -1345,11 +1346,14 @@ class LinacData(PyTango.Device_4Impl):
                Due to this we force a construction of a complete write
                datablock to be send once for all.
             '''
+            if not hasattr(self, 'write_db') or self.write_db is None:
+                return
             wDct = self._addrDct['writeBlock']
             self.info_stream("Force to reconstruct the write data block")
             self.dataBlockSemaphore.acquire()
             self.attr_forceWriteDB_read = "%s\n" % (time.strftime(
                 "%Y/%m/%d %H:%M:%S", time.localtime()))
+            wblock_was = self.write_db.buf[self.write_db.write_start:]
             try:
                 for wAddr in wDct:
                     if 'readAddr' in wDct[wAddr]:  # Uchars, Shorts, floats
@@ -1387,10 +1391,22 @@ class LinacData(PyTango.Device_4Impl):
                                 byte = byte | (int(1) << wBit)
                             else:
                                 byte = byte & ((0xFF) ^ (1 << wBit))
-                        msg = "%d = %d -> %d" % (wAddr, was, byte)
+                        msg = "%d = %s -> %s" \
+                              % (wAddr, binaryByte(was), binaryByte(byte))
                         self.attr_forceWriteDB_read += "%s\n" % msg
                         self.info_stream(msg)
                 self.write_db.rewrite()
+                wblock_is = self.write_db.buf[self.write_db.write_start:]
+                i = 0
+                msg = "writeblock:\n%-11s\t%-11s\n" % ("was:","now:")
+                while i < len(wblock_was):
+                    line = "%-11s\t%-11s\n" % (
+                        ' '.join("%02x" % x for x in wblock_was[i:i+4]),
+                        ' '.join("%02x" % x for x in wblock_is[i:i + 4]))
+                    msg += line
+                    i += 4
+                self.attr_forceWriteDB_read += "%s\n" % msg
+                self.info_stream(msg)
             except Exception as e:
                 msg = "Could not complete the force Write\n%s" % (e)
                 self.attr_forceWriteDB_read += "%s\n" % msg
@@ -3240,9 +3256,9 @@ class LinacData(PyTango.Device_4Impl):
             :rtype: PyTango.DevString """
             self.debug_stream('In HexDump()')
             # PROTECTED REGION ID(LinacData.HexDump) ---
-            read_txt = ' '.join("%02x" % x for x in self.read_db.buf)
-            write_txt = ' '.join("%02x" % x for x in self.write_db.buf)
-            return read_txt+'\n'+write_txt
+            rblock = self.read_db.buf[:]
+            wblock = self.write_db.buf[self.write_db.write_start:]
+            return hex_dump([rblock, wblock])
             # PROTECTED REGION END --- LinacData.HexDump
 
         @CommandExc
