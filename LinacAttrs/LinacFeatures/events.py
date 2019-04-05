@@ -121,18 +121,18 @@ class Events(_LinacFeature):
                 timestamp = self._owner.timestamp
             if value is None:
                 value = self._owner.noneValue
-                self._owner.device.push_change_event(name, value, timestamp,
-                                                     AttrQuality.ATTR_INVALID)
+                self._owner.device.push_change_event(
+                    name, value, timestamp, AttrQuality.ATTR_INVALID)
                 self.lastEventQuality = AttrQuality.ATTR_INVALID
             if quality is None:
                 quality = self._owner.quality
             if self._checkConditions(name, value, quality):
-                self._owner.device.push_change_event(name, value, timestamp,
-                                                     quality)
+                self._owner.device.push_change_event(
+                    name, value, timestamp, quality)
                 self.lastEventQuality = quality
-                self.debug("%s.fireEvent(%s, %s, %s, %s)" % (self.name, name,
-                                                             value, timestamp,
-                                                             quality))
+                self.info(
+                    "%s.fireEvent(%s, %s, %s, %s)"
+                    % (self.name, name, value, timestamp, quality))
                 self._ctr += 1
             if name != self._owner.name:
                 return time()

@@ -698,7 +698,6 @@ class AttrList(object):
                 return
             else:
                 self._buider = None
-        self._fileParsed = threading.Event()
         self._buider = threading.Thread(name="FileParser",
                                         target=self.parse_file, args=(fname,))
         self.impl.info_stream("Launch a thread to build the dynamic attrs")
@@ -2878,9 +2877,7 @@ class LinacData(PyTango.Device_4Impl):
         # PROTECTED REGION ID(LinacData.initialize_dynamic_attributes) ---
         def initialize_dynamic_attributes(self):
             self.loadAttrFile()
-            if not self.attr_list._fileParsed.isSet():
-                self.info_stream("file parsing not yet ready, wait...")
-                self.attr_list._fileParsed.wait()
+            self.attr_list._fileParsed.wait()
             self.info_stream("with all the attributes build, proceed...")
 
         # PROTECTED REGION END --- LinacData.initialize_dynamic_attributes
@@ -3401,12 +3398,10 @@ class LinacData(PyTango.Device_4Impl):
             # Launch those threads ---
             self._plcUpdateThread.start()
             self._tangoEventsThread.start()
-            self.info_stream("All threads launched")
 
         def plcUpdaterThread(self):
             '''
             '''
-            time.sleep(self._getPlcUpdatePeriod())
             while not self._plcUpdateJoiner.isSet():
                 try:
                     start_t = time.time()
@@ -3452,7 +3447,8 @@ class LinacData(PyTango.Device_4Impl):
                 self.dataBlockSemaphore.acquire()
                 e = None
                 try:
-                    up = self.read_db.readall()  # The real reading to the hardware
+                    # The real reading to the hardware:
+                    up = self.read_db.readall()
                 except Exception as e:
                     self.error_stream("Could not complete the readall()\n%s"
                                       % (e))
@@ -3568,15 +3564,13 @@ class LinacData(PyTango.Device_4Impl):
         def newValuesThread(self):
             '''
             '''
-            self.info_stream("Build event generator thread")
+            if not self.attr_list._fileParsed.isSet():
+                self.info_stream("Event generator thread will wait until "
+                                 "file is parsed")
+            self.attr_list._fileParsed.wait()
             while not self.has_data_available():
                 time.sleep(self._getPlcUpdatePeriod()*2)
                 self.debug_stream("Event generator thread wait for connection")
-            self.info_stream("Starting event generator thread")
-            # with in the start up procedure, if the device is running in local
-            # mode, it tries to lock the PLC control for itself by writing the
-            # Locking flag.
-            self.auto_local_lock()
             event_ctr = EventCtr()
             while not self._tangoEventsJoiner.isSet():
                 try:
