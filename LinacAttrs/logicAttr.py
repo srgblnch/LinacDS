@@ -75,11 +75,11 @@ class LogicAttr(InternalAttr):
             result = all(values)
         if self._inverted:
             result = not result
-            self.debug("values %s (%s) (inverted) answer %s"
-                       % (values, self._operator, result))
+            self.info("values %s (%s) (inverted) answer %s"
+                      % (values, self._operator, result))
         else:
-            self.debug("values %s (%s) answer %s"
-                       % (values, self._operator, result))
+            self.info("values %s (%s) answer %s"
+                      % (values, self._operator, result))
         self.read_t = time()  # when has been re-evaluated
         if result != was:
             self.debug("value change to %s (was %s)" % (result, was))
