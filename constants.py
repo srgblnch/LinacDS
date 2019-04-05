@@ -20,7 +20,7 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-version = "__version = '3.0.1'"
+version = "__version = '3.0.2-alpha'"
 MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION = [
     int(x.split('-')[0]) for x in "3.0.1-a".split('.')]
 
