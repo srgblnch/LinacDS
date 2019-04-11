@@ -55,5 +55,133 @@ The features implemented for the attributes are:
 * TooFarCondition: Also necessary for the qualities to alert the user that certain readback values are too far from the setpoint. 
 * ChangeReporter: Many attributes have depencencies between them, there are things to be reevaluated based on other attributes, this feature was made to stablish this relations.
 
-Apart there is also a *DataBlock* class for the objecte that will take care of the communiction with the assigned plc.
+Apart there is also a *DataBlock* class for the objecte that will take care of the communication with the assigned plc.
 
+Useful debug information
+------------------------
+
+Once one has the devices up and running, using the python binding for Tango one can dump de content read from the plc:  
+
+```python
+devProxy.HexDump()
+  0:  00 00 00 00    3f c0 00 00
+  4:  be 7d b9 71    00 00 00 00
+  8:  bc d2 54 e7    00 00 00 00
+ 12:  be 50 d8 da    00 00 00 00
+ 16:  bd bb bb e8    02 01
+ 20:  3f a1 11 62    
+ 24:  3e bd 0f 08    
+ 28:  00 00 00 00    
+ 32:  00 00 00 00    
+ 36:  01 0c 05 09    
+ 40:  08 01 00 0a    
+ 44:  00 0a 3f c0    
+ 48:  00 00 00 00    
+ 52:  00 00 00 00    
+ 56:  00 00 00 00    
+ 60:  00 00 02 01 
+```
+
+This is an example, using the [simulation of the linac plc](https://github.com/srgblnch/LinacDS-simulator) of what would be received from a plc control of a klystron. This first block is composed by two parts: the reading and the writing block. The second set on the right is only the write block as it is being send to the plc to command write operations.
+
+Also any of those registers can be read as it is any of the supported types:
+
+```python
+dev.GetBit([46,3])
+ True
+
+dev.GetByte(46)
+ 63
+
+dev.GetShort(46)
+ 16320
+
+dev.GetFloat(46)
+ 1.5
+```
+
+To write in the same way, there are also tango commands:
+
+```python
+dev.GetShort(46)
+ 16321
+dev.WriteShort([0,16320])
+dev.GetShort(46)
+ 16320
+ 
+dev.GetFloat(46)
+ 1.5
+dev.WriteFloat([0,1.1])
+dev.GetFloat(46)
+ 1.100000023841858
+```
+
+There are even more internal access possibilities provided by the "Exec()" command. This is a very *expert* command (that also makes insecure it) that allows even [monkey patching](https://en.wikipedia.org/wiki/Monkey_patch) in run time.
+
+One may like to know which are the plc attributes or the internal ones:
+
+```python
+dev.Exec("self._plcAttrs.keys()")
+ "['Lock_ST',\n 'Heat_Time',\n 'LV_ST',\n 'HVPS_ONC',\n 'Locking',\n 'Pulse_Status',\n 'HVPS_ST',\n 'HVPS_V',\n 'Heat_Status',\n 'Lock_Status',\n 'HVPS_I',\n 'LV_Time',\n 'Pulse_ST',\n 'LV_ONC',\n 'HVPS_V_setpoint',\n 'LV_Status',\n 'HVPS_Status',\n 'Heat_V',\n 'Peak_I',\n 'LV_Interlock_RC',\n 'Peak_V',\n 'Heat_I',\n 'HeartBeat',\n 'HVPS_Interlock_RC',\n 'Heat_ST']"
+dev[5].Exec("self._internalAttrs.keys()")
+ "['KA_3GHz_RFampli_u',\n 'KA_DCps_thyratron_u',\n 'KA_HVps_u',\n 'KA_fcoil1_u',\n 'lv_ready',\n 'hvps_ready',\n 'KA_fcoil3_u',\n 'KA_IP_controller',\n 'KA_thyratron_u',\n 'KA_tube_u',\n 'KA_fcoil2_u']"
+```
+
+This is a case sensitive access to a python dictionary. If one knows the name and like to access the structure, it can do:
+
+```python
+print dev.Exec("self._getAttrStruct('hvps_v')")
+HVPS_V (PLCAttr):
+        device: LinacData(li/ct/plc5)
+        events: Emit when changes bigger than 0.001 'Thu Apr 11 12:57:57 2019' ATTR_VALID
+        format: %4.2f
+        isRst: False
+        label: High voltage PS voltage
+        logLevel: warning
+        maxValue: 40
+        name: HVPS_V
+        noneValue: nan
+        quality: ATTR_VALID
+        read_addr: 12
+        read_t: 1554980277.94
+        read_t_str: Thu Apr 11 12:57:57 2019
+        read_value: 0.309809863567
+        rvalue: 0.309809863567
+        timestamp: 1554980277.94
+        type: ('f', 4)
+        
+print dev.Exec("self._getAttrStruct('hvps_v_setpoint')")
+HVPS_V_setpoint (PLCAttr):
+        device: LinacData(li/ct/plc5)
+        events: Emit when changes bigger than 0.005 'Thu Apr 11 12:44:25 2019' ATTR_CHANGING
+        format: %4.2f
+        isRst: False
+        label: High voltage PS voltage setpoint
+        logLevel: warning
+        maxValue: 33
+        name: HVPS_V_setpoint
+        noneValue: nan
+        qualities: {changing: {relative: 0.1}}
+        quality: ATTR_VALID
+        read_addr: 46
+        read_t: 1554980314.81
+        read_t_str: Thu Apr 11 12:58:34 2019
+        read_value: [ 1.10000002  1.10000002  1.10000002  1.10000002  1.10000002  1.10000002
+  1.10000002  1.10000002  1.10000002  1.10000002]
+        readbackAttr: HVPS_V
+        rvalue: 1.10000002384
+        timestamp: 1554980314.81
+        type: ('f', 4)
+        write_addr: 0
+        write_value: 1.10000002384
+        wvalue: 1.1
+
+```
+
+Many of the features of this attibute can be modified then. Like it can be the loglevel:
+
+```python
+dev[5].Exec("self._getAttrStruct('hvps_v').logLevel = 'debug'")
+```
+
+First impression of this command is to see when events of this attribute are being emitted.
