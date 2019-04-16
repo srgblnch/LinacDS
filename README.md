@@ -185,3 +185,16 @@ dev[5].Exec("self._getAttrStruct('hvps_v').logLevel = 'debug'")
 ```
 
 First impression of this command is to see when events of this attribute are being emitted.
+
+Throubleshooting
+----------------
+
+### Reset values of the WriteDB
+
+There has been saw an issue with the write datablock with a behaviour of: Cannot write anyone of the writable attributes.
+
+The information is that there are positions in the data block that are out of range. It can be related with the attribute one likes to write, but it can tell any other attribute in the block.
+
+The first throubleshooting was to disconnect al the local control (move to remote control) to then launch the manufacturer's gui (in labview). They do something that often fixes the issue.
+
+There is an experimental procedure to recover from this situation without changing the source of control: use the **RestoreReadDB()** command and report to controls the content of the attribute '**forceWriteDB**'.  

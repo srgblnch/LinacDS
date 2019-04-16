@@ -133,10 +133,10 @@ class Datablock(object):
             # self.debug_stream("> received %d bytes" % (len(self._recv)))
             if len(self._recv) == 0:
                 retries += 1
-                # if retries == 10:
-                #     self.debug_stream("After a second of consecutive "
-                #                       "retries, abort the readall()")
-                #     return False
+                if retries == 10:
+                    self.debug_stream("After a second of consecutive "
+                                      "retries, abort the readall()")
+                    return False
                 self.debug_stream("Nothing received from the PLC (try %d)"
                                   % (retries))
                 time.sleep(0.1)

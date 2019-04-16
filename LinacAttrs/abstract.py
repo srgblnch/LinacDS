@@ -444,7 +444,8 @@ class _AbstractAttrTango(_AbstractAttrDict):
             attr.set_value_date_quality(value, self.timestamp,
                                         AttrQuality.ATTR_INVALID)
         except Exception as e:
-            self.error("Exception setting read value to None:\n%s" % (e))
+            self.error("Exception setting read value to None (%s, %s):\n%s"
+                       % (value, type(value), e))
         # FIXME: check dimensions if the readValue have
         #        set the paramenter
 
