@@ -1,0 +1,2741 @@
+AC_IS (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: compressed air interlock state
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'good'}
+	name: AC_IS
+	qualities: {warning: AC_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 99
+	read_bit: 1
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.76
+	type: DevBoolean
+	write_bit: 1
+
+AC_IS_Status (MeaningAttr):
+	alias: AC_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'good'}
+	name: AC_IS:MeaningAttr
+	noneValue: 0
+	owner: AC_IS (PLCAttr)
+	qualities: {warning: AC_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.3
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:good
+	timestamp: 1533293551.76
+	type: DevString
+
+CL1_ONC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	formula: CL1_ONC:Formula {read: VALUE and Attr[cl1_ready].rvalue == True}
+	isRst: False
+	label: cooling loop 1 on
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL1_ONC
+	qualities: {warning: CL1_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 117
+	read_bit: 2
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.76
+	type: DevBoolean
+	write_addr: 17
+	write_bit: 2
+	write_value: True
+	wvalue: True
+
+CL1_ONC_Status (MeaningAttr):
+	alias: CL1_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL1_ONC:MeaningAttr
+	noneValue: 0
+	owner: CL1_ONC (PLCAttr)
+	qualities: {warning: CL1_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.84
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:on
+	timestamp: 1533293551.76
+	type: DevString
+
+CL1_PWD (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.1 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %4.1f
+	isRst: False
+	label: cooling loop 1 power drive monitor
+	logLevel: warning
+	maxValue: 100
+	name: CL1_PWD
+	noneValue: nan
+	qualities: {warning: {absolute: {below: 15, above: 80}}}
+	quality: ATTR_WARNING
+	read_addr: 68
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [ 19.46314049  19.46314049  19.65452957  19.65452957  19.65452957
+  19.65452957  19.65452957  19.65452957  19.65452957  19.69229317]
+	rvalue: 19.6922931671
+	timestamp: 1533293551.76
+	type: ('f', 4)
+
+CL1_ST (PLCAttr):
+	description: 'cooling loop 1 status\n0:primary underflow\n1:off\n2:fault\n3:prebuncher 1 underflow\n4:prebuncher 2 underflow\n5:buncher underflow\n6:running\n7:cooling down (5 min)\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: cooling loop 1 status
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'prebuncher 1 underflow', 4: 'prebuncher 2 underflow', 5: 'buncher underflow', 6: 'running', 7: 'cooling down (5 min)'}
+	name: CL1_ST
+	noneValue: 0
+	qualities: {changing: CL1_ST:QualityInterpreter.changing, warning: CL1_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 96
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: 6
+	reporter: CL1_ST:ChangeReporter (to ['cl1_ready'])
+	rvalue: 6
+	timestamp: 1533293551.76
+	type: ('B', 1)
+
+CL1_Status (MeaningAttr):
+	alias: CL1_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'prebuncher 1 underflow', 4: 'prebuncher 2 underflow', 5: 'buncher underflow', 6: 'running', 7: 'cooling down (5 min)'}
+	name: CL1_ST:MeaningAttr
+	noneValue: 0
+	owner: CL1_ST (PLCAttr)
+	qualities: {changing: CL1_ST:QualityInterpreter.changing, warning: CL1_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.11
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: 6:running
+	timestamp: 1533293551.76
+	type: DevString
+
+CL1_T (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.001 'Fri Aug  3 12:52:31 2018' ATTR_VALID
+	format: %4.2f
+	isRst: False
+	label: cooling loop 1 temperature monitor
+	logLevel: warning
+	maxValue: 50
+	name: CL1_T
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 56
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: 32.5735702515
+	rvalue: 32.5735702515
+	timestamp: 1533293551.76
+	type: ('f', 4)
+
+CL1_T_setpoint (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.01 'Thu Aug  2 09:00:15 2018' ATTR_ALARM
+	format: %4.2f
+	isRst: False
+	label: cooling loop 1 temperature setpoint
+	logLevel: warning
+	maxValue: 50
+	name: CL1_T_setpoint
+	noneValue: nan
+	qualities: {changing: {relative: 0.5}, alarm: {absolute: {below: 15, above: 45}}, warning: {absolute: {below: 20, above: 40}}}
+	quality: ATTR_ALARM
+	read_addr: 100
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [ 32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5]
+	rvalue: 32.5
+	timestamp: 1533293551.76
+	type: ('f', 4)
+	write_addr: 0
+	write_value: 32.5
+	wvalue: 32.5
+
+CL2_ONC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	formula: CL2_ONC:Formula {read: VALUE and Attr[cl2_ready].rvalue == True}
+	isRst: False
+	label: cooling loop 2 on
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL2_ONC
+	qualities: {warning: CL2_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 117
+	read_bit: 3
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.76
+	type: DevBoolean
+	write_addr: 17
+	write_bit: 3
+	write_value: True
+	wvalue: True
+
+CL2_ONC_Status (MeaningAttr):
+	alias: CL2_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL2_ONC:MeaningAttr
+	noneValue: 0
+	owner: CL2_ONC (PLCAttr)
+	qualities: {warning: CL2_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.88
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:on
+	timestamp: 1533293551.76
+	type: DevString
+
+CL2_PWD (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.1 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %4.1f
+	isRst: False
+	label: cooling loop 2 power drive monitor
+	logLevel: warning
+	maxValue: 100
+	name: CL2_PWD
+	noneValue: nan
+	qualities: {warning: {absolute: {below: 15, above: 80}}}
+	quality: ATTR_WARNING
+	read_addr: 72
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [ 39.89992905  39.89992905  40.06535721  40.06535721  40.06535721
+  40.06535721  40.06535721  40.06535721  40.06535721  39.83670807]
+	rvalue: 39.8367080688
+	timestamp: 1533293551.76
+	type: ('f', 4)
+
+CL2_ST (PLCAttr):
+	description: 'cooling loop 2 status\n0:primary underflow\n1:off\n2:fault\n3:accelerating section 1 underflow\n4:running\n5:cooling down (5 min)\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: cooling loop 2 status
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 1 underflow', 4: 'running', 5: 'cooling down (5 min)'}
+	name: CL2_ST
+	noneValue: 0
+	qualities: {changing: CL2_ST:QualityInterpreter.changing, alarm: CL2_ST:QualityInterpreter.alarm, warning: CL2_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 97
+	read_t: 1533293551.76
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: 4
+	reporter: CL2_ST:ChangeReporter (to ['cl2_ready'])
+	rvalue: 4
+	timestamp: 1533293551.76
+	type: ('B', 1)
+
+CL2_Status (MeaningAttr):
+	alias: CL2_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 1 underflow', 4: 'running', 5: 'cooling down (5 min)'}
+	name: CL2_ST:MeaningAttr
+	noneValue: 0
+	owner: CL2_ST (PLCAttr)
+	qualities: {changing: CL2_ST:QualityInterpreter.changing, alarm: CL2_ST:QualityInterpreter.alarm, warning: CL2_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.15
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: 4:running
+	timestamp: 1533293551.92
+	type: DevString
+
+CL2_T (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.001 'Fri Aug  3 12:52:31 2018' ATTR_VALID
+	format: %4.2f
+	isRst: False
+	label: cooling loop 2 temperature monitor
+	logLevel: warning
+	maxValue: 50
+	name: CL2_T
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 60
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: 32.6532745361
+	rvalue: 32.6532745361
+	timestamp: 1533293551.92
+	type: ('f', 4)
+
+CL2_T_setpoint (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.01 'Thu Aug  2 09:00:15 2018' ATTR_ALARM
+	format: %4.2f
+	isRst: False
+	label: cooling loop 2 temperature setpoint
+	logLevel: warning
+	maxValue: 50
+	name: CL2_T_setpoint
+	noneValue: nan
+	qualities: {changing: {relative: 0.5}, alarm: {absolute: {below: 15, above: 45}}, warning: {absolute: {below: 20, above: 40}}}
+	quality: ATTR_ALARM
+	read_addr: 104
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [ 32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5]
+	rvalue: 32.5
+	timestamp: 1533293551.92
+	type: ('f', 4)
+	write_addr: 4
+	write_value: 32.5
+	wvalue: 32.5
+
+CL3_ONC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	formula: CL3_ONC:Formula {read: VALUE and Attr[cl3_ready].rvalue == True}
+	isRst: False
+	label: cooling loop 3 on
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL3_ONC
+	qualities: {warning: CL3_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 117
+	read_bit: 4
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.92
+	type: DevBoolean
+	write_addr: 17
+	write_bit: 4
+	write_value: True
+	wvalue: True
+
+CL3_ONC_Status (MeaningAttr):
+	alias: CL3_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: CL3_ONC:MeaningAttr
+	noneValue: 0
+	owner: CL3_ONC (PLCAttr)
+	qualities: {warning: CL3_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.9
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:on
+	timestamp: 1533293551.92
+	type: DevString
+
+CL3_PWD (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.1 'Thu Aug  2 09:00:14 2018' ATTR_WARNING
+	format: %4.1f
+	isRst: False
+	label: cooling loop 3 power drive monitor
+	logLevel: warning
+	maxValue: 100
+	name: CL3_PWD
+	noneValue: nan
+	qualities: {warning: {absolute: {below: 15, above: 80}}}
+	quality: ATTR_WARNING
+	read_addr: 76
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [ 32.00360107  32.00360107  32.00360107  32.00360107  32.00360107
+  32.00360107  32.00360107  32.00360107  32.00360107  32.00360107]
+	rvalue: 32.0036010742
+	timestamp: 1533293551.92
+	type: ('f', 4)
+
+CL3_ST (PLCAttr):
+	description: 'cooling loop 3 status\n0:primary underflow\n1:off\n2:fault\n3:accelerating section 2 underflow\n4:running\n5:cooling down (5 minutes)\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: cooling loop 3 status
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 2 underflow', 4: 'running', 5: 'cooling down (5 minutes)'}
+	name: CL3_ST
+	noneValue: 0
+	qualities: {changing: CL3_ST:QualityInterpreter.changing, alarm: CL3_ST:QualityInterpreter.alarm, warning: CL3_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 98
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: 4
+	reporter: CL3_ST:ChangeReporter (to ['cl3_ready'])
+	rvalue: 4
+	timestamp: 1533293551.92
+	type: ('B', 1)
+
+CL3_Status (MeaningAttr):
+	alias: CL3_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'primary underflow', 1: 'off', 2: 'fault', 3: 'accelerating section 2 underflow', 4: 'running', 5: 'cooling down (5 minutes)'}
+	name: CL3_ST:MeaningAttr
+	noneValue: 0
+	owner: CL3_ST (PLCAttr)
+	qualities: {changing: CL3_ST:QualityInterpreter.changing, alarm: CL3_ST:QualityInterpreter.alarm, warning: CL3_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.23
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: 4:running
+	timestamp: 1533293551.92
+	type: DevString
+
+CL3_T (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.001 'Fri Aug  3 12:52:31 2018' ATTR_VALID
+	format: %4.2f
+	isRst: False
+	label: cooling loop 3 temperature monitor
+	logLevel: warning
+	maxValue: 50
+	name: CL3_T
+	noneValue: nan
+	quality: ATTR_VALID
+	read_addr: 64
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: 32.5451049805
+	rvalue: 32.5451049805
+	timestamp: 1533293551.92
+	type: ('f', 4)
+
+CL3_T_setpoint (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Emit when changes bigger than 0.01 'Thu Aug  2 09:00:15 2018' ATTR_ALARM
+	format: %4.2f
+	isRst: False
+	label: cooling loop 3 temperature setpoint
+	logLevel: warning
+	maxValue: 50
+	name: CL3_T_setpoint
+	noneValue: nan
+	qualities: {changing: {relative: 0.5}, alarm: {absolute: {below: 15, above: 45}}, warning: {absolute: {below: 20, above: 40}}}
+	quality: ATTR_ALARM
+	read_addr: 108
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [ 32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5  32.5]
+	rvalue: 32.5
+	timestamp: 1533293551.92
+	type: ('f', 4)
+	write_addr: 8
+	write_value: 32.5
+	wvalue: 32.5
+
+HVG1_IS (PLCAttr):
+	description: 'high vacuum gauge 1 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: high vacuum gauge 1 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG1_IS
+	qualities: {warning: HVG1_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 2
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.92
+	type: DevBoolean
+	write_bit: 2
+
+HVG1_IS_Status (MeaningAttr):
+	alias: HVG1_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG1_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG1_IS (PLCAttr)
+	qualities: {warning: HVG1_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.32
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293551.92
+	type: DevString
+
+HVG1_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: high vacuum gauge 1 pressure monitor
+	logLevel: warning
+	maxValue: 1
+	minValue: 1e-11
+	name: HVG1_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 36
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [  9.26142274e-09   1.04351319e-08   1.04351319e-08   1.04351319e-08
+   1.04351319e-08   1.04351319e-08   1.04351319e-08   1.04351319e-08
+   7.71144215e-09   7.71144215e-09]
+	rvalue: 7.7114421515e-09
+	timestamp: 1533293551.92
+	type: ('f', 4)
+
+HVG2_IS (PLCAttr):
+	description: 'high vacuum gauge 2 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: high vacuum gauge 2 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG2_IS
+	qualities: {warning: HVG2_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 3
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.92
+	type: DevBoolean
+	write_bit: 3
+
+HVG2_IS_Status (MeaningAttr):
+	alias: HVG2_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG2_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG2_IS (PLCAttr)
+	qualities: {warning: HVG2_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.34
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293551.92
+	type: DevString
+
+HVG2_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: high vacuum gauge 2 pressure monitor
+	logLevel: warning
+	maxValue: 1
+	minValue: 1e-11
+	name: HVG2_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 40
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [  2.71821694e-08   2.89100175e-08   2.89100175e-08   2.89100175e-08
+   2.89100175e-08   2.89100175e-08   2.89100175e-08   2.89100175e-08
+   2.57754440e-08   2.57754440e-08]
+	rvalue: 2.57754440014e-08
+	timestamp: 1533293551.92
+	type: ('f', 4)
+
+HVG3_IS (PLCAttr):
+	description: 'high vacuum gauge 3 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: high vacuum gauge 3 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG3_IS
+	qualities: {warning: HVG3_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 4
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.92
+	type: DevBoolean
+	write_bit: 4
+
+HVG3_IS_Status (MeaningAttr):
+	alias: HVG3_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG3_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG3_IS (PLCAttr)
+	qualities: {warning: HVG3_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.36
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293551.92
+	type: DevString
+
+HVG3_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: high vacuum gauge 3 pressure monitor
+	logLevel: warning
+	maxValue: 1
+	minValue: 1e-11
+	name: HVG3_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 44
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: [  8.09740364e-09   9.23008425e-09   9.23008425e-09   9.23008425e-09
+   9.23008425e-09   9.23008425e-09   9.23008425e-09   9.23008425e-09
+   7.53177254e-09   7.53177254e-09]
+	rvalue: 7.53177253898e-09
+	timestamp: 1533293551.92
+	type: ('f', 4)
+
+HVG4_IS (PLCAttr):
+	description: 'high vacuum gauge 4 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: high vacuum gauge 4 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG4_IS
+	qualities: {warning: HVG4_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 5
+	read_t: 1533293551.92
+	read_t_str: Fri Aug  3 12:52:31 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293551.92
+	type: DevBoolean
+	write_bit: 5
+
+HVG4_IS_Status (MeaningAttr):
+	alias: HVG4_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG4_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG4_IS (PLCAttr)
+	qualities: {warning: HVG4_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.38
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.08
+	type: DevString
+
+HVG4_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: high vacuum gauge 4 pressure monitor
+	logLevel: warning
+	maxValue: 1
+	minValue: 1e-11
+	name: HVG4_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 48
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  6.48751408e-09   6.48751408e-09   6.48751408e-09   6.48751408e-09
+   6.48751408e-09   6.48751408e-09   6.48751408e-09   8.11528889e-09
+   8.11528889e-09   8.11528889e-09]
+	rvalue: 8.11528888534e-09
+	timestamp: 1533293552.08
+	type: ('f', 4)
+
+HVG5_IS (PLCAttr):
+	description: 'high vacuum gauge 5 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: high vacuum gauge 5 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG5_IS
+	qualities: {warning: HVG5_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 6
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 6
+
+HVG5_IS_Status (MeaningAttr):
+	alias: HVG5_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: HVG5_IS:MeaningAttr
+	noneValue: 0
+	owner: HVG5_IS (PLCAttr)
+	qualities: {warning: HVG5_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.44
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.08
+	type: DevString
+
+HVG5_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: high vacuum gauge 5 pressure monitor
+	logLevel: warning
+	maxValue: 1
+	minValue: 1e-11
+	name: HVG5_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 52
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  2.58125787e-09   2.58125787e-09   2.58125787e-09   2.58125787e-09
+   2.58125787e-09   2.58125787e-09   2.58125787e-09   2.00880890e-09
+   2.00880890e-09   2.00880890e-09]
+	rvalue: 2.008808897e-09
+	timestamp: 1533293552.08
+	type: ('f', 4)
+
+HeartBeat (PLCAttr):
+	description: 'cadence bit going from True to False when PLC is okay'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_VALID
+	isRst: False
+	logLevel: warning
+	name: HeartBeat
+	quality: ATTR_VALID
+	read_addr: 99
+	read_bit: 0
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 0
+
+IP1_IS (PLCAttr):
+	description: 'ion pump 1 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 1 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP1_IS
+	qualities: {warning: IP1_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 7
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 7
+
+IP1_IS_Status (MeaningAttr):
+	alias: IP1_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP1_IS:MeaningAttr
+	noneValue: 0
+	owner: IP1_IS (PLCAttr)
+	qualities: {warning: IP1_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.47
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.08
+	type: DevString
+
+IP1_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 1 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP1_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 0
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  4.97390795e-09   4.97390795e-09   4.97390795e-09   4.97390795e-09
+   4.97390795e-09   4.97390795e-09   4.97390795e-09   5.05675901e-09
+   5.05675901e-09   5.05675901e-09]
+	rvalue: 5.05675901152e-09
+	timestamp: 1533293552.08
+	type: ('f', 4)
+
+IP1_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 1 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP1_ST
+	qualities: {warning: IP1_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 0
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 0
+
+IP1_Status (MeaningAttr):
+	alias: IP1_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP1_ST:MeaningAttr
+	noneValue: 0
+	owner: IP1_ST (PLCAttr)
+	qualities: {warning: IP1_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.11
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.08
+	type: DevString
+
+IP2_IS (PLCAttr):
+	description: 'ion pump 2 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 2 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP2_IS
+	qualities: {warning: IP2_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 0
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 0
+
+IP2_IS_Status (MeaningAttr):
+	alias: IP2_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP2_IS:MeaningAttr
+	noneValue: 0
+	owner: IP2_IS (PLCAttr)
+	qualities: {warning: IP2_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.51
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.08
+	type: DevString
+
+IP2_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 2 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP2_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 4
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  3.19303717e-09   3.19303717e-09   3.19303717e-09   3.19303717e-09
+   3.19303717e-09   3.19303717e-09   3.19303717e-09   4.09457579e-09
+   4.09457579e-09   4.09457579e-09]
+	rvalue: 4.09457578954e-09
+	timestamp: 1533293552.08
+	type: ('f', 4)
+
+IP2_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 2 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP2_ST
+	qualities: {warning: IP2_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 1
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 1
+
+IP2_Status (MeaningAttr):
+	alias: IP2_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP2_ST:MeaningAttr
+	noneValue: 0
+	owner: IP2_ST (PLCAttr)
+	qualities: {warning: IP2_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.13
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.08
+	type: DevString
+
+IP3_IS (PLCAttr):
+	description: 'ion pump 3 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 3 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP3_IS
+	qualities: {warning: IP3_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 1
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 1
+
+IP3_IS_Status (MeaningAttr):
+	alias: IP3_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP3_IS:MeaningAttr
+	noneValue: 0
+	owner: IP3_IS (PLCAttr)
+	qualities: {warning: IP3_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.55
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.08
+	type: DevString
+
+IP3_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 3 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP3_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 8
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  1.45919998e-09   1.45919998e-09   1.45919998e-09   1.45919998e-09
+   1.45919998e-09   1.45919998e-09   1.45919998e-09   2.82084400e-09
+   2.82084400e-09   2.82084400e-09]
+	rvalue: 2.82084400283e-09
+	timestamp: 1533293552.08
+	type: ('f', 4)
+
+IP3_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 3 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP3_ST
+	qualities: {warning: IP3_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 2
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 2
+
+IP3_Status (MeaningAttr):
+	alias: IP3_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP3_ST:MeaningAttr
+	noneValue: 0
+	owner: IP3_ST (PLCAttr)
+	qualities: {warning: IP3_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.14
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.08
+	type: DevString
+
+IP4_IS (PLCAttr):
+	description: 'ion pump 4 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 4 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP4_IS
+	qualities: {warning: IP4_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 2
+	read_t: 1533293552.08
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.08
+	type: DevBoolean
+	write_bit: 2
+
+IP4_IS_Status (MeaningAttr):
+	alias: IP4_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP4_IS:MeaningAttr
+	noneValue: 0
+	owner: IP4_IS (PLCAttr)
+	qualities: {warning: IP4_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.59
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.08
+	type: DevString
+
+IP4_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 4 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP4_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 12
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  4.57152316e-10   4.57152316e-10   4.57152316e-10   4.57152316e-10
+   4.57152316e-10   4.57152316e-10   2.32197883e-09   2.32197883e-09
+   2.32197883e-09   2.32197883e-09]
+	rvalue: 2.32197883143e-09
+	timestamp: 1533293552.24
+	type: ('f', 4)
+
+IP4_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 4 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP4_ST
+	qualities: {warning: IP4_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 3
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 3
+
+IP4_Status (MeaningAttr):
+	alias: IP4_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP4_ST:MeaningAttr
+	noneValue: 0
+	owner: IP4_ST (PLCAttr)
+	qualities: {warning: IP4_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.15
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.24
+	type: DevString
+
+IP5_IS (PLCAttr):
+	description: 'ion pump 5 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 5 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP5_IS
+	qualities: {warning: IP5_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 3
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 3
+
+IP5_IS_Status (MeaningAttr):
+	alias: IP5_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP5_IS:MeaningAttr
+	noneValue: 0
+	owner: IP5_IS (PLCAttr)
+	qualities: {warning: IP5_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.63
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.24
+	type: DevString
+
+IP5_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 5 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP5_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 16
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  1.29720146e-08   1.29720146e-08   1.29720146e-08   1.29720146e-08
+   1.29720146e-08   1.29720146e-08   1.13741150e-08   1.13741150e-08
+   1.13741150e-08   1.13741150e-08]
+	rvalue: 1.13741149832e-08
+	timestamp: 1533293552.24
+	type: ('f', 4)
+
+IP5_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 5 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP5_ST
+	qualities: {warning: IP5_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 4
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 4
+
+IP5_Status (MeaningAttr):
+	alias: IP5_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP5_ST:MeaningAttr
+	noneValue: 0
+	owner: IP5_ST (PLCAttr)
+	qualities: {warning: IP5_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.16
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.24
+	type: DevString
+
+IP6_IS (PLCAttr):
+	description: 'ion pump 6 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 6 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP6_IS
+	qualities: {warning: IP6_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 4
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 4
+
+IP6_IS_Status (MeaningAttr):
+	alias: IP6_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP6_IS:MeaningAttr
+	noneValue: 0
+	owner: IP6_IS (PLCAttr)
+	qualities: {warning: IP6_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.7
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.24
+	type: DevString
+
+IP6_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 6 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP6_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 20
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  5.77815484e-09   5.77815484e-09   5.77815484e-09   5.77815484e-09
+   5.77815484e-09   5.77815484e-09   5.21746824e-09   5.21746824e-09
+   5.21746824e-09   5.21746824e-09]
+	rvalue: 5.21746823523e-09
+	timestamp: 1533293552.24
+	type: ('f', 4)
+
+IP6_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 6 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP6_ST
+	qualities: {warning: IP6_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 5
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 5
+
+IP6_Status (MeaningAttr):
+	alias: IP6_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP6_ST:MeaningAttr
+	noneValue: 0
+	owner: IP6_ST (PLCAttr)
+	qualities: {warning: IP6_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.18
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.24
+	type: DevString
+
+IP7_IS (PLCAttr):
+	description: 'ion pump 7 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 7 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP7_IS
+	qualities: {warning: IP7_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 5
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 5
+
+IP7_IS_Status (MeaningAttr):
+	alias: IP7_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP7_IS:MeaningAttr
+	noneValue: 0
+	owner: IP7_IS (PLCAttr)
+	qualities: {warning: IP7_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.74
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.24
+	type: DevString
+
+IP7_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 7 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP7_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 24
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  5.45441603e-09   5.45441603e-09   5.45441603e-09   5.45441603e-09
+   5.45441603e-09   5.45441603e-09   6.28300256e-09   6.28300256e-09
+   6.28300256e-09   6.28300256e-09]
+	rvalue: 6.28300256267e-09
+	timestamp: 1533293552.24
+	type: ('f', 4)
+
+IP7_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 7 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP7_ST
+	qualities: {warning: IP7_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 6
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 6
+
+IP7_Status (MeaningAttr):
+	alias: IP7_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP7_ST:MeaningAttr
+	noneValue: 0
+	owner: IP7_ST (PLCAttr)
+	qualities: {warning: IP7_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.2
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.24
+	type: DevString
+
+IP8_IS (PLCAttr):
+	description: 'ion pump 8 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 8 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP8_IS
+	qualities: {warning: IP8_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 6
+	read_t: 1533293552.24
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.24
+	type: DevBoolean
+	write_bit: 6
+
+IP8_IS_Status (MeaningAttr):
+	alias: IP8_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP8_IS:MeaningAttr
+	noneValue: 0
+	owner: IP8_IS (PLCAttr)
+	qualities: {warning: IP8_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.77
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.24
+	type: DevString
+
+IP8_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 8 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP8_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 28
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  1.04957754e-09   1.04957754e-09   1.04957754e-09   1.04957754e-09
+   1.04957754e-09   2.61582067e-09   2.61582067e-09   2.61582067e-09
+   2.61582067e-09   2.61582067e-09]
+	rvalue: 2.61582067118e-09
+	timestamp: 1533293552.4
+	type: ('f', 4)
+
+IP8_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 8 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP8_ST
+	qualities: {warning: IP8_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 84
+	read_bit: 7
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_bit: 7
+
+IP8_Status (MeaningAttr):
+	alias: IP8_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP8_ST:MeaningAttr
+	noneValue: 0
+	owner: IP8_ST (PLCAttr)
+	qualities: {warning: IP8_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.23
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.4
+	type: DevString
+
+IP9_IS (PLCAttr):
+	description: 'ion pump 9 interlock; False:fault, True:ready'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 9 interlock
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP9_IS
+	qualities: {warning: IP9_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 86
+	read_bit: 7
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_bit: 7
+
+IP9_IS_Status (MeaningAttr):
+	alias: IP9_IS_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'fault', 1: 'ready'}
+	name: IP9_IS:MeaningAttr
+	noneValue: 0
+	owner: IP9_IS (PLCAttr)
+	qualities: {warning: IP9_IS:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.82
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:ready
+	timestamp: 1533293552.4
+	type: DevString
+
+IP9_P (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Fri Aug  3 12:52:31 2018' ATTR_WARNING
+	format: %2.1e
+	isRst: False
+	label: ion pump 9 pressure monitor
+	logLevel: warning
+	maxValue: 1.0
+	minValue: 1e-11
+	name: IP9_P
+	noneValue: nan
+	qualities: {warning: {absolute: {above: 1e-07}}}
+	quality: ATTR_WARNING
+	read_addr: 32
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: [  1.13552112e-09   1.13552112e-09   1.13552112e-09   1.13552112e-09
+   1.13552112e-09   2.48294518e-09   2.48294518e-09   2.48294518e-09
+   2.48294518e-09   2.48294518e-09]
+	rvalue: 2.48294518279e-09
+	timestamp: 1533293552.4
+	type: ('f', 4)
+
+IP9_ST (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: ion pump 9 status
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP9_ST
+	qualities: {warning: IP9_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 0
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_bit: 0
+
+IP9_Status (MeaningAttr):
+	alias: IP9_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'off', 1: 'on'}
+	name: IP9_ST:MeaningAttr
+	noneValue: 0
+	owner: IP9_ST (PLCAttr)
+	qualities: {warning: IP9_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.26
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:on
+	timestamp: 1533293552.4
+	type: DevString
+
+Lock_ST (PLCAttr):
+	description: 'lock status plc2\n0:unlocked\n1:local\n2:remote\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_ALARM
+	isRst: False
+	label: lock status plc2
+	logLevel: warning
+	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
+	name: Lock_ST
+	noneValue: 0
+	qualities: {alarm: Lock_ST:QualityInterpreter.alarm, warning: Lock_ST:QualityInterpreter.warning}
+	quality: ATTR_ALARM
+	read_addr: 95
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 0
+	rvalue: 0
+	timestamp: 1533293552.4
+	type: ('B', 1)
+
+Lock_Status (MeaningAttr):
+	alias: Lock_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'unlocked', 1: 'local', 2: 'remote'}
+	name: Lock_ST:MeaningAttr
+	noneValue: 0
+	owner: Lock_ST (PLCAttr)
+	qualities: {alarm: Lock_ST:QualityInterpreter.alarm, warning: Lock_ST:QualityInterpreter.warning}
+	quality: ATTR_ALARM
+	read_t: 1533193215.96
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: 0:unlocked
+	timestamp: 1533293552.4
+	type: DevString
+
+Locking (PLCAttr):
+	description: 'True when attempting to obtain write lock'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	isRst: False
+	logLevel: warning
+	name: Locking
+	quality: ATTR_VALID
+	read_addr: 120
+	read_bit: 0
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_addr: 20
+	write_bit: 0
+	write_value: False
+	wvalue: False
+
+Util_Interlock_RC (PLCAttr):
+	description: 'utilities interlock reset command'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	isRst: True
+	label: interlock reset
+	logLevel: warning
+	name: Util_Interlock_RC
+	quality: ATTR_VALID
+	read_addr: 117
+	read_bit: 0
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_addr: 17
+	write_bit: 0
+	write_value: False
+	wvalue: False
+
+VCV_ONC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	formula: VCV_ONC:Formula {read: VALUE and not Attr[VCV_ST].rvalue == 4}
+	isRst: False
+	label: collimator valve open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VCV_ONC
+	qualities: {warning: VCV_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 0
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 0
+	write_value: True
+	wvalue: True
+
+VCV_ONC_Status (MeaningAttr):
+	alias: VCV_ONC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VCV_ONC:MeaningAttr
+	noneValue: 0
+	owner: VCV_ONC (PLCAttr)
+	qualities: {warning: VCV_ONC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.44
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.4
+	type: DevString
+
+VCV_ST (PLCAttr):
+	description: 'collimator valve state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: collimator valve state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VCV_ST
+	noneValue: 0
+	qualities: {changing: VCV_ST:QualityInterpreter.changing, alarm: VCV_ST:QualityInterpreter.alarm, warning: VCV_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 87
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VCV_ST:ChangeReporter (to ['VCV_ONC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.4
+	type: ('B', 1)
+
+VCV_Status (MeaningAttr):
+	alias: VCV_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VCV_ST:MeaningAttr
+	noneValue: 0
+	owner: VCV_ST (PLCAttr)
+	qualities: {changing: VCV_ST:QualityInterpreter.changing, alarm: VCV_ST:QualityInterpreter.alarm, warning: VCV_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.83
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.4
+	type: DevString
+
+VC_Interlock_RC (PLCAttr):
+	description: 'vacuum reset command'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	isRst: True
+	label: vacuum reset
+	logLevel: warning
+	name: VC_Interlock_RC
+	quality: ATTR_VALID
+	read_addr: 117
+	read_bit: 1
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: False
+	rvalue: False
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_addr: 17
+	write_bit: 1
+	write_value: False
+	wvalue: False
+
+VC_OK (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:14 2018' ATTR_VALID
+	isRst: False
+	label: linac vacuum okay
+	logLevel: warning
+	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
+	name: VC_OK
+	qualities: {warning: VC_OK:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 85
+	read_bit: 1
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_bit: 1
+
+VC_OK_Status (MeaningAttr):
+	alias: VC_OK_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'bad vacuum', 1: 'good vacuum'}
+	name: VC_OK:MeaningAttr
+	noneValue: 0
+	owner: VC_OK (PLCAttr)
+	qualities: {warning: VC_OK:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.28
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: True:good vacuum
+	timestamp: 1533293552.4
+	type: DevString
+
+VV1_OC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	formula: VV1_OC:Formula {read: VALUE and not Attr[VV1_ST].rvalue == 4}
+	isRst: False
+	label: vacuum valve 1 open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV1_OC
+	qualities: {warning: VV1_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 1
+	read_t: 1533293552.4
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	reporter: VV1_OC:ChangeReporter (to ['VV1_OC:GroupMember'])
+	rvalue: True
+	timestamp: 1533293552.4
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 1
+	write_value: True
+	wvalue: True
+
+VV1_OC_Status (MeaningAttr):
+	alias: VV1_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV1_OC:MeaningAttr
+	noneValue: 0
+	owner: VV1_OC (PLCAttr)
+	qualities: {warning: VV1_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.49
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.4
+	type: DevString
+
+VV1_ST (PLCAttr):
+	description: 'vacuum valve 1 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: vacuum valve 1 state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV1_ST
+	noneValue: 0
+	qualities: {changing: VV1_ST:QualityInterpreter.changing, alarm: VV1_ST:QualityInterpreter.alarm, warning: VV1_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 88
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VV1_ST:ChangeReporter (to ['VV1_OC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.56
+	type: ('B', 1)
+
+VV1_Status (MeaningAttr):
+	alias: VV1_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV1_ST:MeaningAttr
+	noneValue: 0
+	owner: VV1_ST (PLCAttr)
+	qualities: {changing: VV1_ST:QualityInterpreter.changing, alarm: VV1_ST:QualityInterpreter.alarm, warning: VV1_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.84
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.56
+	type: DevString
+
+VV2_OC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	formula: VV2_OC:Formula {read: VALUE and not Attr[VV2_ST].rvalue == 4}
+	isRst: False
+	label: vacuum valve 2 open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV2_OC
+	qualities: {warning: VV2_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 2
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	reporter: VV2_OC:ChangeReporter (to ['VV2_OC:GroupMember'])
+	rvalue: True
+	timestamp: 1533293552.56
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 2
+	write_value: True
+	wvalue: True
+
+VV2_OC_Status (MeaningAttr):
+	alias: VV2_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV2_OC:MeaningAttr
+	noneValue: 0
+	owner: VV2_OC (PLCAttr)
+	qualities: {warning: VV2_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.5
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.56
+	type: DevString
+
+VV2_ST (PLCAttr):
+	description: 'vacuum valve 2 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: vacuum valve 2 state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV2_ST
+	noneValue: 0
+	qualities: {changing: VV2_ST:QualityInterpreter.changing, alarm: VV2_ST:QualityInterpreter.alarm, warning: VV2_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 89
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VV2_ST:ChangeReporter (to ['VV2_OC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.56
+	type: ('B', 1)
+
+VV2_Status (MeaningAttr):
+	alias: VV2_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV2_ST:MeaningAttr
+	noneValue: 0
+	owner: VV2_ST (PLCAttr)
+	qualities: {changing: VV2_ST:QualityInterpreter.changing, alarm: VV2_ST:QualityInterpreter.alarm, warning: VV2_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.87
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.56
+	type: DevString
+
+VV3_OC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	formula: VV3_OC:Formula {read: VALUE and not Attr[VV3_ST].rvalue == 4}
+	isRst: False
+	label: vacuum valve 3 open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV3_OC
+	qualities: {warning: VV3_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 3
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	reporter: VV3_OC:ChangeReporter (to ['VV3_OC:GroupMember'])
+	rvalue: True
+	timestamp: 1533293552.56
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 3
+	write_value: True
+	wvalue: True
+
+VV3_OC_Status (MeaningAttr):
+	alias: VV3_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV3_OC:MeaningAttr
+	noneValue: 0
+	owner: VV3_OC (PLCAttr)
+	qualities: {warning: VV3_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.6
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.56
+	type: DevString
+
+VV3_ST (PLCAttr):
+	description: 'vacuum valve 3 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: vacuum valve 3 state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV3_ST
+	noneValue: 0
+	qualities: {changing: VV3_ST:QualityInterpreter.changing, alarm: VV3_ST:QualityInterpreter.alarm, warning: VV3_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 90
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VV3_ST:ChangeReporter (to ['VV3_OC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.56
+	type: ('B', 1)
+
+VV3_Status (MeaningAttr):
+	alias: VV3_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV3_ST:MeaningAttr
+	noneValue: 0
+	owner: VV3_ST (PLCAttr)
+	qualities: {changing: VV3_ST:QualityInterpreter.changing, alarm: VV3_ST:QualityInterpreter.alarm, warning: VV3_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.94
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.56
+	type: DevString
+
+VV4_OC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	formula: VV4_OC:Formula {read: VALUE and not Attr[VV4_ST].rvalue == 4}
+	isRst: False
+	label: vacuum valve 4 open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV4_OC
+	qualities: {warning: VV4_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 4
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	reporter: VV4_OC:ChangeReporter (to ['VV4_OC:GroupMember'])
+	rvalue: True
+	timestamp: 1533293552.56
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 4
+	write_value: True
+	wvalue: True
+
+VV4_OC_Status (MeaningAttr):
+	alias: VV4_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV4_OC:MeaningAttr
+	noneValue: 0
+	owner: VV4_OC (PLCAttr)
+	qualities: {warning: VV4_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.61
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.56
+	type: DevString
+
+VV4_ST (PLCAttr):
+	description: 'vacuum valve 4 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: vacuum valve 4 state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV4_ST
+	noneValue: 0
+	qualities: {changing: VV4_ST:QualityInterpreter.changing, alarm: VV4_ST:QualityInterpreter.alarm, warning: VV4_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 91
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VV4_ST:ChangeReporter (to ['VV4_OC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.56
+	type: ('B', 1)
+
+VV4_Status (MeaningAttr):
+	alias: VV4_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV4_ST:MeaningAttr
+	noneValue: 0
+	owner: VV4_ST (PLCAttr)
+	qualities: {changing: VV4_ST:QualityInterpreter.changing, alarm: VV4_ST:QualityInterpreter.alarm, warning: VV4_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.94
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.56
+	type: DevString
+
+VV5_OC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	formula: VV5_OC:Formula {read: VALUE and not Attr[VV5_ST].rvalue == 4}
+	isRst: False
+	label: vacuum valve 5 open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV5_OC
+	qualities: {warning: VV5_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 5
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	reporter: VV5_OC:ChangeReporter (to ['VV5_OC:GroupMember'])
+	rvalue: True
+	timestamp: 1533293552.56
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 5
+	write_value: True
+	wvalue: True
+
+VV5_OC_Status (MeaningAttr):
+	alias: VV5_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV5_OC:MeaningAttr
+	noneValue: 0
+	owner: VV5_OC (PLCAttr)
+	qualities: {warning: VV5_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.66
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.56
+	type: DevString
+
+VV5_ST (PLCAttr):
+	description: 'vacuum valve 5 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: vacuum valve 5 state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV5_ST
+	noneValue: 0
+	qualities: {changing: VV5_ST:QualityInterpreter.changing, alarm: VV5_ST:QualityInterpreter.alarm, warning: VV5_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 92
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VV5_ST:ChangeReporter (to ['VV5_OC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.56
+	type: ('B', 1)
+
+VV5_Status (MeaningAttr):
+	alias: VV5_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV5_ST:MeaningAttr
+	noneValue: 0
+	owner: VV5_ST (PLCAttr)
+	qualities: {changing: VV5_ST:QualityInterpreter.changing, alarm: VV5_ST:QualityInterpreter.alarm, warning: VV5_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193214.96
+	read_t_str: Thu Aug  2 09:00:14 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.56
+	type: DevString
+
+VV6_OC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	formula: VV6_OC:Formula {read: VALUE and not Attr[VV6_ST].rvalue == 4}
+	isRst: False
+	label: vacuum valve 6 open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV6_OC
+	qualities: {warning: VV6_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 6
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	reporter: VV6_OC:ChangeReporter (to ['VV6_OC:GroupMember'])
+	rvalue: True
+	timestamp: 1533293552.56
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 6
+	write_value: True
+	wvalue: True
+
+VV6_OC_Status (MeaningAttr):
+	alias: VV6_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV6_OC:MeaningAttr
+	noneValue: 0
+	owner: VV6_OC (PLCAttr)
+	qualities: {warning: VV6_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.69
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.56
+	type: DevString
+
+VV6_ST (PLCAttr):
+	description: 'vacuum valve 6 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: vacuum valve 6 state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV6_ST
+	noneValue: 0
+	qualities: {changing: VV6_ST:QualityInterpreter.changing, alarm: VV6_ST:QualityInterpreter.alarm, warning: VV6_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 93
+	read_t: 1533293552.56
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VV6_ST:ChangeReporter (to ['VV6_OC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.56
+	type: ('B', 1)
+
+VV6_Status (MeaningAttr):
+	alias: VV6_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV6_ST:MeaningAttr
+	noneValue: 0
+	owner: VV6_ST (PLCAttr)
+	qualities: {changing: VV6_ST:QualityInterpreter.changing, alarm: VV6_ST:QualityInterpreter.alarm, warning: VV6_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.0
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.72
+	type: DevString
+
+VV7_OC (PLCAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	formula: VV7_OC:Formula {read: VALUE and not Attr[VV7_ST].rvalue == 4}
+	isRst: False
+	label: vacuum valve 7 open
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV7_OC
+	qualities: {warning: VV7_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 116
+	read_bit: 7
+	read_t: 1533293552.72
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: True
+	reporter: VV7_OC:ChangeReporter (to ['VV7_OC:GroupMember'])
+	rvalue: True
+	timestamp: 1533293552.72
+	type: DevBoolean
+	write_addr: 16
+	write_bit: 7
+	write_value: True
+	wvalue: True
+
+VV7_OC_Status (MeaningAttr):
+	alias: VV7_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VV7_OC:MeaningAttr
+	noneValue: 0
+	owner: VV7_OC (PLCAttr)
+	qualities: {warning: VV7_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.73
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533293552.72
+	type: DevString
+
+VV7_ST (PLCAttr):
+	description: 'vacuum valve 7 state\n0:undefined\n1:moving\n2:opened\n3:closed\n4:fault\n'
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:15 2018' ATTR_VALID
+	isRst: False
+	label: vacuum valve 7 state
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV7_ST
+	noneValue: 0
+	qualities: {changing: VV7_ST:QualityInterpreter.changing, alarm: VV7_ST:QualityInterpreter.alarm, warning: VV7_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_addr: 94
+	read_t: 1533293552.72
+	read_t_str: Fri Aug  3 12:52:32 2018
+	read_value: 2
+	reporter: VV7_ST:ChangeReporter (to ['VV7_OC:Formula'])
+	rvalue: 2
+	timestamp: 1533293552.72
+	type: ('B', 1)
+
+VV7_Status (MeaningAttr):
+	alias: VV7_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'undefined', 1: 'moving', 2: 'opened', 3: 'closed', 4: 'fault'}
+	name: VV7_ST:MeaningAttr
+	noneValue: 0
+	owner: VV7_ST (PLCAttr)
+	qualities: {changing: VV7_ST:QualityInterpreter.changing, alarm: VV7_ST:QualityInterpreter.alarm, warning: VV7_ST:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.07
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: 2:opened
+	timestamp: 1533293552.72
+	type: DevString
+
+VVall_OC_Status (MeaningAttr):
+	alias: VVall_OC_Status
+	events: {}
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	name: VVall_OC:MeaningAttr
+	noneValue: 0
+	owner: VVall_OC (GroupAttr)
+	qualities: {warning: VVall_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.74
+	read_t_str: Thu Aug  2 09:00:15 2018
+	rvalue: True:open
+	timestamp: 1533193215.74
+	type: DevString
+
+HVG1_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: HVG1_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.36
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.36
+
+HVG2_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: HVG2_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.4
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.4
+
+HVG3_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: HVG3_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.43
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.43
+
+HVG4_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: HVG4_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.46
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.46
+
+HVG5_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: HVG5_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.48
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.48
+
+IP1_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP1_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.04
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.04
+
+IP2_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP2_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.09
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.09
+
+IP3_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP3_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.16
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.16
+
+IP4_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP4_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.19
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.19
+
+IP5_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP5_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.24
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.24
+
+IP6_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP6_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.28
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.28
+
+IP7_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP7_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.3
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.3
+
+IP8_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP8_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.31
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.31
+
+IP9_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IP9_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.34
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.34
+
+IPC1_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IPC1_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.52
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.52
+
+IPC2_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IPC2_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.56
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.56
+
+IPC3_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IPC3_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.62
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.62
+
+IPC4_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IPC4_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.7
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.7
+
+IPC5_u (EnumerationAttr):
+	active: None
+	device: LinacData(li/ct/plc2)
+	events: False
+	logLevel: warning
+	meaning: None
+	name: IPC5_u
+	noneValue: 0
+	numeric: 0
+	quality: ATTR_INVALID
+	read_t: 1533193216.73
+	read_t_str: Thu Aug  2 09:00:16 2018
+	timestamp: 1533193216.73
+
+VVall_OC (GroupAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	logLevel: warning
+	meanings: {0: 'close', 1: 'open'}
+	members: ['VV6_OC', 'VV4_OC', 'VV5_OC', 'VV3_OC', 'VV1_OC', 'VV2_OC', 'VV7_OC']
+	name: VVall_OC
+	qualities: {warning: VVall_OC:QualityInterpreter.warning}
+	quality: ATTR_VALID
+	read_t: 1533193215.74
+	read_t_str: Thu Aug  2 09:00:15 2018
+	read_value: True
+	rvalue: True
+	timestamp: 1533193215.74
+	type: DevBoolean
+
+cl1_ready (LogicAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	logLevel: warning
+	logic: ({'CL1_ST': [1, 6]}, and, normal)
+	name: cl1_ready
+	quality: ATTR_VALID
+	read_t: 1533193216.8
+	read_t_str: Thu Aug  2 09:00:16 2018
+	read_value: True
+	reporter: cl1_ready:ChangeReporter (to ['CL1_ONC:Formula'])
+	rvalue: True
+	timestamp: 1533193216.8
+	type: DevBoolean
+
+cl2_ready (LogicAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	logLevel: warning
+	logic: ({'CL2_ST': [1, 4]}, and, normal)
+	name: cl2_ready
+	quality: ATTR_VALID
+	read_t: 1533193216.76
+	read_t_str: Thu Aug  2 09:00:16 2018
+	read_value: True
+	reporter: cl2_ready:ChangeReporter (to ['CL2_ONC:Formula'])
+	rvalue: True
+	timestamp: 1533193216.76
+	type: DevBoolean
+
+cl3_ready (LogicAttr):
+	device: LinacData(li/ct/plc2)
+	events: Always Emit 'Thu Aug  2 09:00:16 2018' ATTR_VALID
+	logLevel: warning
+	logic: ({'CL3_ST': [1, 4]}, and, normal)
+	name: cl3_ready
+	quality: ATTR_VALID
+	read_t: 1533193216.78
+	read_t_str: Thu Aug  2 09:00:16 2018
+	read_value: True
+	reporter: cl3_ready:ChangeReporter (to ['CL3_ONC:Formula'])
+	rvalue: True
+	timestamp: 1533193216.78
+	type: DevBoolean
+

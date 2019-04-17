@@ -11,10 +11,17 @@
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#  along with this program; If not, see <http://www.gnu.org/licenses/>.
 #
 # ##### END GPL LICENSE BLOCK #####
+
+import array
+from ctypes import *
+import _ctypes
+import socket
+import struct
+import sys
+import time
 
 __author__ = "Lothar Krause and Sergi Blanch-Torne"
 __maintainer__ = "Sergi Blanch-Torne"
@@ -22,17 +29,9 @@ __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
 
-from ctypes import *
-import _ctypes
-import socket
-import time
-import array
-import sys
-import struct
-
-
 class DaveException(Exception):
     pass
+
 
 try:
     lib = CDLL('./libnodave.so64')
@@ -236,6 +235,7 @@ class Datablock(object):
         vp = c_void_p(addressof(f))
         self.dc.write_bytes(self.what, self.dbnum, off, size, byref(f))
 
+
 # reuse existing connections if possible
 CONN = {
 }
@@ -266,6 +266,7 @@ def write_bit(set_db, idx, bitno, v=1):
     b = set_db.b(idx)
     b = b & ~(1 << bitno) | (v << bitno)
     set_db.write(idx, c_byte(b))
+
 
 DOWN = True
 UP = False
@@ -299,6 +300,7 @@ def main():
     set_db.write(76, c_int16(r))  # scm up/down
 
 #    assert s==r
+
 
 if __name__ == '__main__':
     main()

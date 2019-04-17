@@ -11,15 +11,9 @@
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#  along with this program; If not, see <http://www.gnu.org/licenses/>.
 #
 # ##### END GPL LICENSE BLOCK #####
-
-__author__ = "Lothar Krause and Sergi Blanch-Torne"
-__maintainer__ = "Sergi Blanch-Torne"
-__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
-__license__ = "GPLv3+"
 
 from ctypes import *
 import _ctypes
@@ -32,6 +26,12 @@ import select
 from copy import copy
 import traceback
 import threading
+
+__author__ = "Lothar Krause and Sergi Blanch-Torne"
+__maintainer__ = "Sergi Blanch-Torne"
+__copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
+__license__ = "GPLv3+"
+
 
 REMOTE = '10.0.7.1'
 
@@ -67,8 +67,8 @@ class Datablock(object):
 
     def isGoodBlock(self, reading):
         if len(reading) != self.read_size:
-            self.debug_stream("checking block %d!=%d"
-                              % (len(reading), self.read_size))
+            self.warn_stream("checking block %d!=%d"
+                             % (len(reading), self.read_size))
             return False
         return self.doChecks(reading)
 
@@ -101,8 +101,8 @@ class Datablock(object):
     def doChecks(self, block):
         for addr in self.getCheckersAddresses():
             values = self.getChecker(addr)
-            self.debug_stream("Checking addr %d for values %s (%s)"
-                              % (addr, values, repr(block[addr])))
+            # self.debug_stream("Checking addr %d for values %s (%s)"
+            #                   % (addr, values, repr(block[addr])))
             if not block[addr] in values:
                 self.warn_stream("Check fail for address %d (%s)"
                                  % (addr, repr(block[addr])))
@@ -112,27 +112,31 @@ class Datablock(object):
     def readall(self):
         E = ()  # FIXME: what does it means?
         ready = ([], [], [])
+        ctr = 0
         while not ready[0]:
             ready = select.select([self.sock.fileno()], E, E, 0)
             if not ready[0]:
-                self.error_stream("In readall(): not ready, select "
-                                  "returns '%s'" % (str(ready)))
-                time.sleep(0.1)  # return False
+                ctr += 1
+                time.sleep(0.1)
+                if ctr == 30:
+                    self.error_stream("In readall(): not ready, select "
+                                      "returns '%s'" % (str(ready)))
+                    return False
             else:
-                self.debug_stream("ready = %s" % (str(ready)))
+                pass  # self.debug_stream("ready = %s" % (str(ready)))
         retries = 0
 
         self._recv = ''
         while len(self._recv) != self.read_size:  # while rem>0:
             select.select([self.sock.fileno()], E, E)
             self._recv = self.sock.recv(8192)
-            self.debug_stream("> received %d bytes" % (len(self._recv)))
+            # self.debug_stream("> received %d bytes" % (len(self._recv)))
             if len(self._recv) == 0:
                 retries += 1
-                # if retries == 10:
-                #     self.debug_stream("After a second of consecutive "
-                #                       "retries, abort the readall()")
-                #     return False
+                if retries == 10:
+                    self.debug_stream("After a second of consecutive "
+                                      "retries, abort the readall()")
+                    return False
                 self.debug_stream("Nothing received from the PLC (try %d)"
                                   % (retries))
                 time.sleep(0.1)
@@ -140,8 +144,8 @@ class Datablock(object):
                 retries = 0
                 if len(self._recv) > self.read_size:
                     # Cut the extra read data ---
-                    self.debug_stream(">> Cut the extra read data (%d)"
-                                      % (len(self._recv)))
+                    # self.debug_stream(">> Cut the extra read data (%d)"
+                    #                   % (len(self._recv)))
                     self._recv = self._recv[-self.read_size:]
                 elif len(self._recv) in \
                         [self.read_size-self.write_size,  # received DB22
@@ -168,7 +172,7 @@ class Datablock(object):
                             self._recv = pendings + self._recv
                 # once data has the correct size, check contents
                 if self.isGoodBlock(self._recv):
-                    self.debug_stream("< Well done")
+                    # self.debug_stream("< Well done")
                     pass  # this is a good reading
                 elif self.isBlockInverted(self._recv):
                     # try to invert the DBs
@@ -274,6 +278,7 @@ class Datablock(object):
             self.sock.sendall(write_str)
             self.debug_stream("rewrite send: %s" % (repr(write_str)))
 
+
 # reuse existing connections if possible
 CONN = {
 }
@@ -319,6 +324,7 @@ def close_datablock(db, warn=None):
     except Exception as exc:
         if warn:
             warn(exc)
+
 
 if __name__ == '__main__':
         main()

@@ -11,8 +11,7 @@
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#  along with this program; If not, see <http://www.gnu.org/licenses/>.
 #
 # ##### END GPL LICENSE BLOCK #####
 
@@ -21,9 +20,9 @@ __maintainer__ = "Sergi Blanch-Torne"
 __copyright__ = "Copyright 2015, CELLS / ALBA Synchrotron"
 __license__ = "GPLv3+"
 
-MAJOR_VERSION = 2
-MINOR_VERSION = 44
-BUILD_VERSION = 0
+version = "__version = '3.0.3-alpha'"
+MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION = [
+    int(x.split('-')[0]) for x in "3.0.1-a".split('.')]
 
 # attributes keys ---
 READADDR = 'read_addr'
@@ -73,8 +72,8 @@ ACTIVE_RESET_T = EVENT_THREAD_PERIOD*3  # s
 PLC_MIN_UPDATE_PERIOD = EVENT_THREAD_PERIOD/2  # s
 PLC_MAX_UPDATE_PERIOD = EVENT_THREAD_PERIOD*2  # s
 PLC_STEP_UPDATE_PERIOD = EVENT_THREAD_PERIOD/10  # s
-EXPECTED_UPDATE_TIME = PLC_MAX_UPDATE_PERIOD  # s or less
 RE_EVENTS_PERIOD = EVENT_THREAD_PERIOD * 3 * 10
+HISTORY_EVENT_BUFFER = 499
 
 # ramping ---
 RAMP = 'Ramp'
@@ -106,6 +105,6 @@ STD = 'Std'
 TRIGGERED = 'Triggered'
 
 # Readback far from setpoint ---
-from PyTango import AttrQuality
+# from PyTango import AttrQuality
 CLOSE_ZERO = 0.1
 REL_PERCENTAGE = 0.1
