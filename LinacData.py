@@ -3485,6 +3485,7 @@ class LinacData(PyTango.Device_4Impl):
                 else:
                     self.set_state(PyTango.DevState.FAULT)
                     self.set_status("No data received from the PLC")
+                    self.disconnect()
                 end_update_t = time.time()
                 diff_t = (end_update_t - start_update_time)
                 if end_update_t-self.last_update_time > self.TimeoutAlarm:

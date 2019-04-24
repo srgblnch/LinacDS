@@ -127,18 +127,18 @@ class Datablock(object):
         retries = 0
 
         self._recv = ''
-        while len(self._recv) != self.read_size:  # while rem>0:
+        while len(self._recv) != self.read_size:  # while rem > 0:
             select.select([self.sock.fileno()], E, E)
             self._recv = self.sock.recv(8192)
             # self.debug_stream("> received %d bytes" % (len(self._recv)))
             if len(self._recv) == 0:
                 retries += 1
-                if retries == 10:
-                    self.debug_stream("After a second of consecutive "
-                                      "retries, abort the readall()")
-                    return False
                 self.debug_stream("Nothing received from the PLC (try %d)"
                                   % (retries))
+                if retries == 10:
+                    self.info_stream("After a second of consecutive "
+                                      "retries, abort the readall()")
+                    return False
                 time.sleep(0.1)
             else:
                 retries = 0
