@@ -996,7 +996,6 @@ class AttrList(object):
             toReturn += (attrHistory,)
         return toReturn
 
-
     def _prepareAttrWithQualities(self, attrName, attrType, qualities,
                                   rfun, wfun, label=None, unit=None,
                                   autoStop=None, **kwargs):
@@ -3458,16 +3457,16 @@ class LinacData(PyTango.Device_4Impl):
                         self.set_state(PyTango.DevState.UNKNOWN)
                     return
             # relock if auto-recover from fault ---
-            self.auto_local_lock()
             try:
+                self.auto_local_lock()
                 self.dataBlockSemaphore.acquire()
-                e = None
                 try:
+                    e = None
                     # The real reading to the hardware:
                     up = self.read_db.readall()
                 except Exception as e:
-                    self.error_stream("Could not complete the readall()\n%s"
-                                      % (e))
+                    self.error_stream(
+                        "Could not complete the readall()\n%s" % (e))
                 finally:
                     self.dataBlockSemaphore.release()
                     if e is not None:
@@ -4035,7 +4034,9 @@ triggered.
                     if not self._plcAttrs['Locking'].rvalue:
                         self.info_stream("Device is in Local mode and "
                                          "not locked. Proceed to lock it")
-                        self.relock()
+                        with self.dataBlockSemaphore:
+                            self.relock()
+                            time.sleep(self._getPlcUpdatePeriod())
                     # else:
                     #     self.info_stream("Device is in Local mode and locked")
                 else:
