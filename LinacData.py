@@ -100,10 +100,8 @@ class AttrList(object):
     def __init__(self, device):
         super(AttrList, self).__init__()
         self.impl = device
-        full_read_block = self.impl.ReadSize
-        only_write_block = self.impl.WriteSize
-        only_read_block = full_read_block-only_write_block
-        self._read_block_shift = only_read_block
+        self._db20_size = self.impl.ReadSize-self.impl.WriteSize
+        self._db22_size = self.impl.WriteSize
         self.alist = list()
         self.locals_ = {}
         self._relations = {}
@@ -268,6 +266,11 @@ class AttrList(object):
         '''
         self.__traceAttrAddr(name, T, readAddr=read_addr, writeAddr=write_addr)
         tango_T = self.__mapTypes(T)
+        try:
+            read_addr = self.__check_addresses_and_block_sizes(
+                name, read_addr, write_addr)
+        except IndexError:
+            return
         self._prepareAttribute(name, T, readAddr=read_addr,
                                writeAddr=write_addr, formula=formula,
                                readback=readback, setpoint=setpoint,
@@ -278,8 +281,6 @@ class AttrList(object):
 
         if write_addr is not None:
             wfun = self.__getAttrMethod('write', name)
-            read_addr = self.__check_read_addr_and_block_size(
-                read_addr, write_addr)
         else:
             wfun = None
         # TODO: they are not necessary right now
@@ -374,6 +375,11 @@ class AttrList(object):
         self.__traceAttrAddr(name, PyTango.DevBoolean, readAddr=read_addr,
                              readBit=read_bit, writeAddr=write_addr,
                              writeBit=write_bit)
+        try:
+            read_addr = self.__check_addresses_and_block_sizes(
+                name, read_addr, write_addr)
+        except IndexError:
+            return
         self._prepareAttribute(name, PyTango.DevBoolean, readAddr=read_addr,
                                readBit=read_bit, writeAddr=write_addr,
                                writeBit=write_bit, formula=formula,
@@ -387,8 +393,6 @@ class AttrList(object):
             wfun = self.__getAttrMethod('write', name, isBit=True)
             if write_bit is None:
                 write_bit = read_bit
-            read_addr = self.__check_read_addr_and_block_size(
-                read_addr, write_addr)
         else:
             wfun = None
         if isRst:
@@ -837,7 +841,7 @@ class AttrList(object):
            setpoint and if the element is switch on or off.
         '''
         if readAddr is None and writeAddr is not None:
-            readAddr = self._read_block_shift + writeAddr
+            readAddr = self._db20_size + writeAddr
         attrObj = PLCAttr(name=attrName, device=self.impl, valueType=attrType,
                           readAddr=readAddr, readBit=readBit,
                           writeAddr=writeAddr, writeBit=writeBit,
@@ -895,9 +899,10 @@ class AttrList(object):
             if readAddr not in rDct:
                 rDct[readAddr] = {}
             if readBit in rDct[readAddr]:
-                self.impl.error_stream("Overwrite readAddr %d readBit %d: %s"
-                                       % (readAddr, readBit,
-                                          rDct[readAddr][readBit]))
+                self.impl.warn_stream(
+                    "{0} override readAddr {1} readBit {2}: {3}"
+                    "".format(name, readAddr, readBit,
+                              rDct[readAddr][readBit]['name']))
             rDct[readAddr][readBit] = {}
             rDct[readAddr][readBit]['name'] = name
             rDct[readAddr][readBit]['type'] = valueType
@@ -915,16 +920,18 @@ class AttrList(object):
                 wDct[writeAddr][writeBit]['readBit'] = readBit
         else:  # Byte, Word or Float
             if readAddr in rDct:
-                self.impl.error_stream("Overwrite readAddr %s: %s"
-                                       % (readAddr, rDct[readAddr]))
+                self.impl.warn_stream(
+                    "{0} override readAddr {1}: {2}"
+                    "".format(name, readAddr, rDct[readAddr]['name']))
             rDct[readAddr] = {}
             rDct[readAddr]['name'] = name
             rDct[readAddr]['type'] = valueType
             if writeAddr is not None:
                 rDct[readAddr]['writeAddr'] = writeAddr
                 if writeAddr in wDct:
-                    self.impl.error_stream("Overwrite writeAddr %s: %s"
-                                           % (writeAddr, wDct[writeAddr]))
+                    self.impl.warn_stream(
+                        "{0} override writeAddr {1}:{2}"
+                        "".format(name, writeAddr, wDct[writeAddr]['name']))
                 wDct[writeAddr] = {}
                 wDct[writeAddr]['name'] = name
                 wDct[writeAddr]['type'] = valueType
@@ -1146,20 +1153,25 @@ class AttrList(object):
             self._relations[dependency][tag] = []
         self._relations[dependency][tag].append(origin)
 
-    def __check_read_addr_and_block_size(self, read_addr, write_addr):
-        db20 = self.impl.ReadSize-self.impl.WriteSize
-        new_read_addr = db20+write_addr
-        if read_addr != new_read_addr:
-            self.impl.warn_stream(
-                "It seems the read_addr may not fit with the configured "
-                "block sizes (DB20 {0} ends after this register {1}). "
-                "Based on write_addr ({2}) it should be {3}."
-                "".format(db20, read_addr, write_addr, new_read_addr))
-            return new_read_addr
-        else:
+    def __check_addresses_and_block_sizes(self, name, read_addr, write_addr):
+        if read_addr is None and write_addr is not None:
+            read_addr = self._db20_size+write_addr
             self.impl.debug_stream(
-                "read_addr {0} corresponds with {1}+{2}".format(
-                    read_addr, db20, write_addr))
+                "{0} define the read_addr {1} relative to the db20 size {2} "
+                "and the write_addr{3}".format(name, read_addr,
+                                               self._db20_size, write_addr))
+        if read_addr > self.impl.ReadSize:
+            self.impl.warn_stream(
+                "{0} defines a read_addr {1} out of the size of the "
+                "db20+db22 {2}: it will not be build"
+                "".format(name, read_addr, self.impl.ReadSize))
+            raise IndexError("Out of the DB20")
+        if write_addr is not None and write_addr > self._db22_size:
+            self.impl.warn_stream(
+                "{0} defines a write_addr {1} out of the size of the db22 {2}: "
+                "it will not be build".format(name, write_addr,
+                                              self._db22_size))
+            raise IndexError("Out of the DB22")
         return read_addr
 
 
