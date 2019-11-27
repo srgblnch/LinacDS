@@ -823,3 +823,18 @@ AttrEnumeration('GUN_HVps_u')
 AttrEnumeration('TU_u')
 AttrEnumeration('A0_u')
 AttrEnumeration('LLRF_u')
+
+Attr('Vdrain',
+     PyTango.DevFloat, read_addr=166,  # RO
+     label='Voltage drain',
+     format='%3.1f', minValue=5, maxValue=46, unit='V',
+     # specs say maxValue=840, user explicitly reduces it
+     events={THRESHOLD: 0.1},
+     setpoint='Vdrain_setpoint')
+
+Attr('Vdrain_setpoint',
+     PyTango.DevFloat, read_addr=166, write_addr=82,  # RW
+     label='Voltage drain setpoint',
+     format='%3.1f', minValue=5, maxValue=46, unit='V',
+     # specs say maxValue=840, user explicitly reduces it
+     events={THRESHOLD: 0.1})
