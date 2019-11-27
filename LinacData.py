@@ -274,6 +274,8 @@ class AttrList(object):
 
         if write_addr is not None:
             wfun = self.__getAttrMethod('write', name)
+            read_addr = self.__check_read_addr_and_block_size(
+                read_addr, write_addr)
         else:
             wfun = None
         # TODO: they are not necessary right now
@@ -381,6 +383,8 @@ class AttrList(object):
             wfun = self.__getAttrMethod('write', name, isBit=True)
             if write_bit is None:
                 write_bit = read_bit
+            read_addr = self.__check_read_addr_and_block_size(
+                read_addr, write_addr)
         else:
             wfun = None
         if isRst:
@@ -1135,6 +1139,22 @@ class AttrList(object):
         if tag not in self._relations[dependency]:
             self._relations[dependency][tag] = []
         self._relations[dependency][tag].append(origin)
+
+    def __check_read_addr_and_block_size(self, read_addr, write_addr):
+        db20 = self.impl.ReadSize-self.impl.WriteSize
+        new_read_addr = db20+write_addr
+        if read_addr != new_read_addr:
+            self.impl.warn_stream(
+                "It seems the read_addr may not fit with the configured "
+                "block sizes (DB20 {0} ends after this register {1}). "
+                "Based on write_addr ({2}) it should be {3}."
+                "".format(db20, read_addr, write_addr, new_read_addr))
+            return new_read_addr
+        else:
+            self.impl.debug_stream(
+                "read_addr {0} corresponds with {1}+{2}".format(
+                    read_addr, db20, write_addr))
+        return read_addr
 
 
 def get_ip(iface='eth0'):
@@ -3201,7 +3221,9 @@ class LinacData(PyTango.Device_4Impl):
             self.debug_stream('In GetBit()')
             # PROTECTED REGION ID(LinacData.GetBit) ---
             idx, bitno = args
-            return self.read_db.bit(idx, bitno)
+            if self.read_db is not None and hasattr(self.read_db, 'bit'):
+                return self.read_db.bit(idx, bitno)
+            raise IOError("No access to the hardware")
             # PROTECTED REGION END --- LinacData.GetBit
 
         @CommandExc
@@ -3214,7 +3236,9 @@ class LinacData(PyTango.Device_4Impl):
             :rtype: PyTango.DevShort """
             self.debug_stream('In GetByte()')
             # PROTECTED REGION ID(LinacData.GetByte) ---
-            return self.read_db.b(idx)
+            if self.read_db is not None and hasattr(self.read_db, 'b'):
+                return self.read_db.b(idx)
+            raise IOError("No access to the hardware")
             # PROTECTED REGION END --- LinacData.GetByte
 
         @CommandExc
@@ -3228,8 +3252,10 @@ class LinacData(PyTango.Device_4Impl):
             :rtype: PyTango.DevShort """
             self.debug_stream('In GetShort()')
             # PROTECTED REGION ID(LinacData.GetShort)  ---
-            return self.read_db.i16(idx)
-            # PROTECTED REGION END --- LinacData.GetShort
+            if self.read_db is not None and hasattr(self.read_db, 'i16'):
+                return self.read_db.i16(idx)
+            raise IOError("No access to the hardware")
+            # PROTECTED REGION END --- LinacBData.GetShort
 
         @CommandExc
         def GetFloat(self, idx):
@@ -3242,7 +3268,9 @@ class LinacData(PyTango.Device_4Impl):
             :rtype: PyTango.DevFloat """
             self.debug_stream('In GetFloat()')
             # PROTECTED REGION ID(LinacData.GetFloat) ---
-            return self.read_db.f(idx)
+            if self.read_db is not None and hasattr(self.read_db, 'f'):
+                return self.read_db.f(idx)
+            raise IOError("No access to the hardware")
             # PROTECTED REGION END --- LinacData.GetFloat
 
         @CommandExc
