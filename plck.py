@@ -176,7 +176,9 @@ Attr('Heat_Time',
 # the maximum must follow some steps and some time on each step.
 # This two ramp parameters must be also dynattrs.
 Attr('HVPS_V_setpoint',  # AttrRampeable('HVPS_V_setpoint',
-     PyTango.DevFloat, read_addr=46, write_addr=0,  # RW
+     PyTango.DevFloat,
+     # read_addr=46,
+     write_addr=0,  # RW
      label='High voltage PS voltage setpoint',
      unit='kV', minValue=0, maxValue=33, format='%4.2f',
      events={THRESHOLD: 0.005},
@@ -188,13 +190,15 @@ Attr('HVPS_V_setpoint',  # AttrRampeable('HVPS_V_setpoint',
      readback='HVPS_V')
 
 AttrBit('LV_Interlock_RC',
-        read_addr=62, read_bit=0, write_addr=16,  # RW
+        # read_addr=62,
+        read_bit=0, write_addr=16,  # RW
         label='Low voltage reset',
         desc='low voltage reset\nrising edge reset',
         events={}, isRst=True)
 
 AttrBit('LV_ONC',
-        read_addr=62, read_bit=1, write_addr=16,  # RW
+        # read_addr=62,
+        read_bit=1, write_addr=16,  # RW
         label='Low voltage on',
         desc='low voltage on\nFalse:off\nTrue:on',
         events={},
@@ -202,13 +206,15 @@ AttrBit('LV_ONC',
         )
 
 AttrBit('HVPS_Interlock_RC',
-        read_addr=62, read_bit=2, write_addr=16,  # RW
+        # read_addr=62,
+        read_bit=2, write_addr=16,  # RW
         label='High voltage reset',
         desc='high voltage reset\nrising edge reset',
         events={}, isRst=True)
 
 AttrBit('HVPS_ONC',
-        read_addr=62, read_bit=3, write_addr=16,  # RW
+        # read_addr=62,
+        read_bit=3, write_addr=16,  # RW
         label='High voltage on',
         desc='high voltage on\nFalse:off\nTrue:on',
         events={},

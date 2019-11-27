@@ -100,6 +100,10 @@ class AttrList(object):
     def __init__(self, device):
         super(AttrList, self).__init__()
         self.impl = device
+        full_read_block = self.impl.ReadSize
+        only_write_block = self.impl.WriteSize
+        only_read_block = full_read_block-only_write_block
+        self._read_block_shift = only_read_block
         self.alist = list()
         self.locals_ = {}
         self._relations = {}
@@ -832,6 +836,8 @@ class AttrList(object):
            setpoint sets. Also this readback may like to know about the
            setpoint and if the element is switch on or off.
         '''
+        if readAddr is None and writeAddr is not None:
+            readAddr = self._read_block_shift + writeAddr
         attrObj = PLCAttr(name=attrName, device=self.impl, valueType=attrType,
                           readAddr=readAddr, readBit=readBit,
                           writeAddr=writeAddr, writeBit=writeBit,

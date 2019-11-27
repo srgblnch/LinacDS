@@ -75,7 +75,8 @@ def PS(name, types, rng):
              setpoint=setpointName, **rng)
         Attr(setpointName,
              PyTango.DevFloat,
-             read_addr=Iread_addr+161, write_addr=Iref_addr,  # RW
+             # read_addr=Iread_addr+161,
+             write_addr=Iref_addr,  # RW
              desc=desc+' setpoint', unit='A',
              readback=readbackName, **rng)
         Iread_addr += 4
@@ -156,28 +157,50 @@ PS('AS2', HV, {'minValue': -2.0, 'maxValue': 2.0, 'format': '%4.2f',
                QUALITIES: {CHANGING: {RELATIVE: 0.1}}})
 
 onc_desc = lambda x: x+' on/off\nFalse:off\nTrue:on'
-AttrBit('MA_Interlock_RC', read_addr=289, read_bit=0, write_addr=128,
+AttrBit('MA_Interlock_RC',
+        # read_addr=289,
+        read_bit=0, write_addr=128,
         desc='magnets interlock reset, rising edge:reset', events={},
         isRst=True)
-AttrBit('SL1_ONC', read_addr=289, read_bit=1, write_addr=128,
+AttrBit('SL1_ONC',
+        # read_addr=289,
+        read_bit=1, write_addr=128,
         desc=onc_desc('SL1'), events={})
-AttrBit('SL2_ONC', read_addr=289, read_bit=2, write_addr=128,
+AttrBit('SL2_ONC',
+        # read_addr=289,
+        read_bit=2, write_addr=128,
         desc=onc_desc('SL2'), events={})
-AttrBit('SL3_ONC', read_addr=289, read_bit=3, write_addr=128,
+AttrBit('SL3_ONC',
+        # read_addr=289,
+        read_bit=3, write_addr=128,
         desc=onc_desc('SL3'), events={})
-AttrBit('SL4_ONC', read_addr=289, read_bit=4, write_addr=128,
+AttrBit('SL4_ONC',
+        # read_addr=289,
+        read_bit=4, write_addr=128,
         desc=onc_desc('SL4'), events={})
-AttrBit('BC1_ONC', read_addr=289, read_bit=5, write_addr=128,
+AttrBit('BC1_ONC',
+        # read_addr=289,
+        read_bit=5, write_addr=128,
         desc=onc_desc('BC1'), events={})
-AttrBit('BC2_ONC', read_addr=289, read_bit=6, write_addr=128,
+AttrBit('BC2_ONC',
+        # read_addr=289,
+        read_bit=6, write_addr=128,
         desc=onc_desc('BC2'), events={})
-AttrBit('GL_ONC', read_addr=289, read_bit=7, write_addr=128,
+AttrBit('GL_ONC',
+        # read_addr=289,
+        read_bit=7, write_addr=128,
         desc=onc_desc('GL'), events={})
-AttrBit('AS1_ONC', read_addr=290, read_bit=0, write_addr=129,
+AttrBit('AS1_ONC',
+        # read_addr=290,
+        read_bit=0, write_addr=129,
         desc=onc_desc('AS1'), events={})
-AttrBit('QT_ONC', read_addr=290, read_bit=1, write_addr=129,
+AttrBit('QT_ONC',
+        # read_addr=290,
+        read_bit=1, write_addr=129,
         desc=onc_desc('QT'), events={})
-AttrBit('AS2_ONC', read_addr=290, read_bit=2, write_addr=129,
+AttrBit('AS2_ONC',
+        # read_addr=290,
+        read_bit=2, write_addr=129,
         desc=onc_desc('AS2'), events={})
 
 GrpBit('all_onc',

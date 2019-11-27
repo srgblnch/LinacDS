@@ -515,7 +515,9 @@ AttrLogic('att2_ready',
 
 # R084 W000 @EG_FVS ---
 Attr('GUN_Filament_V_setpoint',  # AttrRampeable('GUN_Filament_V_setpoint',
-     PyTango.DevFloat, read_addr=84, write_addr=0,  # RW
+     PyTango.DevFloat,
+     # read_addr=84,
+     write_addr=0,  # RW
      label='e-gun filament voltage setpoint',
      format='%4.1f', minValue=0, maxValue=10, unit='V',
      events={THRESHOLD: 0.01},
@@ -533,7 +535,9 @@ Attr('GUN_Filament_V_setpoint',  # AttrRampeable('GUN_Filament_V_setpoint',
 
 # R088 W004 @EG_KVS ---
 Attr('GUN_Kathode_V_setpoint',
-     PyTango.DevFloat, read_addr=88, write_addr=4,  # RW
+     PyTango.DevFloat,
+     # read_addr=88,
+     write_addr=4,  # RW
      label='e-gun cathode voltage setpoint',
      format='%4.1f', minValue=0, maxValue=50, unit='V',
      events={THRESHOLD: 0.01},
@@ -544,7 +548,9 @@ Attr('GUN_Kathode_V_setpoint',
 
 # R100 W016 @HVS_VS ---
 Attr('GUN_HV_V_setpoint',  # AttrRampeable('GUN_HV_V_setpoint',
-     PyTango.DevFloat, read_addr=100, write_addr=16,  # RW
+     PyTango.DevFloat,
+     # read_addr=100,
+     write_addr=16,  # RW
      label='HV PS Voltage Setpoint',
      desc='high voltage PS voltage',
      format='%4.1f', minValue=-90, maxValue=0, unit='kV',
@@ -564,21 +570,27 @@ Attr('GUN_HV_V_setpoint',  # AttrRampeable('GUN_HV_V_setpoint',
 
 # R104 W020 @TB_GPA ---
 Attr('TB_GPA',
-     PyTango.DevFloat, read_addr=104, write_addr=20,  # RW
+     PyTango.DevFloat,
+     # read_addr=104,
+     write_addr=20,  # RW
      label='timer gun pulses attenuation',
      format='%4.1f', minValue=-40, maxValue=0, unit='dB',
      events={THRESHOLD: 0.005})
 
 # R108 W024 @PHS1_PS ---
 Attr('PHS1_Phase_setpoint',
-     PyTango.DevFloat, read_addr=108, write_addr=24,  # RW
+     PyTango.DevFloat,
+     # read_addr=108,
+     write_addr=24,  # RW
      label='Phase shifter 1 phase setpoint',
      format='%3.0f', minValue=0, maxValue=160, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R112 W028 @A0_OP ---
 Attr('A0_OP',
-     PyTango.DevFloat, read_addr=112, write_addr=28,  # RW
+     PyTango.DevFloat,
+     # read_addr=112,
+     write_addr=28,  # RW
      label='A0 output power',
      format='%3.0f', minValue=75, maxValue=760, unit='W',
      # specs say maxValue=840, user explicitly reduces it
@@ -595,7 +607,8 @@ for idx, x in enumerate((0, 1, 2, 'X')):
         format = '%3.0f'
     Attr('TPS%s_Phase' % (x),
          PyTango.DevFloat,
-         read_addr=116+4*idx, write_addr=32+4*idx,  # RW
+         # read_addr=116+4*idx,
+         write_addr=32+4*idx,  # RW
          label='time phase shifter %s phase' % (x),
          format=format, minValue=0, maxValue=380, unit='⁰',
          events={THRESHOLD: 0.01})
@@ -605,14 +618,18 @@ for idx, x in enumerate((0, 1, 2, 'X')):
 
 # R140 W056 @PHS2_PS ---
 Attr('PHS2_Phase_setpoint',
-     PyTango.DevFloat, read_addr=140, write_addr=56,  # RW
+     PyTango.DevFloat,
+     # read_addr=140,
+     write_addr=56,  # RW
      label='Phase shifter 2 phase setpoint',
      format='%3.0f', minValue=0, maxValue=380, unit='⁰',
      events={THRESHOLD: 0.01})
 
 # R144 W060 @ATT2_PS ---
 Attr('ATT2_P_setpoint',
-     PyTango.DevFloat, read_addr=144, write_addr=60,  # RW
+     PyTango.DevFloat,
+     # read_addr=144,
+     write_addr=60,  # RW
      label='Attenuator 2',
      desc='Attenuator 2 attenuation (PB2)',
      format='%3.1f', minValue=-10, maxValue=0, unit='dB',
@@ -620,48 +637,62 @@ Attr('ATT2_P_setpoint',
 
 # R148 W064 @TB_KAD1 ---
 Attr('TB_KA1_Delay',
-     PyTango.DevShort, read_addr=148, write_addr=64,  # RW
+     PyTango.DevShort,
+     # read_addr=148,
+     write_addr=64,  # RW
      label='timer klystron amplifier 1 delay',
      minValue=1, maxValue=56, unit='ns', events={}, format="%2d")
 
 # R150 W066 @TB_KAD2 ---
 Attr('TB_KA2_Delay',
-     PyTango.DevShort, read_addr=150, write_addr=66,  # RW
+     PyTango.DevShort,
+     # read_addr=150,
+     write_addr=66,  # RW
      label='timer klystron amplifier 2 delay',
      desc='timer klystron amplifier 2 delay (step 32 ns)',
      minValue=544, maxValue=4096, unit='ns', events={}, format="%4d")
 
 # R152 W068 @TB_RF2D ---
 Attr('TB_RF2_Delay',
-     PyTango.DevShort, read_addr=152, write_addr=68,  # RW
+     PyTango.DevShort,
+     # read_addr=152,
+     write_addr=68,  # RW
      label='timer RF2 delay',
      desc='timer RF2 delay (step 8 ns)',
      minValue=512, maxValue=1920, unit='ns', events={}, format="%4d")
 
 # R154 W070 @TB_EGD ---
 Attr('TB_Gun_Delay',
-     PyTango.DevShort, read_addr=154, write_addr=70,  # RW
+     PyTango.DevShort,
+     # read_addr=154,
+     write_addr=70,  # RW
      label='timer e-gun delay',
      desc='timer e-gun delay (step 32 ns)',
      minValue=32, maxValue=4096, unit='ns', events={}, format="%4d")
 
 # R156 W072 @TB_GPI ---
 Attr('TB_GPI',
-     PyTango.DevShort, read_addr=156, write_addr=72,  # RW
+     PyTango.DevShort,
+     # read_addr=156,
+     write_addr=72,  # RW
      label='timer e-gun pulse',
      desc='timer e-gun pulse interval (SBM) / width (MBM)',
      minValue=6, maxValue=1054, unit='ns', events={}, format="%4d")
 
 # R158 W074 @TB_GPN ---
 Attr('TB_GPN',
-     PyTango.DevShort, read_addr=158, write_addr=74,  # RW
+     PyTango.DevShort,
+     # read_addr=158,
+     write_addr=74,  # RW
      label='number of pulses',
      desc='number of pulses in SBM (not use in MBM)',
      minValue=1, maxValue=16, events={}, format="%2d")
 
 # R160 W076 @TB_GPM ---
 Attr('TB_GPM',
-     PyTango.DevShort, read_addr=160, write_addr=76,  # RW
+     PyTango.DevShort,
+     # read_addr=160,
+     write_addr=76,  # RW
      label='timer gated pulse mode',
      desc='timer gated pulse mode: 0:beam on, 1:mix, 2:beam off',
      minValue=0, maxValue=2,
@@ -672,7 +703,8 @@ Attr('TB_GPM',
 
 # R162 W078 @DO_0to7 ---
 AttrBit('TB_MBM',
-        read_addr=162, read_bit=0, write_addr=78,  # RW
+        # read_addr=162,
+        read_bit=0, write_addr=78,  # RW
         label='timer multi bunch mode',
         desc='timer multi bunch mode enabled; False:SBM, True:MBM',
         meanings={0: 'SBM',
@@ -681,7 +713,8 @@ AttrBit('TB_MBM',
         events={})
 
 AttrBit('GUN_HV_ONC',  # HVS_OC
-        read_addr=162, read_bit=2, write_addr=78,  # RW
+        # read_addr=162,
+        read_bit=2, write_addr=78,  # RW
         label='High voltage PS',
         desc='high voltage PS; False:OFF, True:ON',
         meanings={0: 'off',
@@ -701,14 +734,16 @@ AttrBit('GUN_HV_ONC',  # HVS_OC
         setpoint='GUN_HV_V_setpoint')
 
 AttrBit('Interlock_RC',  # IU_RST
-        read_addr=162, read_bit=3, write_addr=78,  # RW
+        # read_addr=162,
+        read_bit=3, write_addr=78,  # RW
         label='Reset interlocks',
         events={},
         isRst=True
         # reset bits are special because their meaning is 'rising edge'
         )
 AttrBit('GUN_LV_ONC',
-        read_addr=162, read_bit=5, write_addr=78,  # RW
+        # read_addr=162,
+        read_bit=5, write_addr=78,  # RW
         label='Gun low voltage',
         desc='gun low voltage: False:OFF, True:ON',
         meanings={0: 'off',
@@ -738,19 +773,22 @@ AttrBit('GUN_LV_ONC',
 scm_dc_desc = 'screen monitor %d; 0:up, 1:down'
 scm_dc_meanings = {0: 'up', 1: 'down'}
 AttrBit('SCM1_DC',
-        read_addr=163, read_bit=0, write_addr=79,  # RW
+        # read_addr=163,
+        read_bit=0, write_addr=79,  # RW
         label='fs 1 valve',
         desc=scm_dc_desc % 1,
         meanings=scm_dc_meanings,
         events={})
 AttrBit('SCM2_DC',
-        read_addr=163, read_bit=1, write_addr=79,  # RW
+        # read_addr=163,
+        read_bit=1, write_addr=79,  # RW
         label='fs 2 valve',
         desc=scm_dc_desc % 2,
         meanings=scm_dc_meanings,
         events={})
 AttrBit('SCM3_DC',
-        read_addr=163, read_bit=2, write_addr=79,  # RW
+        # read_addr=163,
+        read_bit=2, write_addr=79,  # RW
         label='fs 3 valve',
         desc=scm_dc_desc % 3,
         meanings=scm_dc_meanings,
@@ -758,19 +796,22 @@ AttrBit('SCM3_DC',
 scm_lc_desc = 'screen light %d 0:off, 1:on'
 scm_lc_meanings = {0: 'off', 1: 'on'}
 AttrBit('SCM1_LC',
-        read_addr=163, read_bit=3, write_addr=79,  # RW
+        # read_addr=163,
+        read_bit=3, write_addr=79,  # RW
         label='fs 1 light',
         desc=scm_lc_desc % 1,
         meanings=scm_lc_meanings,
         events={})
 AttrBit('SCM2_LC',
-        read_addr=163, read_bit=4, write_addr=79,  # RW
+        # read_addr=163,
+        read_bit=4, write_addr=79,  # RW
         label='fs 2 light',
         desc=scm_lc_desc % 2,
         meanings=scm_lc_meanings,
         events={})
 AttrBit('SCM3_LC',
-        read_addr=163, read_bit=5, write_addr=79,  # RW
+        # read_addr=163,
+        read_bit=5, write_addr=79,  # RW
         label='fs 3 light',
         desc=scm_lc_desc % 3,
         meanings=scm_lc_meanings,
@@ -833,7 +874,9 @@ Attr('Vdrain',
      setpoint='Vdrain_setpoint')
 
 Attr('Vdrain_setpoint',
-     PyTango.DevFloat, read_addr=166, write_addr=82,  # RW
+     PyTango.DevFloat,
+     # read_addr=166,
+     write_addr=82,  # RW
      label='Voltage drain setpoint',
      format='%3.1f', minValue=5, maxValue=46, unit='V',
      # specs say maxValue=840, user explicitly reduces it

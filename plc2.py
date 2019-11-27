@@ -251,7 +251,9 @@ AttrBit('AC_IS',
 for i in range(3):
     number = i+1
     Attr('CL%d_T_setpoint' % (number),
-         PyTango.DevFloat, read_addr=100+4*i, write_addr=4*i,  # RW
+         PyTango.DevFloat,
+         # read_addr=100+4*i,
+         write_addr=4*i,  # RW
          label='cooling loop %d temperature setpoint' % (number),
          format='%4.2f', unit='⁰C', minValue=0, maxValue=50,
          events={THRESHOLD: 0.01},
@@ -263,7 +265,8 @@ for i in range(3):
 
 # R116 W016 @DO_0to7 ---
 AttrBit('VCV_ONC',
-        read_addr=116, read_bit=0, write_addr=16,
+        # read_addr=116,
+        read_bit=0, write_addr=16,
         label='collimator valve open',
         meanings={0: 'close', 1: 'open'},
         qualities={WARNING: [False]}, events={},
@@ -273,7 +276,8 @@ AttrBit('VCV_ONC',
 for i in range(7):
     number = i+1
     AttrBit('VV%d_OC' % (number),
-            read_addr=116, read_bit=1+i, write_addr=16,
+            # read_addr=116,
+            read_bit=1+i, write_addr=16,
             label='vacuum valve %d open' % (number),
             meanings={0: 'close', 1: 'open'},
             qualities={WARNING: [False]}, events={},
@@ -287,14 +291,16 @@ GrpBit('VVall_OC',
 
 # R117 W017 @DO_8to15 ---
 AttrBit('Util_Interlock_RC',
-        read_addr=117, read_bit=0, write_addr=17,
+        # read_addr=117,
+        read_bit=0, write_addr=17,
         label='interlock reset',
         # FIXME: ---
         # reset bits are special because their meaning is 'rising edge'
         desc='utilities interlock reset command', events={}, isRst=True)
 
 AttrBit('VC_Interlock_RC',
-        read_addr=117, read_bit=1, write_addr=17,
+        # read_addr=117,
+        read_bit=1, write_addr=17,
         label='vacuum reset',
         # FIXME: ---
         # reset bits are special because their meaning is 'rising edge'
@@ -302,7 +308,8 @@ AttrBit('VC_Interlock_RC',
 for i in range(3):
     number = i+1
     AttrBit('CL%d_ONC' % (number),
-            read_addr=117, read_bit=i+2, write_addr=17,
+            # read_addr=117,
+            read_bit=i+2, write_addr=17,
             label='cooling loop %d on' % (number),
             meanings={0: 'off', 1: 'on'},
             qualities={WARNING: [False]}, events={},
